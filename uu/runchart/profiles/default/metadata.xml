@@ -1,0 +1,7 @@
+<metadata>
+  <version>0.1dev</version>
+  <dependencies>
+    <dependency>profile-plone.app.dexterity:default</dependency>
+    <dependency>profile-collective.z3cform.datagridfield:default</dependency>
+  </dependencies>
+</metadata>

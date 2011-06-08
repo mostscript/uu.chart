@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_skins">
+ <object name="uu_runchart"
+     meta_type="Filesystem Directory View"
+     directory="uu.runchart:skins/uu_runchart"/>
+ <skin-path name="Sunburst Theme">
+  <layer name="uu_runchart" insert-after="custom" />
+ </skin-path>
+</object>

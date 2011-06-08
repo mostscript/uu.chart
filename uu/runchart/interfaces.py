@@ -237,7 +237,7 @@ class ITimeMeasureChart(ITimeSeriesChart):
         )
 
 
-class IReportAggregator(IOrderedContainer):
+class IMultiSeriesReport(IOrderedContainer):
     """
     Ordered container/folder of contained charts providing ITimeSeriesChart.
     """
