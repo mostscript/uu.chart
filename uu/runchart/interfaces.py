@@ -42,7 +42,7 @@ class IDataPoints(Interface):
         """Return number of data points"""
 
 
-class ISeriesDisplayLine(Interface):
+class ISeriesDisplayLine(form.Schema):
     """
     Mixin interface for display-line configuration metadata for series line.
     """
