@@ -15,10 +15,10 @@
   </property>
   
   <!-- schema interface -->
-  <property name="schema">uu.runchart.interfaces.IMeasureDataChart</property> 
+  <property name="schema">uu.runchart.interfaces.ITimeMeasureChart</property> 
   
   <!-- class used for content items -->
-  <property name="klass">uu.runchart.content.MeasureDataChart</property>
+  <property name="klass">uu.runchart.content.TimeMeasureChart</property>
   
   <!-- add permission -->
   <property name="add_permission">cmf.AddPortalContent</property>

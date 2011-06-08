@@ -20,12 +20,10 @@ class IDataPoint(Interface):
         required=True,
         )
     
-    value = schema.Object(
+    value = schema.Float(
         title=_(u'Number value'),
-        description=_(u'Whole or decimal number value.'),
-        schema=Interface,
-        constraint=lambda v: type(v) in (int,long,float),
-        default=0,
+        description=_(u'Decimal number value.'),
+        default=0.0,
         )
 
 
@@ -155,6 +153,8 @@ class ITimeSeriesChart(form.Schema,
                        ILocation):
     """Base chart content item/component interface"""
     
+    form.omitted('__name__')
+    
     form.fieldset(
         'display',
         label=u"Display settings",
@@ -208,7 +208,6 @@ class ITimeDataChart(ITimeSeriesChart, IDataPoints):
             title=_(u'tablerow'),
             schema=IDataPoint,
             ),
-        defaultFactory=[],
         )
 
 
@@ -237,9 +236,20 @@ class ITimeMeasureChart(ITimeSeriesChart):
         )
 
 
-class IMultiSeriesReport(IOrderedContainer):
+class IMultiSeriesReport(form.Schema, IOrderedContainer):
     """
     Ordered container/folder of contained charts providing ITimeSeriesChart.
     """
-
+    
+    title = schema.TextLine(
+        title=_(u'Title'),
+        description=_(u'Report title; may be displayed in output.'),
+        required=False,
+        )
+    
+    description = schema.Text(
+        title=_(u'Description'),
+        description=_(u'Textual description of the report.'),
+        required=False,
+        )
 
