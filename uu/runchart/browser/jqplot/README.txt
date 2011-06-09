@@ -1,11 +1,15 @@
 Below is upstream jqplot README.txt contents.  Portions of jqPlot are
 included here, under the terms of the original licenses.
 
+Third-party: threshold lines renderer.
+
 Upstream:
 
 http://www.jqplot.com
 
 https://bitbucket.org/cleonello/jqplot/downloads/jquery.jqplot.1.0.0b1_r746.tar.bz2
+
+https://github.com/rivella50/jqplot_threshold_lines_renderer
 
 --
 
