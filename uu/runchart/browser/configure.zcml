@@ -3,4 +3,11 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="uu.spaces">
 
+  <browser:page
+    name="series_json"
+    for="..interfaces.ITimeSeriesChart"
+    class=".chart.SeriesJSONView"
+    permission="zope2.View"
+    />
+
 </configure>
