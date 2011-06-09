@@ -10,4 +10,10 @@
     permission="zope2.View"
     />
 
+  <!-- resources -->
+  <browser:resourceDirectory
+    name="jqplot"
+    directory="jqplot"
+    />
+
 </configure>
