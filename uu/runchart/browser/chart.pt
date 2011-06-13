@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.runchart">
+<head>
+
+<metal:block fill-slot="javascript_head_slot">
+
+<meta name="json_url" content="" tal:attributes="content view/json_url" />
+
+<!--[if if lt IE 9]>
+  <script type="text/javascript" src="++resource++jqplot/excanvas.js"></script>
+<![endif]-->
+  <script type="text/javascript" src="++resource++jqplot/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="++resource++jqplot/jqplot.dateAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="++resource++jqplot/jqplot.pointLabels.min.js"></script>
+  <script type="text/javascript" src="++resource++jqplot/jqplot.trendline.min.js"></script>
+  <script type="text/javascript" src="++resource++jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
+
+<script>
+var jq = jQuery; /* alias */
+
+var uu = new Object();
+uu.runchart = new Object();
+
+uu.runchart.normalize_series = function(series) {
+    var result = new Array();
+    for (var i=0; i<series.length; i++) {
+        var element = series[i];
+        result.push( [Date.parse(element[0]), element[1]] );
+    }
+    return result;
+}
+
+uu.runchart.fillchart = function(data) {
+    jq.jqplot.config.enablePlugins = true;
+    jq.jqplot('chartdiv', [uu.runchart.normalize_series(data.series)], {
+        axes:{xaxis:{renderer:jq.jqplot.DateAxisRenderer},},
+        series:[{lineWidth:4, markerOptions:{style:'square'}, label: data.title, trendline: {
+        color: '#ddd', lineWidth: 1, label: 'Trend (linear)'}, pointLabels: {formatString: "%.2f"}}],
+        seriesDefaults: {thresholdLines: { color: "#0000FF", yValues: [7.5] }},
+        legend: {show:true, location:'s', placement:'outsideGrid'},
+        });
+}
+
+jq('document').ready(function(){
+    var json_url = jq('meta[name=json_url]').attr('content');
+    jq.ajax({
+        url: json_url,
+        success: function(responseText) { /*callback*/
+            uu.runchart.fillchart(responseText);
+            }
+        });
+});
+</script>
+
+</metal:block>
+<metal:block fill-slot="style_slot">
+  <link rel="stylesheet" type="text/css" href="++resource++jqplot/jquery.jqplot.min.css" />
+</metal:block>
+</head>
+
+<body>
+ <div metal:fill-slot="main">
+  <h2>Run chart</h2>
+  <h3 tal:content="context/Title">Chart title</h3>
+  <p tal:condition="context/Description">
+    <span class="description" tal:content="context/Description">
+    </span>
+  </p>
+  <div id="chartdiv" style="height:480px;width:640px; "></div>
+  <hr />
+ </div>
+</body>
+</html>

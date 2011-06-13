@@ -58,3 +58,13 @@ class SeriesJSONView(object):
         return SeriesJSON(self.context).render()
 
 
+class SeriesChartView(object):
+    """Page using jqPlot to render a runchart from AJAX-loaded JSON"""
+    
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def json_url(self):
+        return '%s/%s' % (self.context.absolute_url(), '@@series_json')
+

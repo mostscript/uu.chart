@@ -10,6 +10,14 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    name="series_chart"
+    for="..interfaces.ITimeSeriesChart"
+    class=".chart.SeriesChartView"
+    template="chart.pt"
+    permission="zope2.View"
+    />
+
   <!-- resources -->
   <browser:resourceDirectory
     name="jqplot"
