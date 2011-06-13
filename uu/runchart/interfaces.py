@@ -86,7 +86,57 @@ class ISeriesDisplayLine(form.Schema):
         required=False,
         default=u'#666666',
         )
+    
+    show_trend = schema.Bool(
+        title=_(u'Show trend-line?'),
+        description=_(u'Display a linear trend line?  If enabled, uses '\
+                      u'configuration options specified.'),
+        default=False,
+        )
+    
+    trend_width = schema.Int(
+        title=_(u'Trend-line width'),
+        description=_(u'Line width of trend-line in pixel units.'),
+        default=2,
+        )
+    
+    form.widget(trend_color=ColorpickerFieldWidget)
+    trend_color = schema.TextLine(
+        title=_(u'Trend-line color'),
+        required=False,
+        default=u'#CCCCCC',
+        )
+    
+    show_goal = schema.Bool(
+        title=_(u'Show goal-line?'),
+        description=_(u'If defined, show (constant horizontal) goal line?'),
+        default=True,
+        )
+    
+    form.widget(goal_color=ColorpickerFieldWidget)
+    goal_color = schema.TextLine(
+        title=_(u'Goal-line color'),
+        required=False,
+        default=u'#333333',
+        )
 
+    legend_location = schema.Choice(
+        title=_(u'Legend display'),
+        description=_(u'Select a position for legend.'),
+        vocabulary=SimpleVocabulary((
+            SimpleTerm(value=None, token=str(None), title=u'Disabled'),
+            SimpleTerm(value='nw',title=_(u'Top left')),
+            SimpleTerm(value='n', title=_(u'Top')),
+            SimpleTerm(value='ne', title=_(u'Top right')),
+            SimpleTerm(value='e', title=_(u'Right')),
+            SimpleTerm(value='se', title=_(u'Bottom right')),
+            SimpleTerm(value='s', title=_(u'Bottom')), 
+            SimpleTerm(value='sw', title=_(u'Bottom left')),
+            SimpleTerm(value='w', title=_(u'Left')),
+            )),
+        required=False,
+        default=None, # legend disabled
+        )
 
 
 class ITimeSeriesData(Interface):
@@ -163,7 +213,13 @@ class ITimeSeriesChart(form.Schema,
                 'marker_style',
                 'marker_width',
                 'marker_color',
-                'chart_styles']
+                'chart_styles',
+                'show_trend',
+                'trend_width',
+                'trend_color',
+                'show_goal',
+                'goal_color',
+                'legend_location',]
         )
     
     form.fieldset(
