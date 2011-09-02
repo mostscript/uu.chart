@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
-<object name="uu.runchart.timedata"
+<object name="uu.chart.report"
         meta_type="Dexterity FTI"
-        i18n:domain="uu.runchart"
+        i18n:domain="uu.chart"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">Time-series chart</property>
-  <property name="description" i18n:translate="">A time-series run-chart with contained data.</property>
-  <property name="content_icon">document_icon.png</property>
+  <property name="title" i18n:translate="">Time-series report</property>
+  <property name="description" i18n:translate="">A container for data-series charts.</property>
+  <property name="content_icon">book_icon.png</property>
   <property name="allow_discussion">False</property>
-  <property name="global_allow">False</property>
-  <property name="filter_content_types">False</property>
+  <property name="global_allow">True</property>
+  <property name="filter_content_types">True</property>
   <property name="allowed_content_types">
+    <element value="uu.chart.timedata" />
   </property>
   
   <!-- schema interface -->
-  <property name="schema">uu.runchart.interfaces.ITimeDataChart</property> 
+  <property name="schema">uu.chart.interfaces.IMultiSeriesReport</property> 
   
   <!-- class used for content items -->
-  <property name="klass">uu.runchart.content.TimeDataChart</property>
+  <property name="klass">uu.chart.content.MultiSeriesReport</property>
   
   <!-- add permission -->
   <property name="add_permission">cmf.AddPortalContent</property>

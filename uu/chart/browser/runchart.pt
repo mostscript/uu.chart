@@ -3,7 +3,7 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="uu.runchart">
+      i18n:domain="uu.chart">
 <head>
 
 <metal:block fill-slot="javascript_head_slot">
@@ -22,10 +22,11 @@
 <script>
 var jq = jQuery; /* alias */
 
-var uu = new Object();
-uu.runchart = new Object();
+var uu = new Object();      /* namespaces */
+uu.chart = new Object();
+uu.chart.runchart = new Object();
 
-uu.runchart.normalize_series = function(series) {
+uu.chart.runchart.normalize_series = function(series) {
     var result = new Array();
     for (var i=0; i<series.length; i++) {
         var element = series[i];
@@ -34,9 +35,9 @@ uu.runchart.normalize_series = function(series) {
     return result;
 }
 
-uu.runchart.fillchart = function(data) {
+uu.chart.runchart.fillchart = function(data) {
     jq.jqplot.config.enablePlugins = true;
-    jq.jqplot('chartdiv', [uu.runchart.normalize_series(data.series)], {
+    jq.jqplot('chartdiv', [uu.chart.runchart.normalize_series(data.series)], {
         axes:{xaxis:{renderer:jq.jqplot.DateAxisRenderer},},
         series:[{lineWidth:4, markerOptions:{style:'square'}, label: data.title, trendline: {
         color: '#ddd', lineWidth: 1, label: 'Trend (linear)'}, pointLabels: {formatString: "%.2f"}}],
@@ -50,7 +51,7 @@ jq('document').ready(function(){
     jq.ajax({
         url: json_url,
         success: function(responseText) { /*callback*/
-            uu.runchart.fillchart(responseText);
+            uu.chart.runchart.fillchart(responseText);
             }
         });
 });

@@ -1,7 +1,8 @@
 Introduction
 ============
 
-uu.runchart is an add-on for Plone for time-series run chart plots. 
+uu.chart is an add-on for Plone for named and time-series run chart
+plots and named-series line and bar charts. 
 
 --
 

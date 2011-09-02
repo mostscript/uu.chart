@@ -18,6 +18,6 @@
   <include file="profiles.zcml" />
 
   <!-- register directory view for policy product skin overrides -->
-  <cmf:registerDirectory name="uu_runchart" />
+  <cmf:registerDirectory name="uu_chart" />
 
 </configure>

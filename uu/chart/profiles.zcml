@@ -1,14 +1,14 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-  i18n_domain="uu.runchart">
+  i18n_domain="uu.chart">
      
     <!-- register extension profiles for add-on --> 
     <genericsetup:registerProfile
         name="default"
-        title="uu.runchart: add-on for simple time-series charts."
+        title="uu.chart: add-on for simple named and time-series charts."
         directory="profiles/default"
-        description="Add-on enabling web-based time-series charts."
+        description="Add-on enabling web-based named series and time-series charts."
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 

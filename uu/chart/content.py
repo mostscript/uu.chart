@@ -4,8 +4,8 @@ from plone.dexterity.content import Item, Container
 
 from zope.interface import implements
 
-from uu.runchart.interfaces import IMultiSeriesReport, ITimeMeasureChart
-from uu.runchart.interfaces import IDataPoint, ITimeDataChart
+from uu.chart.interfaces import IMultiSeriesReport, ITimeMeasureChart
+from uu.chart.interfaces import IDataPoint, ITimeDataChart
 
 
 class DataPoint(object):

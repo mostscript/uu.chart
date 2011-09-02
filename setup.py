@@ -3,9 +3,9 @@ import os
 
 version = '0.1dev'
 
-setup(name='uu.runchart',
+setup(name='uu.chart',
       version=version,
-      description="Plone add-on for simple time-series run charts.",
+      description="Plone add-on for simple charts of time/named series.",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[

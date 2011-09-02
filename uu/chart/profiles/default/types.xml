@@ -1,0 +1,4 @@
+<object name="portal_types">
+  <object name="uu.chart.report" meta_type="Dexterity FTI" />
+  <object name="uu.chart.timedata" meta_type="Dexterity FTI" />
+</object>
