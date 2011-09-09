@@ -11,13 +11,13 @@
 <meta name="json_url" content="" tal:attributes="content view/json_url" />
 
 <!--[if if lt IE 9]>
-  <script type="text/javascript" src="++resource++jqplot/excanvas.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart-jqplot/excanvas.js"></script>
 <![endif]-->
-  <script type="text/javascript" src="++resource++jqplot/jquery.jqplot.min.js"></script>
-  <script type="text/javascript" src="++resource++jqplot/jqplot.dateAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="++resource++jqplot/jqplot.pointLabels.min.js"></script>
-  <script type="text/javascript" src="++resource++jqplot/jqplot.trendline.min.js"></script>
-  <script type="text/javascript" src="++resource++jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart-jqplot/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart-jqplot/jqplot.dateAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart-jqplot/jqplot.pointLabels.min.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart-jqplot/jqplot.trendline.min.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart-jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
 
 <script>
 var jq = jQuery; /* alias */
