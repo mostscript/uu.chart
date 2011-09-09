@@ -20,8 +20,13 @@
 
   <!-- resources -->
   <browser:resourceDirectory
-    name="jqplot"
-    directory="jqplot"
+    name="uu.chart-jqplot"
+    directory="resources/jqplot"
+    />
+
+  <browser:resourceDirectory
+    name="uu.chart-icons"
+    directory="resources/icons"
     />
 
 </configure>
