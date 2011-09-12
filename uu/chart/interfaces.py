@@ -42,6 +42,10 @@ uu.chart.interfaces -- narrative summary of components:
   * Points have a unique identity within a series, usually either a name 
     or a date.  This name/identity is does double-duty as an identifier and
     as a title.
+
+    * It is useful to think of each point as a single key/value pair, where
+      the key is usually visualized and grouped along the X-axis and the 
+      value is usually treated as a Y-axis value.
   
   * Points contain one numeric value each and simple annotation metadata 
     (note, URL) fields.
