@@ -29,6 +29,7 @@ setup(name='uu.chart',
           'collective.z3cform.datagridfield',
           'Products.CMFPlone',
           'plone.browserlayer',
+          'uu.smartdate',
           # -*- Extra requirements: -*-
       ],
       extras_require = {
