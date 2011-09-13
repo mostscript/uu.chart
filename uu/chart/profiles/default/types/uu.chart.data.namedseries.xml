@@ -1,26 +1,24 @@
 <?xml version="1.0"?>
-<object name="uu.chart.report"
+<object name="uu.chart.data.namedseries"
         meta_type="Dexterity FTI"
         i18n:domain="uu.chart"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">Data Report</property>
-  <property name="description" i18n:translate="">An ordered container for charts and data-reporting components.</property>
-  <property name="content_icon">++resource++uu.chart.icons/report.png</property>
+  <property name="title" i18n:translate="">Named Data Sequence</property>
+  <property name="description" i18n:translate="">A sequence of data with named points.</property>
+  <property name="content_icon">++resource++uu.chart.icons/table.gif</property>
   <property name="allow_discussion">False</property>
-  <property name="global_allow">True</property>
-  <property name="filter_content_types">True</property>
+  <property name="global_allow">False</property>
+  <property name="filter_content_types">False</property>
   <property name="allowed_content_types">
-    <element value="uu.chart.timeseries" />
-    <element value="uu.chart.namedseries" />
   </property>
   
   <!-- schema interface -->
-  <property name="schema">uu.chart.interfaces.IDataReport</property> 
+  <property name="schema">uu.chart.interfaces.INamedDataSequence</property> 
   
   <!-- class used for content items -->
-  <property name="klass">uu.chart.content.DataReport</property>
+  <property name="klass">uu.chart.content.NamedDataSequence</property>
   
   <!-- add permission -->
   <property name="add_permission">cmf.AddPortalContent</property>

@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
-<object name="uu.chart.timedata"
+<object name="uu.chart.namedseries"
         meta_type="Dexterity FTI"
         i18n:domain="uu.chart"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">Time-series chart</property>
-  <property name="description" i18n:translate="">A time-series run-chart with contained data.</property>
-  <property name="content_icon">document_icon.png</property>
+  <property name="title" i18n:translate="">Named Series Chart</property>
+  <property name="description" i18n:translate="">A named-series chart with contained data.</property>
+  <property name="content_icon">++resource++uu.chart.icons/namedseries.png</property>
   <property name="allow_discussion">False</property>
   <property name="global_allow">False</property>
-  <property name="filter_content_types">False</property>
+  <property name="filter_content_types">True</property>
   <property name="allowed_content_types">
+    <element value="uu.chart.data.namedseries" />
   </property>
   
   <!-- schema interface -->
-  <property name="schema">uu.chart.interfaces.ITimeDataChart</property> 
+  <property name="schema">uu.chart.interfaces.INamedSeriesChart</property> 
   
   <!-- class used for content items -->
-  <property name="klass">uu.chart.content.TimeDataChart</property>
+  <property name="klass">uu.chart.content.NamedSeriesChart</property>
   
   <!-- add permission -->
   <property name="add_permission">cmf.AddPortalContent</property>
