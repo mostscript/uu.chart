@@ -103,8 +103,8 @@ from uu.chart import _ #MessageFactory for package
 
 ## constants for use in package:
 
-TIME_DATA_TYPE = 'Time Data Sequence'       ## portal types should
-NAMED_DATA_TYPE = 'Named Data Sequence'     ## match FTIs
+TIME_DATA_TYPE = 'uu.chart.data.timeseries'     ## portal types should
+NAMED_DATA_TYPE = 'uu.chart.data.namedseries'   ## match FTIs
 
 ## sorting data-point identities need collation/comparator function
 def cmp_point_identities(a,b):
