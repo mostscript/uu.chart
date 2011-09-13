@@ -28,6 +28,7 @@ setup(name='uu.chart',
           'collective.z3cform.colorpicker',
           'collective.z3cform.datagridfield',
           'Products.CMFPlone',
+          'plone.browserlayer',
           # -*- Extra requirements: -*-
       ],
       extras_require = {
