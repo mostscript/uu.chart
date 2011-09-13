@@ -100,6 +100,12 @@ from collective.z3cform.colorpicker.colorpicker import ColorpickerFieldWidget
 
 from uu.chart import _ #MessageFactory for package
 
+
+## constants for use in package:
+
+TIME_DATA_TYPE = 'Time Data Sequence'       ## portal types should
+NAMED_DATA_TYPE = 'Named Data Sequence'     ## match FTIs
+
 ## sorting data-point identities need collation/comparator function
 def cmp_point_identities(a,b):
     """
@@ -595,7 +601,7 @@ class INamedMeasureSequence(IDataSeries):
 
 # report container/folder interfaces:
 
-class IMultiSeriesReport(form.Schema, IOrderedContainer):
+class IDataReport(form.Schema, IOrderedContainer):
     """
     Ordered container/folder of contained charts providing ITimeSeriesChart.
     """
