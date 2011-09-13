@@ -3,6 +3,8 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="uu.spaces">
 
+
+ <!--
   <browser:page
     name="series_json"
     for="..interfaces.ITimeSeriesChart"
@@ -17,6 +19,8 @@
     template="runchart.pt"
     permission="zope2.View"
     />
+
+-->
 
   <!-- resources -->
   <browser:resourceDirectory
