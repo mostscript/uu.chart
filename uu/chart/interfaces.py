@@ -127,6 +127,10 @@ def cmp_point_identities(a,b):
     return cmp(a,b)
 
 
+class IChartProductLayer(Interface):
+    """Marker interface for product layer"""
+
+
 class IDataPoint(Interface):
     """Data point contains single value and optional note and URI"""
     
@@ -494,7 +498,7 @@ class ITimeSeriesChart(IBaseChart,
         """
 
 
-class ITimeDataSequence(IDataSeries):
+class ITimeDataSequence(form.Schema, IDataSeries):
     """Content item interface for a data series stored as content"""
     
     form.widget(data=DataGridFieldFactory)
@@ -509,7 +513,7 @@ class ITimeDataSequence(IDataSeries):
         )
 
 
-class ITimeMeasureSequence(IDataSeries):
+class ITimeMeasureSequence(form.Schema, IDataSeries):
     """
     A time series data sequence content item interface.  Series data 
     iteration via proxy/delegation to external named adapter providing
@@ -554,7 +558,7 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
         series.  Points in each series should provide INamedSeriesDataPoint.
         """
 
-class INamedDataSequence(IDataSeries):
+class INamedDataSequence(form.Schema, IDataSeries):
     """Named category seqeuence with embedded data stored as content"""
     
     form.widget(data=DataGridFieldFactory)
@@ -569,7 +573,7 @@ class INamedDataSequence(IDataSeries):
         )
 
 
-class INamedMeasureSequence(IDataSeries):
+class INamedMeasureSequence(form.Schema, IDataSeries):
     """
     A named-data sequence content item interface.  Series data 
     iteration via proxy/delegation to external named adapter providing
