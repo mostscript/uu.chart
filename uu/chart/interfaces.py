@@ -198,8 +198,8 @@ class ITimeSeriesDataPoint(IDateBase, IDataPoint):
 class IDataSeries(Interface):
     """Iterable of IDataPoint objects"""
     
-    name = schema.TextLine(
-        title=_(u'Name'),
+    title = schema.TextLine(
+        title=_(u'Title'),
         description=_(u'Name of data series; may be displayed as a label.'),
         required=True,
         )
