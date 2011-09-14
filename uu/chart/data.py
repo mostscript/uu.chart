@@ -35,7 +35,7 @@ class TimeSeriesDataPoint(BaseDataPoint):
         if not isinstance(date, datetime.date):
             raise ValueError('date must be datetime.date object')
         self.date = date
-        super(NamedDataPoint, self).__init__(value, note, uri)
+        super(TimeSeriesDataPoint, self).__init__(value, note, uri)
 
     def identity(self):
         return self.date
