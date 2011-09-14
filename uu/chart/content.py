@@ -1,8 +1,13 @@
+import csv
 from datetime import datetime, date
+from hashlib import md5
+from StringIO import StringIO
 
 from plone.dexterity.content import Item, Container
-
+from five import grok
 from zope.interface import implements
+
+from uu.smartdate.converter import normalize_usa_date
 
 from uu.chart.interfaces import IDataReport
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
@@ -14,25 +19,61 @@ from uu.chart.data import TimeSeriesDataPoint, NamedDataPoint
 _type_filter = lambda o,t: hasattr(o, 'portal_type') and o.portal_type == t
 
 
-class TimeDataSequence(Item):
-    implements(ITimeDataSequence)
-    
+class BaseDataSequence(Item):
+   
+    POINTCLS = None
+    KEYTYPE = unicode
+     
+    def __init__(self, id=None, *args, **kwargs):
+        super(BaseDataSequence, self).__init__(id, *args, **kwargs)
+        self._v_data = {}
+
+    @property
+    def data(self):
+        """Parse self.input, return list of point objects"""
+        if not hasattr(self, '_v_data'):
+            self._v_data = {}
+        cachekey = md5(self.input).hexdigest()
+        if cachekey not in self._v_data:
+            result = []
+            reader = csv.reader(StringIO(getattr(self, 'input', u'')))
+            rows = list(reader) #iterate over CSV
+            for row in rows:
+                note = uri = None #default empty optional values
+                if len(row) < 2:
+                    continue #silently ignore
+                try:
+                    key = row[0]
+                    if self.KEYTYPE == date:
+                        key = normalize_usa_date(key)
+                    value = float(row[1])
+                except ValueError:
+                    continue #failed to type-cast value, ignore row
+                if len(row) >= 3:
+                    note = row[2]
+                if len(row) >= 4:
+                    uri = row[3]
+                result.append(self.POINTCLS(key, value, note, uri))
+            self._v_data[cachekey] = result
+        return self._v_data[cachekey]
+     
     def __iter__(self):
         """ 
         Iterable of date, number data point objects providing
         (at least) IDataPoint.
         """
-        raw = self.data # from data grid
-        if not raw:
-            return iter(())
-        return iter([TimeSeriesDataPoint(**d) for d in raw])
+        return iter(self.data)
     
     def __len__(self):
         """Return number of data points"""
-        raw = self.data # from data grid
-        if not raw:
-            return 0
-        return len(raw) #number of items in data grid
+        return len(self.data)
+
+
+class TimeDataSequence(BaseDataSequence):
+    implements(ITimeDataSequence)
+    
+    POINTCLS = TimeSeriesDataPoint
+    KEYTYPE = date
 
 
 class TimeSeriesChart(Container):
@@ -48,25 +89,11 @@ class TimeSeriesChart(Container):
         return filter(_f, self.objectValues())
 
 
-class NamedDataSequence(Item):
+class NamedDataSequence(BaseDataSequence):
     implements(INamedDataSequence)
-    
-    def __iter__(self):
-        """ 
-        Iterable of name, number data point objects providing
-        (at least) IDataPoint.
-        """
-        raw = self.data # from data grid
-        if not raw:
-            return iter(())
-        return iter([NamedDataPoint(**d) for d in raw])
-    
-    def __len__(self):
-        """Return number of data points"""
-        raw = self.data # from data grid
-        if not raw:
-            return 0
-        return len(raw) #number of items in data grid
+
+    POINTCLS = NamedDataPoint
+    KEYTYPE = unicode
 
 
 class NamedSeriesChart(Container):

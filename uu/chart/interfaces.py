@@ -87,7 +87,6 @@ uu.chart.interfaces -- narrative summary of components:
         If chart is named-series chart, user adds "Named-series sequence"
 
 """
-from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 from plone.directives import form, dexterity
 from plone.app.textfield import RichText
 from zope.interface import Interface, Invalid, invariant
@@ -105,6 +104,7 @@ from uu.chart import _ #MessageFactory for package
 
 TIME_DATA_TYPE = 'uu.chart.data.timeseries'     ## portal types should
 NAMED_DATA_TYPE = 'uu.chart.data.namedseries'   ## match FTIs
+
 
 ## sorting data-point identities need collation/comparator function
 def cmp_point_identities(a,b):
@@ -146,7 +146,7 @@ class IDataPoint(Interface):
         required=False,
         )
     
-    uri = schema.Text(
+    uri = schema.BytesLine(
         title=_(u'URI'),
         description=_(u'URI/URL or identifier to source of data'),
         required=False,
@@ -501,15 +501,25 @@ class ITimeSeriesChart(IBaseChart,
 class ITimeDataSequence(form.Schema, IDataSeries):
     """Content item interface for a data series stored as content"""
     
-    form.widget(data=DataGridFieldFactory)
+    input = schema.Text(
+        title=_(u'Data input'),
+        description=_(u'Comma-separated records, one per line '\
+                      u'(date, numeric value, [note], [URL]). '\
+                      u'Note and URL are optional. Date '\
+                      u'should be in MM/DD/YYYY format.'),
+        default=u'',
+        required=False,
+        )
+     
+    form.omitted('data')
     data = schema.List(
         title=_(u'Data'),
         description=_(u'Data points for time series: date, value; values are '\
                       u'either whole/integer or decimal numbers.'),
-        value_type=DictRow(
-            title=_(u'tablerow'),
+        value_type=schema.Object(
             schema=ITimeSeriesDataPoint,
             ),
+        readonly=True,
         )
 
 
@@ -561,15 +571,24 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
 class INamedDataSequence(form.Schema, IDataSeries):
     """Named category seqeuence with embedded data stored as content"""
     
-    form.widget(data=DataGridFieldFactory)
+    input = schema.Text(
+        title=_(u'Data input'),
+        description=_(u'Comma-separated records, one per line '\
+                      u'(name, numeric value, [note], [URL]). '\
+                      u'Note and URL are optional.'),
+        default=u'',
+        required=False,
+        )
+     
+    form.omitted('data')
     data = schema.List(
         title=_(u'Data'),
         description=_(u'Data points for series: name, value; values are '\
                       u'either whole/integer or decimal numbers.'),
-        value_type=DictRow(
-            title=_(u'tablerow'),
+        value_type=schema.Object(
             schema=INamedDataPoint,
             ),
+        readonly=True,
         )
 
 
