@@ -3,6 +3,14 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="uu.spaces">
 
+  <browser:page
+    name="dataview"
+    for="..interfaces.IDataSeries"
+    class=".datatable.DataTableView"
+    template="datatable.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
 
  <!--
   <browser:page

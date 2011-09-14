@@ -26,7 +26,6 @@
   <!-- enabled behaviors -->
   <property name="behaviors">
     <element value="plone.app.content.interfaces.INameFromTitle" />
-    <element value="plone.app.dexterity.behaviors.metadata.ICategorization" />
   </property>
   
   <!-- View information -->
@@ -50,6 +49,11 @@
   <action title="Edit" action_id="edit" category="object" condition_expr=""
           url_expr="string:${object_url}/edit" visible="True">
     <permission value="Modify portal content"/>
+  </action>
+
+  <action title="Data" action_id="data" category="object" condition_expr=""
+          url_expr="string:${object_url}/@@dataview" visible="True">
+    <permission value="View"/>
   </action>
 
 </object>
