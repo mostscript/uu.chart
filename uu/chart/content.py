@@ -6,6 +6,7 @@ from StringIO import StringIO
 from plone.dexterity.content import Item, Container
 from five import grok
 from zope.interface import implements
+from plone.uuid.interfaces import IAttributeUUID
 
 from uu.smartdate.converter import normalize_usa_date
 
@@ -77,7 +78,7 @@ class TimeDataSequence(BaseDataSequence):
 
 
 class TimeSeriesChart(Container):
-    implements(ITimeSeriesChart)
+    implements(ITimeSeriesChart, IAttributeUUID)
     
     def series(self):
         """
@@ -97,7 +98,7 @@ class NamedDataSequence(BaseDataSequence):
 
 
 class NamedSeriesChart(Container):
-    implements(INamedSeriesChart)
+    implements(INamedSeriesChart, IAttributeUUID)
     
     def series(self):
         """
@@ -110,6 +111,6 @@ class NamedSeriesChart(Container):
 
 
 class DataReport(Container):
-    implements(IDataReport)
+    implements(IDataReport, IAttributeUUID)
 
 
