@@ -38,7 +38,9 @@
     </span>
   </p>
   <div id="chartdiv" style="height:480px;width:640px; "></div>
-  <div class="chartinfo" tal:content="structure context/info/output">CAPTION</div>
+  <tal:block condition="python:hasattr(context.info, 'output')">
+    <div class="chartinfo" tal:content="structure context/info/output">CAPTION</div>
+  </tal:block>
   <hr />
  </div>
 </body>
