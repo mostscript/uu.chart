@@ -89,6 +89,7 @@ uu.chart.interfaces -- narrative summary of components:
 """
 from plone.directives import form, dexterity
 from plone.app.textfield import RichText
+from plone.uuid.interfaces import IAttributeUUID
 from z3c.form import widget
 from zope.interface import Interface, Invalid, invariant
 from zope import schema
@@ -554,7 +555,7 @@ class ILineDisplay(form.Schema):
 
 # --- content type interfaces: ---
 
-class IBaseChart(form.Schema, ILocation):
+class IBaseChart(form.Schema, ILocation, IAttributeUUID):
     """Base chart (content item) interface"""
     
     form.omitted('__name__')
@@ -712,7 +713,7 @@ class INamedMeasureSequence(form.Schema, IDataSeries):
 
 # report container/folder interfaces:
 
-class IDataReport(form.Schema, IOrderedContainer):
+class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
     """
     Ordered container/folder of contained charts providing ITimeSeriesChart.
     """
