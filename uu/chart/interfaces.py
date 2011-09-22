@@ -89,15 +89,53 @@ uu.chart.interfaces -- narrative summary of components:
 """
 from plone.directives import form, dexterity
 from plone.app.textfield import RichText
+from z3c.form import widget
 from zope.interface import Interface, Invalid, invariant
 from zope import schema
 from zope.container.interfaces import IOrderedContainer
 from zope.location.interfaces import ILocation
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-from collective.z3cform.colorpicker.colorpicker import ColorpickerFieldWidget
+from collective.z3cform.colorpicker import colorpicker
 
 
 from uu.chart import _ #MessageFactory for package
+
+
+class RWColorPickerWidget(colorpicker.ColorpickerWidget):
+    """
+    Color picker that is read-write and uses JS to keep
+    the string value of 'Auto' for null/empty/non-specified
+    color values.
+    """
+    readonly = False
+    
+    def getJS(self):
+        orig = super(RWColorPickerWidget, self).getJS()
+        lines = orig.split('\n')
+        js_additional = """
+            var htmlcolor = /^#?([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?$/;
+            var input = jQuery('#%s');
+            if (!input[0].value) input.value = 'Auto';
+            input.css('color', '#bbb');
+            input.change(function(event) {
+                if (!htmlcolor.test(this.value)) {
+                    this.value = 'Auto';
+                    input.css('color', '#bbb'); 
+                    input.css('backgroundColor', 'white');
+                }
+            });
+            """.replace('%s', self.id).strip()
+        lines.insert(-1, js_additional);
+        return '\n'.join(lines)
+
+
+def ColorpickerFieldWidget(field, request):
+    """
+    Get color picker field widget, set readonly to false on 
+    each constrcuted widget instance.  This allows removing 
+    a color and setting an empty string as a value.
+    """
+    return widget.FieldWidget(field, RWColorPickerWidget(request))
 
 
 ## constants for use in package:
@@ -195,8 +233,14 @@ class ITimeSeriesDataPoint(IDateBase, IDataPoint):
 #--- series and collection interfaces:
 
 
-class IDataSeries(Interface):
+class IDataSeries(form.Schema):
     """Iterable of IDataPoint objects"""
+    
+    form.fieldset(
+        'configuration',
+        label=u"Configuration",
+        fields=['units', 'goal', 'range_min', 'range_max'],
+        )
     
     title = schema.TextLine(
         title=_(u'Title'),
@@ -322,7 +366,13 @@ class IChartDisplay(form.Schema):
         'display',
         label=u"Display settings",
         fields=['show_goal',
-                'goal_color',]
+                'goal_color',
+                'legend_location',
+                'legend_placement',
+                'x_label',
+                'y_label',
+                'chart_styles',
+                ]
         )
     
     show_goal = schema.Bool(
@@ -334,8 +384,9 @@ class IChartDisplay(form.Schema):
     form.widget(goal_color=ColorpickerFieldWidget)
     goal_color = schema.TextLine(
         title=_(u'Goal-line color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
         required=False,
-        default=u'#333333',
+        default=u'Auto',
         )
     
     chart_type = schema.Choice(
@@ -343,83 +394,10 @@ class IChartDisplay(form.Schema):
         description=_(u'Type of chart to display.'),
         vocabulary=SimpleVocabulary([
             SimpleTerm(value=u'line', title=u'Line chart'),
-            #SimpleTerm(value=u'bar', title=u'Bar chart'),
+            SimpleTerm(value=u'bar', title=u'Bar chart'),
             #SimpleTerm(value=u'barline', title=u'Two-measure bar plus line.'),
             ]),
         default=u'line',
-        )
-
-
-class ILineDisplay(form.Schema):
-    """
-    Mixin interface for display-line configuration metadata for series line.
-    
-    Note: while a series can have a specific goal value, only one
-    goal per-chart is considered for goal-line display.  It is therefore up
-    to implementation to choose reasonable aspects for display (or omission)
-    of line/series specific goals.
-    """
-    
-    form.widget(line_color=ColorpickerFieldWidget)
-    line_color = schema.TextLine(
-        title=_(u'Line color'),
-        default=u'#666666',
-        )
-    
-    line_width = schema.Int(
-        title=_(u'Line width'),
-        description=_(u'Width/thickness of line in pixel units.'),
-        default=2,
-        )
-    
-    marker_style = schema.Choice(
-        title=_(u'Marker style'),
-        description=_(u'Shape/type of the point-value marker.'),
-        vocabulary=SimpleVocabulary([
-            SimpleTerm(value=u'diamond', title=u'Diamond'),
-            SimpleTerm(value=u'circle', title=u'Circle'),
-            SimpleTerm(value=u'square', title=u'Square'),
-            SimpleTerm(value=u'x', title=u'X'),
-            SimpleTerm(value=u'plus', title=u'Plus sign'),
-            SimpleTerm(value=u'dash', title=u'Dash'),
-            SimpleTerm(value=u'filledDiamond', title=u'Filled diamond'),
-            SimpleTerm(value=u'filledCircle', title=u'Filled circle'),
-            SimpleTerm(value=u'filledSquare', title=u'Filled square'),
-            ]),
-        default=u'square',
-        )
-    
-    marker_width = schema.Int(
-        title=_(u'Marker width'),
-        description=_(u'Line width of marker in pixel units.'),
-        default=2,
-        )
-    
-    form.widget(marker_color=ColorpickerFieldWidget)
-    marker_color = schema.TextLine(
-        title=_(u'Marker color'),
-        required=False,
-        default=u'#666666',
-        )
-    
-    show_trend = schema.Bool(
-        title=_(u'Show trend-line?'),
-        description=_(u'Display a linear trend line?  If enabled, uses '\
-                      u'configuration options specified.'),
-        default=False,
-        )
-    
-    trend_width = schema.Int(
-        title=_(u'Trend-line width'),
-        description=_(u'Line width of trend-line in pixel units.'),
-        default=2,
-        )
-    
-    form.widget(trend_color=ColorpickerFieldWidget)
-    trend_color = schema.TextLine(
-        title=_(u'Trend-line color'),
-        required=False,
-        default=u'#CCCCCC',
         )
     
     legend_location = schema.Choice(
@@ -450,6 +428,129 @@ class ILineDisplay(form.Schema):
         required=True,
         default='inside',
         )
+   
+    x_label = schema.TextLine(
+        title=_(u'X axis label'),
+        default=u'',
+        required=False,
+        )
+
+    y_label = schema.TextLine(
+        title=_(u'Y axis label'),
+        default=u'',
+        required=False,
+        )
+
+    chart_styles = schema.Bytes(
+        title=_(u'Chart styles'),
+        description=_(u'CSS stylesheet rules for chart (optional).'),
+        required=False,
+        )
+
+
+class ILineDisplay(form.Schema):
+    """
+    Mixin interface for display-line configuration metadata for series line.
+    
+    Note: while a series can have a specific goal value, only one
+    goal per-chart is considered for goal-line display.  It is therefore up
+    to implementation to choose reasonable aspects for display (or omission)
+    of line/series specific goals.
+    """
+     
+    form.fieldset(
+        'display',
+        label=u"Display settings",
+        fields=[
+            'line_color',
+            'line_width',
+            'marker_style',
+            'marker_size',
+            'marker_width',
+            'marker_color',
+            'show_trend',
+            'trend_width',
+            'trend_color',
+            ],
+        )
+
+ 
+    form.widget(line_color=ColorpickerFieldWidget)
+    line_color = schema.TextLine(
+        title=_(u'Line color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
+        required=False,
+        default=u'Auto',
+        )
+    
+    line_width = schema.Int(
+        title=_(u'Line width'),
+        description=_(u'Width/thickness of line in pixel units.'),
+        default=2,
+        )
+    
+    marker_style = schema.Choice(
+        title=_(u'Marker style'),
+        description=_(u'Shape/type of the point-value marker.'),
+        vocabulary=SimpleVocabulary([
+            SimpleTerm(value=u'diamond', title=u'Diamond'),
+            SimpleTerm(value=u'circle', title=u'Circle'),
+            SimpleTerm(value=u'square', title=u'Square'),
+            SimpleTerm(value=u'x', title=u'X'),
+            SimpleTerm(value=u'plus', title=u'Plus sign'),
+            SimpleTerm(value=u'dash', title=u'Dash'),
+            SimpleTerm(value=u'filledDiamond', title=u'Filled diamond'),
+            SimpleTerm(value=u'filledCircle', title=u'Filled circle'),
+            SimpleTerm(value=u'filledSquare', title=u'Filled square'),
+            ]),
+        default=u'square',
+        )
+    
+    marker_size = schema.Float(
+        title=_(u'Marker size'),
+        description=_(u'Size of the marker (diameter or circle, length of '\
+                      u'edge of square, etc) in decimal pixels.'),
+        required=False,
+        default=9.0,
+        )   
+    
+    marker_width = schema.Int(
+        title=_(u'Marker line width'),
+        description=_(u'Line width of marker in pixel units for '\
+                      u'non-filled markers.'),
+        required=False,
+        default=2,
+        )
+    
+    form.widget(marker_color=ColorpickerFieldWidget)
+    marker_color = schema.TextLine(
+        title=_(u'Marker color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
+        required=False,
+        default=u'Auto',
+        )
+    
+    show_trend = schema.Bool(
+        title=_(u'Show trend-line?'),
+        description=_(u'Display a linear trend line?  If enabled, uses '\
+                      u'configuration options specified.'),
+        default=False,
+        )
+    
+    trend_width = schema.Int(
+        title=_(u'Trend-line width'),
+        description=_(u'Line width of trend-line in pixel units.'),
+        default=2,
+        )
+    
+    form.widget(trend_color=ColorpickerFieldWidget)
+    trend_color = schema.TextLine(
+        title=_(u'Trend-line color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
+        required=False,
+        default=u'Auto',
+        )
+
 
 # --- content type interfaces: ---
 
@@ -464,25 +565,12 @@ class IBaseChart(form.Schema, ILocation):
         fields=['info'],
         )
     
-    form.fieldset(
-        'display',
-        label=u"Display settings",
-        fields=['chart_styles',]
-        )
-    
     info = RichText(
         title=_(u'Series information'),
         description=_(u'Series information is rich text and may be '\
                       u'displayed in report output.'),
         required=False,
         )
-    
-    chart_styles = schema.Bytes(
-        title=_(u'Chart styles'),
-        description=_(u'CSS stylesheet rules for chart (optional).'),
-        required=False,
-        )
-
 
 # -- timed series chart interfaces:
 
@@ -498,7 +586,7 @@ class ITimeSeriesChart(IBaseChart,
         """
 
 
-class ITimeDataSequence(form.Schema, IDataSeries):
+class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
     """Content item interface for a data series stored as content"""
     
     input = schema.Text(
@@ -568,7 +656,7 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
         series.  Points in each series should provide INamedSeriesDataPoint.
         """
 
-class INamedDataSequence(form.Schema, IDataSeries):
+class INamedDataSequence(form.Schema, IDataSeries, ILineDisplay):
     """Named category seqeuence with embedded data stored as content"""
     
     input = schema.Text(
