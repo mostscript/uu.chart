@@ -12,6 +12,23 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    name="chart_json"
+    for="..interfaces.IBaseChart"
+    class=".serialize.ChartJSONView"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="chart_view"
+    for="..interfaces.IBaseChart"
+    class=".chart.ChartView"
+    template="chart.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
+
  <!--
   <browser:page
     name="series_json"
@@ -36,6 +53,12 @@
   <browser:resourceDirectory
     name="uu.chart.jqplot"
     directory="resources/jqplot"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    />
+
+  <browser:resourceDirectory
+    name="uu.chart.js"
+    directory="resources/js"
     layer="uu.chart.interfaces.IChartProductLayer"
     />
 

@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.chart">
+<head>
+
+<metal:block fill-slot="javascript_head_slot">
+
+<meta name="json_url" content="" tal:attributes="content view/json_url" />
+
+<!--[if if lt IE 9]>
+  <script type="text/javascript" src="++resource++uu.chart.jqplot/excanvas.min.js"></script>
+  <script type="text/javascript" src="++resource++uu.chart.js/ec5compat.js"></script>
+<![endif]-->
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.dateAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.barRenderer.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.categoryAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasTextRenderer.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasAxisLabelRenderer.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.pointLabels.min.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.trendline.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js"></script>
+</metal:block>
+<metal:block fill-slot="style_slot">
+  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
+</metal:block>
+</head>
+
+<body>
+ <div metal:fill-slot="main">
+  <h3 tal:content="context/Title">Chart title</h3>
+  <p tal:condition="context/Description">
+    <span class="description" tal:content="context/Description">
+    </span>
+  </p>
+  <div id="chartdiv" style="height:480px;width:640px; "></div>
+  <hr />
+ </div>
+</body>
+</html>
