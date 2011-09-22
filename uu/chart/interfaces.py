@@ -567,9 +567,9 @@ class IBaseChart(form.Schema, ILocation, IAttributeUUID):
         )
     
     info = RichText(
-        title=_(u'Series information'),
-        description=_(u'Series information is rich text and may be '\
-                      u'displayed in report output.'),
+        title=_(u'Informative notes'),
+        description=_(u'This allows any rich text and may contain free-form '\
+                      u'notes about this chart; displayed in report output.'),
         required=False,
         )
 
