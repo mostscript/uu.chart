@@ -29,26 +29,6 @@
     permission="zope2.View"
     />
 
- <!--
-  <browser:page
-    name="series_json"
-    for="..interfaces.ITimeSeriesChart"
-    class=".runchart.SeriesJSONView"
-    layer="uu.chart.interfaces.IChartProductLayer"
-    permission="zope2.View"
-    />
-
-  <browser:page
-    name="series_chart"
-    for="..interfaces.ITimeSeriesChart"
-    class=".runchart.SeriesChartView"
-    template="runchart.pt"
-    layer="uu.chart.interfaces.IChartProductLayer"
-    permission="zope2.View"
-    />
-
--->
-
   <!-- resources -->
   <browser:resourceDirectory
     name="uu.chart.jqplot"
