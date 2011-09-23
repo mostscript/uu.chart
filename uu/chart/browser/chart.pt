@@ -8,8 +8,6 @@
 
 <metal:block fill-slot="javascript_head_slot">
 
-<meta name="json_url" content="" tal:attributes="content view/json_url" />
-
 <!--[if if lt IE 9]>
   <script type="text/javascript" src="++resource++uu.chart.jqplot/excanvas.min.js"></script>
   <script type="text/javascript" src="++resource++uu.chart.js/ec5compat.js"></script>
@@ -37,7 +35,9 @@
     <span class="description" tal:content="context/Description">
     </span>
   </p>
-  <div id="chartdiv" style="height:480px;width:640px; "></div>
+  <div class="chartdiv" id="" tal:attributes="id string:chartdiv-${view/UID}" style="height:480px;width:640px; ">
+    <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href view/json_url">Data</a>
+  </div>
   <tal:block condition="python:hasattr(context.info, 'output')">
     <div class="chartinfo" tal:content="structure context/info/output">CAPTION</div>
   </tal:block>
@@ -45,3 +45,4 @@
  </div>
 </body>
 </html>
+

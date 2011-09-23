@@ -204,7 +204,7 @@ uu.chart.runchart_start = function(data) {
     return result.slice(0,10); //date, not datetime in ISO8601
 }
 
-uu.chart.fillchart = function(data) {
+uu.chart.fillchart = function(divid, data) {
     var legend = {show:false}; //default is none
     var legend_placement = 'outsideGrid';
     var goal_color = "#333333";
@@ -261,7 +261,7 @@ uu.chart.fillchart = function(data) {
         x_axis.label = data.x_label;
     }
     jq.jqplot.config.enablePlugins = true;
-    jq.jqplot('chartdiv', uu.chart.seriesdata(data), {
+    jq.jqplot(divid, uu.chart.seriesdata(data), {
         axes:{xaxis:x_axis, yaxis:y_axis},
         series:uu.chart.seriesoptions(data),
         seriesDefaults: series_defaults,
@@ -275,14 +275,22 @@ uu.chart.fillchart = function(data) {
     }
 }
 
-
-jq('document').ready(function(){
-    var json_url = jq('meta[name=json_url]').attr('content');
-    jq.ajax({
-        url: json_url,
-        success: function(responseText) { /*callback*/
-            uu.chart.fillchart(responseText);
+uu.chart.loadcharts = function() {
+    jq('.chartdiv').each(function(index) {
+        var div = jq(this);
+        var json_url = jq('a[type="application/json"]', div).attr('href');
+        var divid = div.attr('id'); 
+        jq.ajax({
+            url: json_url,
+            success: function(responseText) { /*callback*/
+                uu.chart.fillchart(divid, responseText);
             }
         });
+    });
+}
+
+
+jq('document').ready(function(){
+    uu.chart.loadcharts();
 });
 
