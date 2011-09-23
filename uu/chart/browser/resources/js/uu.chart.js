@@ -116,8 +116,8 @@ uu.chart.series_colors = function(data) {
     if (data.series) {
         for (var i=0; i<data.series.length; i++) {
             var s = data.series[i];
-            if (s.line_color) {
-                r[i] = s.line_color; //reassign color, overwrite default
+            if (s.color) {
+                r[i] = s.color; //reassign color, overwrite default
             }
         }
     }
@@ -133,7 +133,7 @@ uu.chart.seriesoptions = function(data) {
             var trend_options = {show:false};
             var s = data.series[i];
             if (s.line_width) options.lineWidth = s.line_width;
-            //if (s.line_color) options.lineColor = s.line_color;
+            //if (s.color) options.lineColor = s.color;
             // note: line color assigned to seriesColors option for chart, 
             // which takes precedence over options.lineColor
             if (s.marker_style) marker_options.style = s.marker_style;

@@ -449,7 +449,43 @@ class IChartDisplay(form.Schema):
         )
 
 
-class ILineDisplay(form.Schema):
+class ISeriesDisplay(form.Schema):
+    """
+    Common display settings for visualizing a series as either a bar
+    or line chart.
+    """
+    
+    form.widget(color=ColorpickerFieldWidget)
+    color = schema.TextLine(
+        title=_(u'Series color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
+        required=False,
+        default=u'Auto',
+        )
+    
+    show_trend = schema.Bool(
+        title=_(u'Show trend-line?'),
+        description=_(u'Display a linear trend line?  If enabled, uses '\
+                      u'configuration options specified.'),
+        default=False,
+        )
+    
+    trend_width = schema.Int(
+        title=_(u'Trend-line width'),
+        description=_(u'Line width of trend-line in pixel units.'),
+        default=2,
+        )
+    
+    form.widget(trend_color=ColorpickerFieldWidget)
+    trend_color = schema.TextLine(
+        title=_(u'Trend-line color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
+        required=False,
+        default=u'Auto',
+        )
+
+
+class ILineDisplay(form.Schema, ISeriesDisplay):
     """
     Mixin interface for display-line configuration metadata for series line.
     
@@ -463,7 +499,7 @@ class ILineDisplay(form.Schema):
         'display',
         label=u"Display settings",
         fields=[
-            'line_color',
+            'color',
             'line_width',
             'marker_style',
             'marker_size',
@@ -473,15 +509,6 @@ class ILineDisplay(form.Schema):
             'trend_width',
             'trend_color',
             ],
-        )
-
- 
-    form.widget(line_color=ColorpickerFieldWidget)
-    line_color = schema.TextLine(
-        title=_(u'Line color'),
-        description=_(u'If omitted, color will be selected from defaults.'),
-        required=False,
-        default=u'Auto',
         )
     
     line_width = schema.Int(
@@ -526,27 +553,6 @@ class ILineDisplay(form.Schema):
     form.widget(marker_color=ColorpickerFieldWidget)
     marker_color = schema.TextLine(
         title=_(u'Marker color'),
-        description=_(u'If omitted, color will be selected from defaults.'),
-        required=False,
-        default=u'Auto',
-        )
-    
-    show_trend = schema.Bool(
-        title=_(u'Show trend-line?'),
-        description=_(u'Display a linear trend line?  If enabled, uses '\
-                      u'configuration options specified.'),
-        default=False,
-        )
-    
-    trend_width = schema.Int(
-        title=_(u'Trend-line width'),
-        description=_(u'Line width of trend-line in pixel units.'),
-        default=2,
-        )
-    
-    form.widget(trend_color=ColorpickerFieldWidget)
-    trend_color = schema.TextLine(
-        title=_(u'Trend-line color'),
         description=_(u'If omitted, color will be selected from defaults.'),
         required=False,
         default=u'Auto',
@@ -667,8 +673,19 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
         series.  Points in each series should provide INamedSeriesDataPoint.
         """
 
-class INamedDataSequence(form.Schema, IDataSeries, ILineDisplay):
+class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
     """Named category seqeuence with embedded data stored as content"""
+    
+    form.fieldset(
+        'display',
+        label=u"Display settings",
+        fields=[
+            'color',
+            'show_trend',
+            'trend_width',
+            'trend_color',
+            ],
+        )
     
     input = schema.Text(
         title=_(u'Data input'),
@@ -678,7 +695,8 @@ class INamedDataSequence(form.Schema, IDataSeries, ILineDisplay):
         default=u'',
         required=False,
         )
-     
+    
+    # data field to store CSV source:
     form.omitted('data')
     data = schema.List(
         title=_(u'Data'),

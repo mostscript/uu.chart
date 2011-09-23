@@ -42,7 +42,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | description : String  [0..1]|
 | units  : String       [0..1]|
 | line_width : Number   [0..1]|       (note: line_width=0 : do not show line,
-| line_color : String   [0..1]|               however, markers may be shown).
+| color : String        [0..1]|               however, markers may be shown).
 | marker_color : Number [0..1]|
 | marker_width : Number [0..1]|       (integer value)
 | marker_size : Number  [0..1]|       (floating point value)
@@ -51,7 +51,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | range_max : Number    [0..1]|
 | show_trend : String   [0..1]|     'true' or 'false' in JSON
 | trend_width : Number  [0..1]| 
-| trend_color : String  [0..1]|     if empty, default same as line_color
+| trend_color : String  [0..1]|     if empty, default same as color
 | goal : Number         [0..1]|
 '-----------------------------'
        1 /%\ 
@@ -103,7 +103,7 @@ class ChartJSON(object):
                 'description',
                 'units',
                 'line_width',
-                'line_color',
+                'color',
                 'marker_color',
                 'marker_size',
                 'marker_width',
