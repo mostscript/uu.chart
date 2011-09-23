@@ -14,6 +14,8 @@
   <property name="allowed_content_types">
     <element value="uu.chart.timeseries" />
     <element value="uu.chart.namedseries" />
+    <element value="Document" />
+    <element value="Image" />
   </property>
   
   <!-- schema interface -->
