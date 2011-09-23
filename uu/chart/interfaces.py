@@ -309,7 +309,8 @@ class IDataCollection(Interface):
         description=_(u'Common set of units of measure for the data '\
                       u'series in this collection.  If the units '\
                       u'for series are not shared, then define '\
-                      u'respective units on the series themselves.'),
+                      u'respective units on the series themselves. '\
+                      u'May be displayed as part of Y-axis label.'),
         required=False,
         )
     
@@ -396,7 +397,6 @@ class IChartDisplay(form.Schema):
         vocabulary=SimpleVocabulary([
             SimpleTerm(value=u'line', title=u'Line chart'),
             SimpleTerm(value=u'bar', title=u'Bar chart'),
-            #SimpleTerm(value=u'barline', title=u'Two-measure bar plus line.'),
             ]),
         default=u'line',
         )
@@ -650,6 +650,16 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
     categorical enumerated names/labels, and Y-axis representing values
     for that label.
     """
+    
+    form.omitted('chart_type')
+    chart_type = schema.Choice(
+        title=_(u'Chart type'),
+        description=_(u'Type of chart to display.'),
+        vocabulary=SimpleVocabulary([
+            SimpleTerm(value=u'bar', title=u'Bar chart'),
+            ]),
+        default=u'bar',
+        )
     
     def series():
         """

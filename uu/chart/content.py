@@ -100,6 +100,10 @@ class NamedDataSequence(BaseDataSequence):
 class NamedSeriesChart(Container):
     implements(INamedSeriesChart, IAttributeUUID)
     
+    def __init__(self, id=None, *args, **kwargs):
+        super(NamedSeriesChart, self).__init__(id, *args, **kwargs)
+        self.chart_type = u'bar'
+     
     def series(self):
         """
         Return iterable of series/sequence streams providing
