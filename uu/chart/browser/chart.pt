@@ -30,19 +30,25 @@
 
 <body>
  <div metal:fill-slot="main">
-  <h3 tal:content="context/Title">Chart title</h3>
-  <p tal:condition="context/Description">
-    <span class="description" tal:content="context/Description">
+
+<div tal:repeat="element view/chart_elements">
+ <div tal:define="uid python:view.UID(element);
+              json python:view.json_url(element)">
+  <h3 tal:content="element/Title">Chart title</h3>
+  <p tal:condition="element/Description">
+    <span class="description" tal:content="element/Description">
     </span>
   </p>
-  <div class="chartdiv" id="" tal:attributes="id string:chartdiv-${view/UID}" style="height:480px;width:640px; ">
-    <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href view/json_url">Data</a>
+  <div class="chartdiv" id="" tal:attributes="id string:chartdiv-${uid}" style="height:480px;width:640px; ">
+    <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
   </div>
-  <tal:block condition="python:hasattr(context.info, 'output')">
-    <div class="chartinfo" tal:content="structure context/info/output">CAPTION</div>
+  <tal:block condition="python:hasattr(element.info, 'output')">
+    <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
   </tal:block>
   <hr />
  </div>
+ </div>
+</div>
 </body>
 </html>
 
