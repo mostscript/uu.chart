@@ -18,6 +18,6 @@ class DataTableView(object):
     
     def keyname(self):
         if INamedDataSequence.providedBy(self.context):
-            return 'ame'
+            return 'name'
         return 'date' # assume ITimeDataSequence
  
