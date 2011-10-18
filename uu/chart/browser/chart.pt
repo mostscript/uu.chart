@@ -20,34 +20,50 @@
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasAxisLabelRenderer.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.pointLabels.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.trendline.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasAxisTickRenderer.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js"></script>
 </metal:block>
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
+  <style>
+  div.chartdiv { margin-bottom:3em; }
+  div.chartdiv .jqplot-xaxis-tick { text-align:center; left:0; max-width:35px; }
+  </style>
 </metal:block>
 </head>
 
 <body>
- <div metal:fill-slot="main">
+<div metal:fill-slot="main">
 
-<div tal:repeat="element view/chart_elements">
- <div tal:define="uid python:view.UID(element);
-              json python:view.json_url(element)">
-  <h3 tal:content="element/Title">Chart title</h3>
-  <p tal:condition="element/Description">
-    <span class="description" tal:content="element/Description">
-    </span>
-  </p>
-  <div class="chartdiv" id="" tal:attributes="id string:chartdiv-${uid}" style="height:480px;width:640px; ">
-    <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
+ <tal:block repeat="element view/chart_elements">
+  <tal:block define="ischart python:context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
+   <div style="width:700px;"
+        tal:define="uid python:view.UID(element);
+                    json python:view.json_url(element);
+                    chart_width python:getattr(element, 'width', None) or 600;
+                    float python:(chart_width <= 260) and 'float:left' or 'clear:both'">
+   <div class="chartwrap" style="" tal:attributes="style string:${chart_width}px;;${float}" tal:condition="ischart">
+    <hr />
+    <h3 tal:content="element/Title" style="width:90%">Chart title</h3>
+    <p tal:condition="element/Description">
+      <span class="description" tal:content="element/Description">
+      </span>
+    </p>
+    <div class="chartdiv" id="" style="" tal:attributes="id string:chartdiv-${uid}; style python:view.divstyle(element)">
+      <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
+    </div>
+    <tal:block condition="python:hasattr(element.info, 'output')">
+      <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
+    </tal:block>
+   </div>
+   <div style="clear:both" tal:condition="python:not context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
+    <div tal:replace="structure element/CookedBody"></div>
+   </div>
   </div>
-  <tal:block condition="python:hasattr(element.info, 'output')">
-    <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
   </tal:block>
-  <hr />
- </div>
- </div>
+ </tal:block>
+ <div style="clear:both"></div>
 </div>
 </body>
 </html>

@@ -160,7 +160,7 @@ uu.chart.seriesoptions = function(data) {
                 }
             }
             options.trendline = trend_options;
-            options.pointLabels = {formatString: "%.2f"};
+            options.pointLabels = {formatString: "%.1f", hideZeros:true};
             r.push(options);
         }
     }
@@ -170,13 +170,15 @@ uu.chart.seriesoptions = function(data) {
 uu.chart.bar_config = function(data) {
     /* fitting algorithm: bars between 5 and 20 pixels wide, computed to fit */
     var r = new Object();
+    var chart_width = 600;
+    if (data.width) chart_width = data.width;
     r.series_length = 0;
     r.max_points = 0;
     if (data.series) r.series_length = data.series.length;
     r.max_points = uu.max(data.series.map(function(series) {
         return Object.keys(series.data).length;
         }));
-    r.width = Math.min(20, Math.max(5, ((400 / (r.max_points + 1)) / (r.series_length + 1))));
+    r.width = Math.min(32, Math.max(5, (((chart_width * 0.8) / (r.max_points + 1)) / (r.series_length + 1))));
     return r;
 }
 
@@ -210,13 +212,19 @@ uu.chart.fillchart = function(divid, data) {
     var goal_color = "#333333";
     var x_axis = {};
     var y_axis = {};
+    var stack = false;
     var series_defaults = {};
     var series_colors = jq.jqplot.config.defaultColors;
-    if (data.chart_type == "bar") {
+    if ((data.chart_type == "bar") || (data.chart_type == "stacked")) {
+        var barwidth = uu.chart.bar_config(data).width;
+        if (data.chart_type == "stacked") {
+            stack = true;
+            barwidth = barwidth * data.series.length;
+        }
         var series_defaults = {
             renderer : jq.jqplot.BarRenderer,
             rendererOptions : {
-                barWidth : uu.chart.bar_config(data).width
+                barWidth : barwidth
                 }
             };
         }
@@ -228,7 +236,7 @@ uu.chart.fillchart = function(divid, data) {
         series_defaults.thresholdLines = {lineColor: goal_color, labelColor: goal_color, yValues: [data.goal]};
     }
     if (data.x_axis_type == 'date') {
-        x_axis = {renderer:jq.jqplot.DateAxisRenderer, tickInterval:'1 month', min:uu.chart.runchart_start(data)}; 
+        x_axis = {renderer:jq.jqplot.DateAxisRenderer, tickInterval:'1 month', min:uu.chart.runchart_start(data), tickRenderer: jq.jqplot.CanvasAxisTickRenderer, tickOptions: { angle:-65, fontSize:'15pt', fontStretch:1.5, fontFamily:'Arial', fontWeight:'bold', enableFontSupport:true, textColor:'#00f'} };
     } else { /* named */
         x_axis.renderer = jq.jqplot.CategoryAxisRenderer;
         //x_axis.ticks = ['groucho','b','c'];
@@ -238,7 +246,7 @@ uu.chart.fillchart = function(divid, data) {
         if (data.legend_placement) {
             legend_placement = data.legend_placement;
         }
-        legend = {show:true, location:data.legend_location, placement:legend_placement};    
+        legend = {show:true, location:data.legend_location, placement:legend_placement, marginTop:'2em'};
     }
     if (data.y_label) {
         y_axis.label = data.y_label;
@@ -262,7 +270,9 @@ uu.chart.fillchart = function(divid, data) {
     }
     jq.jqplot.config.enablePlugins = true;
     jq.jqplot(divid, uu.chart.seriesdata(data), {
+        stackSeries: stack,
         axes:{xaxis:x_axis, yaxis:y_axis},
+        axesDefaults: {tickOptions: {fontSize:'7pt'}},
         series:uu.chart.seriesoptions(data),
         seriesDefaults: series_defaults,
         legend: legend,
@@ -270,8 +280,22 @@ uu.chart.fillchart = function(divid, data) {
         });
     // finally, adjust label colors to match line colors using CSS/jQuery:
     for (var i=0; i<series_colors.length; i++) {
-        var labelcls = '.jqplot-series-' + i + '.jqplot-point-label';
-        jq(labelcls).css('color', series_colors[i]);
+        var labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
+        var points = jq(labelselect);
+        for (var j=0; j<points.length; j++) {
+            point = jq(points[j]);
+            if (data.chart_type == "stacked") {
+                v = parseInt(point.html());
+                if (v < 20) {
+                    point.css('margin-left', '2.2em');
+                }
+                point.css('backgroundColor', series_colors[i]);
+                point.css('padding', '0 0.2em');
+                point.css('margin-top', '3em');
+            } else {
+                point.css('color', series_colors[i]);
+            }
+        }
     }
 }
 

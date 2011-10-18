@@ -367,7 +367,9 @@ class IChartDisplay(form.Schema):
     form.fieldset(
         'display',
         label=u"Display settings",
-        fields=['show_goal',
+        fields=['height',
+                'width',
+                'show_goal',
                 'goal_color',
                 'legend_location',
                 'legend_placement',
@@ -376,7 +378,19 @@ class IChartDisplay(form.Schema):
                 'chart_styles',
                 ]
         )
+
+    width = schema.Int(
+        title=_(u'Width'),
+        description=_(u'Display width of chart in pixels.'),
+        default=600,
+        )
     
+    height = schema.Int(
+        title=_(u'Height'),
+        description=_(u'Display height of chart in pixels.'),
+        default=300,
+        )
+
     show_goal = schema.Bool(
         title=_(u'Show goal-line?'),
         description=_(u'If defined, show (constant horizontal) goal line?'),
@@ -657,12 +671,12 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
     for that label.
     """
     
-    form.omitted('chart_type')
     chart_type = schema.Choice(
         title=_(u'Chart type'),
         description=_(u'Type of chart to display.'),
         vocabulary=SimpleVocabulary([
             SimpleTerm(value=u'bar', title=u'Bar chart'),
+            SimpleTerm(value=u'stacked', title=u'Stacked bar chart'),
             ]),
         default=u'bar',
         )

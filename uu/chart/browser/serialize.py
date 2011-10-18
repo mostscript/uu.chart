@@ -153,6 +153,8 @@ class ChartJSON(object):
             'y_label',
             'legend_placement',
             'legend_location',
+            'width',
+            'height',
             ):
             v = getattr(self.context, name, None)
             if v is not None and v != '':

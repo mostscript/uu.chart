@@ -26,4 +26,15 @@ class ChartView(object):
         if context is None:
             context = self.context
         return '%s/%s' % (context.absolute_url(), '@@chart_json')
+    
+    def divstyle(self, context=None, width=600, height=300):
+        if context is None:
+            context = self.context
+        width = getattr(context, 'width', None) or width
+        height = getattr(context, 'height', None) or height
+        base = 'width:%spx;height:%spx' % (width, height)
+        return base
+        if width <= 270:
+            return '%s;float:left' % base
+        return '%s;clear:both;' % base
 
