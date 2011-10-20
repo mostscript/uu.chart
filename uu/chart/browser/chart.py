@@ -1,3 +1,4 @@
+import random
 from plone.uuid.interfaces import IUUID
 
 
@@ -25,7 +26,12 @@ class ChartView(object):
     def json_url(self, context=None):
         if context is None:
             context = self.context
-        return '%s/%s' % (context.absolute_url(), '@@chart_json')
+        cache_bust = 'cache_bust=%s' % random.randint(1,2**32)
+        return '%s/%s?%s' % (
+            context.absolute_url(),
+            '@@chart_json',
+            cache_bust,
+            )
     
     def divstyle(self, context=None, width=600, height=300):
         if context is None:

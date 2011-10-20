@@ -168,7 +168,7 @@ uu.chart.seriesoptions = function(data) {
 }
 
 uu.chart.bar_config = function(data) {
-    /* fitting algorithm: bars between 5 and 20 pixels wide, computed to fit */
+    /* fitting algorithm: bars between 5 and 32 pixels wide, computed to fit */
     var r = new Object();
     var chart_width = 600;
     if (data.width) chart_width = data.width;
