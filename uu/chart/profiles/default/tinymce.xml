@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<object>
+ <resourcetypes purge="False">
+  <linkable purge="False">
+   <element value="uu.chart.report" />
+   <element value="uu.chart.namedseries" />
+   <element value="uu.chart.timeseries" />
+   <element value="uu.chart.data.timeseries" />
+   <element value="uu.chart.data.namedseries" />
+  </linkable>
+  <containsobjects purge="False">
+   <element value="uu.chart.report" />
+   <element value="uu.chart.namedseries" />
+   <element value="uu.chart.timeseries" />
+  </containsobjects>
+  <containsanchors purge="False">
+   <!-- <element value="Event"/> -->
+  </containsanchors>
+  <imageobjects purge="False">
+   <!-- addditional here, like: <element value="Image"/> -->
+  </imageobjects>
+ </resourcetypes>
+ <layout purge="False">
+  <styles purge="False">
+   <!-- add here, e.g. <element value="Clear floats|div|visualClear"/> -->
+  </styles>
+  <content_css value=""/> <!-- point to any CSS file for content editable area -->
+  <tablestyles purge="False">
+   <!-- add here, e.g. <element value="Subdued grid|plain"/> -->
+  </tablestyles>
+ </layout>
+ <toolbar purge="False">
+  <customtoolbarbuttons purge="False">
+  </customtoolbarbuttons>
+ </toolbar>
+</object>
