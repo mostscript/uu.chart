@@ -14,6 +14,7 @@ from uu.chart.interfaces import IDataReport
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
 from uu.chart.interfaces import INamedSeriesChart, INamedDataSequence
 from uu.chart.interfaces import TIME_DATA_TYPE, NAMED_DATA_TYPE
+from uu.chart.interfaces import MEASURE_DATA_TYPE
 from uu.chart.data import TimeSeriesDataPoint, NamedDataPoint
 
 
@@ -86,8 +87,11 @@ class TimeSeriesChart(Container):
         ITimeDataSequence.  In this case, this returns a list of
         contained items.
         """
+        contained = self.objectValues()
         _f = lambda o: _type_filter(o, TIME_DATA_TYPE) 
-        return filter(_f, self.objectValues())
+        _f_measure = lambda o: _type_filter(o, MEASURE_DATA_TYPE)
+        v1 = list(filter(_f, contained))
+        return v1 + list(filter(_f_measure, contained))
 
 
 class NamedDataSequence(BaseDataSequence):
@@ -110,8 +114,11 @@ class NamedSeriesChart(Container):
         INamedDataSequence.  In this case, this returns a list of
         contained items.
         """
+        contained = self.objectValues()
         _f = lambda o: _type_filter(o, NAMED_DATA_TYPE) 
-        return filter(_f, self.objectValues())
+        _f_measure = lambda o: _type_filter(o, MEASURE_DATA_TYPE)
+        v1 = list(filter(_f, contained))
+        return v1 + list(filter(_f_measure, contained))
 
 
 class DataReport(Container):

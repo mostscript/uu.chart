@@ -30,6 +30,8 @@ setup(name='uu.chart',
           'Products.CMFPlone',
           'plone.browserlayer',
           'uu.smartdate',
+          'uu.measure',
+          'uu.formlibrary',
           # -*- Extra requirements: -*-
       ],
       extras_require = {

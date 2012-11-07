@@ -87,19 +87,68 @@ uu.chart.interfaces -- narrative summary of components:
         If chart is named-series chart, user adds "Named-series sequence"
 
 """
-from plone.directives import form, dexterity
 from plone.app.textfield import RichText
+from plone.directives import form, dexterity
+from plone.formwidget.contenttree import ContentTreeFieldWidget
+from plone.formwidget.contenttree.source import UUIDSourceBinder
 from plone.uuid.interfaces import IAttributeUUID
+from plone.uuid.interfaces import IUUID
 from z3c.form import widget
-from zope.interface import Interface, Invalid, invariant
-from zope import schema
+from zope.interface import Interface, Invalid, invariant, implements
+from zope.component.hooks import getSite
 from zope.container.interfaces import IOrderedContainer
 from zope.location.interfaces import ILocation
+from zope import schema
+from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from collective.z3cform.colorpicker import colorpicker
 
-
 from uu.chart import _ #MessageFactory for package
+
+
+def resolve_uid(uid):
+    catalog = getSite().portal_catalog
+    r = catalog.search({'UID': str(uid)})
+    if not r:
+        return None
+    return r[0].getObject()
+
+
+def provider_measure(context):
+    """Given measure-provider for data sequence, get its bound measure"""
+    # IMeasureSeriesProvider['measure'] field:
+    measure_uid = getattr(context, 'measure', None)
+    if measure_uid is None:
+        return None
+    return resolve_uid(measure_uid)
+
+
+class MeasureContentSourceBinder(object):
+    """
+    Source binder for listing items contained in measure, filtered by
+    type.
+    """
+    
+    implements(IContextSourceBinder)
+    
+    def __init__(self, typename=None):
+        self.typename = str(typename)
+    
+    def __call__(self, context):
+        measure = provider_measure(context)
+        if measure is None:
+            return SimpleVocabulary([])
+        contained = measure.contentValues()
+        if self.typename:
+            contained = filter(
+                lambda o: o.portal_type == self.typename,
+                contained,
+                )
+        terms = map(
+            lambda o: SimpleTerm(IUUID(o), title=o.Title().decode('utf-8')),
+            contained,
+            )
+        return SimpleVocabulary(terms)
 
 
 class RWColorPickerWidget(colorpicker.ColorpickerWidget):
@@ -143,6 +192,7 @@ def ColorpickerFieldWidget(field, request):
 
 TIME_DATA_TYPE = 'uu.chart.data.timeseries'     ## portal types should
 NAMED_DATA_TYPE = 'uu.chart.data.namedseries'   ## match FTIs
+MEASURE_DATA_TYPE = 'uu.chart.data.measureseries'
 
 
 ## sorting data-point identities need collation/comparator function
@@ -632,36 +682,6 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
         )
 
 
-class ITimeMeasureSequence(form.Schema, IDataSeries):
-    """
-    A time series data sequence content item interface.  Series data 
-    iteration via proxy/delegation to external named adapter providing
-    IDataSeries is customary (where name for adaptation uses the 
-    measure name and namespace field values configured).
-    
-    Contained point identity() calls return date or datetime objects.
-    """
-    
-    form.fieldset(
-        'data',
-        label=u"Data",
-        fields=['measure_name', 'measure_namespace'],
-        )
-    
-    measure_name = schema.TextLine(
-        title=_(u'Measure name'),
-        description=_(u'Measure name for sequence to subscribe to.'),
-        required=False,
-        )
-    
-    measure_namespace = schema.TextLine(
-        title=_(u'Measure namespace'),
-        description=_(u'Measure namespace or qualifier for name; '\
-                      u'may be system or data source name.'),
-        required=False,
-        )
-
-
 # -- named series chart interfaces:
 
 class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
@@ -723,36 +743,6 @@ class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
         )
 
 
-class INamedMeasureSequence(form.Schema, IDataSeries):
-    """
-    A named-data sequence content item interface.  Series data 
-    iteration via proxy/delegation to external named adapter providing
-    IDataSeries is customary (where name for adaptation uses the 
-    measure name and namespace field values configured).
-    
-    Contained point identity() calls return string names.
-    """
-    
-    form.fieldset(
-        'data',
-        label=u"Data",
-        fields=['measure_name', 'measure_namespace'],
-        )
-    
-    measure_name = schema.TextLine(
-        title=_(u'Measure name'),
-        description=_(u'Measure name for sequence to subscribe to.'),
-        required=False,
-        )
-    
-    measure_namespace = schema.TextLine(
-        title=_(u'Measure namespace'),
-        description=_(u'Measure namespace or qualifier for name; '\
-                      u'may be system or data source name.'),
-        required=False,
-        )
-
-
 # report container/folder interfaces:
 
 class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
@@ -770,5 +760,55 @@ class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
         title=_(u'Description'),
         description=_(u'Textual description of the report.'),
         required=False,
+        )
+
+
+class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
+    
+    form.widget(measure=ContentTreeFieldWidget)
+    measure = schema.Choice(
+        title=u'Bound measure',
+        description=u'Measure definition from which to select data set and '\
+                    u'record filters necessary to obtain data.',
+        source=UUIDSourceBinder(portal_type='uu.measure.definition'),
+        )
+    
+    dataset = schema.Choice(
+        title=u'Data set (collection)',
+        description=u'Select a collection that enumerates which forms are '
+                    u'considered part of the data set to query for data. '\
+                    u'You must first select a measure to choose a data set '\
+                    u'collection from within it.',                    
+        source=MeasureContentSourceBinder(
+            typename='Topic',
+            ),
+        required=False,
+        )
+    
+    record_filter = schema.Choice(
+        title=u'Record filter',
+        description=u'Selected record filter, which specifies a query run '\
+                    u'against the data set to obtain a value. '\
+                    u'You must first select a measure to choose a record '\
+                    u'filter from within it.',
+        source=MeasureContentSourceBinder(
+            typename='uu.formlibrary.recordfilter',
+            ),
+        required=False,
+        )
+    
+    form.omitted('data')
+    data = schema.List(
+        title=_(u'Data'),
+        description=_(u'Data points computed from bound dataset, filter '\
+                      u'selected for the given measure.  Should return '\
+                      u'an empty list on get if any bindings are missing. '\
+                      u'Whether the data point key/identity type is a date '\
+                      u'or a name will depend on the type of chart '\
+                      u'containing this data provider.'),
+        value_type=schema.Object(
+            schema=ITimeSeriesDataPoint,
+            ),
+        readonly=True,
         )
 

@@ -1,26 +1,24 @@
 <?xml version="1.0"?>
-<object name="uu.chart.namedseries"
+<object name="uu.chart.data.measureseries"
         meta_type="Dexterity FTI"
         i18n:domain="uu.chart"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">Named Series Chart</property>
-  <property name="description" i18n:translate="">A named-series chart with contained data.</property>
-  <property name="content_icon">++resource++uu.chart.icons/namedseries.png</property>
+  <property name="title" i18n:translate="">Measure Data Sequence</property>
+  <property name="description" i18n:translate="">A measure-provided sequence of data points.</property>
+  <property name="content_icon">++resource++uu.chart.icons/table.gif</property>
   <property name="allow_discussion">False</property>
   <property name="global_allow">False</property>
-  <property name="filter_content_types">True</property>
+  <property name="filter_content_types">False</property>
   <property name="allowed_content_types">
-    <element value="uu.chart.data.namedseries" />
-    <element value="uu.chart.data.measureseries" />
   </property>
   
   <!-- schema interface -->
-  <property name="schema">uu.chart.interfaces.INamedSeriesChart</property> 
+  <property name="schema">uu.chart.interfaces.IMeasureSeriesProvider</property> 
   
   <!-- class used for content items -->
-  <property name="klass">uu.chart.content.NamedSeriesChart</property>
+  <property name="klass">uu.chart.measureseries.MeasureSeriesProvider</property>
   
   <!-- add permission -->
   <property name="add_permission">cmf.AddPortalContent</property>
@@ -28,7 +26,6 @@
   <!-- enabled behaviors -->
   <property name="behaviors">
     <element value="plone.app.content.interfaces.INameFromTitle" />
-    <element value="plone.app.dexterity.behaviors.metadata.ICategorization" />
   </property>
   
   <!-- View information -->
@@ -39,7 +36,7 @@
   </property>
  
   <!-- Method aliases -->
-  <alias from="(Default)" to="@@chart_view"/>
+  <alias from="(Default)" to="@@dataview"/>
   <alias from="edit" to="@@edit"/>
   <alias from="sharing" to="@@sharing"/>
   <alias from="view" to="(selected layout)"/>
