@@ -4,12 +4,11 @@ from plone.uuid.interfaces import IUUID
 from zope.component.hooks import getSite
 from zope.interface import implements
 
-from uu.measure.browser.dataview import MeasureDataView
-
 from uu.chart.data import NamedDataPoint, TimeSeriesDataPoint
 from uu.chart.interfaces import IMeasureSeriesProvider
 from uu.chart.interfaces import INamedSeriesChart
 from uu.chart.interfaces import provider_measure, resolve_uid
+
 
 class MeasureSeriesProvider(Item):
     
@@ -35,18 +34,12 @@ class MeasureSeriesProvider(Item):
         measure = provider_measure(self)
         if measure is None:
             return []
-        rfilter_uid = getattr(self, 'record_filter', None)
+        group = measure.group()
         dataset_uid = getattr(self, 'dataset', None)
-        if not rfilter_uid or not dataset_uid:
-            return []
-        rfilter = resolve_uid(rfilter_uid)
         topic = resolve_uid(dataset_uid)
-        if rfilter is None or topic is None:
-            return []
-        dataview = MeasureDataView(measure)
-        dataview.update()   # populate cross-product for all datasets 
-                            # TODO: optimize to only one dataset!
-        infos = dataview.result.get((rfilter.getId(), topic.getId()), [])
+        if getattr(topic, 'portal_type', None) != 'Topic':
+            return []  # no topic or wrong type
+        infos = measure.dataset_points(topic)  # list of info dicts
         if not infos:
             return []
         pointcls = self.pointcls()
@@ -56,6 +49,7 @@ class MeasureSeriesProvider(Item):
         _point = lambda info: pointcls(
             _key(info),
             info.get('value'),
+            note=measure.value_note(info),
             uri=info.get('uri', None),
             )
         return map(_point, infos)

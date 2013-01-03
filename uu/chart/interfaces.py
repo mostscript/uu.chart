@@ -103,6 +103,8 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from collective.z3cform.colorpicker import colorpicker
 
+from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
+
 from uu.chart import _ #MessageFactory for package
 
 
@@ -123,22 +125,23 @@ def provider_measure(context):
     return resolve_uid(measure_uid)
 
 
-class MeasureContentSourceBinder(object):
+class MeasureGroupContentSourceBinder(object):
     """
-    Source binder for listing items contained in measure, filtered by
-    type.
+    Source binder for listing items contained in measure group parent of
+    a measure context, filtered by type.
     """
     
     implements(IContextSourceBinder)
     
-    def __init__(self, typename=None):
-        self.typename = str(typename)
+    def __init__(self, portal_type=None):
+        self.typename = str(portal_type)
     
     def __call__(self, context):
         measure = provider_measure(context)
         if measure is None:
-            return SimpleVocabulary([])
-        contained = measure.contentValues()
+            return UUIDSourceBinder(portal_type=self.typename)(context)
+        group = measure.group()  # group (folder) containing measure def'n
+        contained = group.contentValues()
         if self.typename:
             contained = filter(
                 lambda o: o.portal_type == self.typename,
@@ -768,31 +771,23 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
     form.widget(measure=ContentTreeFieldWidget)
     measure = schema.Choice(
         title=u'Bound measure',
-        description=u'Measure definition from which to select data set and '\
-                    u'record filters necessary to obtain data.',
-        source=UUIDSourceBinder(portal_type='uu.measure.definition'),
+        description=u'Measure definition that defines a function to apply '\
+                    u'to a dataset of forms to obtain a computed value for '\
+                    u'each as a data-point.',
+        source=UUIDSourceBinder(
+            portal_type=MEASURE_DEFINITION_TYPE,
+            ),
         )
     
     dataset = schema.Choice(
         title=u'Data set (collection)',
         description=u'Select a collection that enumerates which forms are '
                     u'considered part of the data set to query for data. '\
-                    u'You must first select a measure to choose a data set '\
-                    u'collection from within it.',                    
-        source=MeasureContentSourceBinder(
-            typename='Topic',
-            ),
-        required=False,
-        )
-    
-    record_filter = schema.Choice(
-        title=u'Record filter',
-        description=u'Selected record filter, which specifies a query run '\
-                    u'against the data set to obtain a value. '\
-                    u'You must first select a measure to choose a record '\
-                    u'filter from within it.',
-        source=MeasureContentSourceBinder(
-            typename='uu.formlibrary.recordfilter',
+                    u'You must select a collection within the same measure '\
+                    u'group in which the bound measure definition is '\
+                    u'contained.',                    
+        source=MeasureGroupContentSourceBinder(
+            portal_type='Topic',
             ),
         required=False,
         )
@@ -800,14 +795,14 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
     form.omitted('data')
     data = schema.List(
         title=_(u'Data'),
-        description=_(u'Data points computed from bound dataset, filter '\
-                      u'selected for the given measure.  Should return '\
-                      u'an empty list on get if any bindings are missing. '\
+        description=_(u'Data points computed from bound dataset, measure '\
+                      u'selected.  Should return an empty list if any '\
+                      u'bindings are missing. '\
                       u'Whether the data point key/identity type is a date '\
                       u'or a name will depend on the type of chart '\
                       u'containing this data provider.'),
         value_type=schema.Object(
-            schema=ITimeSeriesDataPoint,
+            schema=IDataPoint,
             ),
         readonly=True,
         )

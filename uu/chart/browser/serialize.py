@@ -73,6 +73,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 
 from datetime import date, datetime
 import json
+import math
 
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
 
@@ -96,7 +97,8 @@ class ChartJSON(object):
             series = {}
             # series data is mapping of keys to point objects
             series['data'] = dict(
-                [(p['key'], p) for p in map(self._datapoint, seq.data)]
+                [(p['key'], p) for p in map(self._datapoint, seq.data)
+                    if not math.isnan(p.get('value'))]
                 )
             for name in (
                 'title',
