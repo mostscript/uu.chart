@@ -87,6 +87,9 @@ uu.chart.interfaces -- narrative summary of components:
         If chart is named-series chart, user adds "Named-series sequence"
 
 """
+
+import operator
+
 from plone.app.textfield import RichText
 from plone.directives import form, dexterity
 from plone.formwidget.contenttree import ContentTreeFieldWidget
@@ -106,6 +109,54 @@ from collective.z3cform.colorpicker import colorpicker
 from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
 
 from uu.chart import _ #MessageFactory for package
+
+
+## globals for vocabulary and summarization/aggregate functions
+
+F_MEAN = lambda l: float(sum(l))/len(l) if len(l) > 0 else float('nan')
+
+def F_MEDIAN(l):
+    """
+    Return middle value of sorted sequence for an odd-sized
+    list, or return the arithmetic mean of the two middle-values
+    in an even-sized list.
+    """
+    odd = lambda v: bool(v%2)
+    s, size = sorted(l), len(l)
+    middle = size/2
+    _slice = slice((middle - 1), (middle + 1))
+    return s[middle] if odd(size) else F_MEAN(s[_slice])
+
+
+AGGREGATE_FUNCTIONS = {
+    'SUM': sum,
+    'AVG': F_MEAN,
+    'PRODUCT': lambda l: reduce(operator.mul, l),
+    'MIN' : min,
+    'MAX' : max,
+    'MEDIAN': F_MEDIAN,
+    'COUNT': len,
+}
+
+AGGREGATE_LABELS = [
+    ('SUM', u'Sum'),
+    ('AVG', u'Average'),
+    ('PRODUCT', u'Product'),
+    ('MIN', u'Minimum'),
+    ('MAX', u'Maximum'),
+    ('MEDIAN', u'Median'),
+    ('COUNT', u'Count of occurrences'),
+]
+
+SUMMARIZATION_STRATEGIES = AGGREGATE_LABELS + [
+    ('FIRST', u'Pick first found value'),
+    ('LAST', u'Pick last found value'),
+    ('IGNORE', u'Ignore more than one value, omit on encountered duplication'),
+]
+
+VOCAB_SUMMARIZATION = SimpleVocabulary(
+    [SimpleTerm(v, title=title) for v, title in SUMMARIZATION_STRATEGIES]
+)
 
 
 def resolve_uid(uid):
@@ -790,6 +841,19 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
             portal_type='Topic',
             ),
         required=False,
+        )
+    
+    summarization_strategy = schema.Choice(
+        title=u'Summarization strategy',
+        description=u'How should data be summarized into a single value '\
+                    u'when multiple competing values for date or name '\
+                    u'are found in the data stream provided by the measure '\
+                    u'and data set?  For example you may average or sum '\
+                    u'the multiple values, take the first or last, '\
+                    u'or you may choose to treat such competing values as '\
+                    u'a conflict, and omit any value on duplication.',
+        vocabulary=VOCAB_SUMMARIZATION,
+        default='AVG',
         )
     
     form.omitted('data')
