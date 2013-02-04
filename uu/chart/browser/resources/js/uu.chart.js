@@ -25,9 +25,11 @@ uu.min = function(seq) { return seq.reduce(uu.mincmp); }
 
 
 uu.chart.normalize_series = function(series) {
-    var result = new Array();
-    for (var i=0; i<series.length; i++) {
-        var element = series[i];
+    var i,
+        element,
+        result = new Array();
+    for (i=0; i<series.length; i++) {
+        element = series[i];
         result.push( [Date.parse(element[0]), element[1]] );
     }
     return result;
@@ -50,21 +52,34 @@ uu.chart.allkeys = function(data) {
 }
 
 uu.chart.seriesdata = function(data) {
-    var r = new Array();
+    var r = new Array(),
+        s_rep,
+        s,
+        skeys,
+        j,
+        key,
+        point,
+        value;
     if (data.series) {
-        for (var i=0; i<data.series.length; i++) {
-            var s_rep = new Array();
-            var s = data.series[i];
+        for (i=0; i<data.series.length; i++) {
+            s_rep = new Array();
+            s = data.series[i];
             if (s.data) {
-                var skeys = uu.sorted(Object.keys(s.data));
-                for (var j=0; j<skeys.length; j++) {
-                    var key = skeys[j];
-                    var point = s.data[key];
+                skeys = uu.sorted(Object.keys(s.data));
+                for (j=0; j<skeys.length; j++) {
+                    key = skeys[j];
+                    point = s.data[key];
+                    value = point.value;
+                    if (isNaN(value)) {
+                        // null object is JSON-compatible sentinel for NaN
+                        // values, treated as null for jqPlot to omit display
+                        value = null;
+                    }
                     if (data.x_axis_type == 'date') {
                         if (Date.parse(key)) {
-                            s_rep.push([Date.parse(key), point.value]);
+                            s_rep.push([Date.parse(key), value]);
                         } else {
-                            s_rep.push([key, point.value]);
+                            s_rep.push([key, value]);
                         }
                     } else {
                         /* named series elements/points for jqplot are Y-value only:
@@ -74,7 +89,7 @@ uu.chart.seriesdata = function(data) {
                               loops through the series in sorted key order.
                             * X-axis ticks are defined globally for the chart, in order.
                          */
-                        s_rep.push(point.value);
+                        s_rep.push(value);
                     }
                 }
             }
@@ -87,11 +102,13 @@ uu.chart.seriesdata = function(data) {
 
 uu.chart.range = function(data) {
     /* get range min, max: returns two item array of min, max values */
-    var min = null;
-    var max = null;
+    var min = null,
+        max = null,
+        s,
+        i;
     if (data.series) {
-        for (var i=0; i<data.series.length; i++) {
-            var s = data.series[i];
+        for (i=0; i<data.series.length; i++) {
+            s = data.series[i];
             if (s.range_min) { 
                 if (!min) {
                     min = s.range_min;
@@ -112,10 +129,12 @@ uu.chart.range = function(data) {
 }
 
 uu.chart.series_colors = function(data) {
-    var r = jq.jqplot.config.defaultColors.slice(); //copy defaults
+    var i,
+        s,
+        r = jq.jqplot.config.defaultColors.slice(); //copy defaults
     if (data.series) {
-        for (var i=0; i<data.series.length; i++) {
-            var s = data.series[i];
+        for (i=0; i<data.series.length; i++) {
+            s = data.series[i];
             if (s.color) {
                 r[i] = s.color; //reassign color, overwrite default
             }
@@ -125,13 +144,17 @@ uu.chart.series_colors = function(data) {
 }
 
 uu.chart.seriesoptions = function(data) {
-    var r = new Array();
+    var r = new Array(),
+        options,
+        marker_options,
+        trend_options,
+        s;
     if (data.series) {
-        for (var i=0; i<data.series.length; i++) {
-            var options = new Object();
-            var marker_options = new Object();
-            var trend_options = {show:false};
-            var s = data.series[i];
+        for (i=0; i<data.series.length; i++) {
+            options = new Object();
+            marker_options = new Object();
+            trend_options = {show:false};
+            s = data.series[i];
             if (s.line_width) options.lineWidth = s.line_width;
             //if (s.color) options.lineColor = s.color;
             // note: line color assigned to seriesColors option for chart, 
@@ -160,7 +183,10 @@ uu.chart.seriesoptions = function(data) {
                 }
             }
             options.trendline = trend_options;
-            options.pointLabels = {formatString: "%.1f", hideZeros:true};
+            if (s.break_lines) {
+                options.breakOnNull = true;
+            }
+            options.pointLabels = {formatString: "%.1f", hideZeros:false};
             r.push(options);
         }
     }
@@ -169,8 +195,8 @@ uu.chart.seriesoptions = function(data) {
 
 uu.chart.bar_config = function(data) {
     /* fitting algorithm: bars between 5 and 32 pixels wide, computed to fit */
-    var r = new Object();
-    var chart_width = 600;
+    var r = new Object(),
+        chart_width = 600;
     if (data.width) chart_width = data.width;
     r.series_length = 0;
     r.max_points = 0;
@@ -184,15 +210,16 @@ uu.chart.bar_config = function(data) {
 
 
 uu.chart.runchart_start = function(data) {
-    var s;
-    var result = data.start; //default is null value...
+    var s,
+        i,
+        result = data.start; //default is null value...
     if (result) {
         // start date plus some padding (one month earlier) for left-hand
         // side of chart.
         return Date.parse(result.slice(0,10)).add(-1).months();
     }
     if (data.series) {
-        for (var i=0; i<data.series.length; i++) {
+        for (i=0; i<data.series.length; i++) {
             s = data.series[i];
             if (s.data) {
                 /* min===earliest date from any series excluding null values */
@@ -207,21 +234,29 @@ uu.chart.runchart_start = function(data) {
 }
 
 uu.chart.fillchart = function(divid, data) {
-    var legend = {show:false}; //default is none
-    var legend_placement = 'outsideGrid';
-    var goal_color = "#333333";
-    var x_axis = {};
-    var y_axis = {};
-    var stack = false;
-    var series_defaults = {};
-    var series_colors = jq.jqplot.config.defaultColors;
+    var legend = {show:false}, //default is none
+        legend_placement = 'outsideGrid',
+        goal_color = "#333333",
+        x_axis = {},
+        y_axis = {},
+        stack = false,
+        series_defaults = {},
+        series_colors = jq.jqplot.config.defaultColors,
+        barwidth,
+        line_width,
+        marker_color,
+        range,
+        labelselect,
+        points,
+        i,
+        j;
     if ((data.chart_type == "bar") || (data.chart_type == "stacked")) {
-        var barwidth = uu.chart.bar_config(data).width;
+        barwidth = uu.chart.bar_config(data).width;
         if (data.chart_type == "stacked") {
             stack = true;
             barwidth = barwidth * data.series.length;
         }
-        var series_defaults = {
+        series_defaults = {
             renderer : jq.jqplot.BarRenderer,
             rendererOptions : {
                 barWidth : barwidth
@@ -229,8 +264,8 @@ uu.chart.fillchart = function(divid, data) {
             };
         }
     series_colors = uu.chart.series_colors(data);
-    var line_width = 4;
-    var marker_color = null;
+    line_width = 4;
+    marker_color = null;
     if (data.goal) {
         if (data.goal_color) goal_color = data.goal_color;
         series_defaults.thresholdLines = {lineColor: goal_color, labelColor: goal_color, yValues: [data.goal]};
@@ -258,7 +293,7 @@ uu.chart.fillchart = function(divid, data) {
             y_axis.labelOptions = { fontFamily:'Helvetica,Arial,Sans Serif', fontSize:'12pt' };
         }
     }
-    var range = uu.chart.range(data);
+    range = uu.chart.range(data);
     if (range[0]) { /*min*/
         y_axis.min = range[0];
     }
@@ -279,10 +314,10 @@ uu.chart.fillchart = function(divid, data) {
         seriesColors : series_colors
         });
     // finally, adjust label colors to match line colors using CSS/jQuery:
-    for (var i=0; i<series_colors.length; i++) {
-        var labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
-        var points = jq(labelselect);
-        for (var j=0; j<points.length; j++) {
+    for (i=0; i<series_colors.length; i++) {
+        labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
+        points = jq(labelselect);
+        for (j=0; j<points.length; j++) {
             point = jq(points[j]);
             if (data.chart_type == "stacked") {
                 v = parseInt(point.html());
@@ -301,12 +336,14 @@ uu.chart.fillchart = function(divid, data) {
 
 uu.chart.loadcharts = function() {
     jq('.chartdiv').each(function(index) {
-        var div = jq(this);
-        var json_url = jq('a[type="application/json"]', div).attr('href');
-        var divid = div.attr('id'); 
+        var div = jq(this),
+            json_url = jq('a[type="application/json"]', div).attr('href'),
+            divid = div.attr('id'); 
         jq.ajax({
             url: json_url,
             success: function(responseText) { /*callback*/
+                if (!uu.chart.saved_data) uu.chart.saved_data = {};
+                uu.chart.saved_data[divid] = responseText;
                 uu.chart.fillchart(divid, responseText);
             }
         });

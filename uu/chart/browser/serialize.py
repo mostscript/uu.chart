@@ -53,6 +53,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | trend_width : Number  [0..1]| 
 | trend_color : String  [0..1]|     if empty, default same as color
 | goal : Number         [0..1]|
+| break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
        1 /%\ 
          \%/  data                  Mapping of objects by key
@@ -63,7 +64,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | Data point Object     |
 +-----------------------+
 | key : String          |       (key is either name or Date representation)
-| value : Number        |   
+| value : Number        |       Number or {} null object as sentinel for NaN
 | title : String  [0..1]|       Label for key, may be same as key.
 | note : String   [0..1]|
 | uri : String    [0..1]|
@@ -97,8 +98,7 @@ class ChartJSON(object):
             series = {}
             # series data is mapping of keys to point objects
             series['data'] = dict(
-                [(p['key'], p) for p in map(self._datapoint, seq.data)
-                    if not math.isnan(p.get('value'))]
+                [(p['key'], p) for p in map(self._datapoint, seq.data)]
                 )
             for name in (
                 'title',
@@ -116,6 +116,7 @@ class ChartJSON(object):
                 'trend_width',
                 'trend_color',
                 'goal',
+                'break_lines',
                 ):
                 v = getattr(seq, name, None)
                 if v is not None and v != '':
@@ -131,7 +132,8 @@ class ChartJSON(object):
         if isinstance(key, date) or isinstance(key, datetime):
             r['key'] = key = isodate(key)
         r['title'] = unicode(point.identity()).title()
-        r['value'] = point.value
+        value = {} if math.isnan(point.value) else point.value
+        r['value'] = value
         if point.note is not None:
             r['note'] = point.note
         if point.uri is not None:
