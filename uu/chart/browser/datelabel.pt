@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.inviting">
+<head>
+<metal:block fill-slot="javascript_head_slot">
+</metal:block>
+<metal:block fill-slot="style_slot">
+<style>
+.row {
+  clear:both;
+  margin-bottom:0.5em;
+  margin-top:0.5em;
+  padding:0.1em;
+}
+
+.section {
+    margin-bottom:1em;
+    padding:0.3em 0.2em;
+}
+
+.col_date {
+  width:10em;
+  float:left;
+}
+
+.col_label {
+  width:10em;
+  float:left;
+}
+</style>
+</metal:block>
+</head>
+<body>
+<div metal:fill-slot="main">
+
+<h2>Manage X-axis tick labels for dates</h2>
+<p class="help">
+You may wish to display an alternate tick label on the X-Axis for a
+time-series plot instead of displaying a specific date.  For example,
+if the start date of a reporting period displays by default as
+"08/01/2013" you may prefer some simpler label like "August" or a
+more meaningful label in context, such as "Baseline". 
+</p>
+
+<form action="" method="post">
+
+ <div class="section formats">
+  <h3>Date label defaults</h3>
+  <p class="help">Specify here the default format for date labels:</p>
+  
+  
+  <div tal:repeat="term view/FORMAT_CHOICES">
+    <input
+      tal:condition="python:term.value == view.selected_format()"
+      tal:attributes="id string:default-${term/value};
+                      value term/value;"
+      type="radio"
+      class="deflbl"
+      id="default-locale"
+      name="default"
+      value="locale"
+      checked="checked"
+      />
+    <input
+      tal:condition="python:term.value != view.selected_format()"
+      tal:attributes="id string:default-${term/value};
+                      value term/value;"
+      type="radio"
+      class="deflbl"
+      id="default-locale"
+      name="default"
+      value="locale"
+      />
+    <label
+      for="default-locale"
+      tal:attributes="for string:default-${term/value}"
+      tal:content="term/title">
+      MM/DD/YYYY
+    </label>
+  </div>
+  
+ </div>
+
+ <div class="section labeloverride">
+  <h3>Specific label overrides (optional)</h3>
+  <hr />
+ 
+  <div class="row headings">
+   <div class="col_date"><h4>Date</h4></div>  <div class="col_label"><h4>Custom label</h4></div>
+  </div>
+
+  <div class="row" tal:repeat="d view/included_dates">
+   <div class="col_date" tal:content="python:d.isoformat()">2013-08-01</div>
+   <div class="col_label">
+    <input name=""
+           value=""
+           tal:attributes="name python:'override.%s' % view.date_to_jstime(d);
+                           value python:view.label_for(d);" />
+   </div>
+  </div>
+
+ </div>
+
+ <hr style="clear:both;margin-top:0.3em;" />
+ <input type="submit" name="save.datelabels" value="Save &#x2714;" />
+</form>
+
+</div>
+</body>
+</html>

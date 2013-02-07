@@ -38,6 +38,15 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    name="manage_labels"
+    for="..interfaces.ITimeSeriesChart"
+    class=".datelabel.DateLabelView"
+    template="datelabel.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
   <!-- resources -->
   <browser:resourceDirectory
     name="uu.chart.jqplot"

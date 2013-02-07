@@ -3,6 +3,7 @@ from datetime import datetime, date
 from hashlib import md5
 from StringIO import StringIO
 
+from persistent.dict import PersistentDict
 from plone.dexterity.content import Item, Container
 from five import grok
 from zope.interface import implements
@@ -76,6 +77,11 @@ class TimeDataSequence(BaseDataSequence):
     
     POINTCLS = TimeSeriesDataPoint
     KEYTYPE = date
+    
+    def __init__(self, id=None, *args, **kwargs):
+        super(TimeDataSequence, self).__init__(id, *args, **kwargs)
+        self.label_default = 'locale'
+        self.label_overrides = PersistentDict()
 
 
 class TimeSeriesChart(Container):

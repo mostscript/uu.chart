@@ -90,6 +90,7 @@ uu.chart.interfaces -- narrative summary of components:
 
 import operator
 
+from persistent.dict import PersistentDict
 from plone.app.textfield import RichText
 from plone.directives import form, dexterity
 from plone.formwidget.contenttree import ContentTreeFieldWidget
@@ -723,6 +724,19 @@ class ITimeSeriesChart(IBaseChart,
         """
 
 
+DATE_AXIS_LABEL_CHOICES = SimpleVocabulary(
+    [
+        SimpleTerm(value, title=title) for value, title in (
+            ('locale', u'MM/DD/YYYY'),
+            ('iso8601', u'YYYY-MM-DD'),
+            ('name', u'Month name only'),
+            ('name+year', u'Month name and year'),
+            ('abbr', u'Month abbreviation'),
+            ('abbr+year', u'Month abbreviation, with year'),
+        )
+    ]
+)
+
 class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
     """Content item interface for a data series stored as content"""
     
@@ -735,7 +749,22 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
         default=u'',
         required=False,
         )
-     
+    
+    label_default = schema.Choice(
+        title=_(u'Label default'),
+        description=_(u'Default format for X-Axis labels.'),
+        default='locale',
+        vocabulary=DATE_AXIS_LABEL_CHOICES,
+        )
+    
+    form.omitted('label_overrides')
+    label_overrides = schema.Dict(
+        key_type=schema.Date(),
+        value_type=schema.BytesLine(),
+        defaultFactory=PersistentDict,
+        required=False,
+        )
+    
     form.omitted('data')
     data = schema.List(
         title=_(u'Data'),
@@ -746,7 +775,7 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
             ),
         readonly=True,
         )
-
+    
 
 # -- named series chart interfaces:
 

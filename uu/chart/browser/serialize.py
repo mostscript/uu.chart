@@ -18,10 +18,10 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | Multi-series chart              | ,    ___________________
 +---------------------------------+/|___| Time-series chart |   subclass adds
 | title : String                  |\|   +-------------------+   string date
-| description : String      [0..1]| `   | start : String    |   start, end 
-| css : String              [0..1]|     | end : String      |   fields
-| x_label : String          [0..1]|     '-------------------'
-| y_label : String          [0..1]|    
+| description : String      [0..1]| `   | start : String    |   start, end,
+| css : String              [0..1]|     | end : String      |   labels fields
+| x_label : String          [0..1]|     | labels : Object   |
+| y_label : String          [0..1]|     '-------------------'
 | chart_type : String       [0..1]|   enum: ('line' (default), 'bar')
 | units : String            [0..1]|
 | goal : Number             [0..1]|   Common goal; omit if None or hidden.
@@ -77,6 +77,8 @@ import json
 import math
 
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
+
+from datelabel import DateLabelView
 
 
 def isodate(dt):
@@ -143,6 +145,17 @@ class ChartJSON(object):
     def _chart(self):
         context = self.context
         r = {}
+        if ITimeSeriesChart.providedBy(context):
+            label_view = DateLabelView(context)
+            included = label_view.included_dates()
+            r['labels'] = labels = {}
+            for d in included:
+                k = label_view.date_to_jstime(d)
+                custom = label_view.label_for(d) or None
+                if custom is None:
+                    labels[k] = label_view.date_to_formatted(d)
+                else:
+                    labels[k] = custom
         r['series'] = self._series_list()
         if context.chart_styles:
             r['css'] = context.chart_styles

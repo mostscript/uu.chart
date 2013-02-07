@@ -8,6 +8,8 @@ var jq = jQuery; /* alias */
 var uu = new Object();      /* namespaces */
 uu.chart = new Object();
 
+uu.chart.custom_labels = new Object();
+
 uu.sorted = function(arr, cmp) {
     /* return a new sorted array from original */
     if (cmp) return arr.slice().sort(cmp);
@@ -233,7 +235,20 @@ uu.chart.runchart_start = function(data) {
     return result.slice(0,10); //date, not datetime in ISO8601
 }
 
+uu.chart.savelabels = function (divid, labels) {
+    var k, t, m;
+    m = {};
+    uu.chart.custom_labels[divid] = m;
+    for (k in labels) {
+        t = parseInt(k);
+        m[t] = labels[k];
+    }
+}
+
 uu.chart.fillchart = function(divid, data) {
+    if (data.labels) {
+        uu.chart.savelabels(divid, data.labels);
+    }
     var legend = {show:false}, //default is none
         legend_placement = 'outsideGrid',
         goal_color = "#333333",
@@ -268,10 +283,28 @@ uu.chart.fillchart = function(divid, data) {
     marker_color = null;
     if (data.goal) {
         if (data.goal_color) goal_color = data.goal_color;
-        series_defaults.thresholdLines = {lineColor: goal_color, labelColor: goal_color, yValues: [data.goal]};
+        series_defaults.thresholdLines = {
+            lineColor: goal_color,
+            labelColor: goal_color,
+            yValues: [data.goal]
+        };
     }
     if (data.x_axis_type == 'date') {
-        x_axis = {renderer:jq.jqplot.DateAxisRenderer, tickInterval:'1 month', min:uu.chart.runchart_start(data), tickRenderer: jq.jqplot.CanvasAxisTickRenderer, tickOptions: { angle:-65, fontSize:'15pt', fontStretch:1.5, fontFamily:'Arial', fontWeight:'bold', enableFontSupport:true, textColor:'#00f'} };
+        x_axis = {  
+            renderer: jq.jqplot.DateAxisRenderer,
+            tickInterval:'1 month',
+            min: uu.chart.runchart_start(data),
+            tickRenderer: jq.jqplot.CanvasAxisTickRenderer,
+            tickOptions: {
+                angle:-65,
+                fontSize:'15pt',
+                fontStretch:1.5,
+                fontFamily:'Arial',
+                fontWeight:'bold',
+                enableFontSupport:true,
+                textColor:'#00f'
+            }
+        };
     } else { /* named */
         x_axis.renderer = jq.jqplot.CategoryAxisRenderer;
         //x_axis.ticks = ['groucho','b','c'];
@@ -334,7 +367,48 @@ uu.chart.fillchart = function(divid, data) {
     }
 }
 
-uu.chart.loadcharts = function() {
+uu.chart.biggest_label = function (labels) {
+    var k,
+        v,
+        biggest=0;
+    for (k in labels) {
+        v = labels[k];
+        if (v.length > biggest) biggest = v.length;
+    }
+    return biggest;
+};
+
+uu.chart.custom_label = function (plotid, value) {
+    var k, m, v, lkeys, padding;
+    k = value.toString();
+    m = uu.chart.custom_labels[plotid];
+    lkeys = Object.keys(m);
+    padding = uu.chart.biggest_label(m);
+    if (jQuery.inArray(k, lkeys) != -1) {
+        return ('        ' + m[k]).slice(-1*padding);
+    }
+    if (m) {
+        return ' ';
+    }
+    return null;
+};
+
+uu.chart.loadcharts = function () {
+    // copy original tick-label draw method on CanvasAxisTickRenderer
+    // prototype, to make available to a monkey patched method:
+    jQuery.jqplot.CanvasAxisTickRenderer.prototype.orig_draw = jQuery.jqplot.CanvasAxisTickRenderer.prototype.draw;
+
+    // wrapper tick-label draw method supporting custom labels:
+    new_draw = function (ctx, plot) {
+        // use plot.target[0].id (plot div id), this.value for custom label
+        var custom_label = uu.chart.custom_label(plot.target[0].id, this.value);
+        if (custom_label !== null) this.label = custom_label;
+        return this.orig_draw(ctx, plot);  // call orig in context of this
+    }
+
+    //monkey patch original tick-label draw method with wrapper
+    jQuery.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
+
     jq('.chartdiv').each(function(index) {
         var div = jq(this),
             json_url = jq('a[type="application/json"]', div).attr('href'),
