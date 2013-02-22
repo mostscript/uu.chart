@@ -535,7 +535,7 @@ class IChartDisplay(form.Schema):
             SimpleTerm(value='w', title=_(u'Left')),
             )),
         required=False,
-        default=None, # legend disabled
+        default='e',  # right hand side
         )
     
     legend_placement = schema.Choice(

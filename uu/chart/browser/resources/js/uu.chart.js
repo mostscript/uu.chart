@@ -309,7 +309,7 @@ uu.chart.fillchart = function(divid, data) {
         //x_axis.ticks = ['groucho','b','c'];
         x_axis.ticks = uu.chart.allkeys(data);
     }
-    if (data.legend_location) {
+    if ((data.legend_location) && (data.series.length > 1)) {
         if (data.legend_placement) {
             legend_placement = data.legend_placement;
         }
