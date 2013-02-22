@@ -28,7 +28,7 @@
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
   <style>
   div.chartdiv { margin-bottom:3em; }
-  div.chartdiv .jqplot-xaxis-tick { text-align:center; left:0; max-width:35px; }
+  div.chartdiv .jqplot-xaxis-tick { text-align:center; left:0; }
   </style>
 </metal:block>
 </head>
@@ -43,7 +43,7 @@
                     json python:view.json_url(element);
                     chart_width python:getattr(element, 'width', None) or 600;
                     float python:(chart_width <= 260) and 'float:left' or 'clear:both'">
-   <div class="chartwrap" style="" tal:attributes="style string:${chart_width}px;;${float}" tal:condition="ischart">
+   <div class="chartwrap" style="" tal:attributes="style string:width:${chart_width}px;;${float}" tal:condition="ischart">
     <hr />
     <h3 tal:content="element/Title" style="width:90%">Chart title</h3>
     <p tal:condition="element/Description">

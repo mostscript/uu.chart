@@ -297,8 +297,7 @@ uu.chart.fillchart = function(divid, data) {
             tickRenderer: jq.jqplot.CanvasAxisTickRenderer,
             tickOptions: {
                 angle:-65,
-                fontSize:'15pt',
-                fontStretch:1.5,
+                fontSize:'10pt',
                 fontFamily:'Arial',
                 fontWeight:'bold',
                 enableFontSupport:true,
