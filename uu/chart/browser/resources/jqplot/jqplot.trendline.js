@@ -2,9 +2,10 @@
  * jqPlot
  * Pure JavaScript plotting plugin using jQuery
  *
- * Version: @VERSION
+ * Version: 1.0.5
+ * Revision: 1122+
  *
- * Copyright (c) 2009-2011 Chris Leonello
+ * Copyright (c) 2009-2013 Chris Leonello
  * jqPlot is currently available for use in all personal or commercial projects 
  * under both the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL 
  * version 2.0 (http://www.gnu.org/licenses/gpl-2.0.html) licenses. This means that you can 
@@ -91,7 +92,7 @@
     // called witin scope of the legend object
     // current series passed in
     // must return null or an object {label:label, color:color}
-    function addTrendlineLegend(series) {;
+    function addTrendlineLegend(series) {
         var ret = null;
         if (series.trendline && series.trendline.show) {
             var lt = series.trendline.label.toString();
