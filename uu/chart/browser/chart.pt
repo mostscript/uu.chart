@@ -8,7 +8,7 @@
 
 <metal:block fill-slot="javascript_head_slot">
 
-<!--[if lt IE 9]>
+<!--[if lte IE 9]>
   <script type="text/javascript" src="++resource++uu.chart.jqplot/excanvas.min.js"></script>
   <script type="text/javascript" src="++resource++uu.chart.js/ec5compat.js"></script>
 <![endif]-->
