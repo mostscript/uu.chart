@@ -382,6 +382,7 @@ uu.chart.custom_label = function (plotid, value) {
     var k, m, v, lkeys, padding;
     k = value.toString();
     m = uu.chart.custom_labels[plotid];
+    if (!m) return null;
     lkeys = Object.keys(m);
     padding = uu.chart.biggest_label(m);
     if (jQuery.inArray(k, lkeys) != -1) {
