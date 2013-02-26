@@ -546,7 +546,7 @@ class IChartDisplay(form.Schema):
             SimpleTerm(value='inside', title=_(u'Inside grid')),
             )),
         required=True,
-        default='inside',
+        default='outside',
         )
    
     x_label = schema.TextLine(
