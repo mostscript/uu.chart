@@ -4,6 +4,7 @@
 
 // global namspaces:
 var jq = jQuery; /* alias */
+$ = jQuery;
 
 var uu = new Object();      /* namespaces */
 uu.chart = new Object();
