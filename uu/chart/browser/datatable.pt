@@ -18,7 +18,7 @@
    <th tal:repeat="fieldname view/fieldnames" tal:content="python:fieldname.title()" style="padding:0.5em 1em;">FIELDNAME</th>
   </tr>
   <tr tal:repeat="datapoint context/data">
-      <td tal:repeat="fieldname view/fieldnames" tal:content="python: getattr(datapoint, fieldname, '')" style="padding:0.1em 1em;">VALUE</td>
+      <td tal:repeat="fieldname view/fieldnames" tal:content="python: view.field_value(datapoint, fieldname)" style="padding:0.1em 1em;">VALUE</td>
   </tr>
 </table>
 

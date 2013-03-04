@@ -53,6 +53,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | trend_width : Number  [0..1]| 
 | trend_color : String  [0..1]|     if empty, default same as color
 | goal : Number         [0..1]|
+| display_format:String [0..1]|     == '%%.%if' % display_precision
 | break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
        1 /%\ 
@@ -125,6 +126,9 @@ class ChartJSON(object):
                     if not (name.endswith('color') and
                             str(v).upper() == 'AUTO'):
                         series[name] = v
+            # display format via display precision (digits after decimal pt)
+            precision = getattr(seq, 'display_precision', 1)
+            series['display_format'] = '%%.%if' % precision
             r.append(series)
         return r
     

@@ -345,7 +345,13 @@ class IDataSeries(form.Schema):
     form.fieldset(
         'configuration',
         label=u"Configuration",
-        fields=['units', 'goal', 'range_min', 'range_max'],
+        fields=[
+            'units',
+            'goal',
+            'range_min',
+            'range_max',
+            'display_precision',
+            ],
         )
     
     title = schema.TextLine(
@@ -378,6 +384,14 @@ class IDataSeries(form.Schema):
         description=_(u'Maximum anticipated value of any data point '\
                       u'(optional).'),
         required=False,
+        )
+    
+    display_precision = schema.Int(
+        title=u'Digits after decimal point (display precision)?',
+        description=u'When displaying a decimal value, how many places '\
+                    u'beyond the decimal point should be displayed in '\
+                    u'output?  Default: two digits after the decimal point.',
+        default=1,
         )
     
     def __iter__():
