@@ -327,10 +327,10 @@ uu.chart.fillchart = function(divid, data) {
         }
     }
     range = uu.chart.range(data);
-    if (range[0]) { /*min*/
+    if ((range[0]) || (range[0] === 0)) { /*min*/
         y_axis.min = range[0];
     }
-    if (range[1]) { /*max*/
+    if ((range[1]) || (range[1] === 0)) { /*max*/
         y_axis.max = range[1];
     }
     if (data.x_label) {
