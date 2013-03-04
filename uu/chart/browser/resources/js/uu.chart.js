@@ -112,14 +112,14 @@ uu.chart.range = function(data) {
     if (data.series) {
         for (i=0; i<data.series.length; i++) {
             s = data.series[i];
-            if (s.range_min) { 
+            if ((s.range_min) || (s.range_min === 0)) { 
                 if (!min) {
                     min = s.range_min;
                 } else {
                     if (min > s.range_min) min = s.range_min;
                 }
             }
-            if (s.range_max) {
+            if ((s.range_max) || (s.range_max === 0)) { 
                 if (!max) {
                     max = s.range_max;
                 } else {
