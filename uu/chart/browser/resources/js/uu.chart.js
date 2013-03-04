@@ -189,7 +189,13 @@ uu.chart.seriesoptions = function(data) {
             if (s.break_lines) {
                 options.breakOnNull = true;
             }
-            options.pointLabels = {formatString: "%.1f", hideZeros:false};
+            options.pointLabels = {
+                formatString: "%.1f",
+                hideZeros: false
+                };
+            if (s.display_format) {
+                options.pointLabels.formatString = s.display_format;
+            }
             r.push(options);
         }
     }
