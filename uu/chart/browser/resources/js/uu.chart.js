@@ -6,37 +6,37 @@
 var jq = jQuery; /* alias */
 $ = jQuery;
 
-var uu = new Object();      /* namespaces */
-uu.chart = new Object();
+//var uu = uu || {};          /* namespaces */
 
-uu.chart.custom_labels = new Object();
+var uu = (function (ns, $) {
+    "use strict";
+ 
+    // uu namespace functions:
 
-uu.sorted = function(arr, cmp) {
-    /* return a new sorted array from original */
-    if (cmp) return arr.slice().sort(cmp);
-    return arr.slice().sort();
-}
-
-/**  array max/min for any data-type (req. EC5 Array.prototype.reduce)
-  *  prefers non-null values over any null values in sequence always
-  *  for both max and min.
-  */ 
-uu.maxcmp = function (a,b) { return ((a && (a>b)) || !b) ? a : b; }
-uu.mincmp = function (a,b) { return ((a && (a<b)) || !b) ? a : b; }
-uu.max = function(seq) { return seq.reduce(uu.maxcmp); }
-uu.min = function(seq) { return seq.reduce(uu.mincmp); }
-
-
-uu.chart.normalize_series = function(series) {
-    var i,
-        element,
-        result = new Array();
-    for (i=0; i<series.length; i++) {
-        element = series[i];
-        result.push( [Date.parse(element[0]), element[1]] );
+    /* return a new sorted array from original */ 
+    ns.sorted = function(arr, cmp) {
+        if (cmp) return arr.slice().sort(cmp);
+        return arr.slice().sort();
     }
-    return result;
-}
+
+    /**  array max/min for any data-type (req. EC5 Array.prototype.reduce)
+      *  prefers non-null values over any null values in sequence always
+      *  for both max and min.
+      */ 
+    ns.maxcmp = function (a,b) { return ((a && (a>b)) || !b) ? a : b; }
+    ns.mincmp = function (a,b) { return ((a && (a<b)) || !b) ? a : b; }
+    ns.max = function(seq) { return seq.reduce(uu.maxcmp); }
+    ns.min = function(seq) { return seq.reduce(uu.mincmp); }
+
+    return ns;
+
+}(uu || {}, jQuery));  // uu namespace, loose-augmented
+
+
+
+uu.chart = uu.chart || {};
+uu.chart.custom_labels = uu.chart.custom_labels || {};
+
 
 uu.chart.allkeys = function(data) {
     var rset = new Object(); //use object as fake set-of-names type
@@ -253,9 +253,6 @@ uu.chart.savelabels = function (divid, labels) {
 }
 
 uu.chart.fillchart = function(divid, data) {
-    if (data.labels) {
-        uu.chart.savelabels(divid, data.labels);
-    }
     var legend = {show:false}, //default is none
         legend_placement = 'outsideGrid',
         goal_color = "#333333",
@@ -272,6 +269,9 @@ uu.chart.fillchart = function(divid, data) {
         points,
         i,
         j;
+    if (data.labels) {
+        uu.chart.savelabels(divid, data.labels);
+    }
     if ((data.chart_type == "bar") || (data.chart_type == "stacked")) {
         barwidth = uu.chart.bar_config(data).width;
         if (data.chart_type == "stacked") {
@@ -313,7 +313,6 @@ uu.chart.fillchart = function(divid, data) {
         };
     } else { /* named */
         x_axis.renderer = jq.jqplot.CategoryAxisRenderer;
-        //x_axis.ticks = ['groucho','b','c'];
         x_axis.ticks = uu.chart.allkeys(data);
     }
     if ((data.legend_location) && (data.series.length > 1)) {
