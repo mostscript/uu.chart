@@ -220,21 +220,20 @@ uu.chart = (function (ns, $) {
         return [min, max];
     };
 
+    ns.savelabels = function (divid, labels) {
+        var k, m = {};
+        ns.custom_labels[divid] = m;
+        for (k in labels) {
+            m[parseInt(k)] = labels[k];
+        }
+    };
+
     // return module namespace
     return ns;
 
 }(uu.chart || {}, jQuery));  // uu.chart namespace, loose-augmented
 
 
-uu.chart.savelabels = function (divid, labels) {
-    var k, t, m;
-    m = {};
-    uu.chart.custom_labels[divid] = m;
-    for (k in labels) {
-        t = parseInt(k);
-        m[t] = labels[k];
-    }
-};
 
 uu.chart.fillchart = function (divid, data) {
     var legend = {show:false}, //default is none
