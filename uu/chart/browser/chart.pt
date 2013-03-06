@@ -12,6 +12,7 @@
   <script type="text/javascript" src="++resource++uu.chart.jqplot/excanvas.min.js"></script>
   <script type="text/javascript" src="++resource++uu.chart.js/ec5compat.js"></script>
 <![endif]-->
+<tal:block condition="python:request.get('devmode', None) is None">
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.dateAxisRenderer.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.barRenderer.min.js"></script>
@@ -23,6 +24,20 @@
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasAxisTickRenderer.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js"></script>
+</tal:block>
+<tal:block condition="python:request.get('devmode', None) is not None">
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.dateAxisRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.barRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.categoryAxisRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasTextRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasAxisLabelRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.pointLabels.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.trendline.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasAxisTickRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js"></script>
+</tal:block>
 </metal:block>
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
