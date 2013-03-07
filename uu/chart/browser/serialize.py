@@ -6,7 +6,7 @@ JSON structure pseudo-UML
 
 Note: properties marked with multiplicity [0..1] either have a typed
       value or are null.  These properties with optional values may 
-      also be omitted from the JSON payload.
+      also be omitted (undefined) from the JSON payload.
 
       Rendering code should have suitable defaults for ommited
       configuration and optional metadata.
@@ -14,21 +14,21 @@ Note: properties marked with multiplicity [0..1] either have a typed
       Date values will be formatted to ISO 8601 with microseconds removed.
       (jqplot understands this format, as do many other parsers).
 
- _________________________________
-| Multi-series chart              | ,    ___________________
-+---------------------------------+/|___| Time-series chart |   subclass adds
-| title : String                  |\|   +-------------------+   string date
-| description : String      [0..1]| `   | start : String    |   start, end,
-| css : String              [0..1]|     | end : String      |   labels fields
-| x_label : String          [0..1]|     | labels : Object   |
-| y_label : String          [0..1]|     '-------------------'
-| chart_type : String       [0..1]|   enum: ('line' (default), 'bar')
+ _________________________________       _____________________
+| Multi-series chart              | ,   | Time-series chart   |  subclass adds
++---------------------------------+/|___+---------------------+  string date
+| title : String                  |\|   | frequency : String  |  Ex: 'monthly'
+| description : String      [0..1]| `   | start : String      |  start, end,
+| css : String              [0..1]|     | end : String        |  frequency,
+| x_label : String          [0..1]|     | labels : Object     |  labels fields
+| y_label : String          [0..1]|     | auto_crop : Boolean |  
+| chart_type : String       [0..1]|     '---------------------'
 | units : String            [0..1]|
 | goal : Number             [0..1]|   Common goal; omit if None or hidden.
 | goal_color : String       [0..1]|   include IFF configured, goal not hidden
 | x_axis_type : String      [0..1]|   Either 'date' or omitted.
 | legend_location : String  [0..1]|   null ==> hide legend
-| legend_placement : String [0..1]|   enum: ('inside', 'outside')
+| legend_placement : String [0..1]|
 '---------------------------------'
        1 /%\ 
          \%/  series                  (Array of objects)
@@ -57,8 +57,8 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
        1 /%\ 
-         \%/  data                  Mapping of objects by key
-          Y                         
+         \%/  data                  Array of two-item key-value pairs (arrays)
+          Y                         of name or date keys and point objects.
           |   
     0..*  |
  _________!_____________
@@ -70,6 +70,23 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | note : String   [0..1]|
 | uri : String    [0..1]|
 '-----------------------'
+
+Notes, enumerated choices:
+
+ * Time series frequency:
+    'monthly' (default)
+    'weekly'
+    'yearly'
+    'quarterly'
+
+ * Chart types:
+    'line' (default)
+    'bar'
+
+ * Legend placement:
+    'inside'
+    'outside'
+    'tabular'
 
 """
 
@@ -100,7 +117,7 @@ class ChartJSON(object):
         for seq in self.context.series():
             series = {}
             # series data is mapping of keys to point objects
-            series['data'] = dict(
+            series['data'] = list(
                 [(p['key'], p) for p in map(self._datapoint, seq.data)]
                 )
             for name in (
@@ -147,23 +164,7 @@ class ChartJSON(object):
         return r
 
     def _chart(self):
-        context = self.context
-        r = {}
-        if ITimeSeriesChart.providedBy(context):
-            label_view = DateLabelView(context)
-            included = label_view.included_dates()
-            r['labels'] = labels = {}
-            for d in included:
-                k = label_view.date_to_jstime(d)
-                custom = label_view.label_for(d) or None
-                if custom is None:
-                    labels[k] = label_view.date_to_formatted(d)
-                else:
-                    labels[k] = custom
-        r['series'] = self._series_list()
-        if context.chart_styles:
-            r['css'] = context.chart_styles
-        for name in (
+        chart_attrs = [
             'title',
             'description',
             'chart_type',
@@ -176,18 +177,41 @@ class ChartJSON(object):
             'legend_location',
             'width',
             'height',
-            ):
+            ]
+        timeseries_chart_attrs = [
+            'frequency',
+            'auto_crop',
+            'start',
+            'end',
+            ]
+        context = self.context
+        r = {}
+        if ITimeSeriesChart.providedBy(context):
+            chart_attrs = chart_attrs + timeseries_chart_attrs
+            label_view = DateLabelView(context)
+            included = label_view.included_dates()
+            r['x_axis_type'] = 'date'
+            r['auto_crop'] = True  # default, explcit value may disable
+            r['labels'] = labels = {}
+            for d in included:
+                k = label_view.date_to_jstime(d)
+                custom = label_view.label_for(d) or None
+                if custom is None:
+                    labels[k] = label_view.date_to_formatted(d)
+                else:
+                    labels[k] = custom
+        r['series'] = self._series_list()
+        if context.chart_styles:
+            r['css'] = context.chart_styles
+        for name in chart_attrs:
             v = getattr(self.context, name, None)
             if v is not None and v != '':
-                if not (name.endswith('color') and
-                        str(v).upper() == 'AUTO'):
-                    r[name] = v
-        if ITimeSeriesChart.providedBy(context):
-            for name in ('start', 'end'):
-                v = getattr(self.context, name, None)
-                if v is not None:
+                if (name.endswith('color') and str(v).upper() == 'AUTO'):
+                    continue
+                elif isinstance(v, date) or isinstance(v, datetime):
                     r[name] = isodate(v)
-            r['x_axis_type'] = 'date';
+                else:
+                    r[name] = v
         if not self.context.show_goal and r.get('goal', None):
             del(r['goal']) #omit if show_goal is false
         if not self.context.show_goal and r.get('goal_color', None):

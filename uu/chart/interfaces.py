@@ -160,6 +160,16 @@ VOCAB_SUMMARIZATION = SimpleVocabulary(
 )
 
 
+FREQ_VOCAB = SimpleVocabulary(
+    [SimpleTerm(v, title=title) for v, title in [
+        ('monthly', u'Monthly'),
+        ('weekly', u'Weekly'),
+        ('yearly', u'Yearly'),
+        ('quarterly', u'Quarterly'),
+    ]]
+)
+
+
 def resolve_uid(uid):
     catalog = getSite().portal_catalog
     r = catalog.search({'UID': str(uid)})
@@ -470,6 +480,12 @@ class ITimeSeriesCollection(IDataCollection):
         required=False,
         )
     
+    frequency = schema.Choice(
+        title=u'Chart frequency',
+        vocabulary=FREQ_VOCAB,
+        default='monthly',
+        )
+    
     @invariant
     def validate_start_end(obj):
         if not (obj.start is None or obj.end is None) and obj.start > obj.end:
@@ -730,7 +746,17 @@ class ITimeSeriesChart(IBaseChart,
                        ITimeSeriesCollection,
                        IChartDisplay):
     """Chart content item; container for sequences"""
-    
+ 
+    auto_crop = schema.Bool(
+        title=u'Auto-crop to completed data?',
+        description=u'If data contains sequential null values (incomplete '\
+                    u'or no data calculable) on the right-hand of a '\
+                    u'time-series plot, should that right-hand side '\
+                    u'be cropped to only show the latest meaningful '\
+                    u'data?  The default is to crop automatically.',
+        default=True,
+        )
+
     def series():
         """
         return a iterable of IDataSeries objects for all contained

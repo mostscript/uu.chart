@@ -45,7 +45,8 @@ uu.chart = (function (ns, $) {
     ns.uniquekeys = function (data) {
         var rset = {};      // Object as fake set-of-names type
         (data.series || []).forEach(function (s) {
-            Object.keys(s.data || {}).forEach(function (propname) {
+            (s.data || []).forEach(function (pair) {
+                var propname = pair[0];
                 rset[propname] = 1;
             });
         });
@@ -56,10 +57,9 @@ uu.chart = (function (ns, $) {
         var r = [];
         (data.series || []).forEach(function (s) {
             var s_rep = [];
-            // NOTE: sorted keys not necessary if JSON API changes away from s.data
-            // being an object to s.data being an array.
-            uu.sorted(Object.keys(s.data || {})).forEach(function (key) {
-                var point = s.data[key],
+            (s.data || []).forEach(function (pair) {
+                var key = pair[0],
+                    point = pair[1],
                     value = point.value;
                 if (isNaN(value)) {
                     // null object {} is JSON sentinel for NaN ==> null
@@ -144,7 +144,7 @@ uu.chart = (function (ns, $) {
             },
             chart_width = data.width || 600;
         r.max_points = uu.max(data.series.map(function (series) {
-            return Object.keys(series.data).length;
+            return (series.data || []).length;
         }));
         r.width = Math.min(r.width, Math.max(5, (((chart_width * 0.8) / (r.max_points + 1)) / (r.series_length + 1))));
         return r;
@@ -155,18 +155,24 @@ uu.chart = (function (ns, $) {
      * array of [min, max] (each element is a Date object).
      */
     ns.timeseries_range = function (data) {
-        var min = data.start,
+        var pointkey = function (a) { return a[0]; },
+            min = data.start,
             max = data.end;    // start,end may be null or undefined in JSON
+            
         if (!min) {
             // no explicit start date, calculate earliest date in data
             (data.series || []).forEach(function (s) {
-                min = (s.data) ? uu.min([min, uu.min(Object.keys(s.data))]) : min;
+                if (s.data instanceof Array) {
+                    min = uu.min([min, uu.min(s.data.map(pointkey))]);
+                }
             });
         }
         if (!max) {
             // no explicit end date, calculate latest date in data
             (data.series || []).forEach(function (s) {
-                max = (s.data) ? uu.max([max, uu.max(Object.keys(s.data))]) : max;
+                if (s.data instanceof Array) {
+                    max = uu.max([max, uu.max(s.data.map(pointkey))]);
+                }
             });
         }
         return [new Date(min), new Date(max)];  // RFC 2822 dates to native Date
