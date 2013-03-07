@@ -3,7 +3,6 @@
   */
 
 // global namspaces:
-var jq = jQuery; /* alias */
 var $ = jQuery;  // For jqPlot, somehow needed for MSIE8
 
 var uu = (function (ns, $) {
@@ -453,7 +452,7 @@ uu.chart = (function (ns, $) {
 }(uu.chart || {}, jQuery));  // uu.chart namespace, loose-augmented
 
 
-jq('document').ready(function () {
+jQuery('document').ready(function () {
     "use strict";
 
     uu.chart.loadcharts();
