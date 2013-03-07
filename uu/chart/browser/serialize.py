@@ -155,7 +155,7 @@ class ChartJSON(object):
         if isinstance(key, date) or isinstance(key, datetime):
             r['key'] = key = isodate(key)
         r['title'] = unicode(point.identity()).title()
-        value = {} if math.isnan(point.value) else point.value
+        value = None if math.isnan(point.value) else point.value
         r['value'] = value
         if point.note is not None:
             r['note'] = point.note

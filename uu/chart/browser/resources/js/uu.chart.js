@@ -40,6 +40,9 @@ uu.chart = (function (ns, $) {
     "use strict";
 
     ns.custom_labels = ns.custom_labels || {};
+    
+    // saved data keyed by div (chart) id
+    ns.saved_data = ns.saved_data || {};
 
     // All keys for series, de-duplicated
     ns.uniquekeys = function (data) {
@@ -61,10 +64,10 @@ uu.chart = (function (ns, $) {
                 var key = pair[0],
                     point = pair[1],
                     value = point.value;
-                if (isNaN(value)) {
-                    // null object {} is JSON sentinel for NaN ==> null
-                    value = null;
-                }
+                //if (isNaN(value)) {
+                //    // null object {} is JSON sentinel for NaN ==> null
+                //    value = null;
+                //}
                 if (data.x_axis_type === 'date') {
                     s_rep.push([(Date.parse(key) || key), value]);
                 } else {
@@ -155,7 +158,10 @@ uu.chart = (function (ns, $) {
      * array of [min, max] (each element is a Date object).
      */
     ns.timeseries_range = function (data) {
-        var pointkey = function (a) { return a[0]; },
+        var pointkey = function (pair) { return pair[0]; },
+            cropfilter = function (pair) {
+                return (pair[1] && pair[1].value !== null);
+            },
             min = data.start,
             max = data.end;    // start,end may be null or undefined in JSON
             
@@ -171,7 +177,11 @@ uu.chart = (function (ns, $) {
             // no explicit end date, calculate latest date in data
             (data.series || []).forEach(function (s) {
                 if (s.data instanceof Array) {
-                    max = uu.max([max, uu.max(s.data.map(pointkey))]);
+                    if (data.auto_crop) {
+                        max = uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))]);
+                    } else {
+                        max = uu.max([max, uu.max(s.data.map(pointkey))]);
+                    }
                 }
             });
         }
@@ -409,8 +419,14 @@ uu.chart = (function (ns, $) {
         return biggest;
     };
 
-    ns.custom_label = function (plotid, value) {
-        var k, m, lkeys, padding;
+    ns.timeseries_custom_label = function (plotid, value, data) {
+        var k, m, lkeys, padding,
+            auto_crop = data.auto_crop || true,
+            maxkey = ns.timeseries_range(data)[1];
+        if (maxkey.getTime() < value) {
+            // empty label === auto-cropped tick with no values
+            return ' ';
+        }
         k = value.toString();
         m = uu.chart.custom_labels[plotid];
         if (!m) {
@@ -426,6 +442,14 @@ uu.chart = (function (ns, $) {
         }
         return null;
     };
+    
+    ns.custom_label = function (plotid, value) {
+        var data = ns.saved_data[plotid];
+        if (data.x_axis_type === 'date') {
+            return ns.timeseries_custom_label(plotid, value, data);
+        }
+        return null;
+    }
 
     ns.loadcharts = function () {
         var new_draw;
