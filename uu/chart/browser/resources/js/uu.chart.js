@@ -4,27 +4,33 @@
 
 // global namspaces:
 var jq = jQuery; /* alias */
-$ = jQuery;  // For jqPlot, somehow needed for MSIE8
+var $ = jQuery;  // For jqPlot, somehow needed for MSIE8
 
 var uu = (function (ns, $) {
     "use strict";
- 
+
     // uu namespace functions:
 
-    /* return a new sorted array from original */ 
+    /* return a new sorted array from original */
     ns.sorted = function (arr, cmp) {
-        if (cmp) return arr.slice().sort(cmp);
+        if (cmp) {
+            return arr.slice().sort(cmp);
+        }
         return arr.slice().sort();
+    };
+
+    ns.has_value = function (v) {
+        return (!($.inArray(v, [null, undefined])));
     };
 
     /**  array max/min for any data-type (req. EC5 Array.prototype.reduce)
       *  prefers non-null values over any null values in sequence always
       *  for both max and min.
-      */ 
-    ns.maxcmp = function (a,b) { return ((a && (a>b)) || !b) ? a : b; }
-    ns.mincmp = function (a,b) { return ((a && (a<b)) || !b) ? a : b; }
-    ns.max = function (seq) { return seq.reduce(uu.maxcmp); }
-    ns.min = function (seq) { return seq.reduce(uu.mincmp); }
+      */
+    ns.maxcmp = function (a, b) { return ((a && (a > b)) || !b) ? a : b; };
+    ns.mincmp = function (a, b) { return ((a && (a < b)) || !b) ? a : b; };
+    ns.max = function (seq) { return seq.reduce(uu.maxcmp); };
+    ns.min = function (seq) { return seq.reduce(uu.mincmp); };
 
     return ns;
 
@@ -33,9 +39,9 @@ var uu = (function (ns, $) {
 
 uu.chart = (function (ns, $) {
     "use strict";
-    
+
     ns.custom_labels = ns.custom_labels || {};
-    
+
     // All keys for series, de-duplicated
     ns.uniquekeys = function (data) {
         var rset = {};      // Object as fake set-of-names type
@@ -58,9 +64,9 @@ uu.chart = (function (ns, $) {
                     value = point.value;
                 if (isNaN(value)) {
                     // null object {} is JSON sentinel for NaN ==> null
-                    value = null; 
+                    value = null;
                 }
-                if (data.x_axis_type == 'date') {
+                if (data.x_axis_type === 'date') {
                     s_rep.push([(Date.parse(key) || key), value]);
                 } else {
                     // named series elements for jqplot are Y-value onl
@@ -77,8 +83,8 @@ uu.chart = (function (ns, $) {
         var min = null,
             max = null;
         (data.series || []).forEach(function (s) {
-            min = (s.range_min != null) ? Math.min(min, s.range_min) : min;
-            max = (s.range_max != null) ? Math.max(max, s.range_max) : max;
+            min = (uu.has_value(s.range_min)) ? Math.min(min, s.range_min) : min;
+            max = (uu.has_value(s.range_max)) ? Math.max(max, s.range_max) : max;
         });
         return [min, max];
     };
@@ -88,8 +94,8 @@ uu.chart = (function (ns, $) {
             r = $.jqplot.config.defaultColors.slice(); //copy defaults
         (data.series || []).forEach(function (s) {
             // overwrite default only if color specified:
-            r[i] = (s.color) ? s.color : r[i];
-            i++;
+            r[i] = s.color || r[i];
+            i += 1;
         });
         return r;
     };
@@ -115,14 +121,14 @@ uu.chart = (function (ns, $) {
                         show: s.show_trend || false,
                         label: (!s.show_trend) ? undefined : 'Trend',
                         lineWidth: (!s.show_trend) ? undefined : s.trend_width || 1,
-                        color: (s.show_trend && s.trend_color) ? s.trend_color : undefined,
+                        color: (s.show_trend && s.trend_color) ? s.trend_color : undefined
                     },
                     formatString: s.display_format || undefined
                 };
             if (s.units && options.label) {
                 options.label += ' [&thinsp;' + s.units + '&thinsp;]';
             }
-            if (s.show_trend == true) {
+            if (s.show_trend === true) {
                 options.trendline.label = 'Trend' + ((s.title) ? ': ' + s.title : '');
             }
             r.push(options);
@@ -140,7 +146,7 @@ uu.chart = (function (ns, $) {
             chart_width = data.width || 600;
         r.max_points = uu.max(data.series.map(function (series) {
             return Object.keys(series.data).length;
-            }));
+        }));
         r.width = Math.min(r.width, Math.max(5, (((chart_width * 0.8) / (r.max_points + 1)) / (r.series_length + 1))));
         return r;
     };
@@ -166,7 +172,7 @@ uu.chart = (function (ns, $) {
         }
         return [new Date(min), new Date(max)];  // RFC 2822 dates to native Date
     };
-    
+
     /* timeseries_interval():
      * Return interval as array of [N, type]
      *   - where N is a number, type is string.
@@ -175,7 +181,7 @@ uu.chart = (function (ns, $) {
      */
     ns.timeseries_interval = function (data) {
         if (data.interval instanceof Array) {
-            return data.interval.slice(0,2);
+            return data.interval.slice(0, 2);
         }
         // monthly default:
         return [1, 'month'];
@@ -201,7 +207,7 @@ uu.chart = (function (ns, $) {
                 'week',
                 'month',
                 'year'
-                ],
+            ],
             min = r[0],
             max = r[1];
         if (!has_datediff) {
@@ -224,19 +230,18 @@ uu.chart = (function (ns, $) {
         var k, m = {};
         ns.custom_labels[divid] = m;
         for (k in labels) {
-            m[parseInt(k)] = labels[k];
+            if (labels.hasOwnProperty(k)) {
+                m[parseInt(k, 10)] = labels[k];
+            }
         }
     };
 
     ns.label_color_fixups = function (data, divid, series_colors) {
-        var i, points, labelselect;
-        for (i=0; i<series_colors.length; i++) {
-            labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
-            points = $(labelselect);
-            points.each(function () {
+        var i, points, labelselect,
+            pointfn = function () {
                 var point = $(this);
-                if (data.chart_type == "stacked") {
-                    if (parseInt(point.html()) < 20) {
+                if (data.chart_type === "stacked") {
+                    if (parseInt(point.html(), 10) < 20) {
                         point.css('margin-left', '2.2em');
                     }
                     point.css('backgroundColor', series_colors[i]);
@@ -245,7 +250,11 @@ uu.chart = (function (ns, $) {
                 } else {
                     point.css('color', series_colors[i]);
                 }
-            });
+            };
+        for (i = 0; i < series_colors.length; i += 1) {
+            labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
+            points = $(labelselect);
+            points.each(pointfn);
         }
     };
 
@@ -253,21 +262,24 @@ uu.chart = (function (ns, $) {
         var range = uu.chart.range(data),
             y_axis = {
                 label: data.y_label || undefined,
-                min: (range[0] != null) ? range[0] : undefined,
-                max: (range[1] != null) ? range[1] : undefined
+                min: (uu.has_value(range[0])) ? range[0] : undefined,
+                max: (uu.has_value(range[1])) ? range[1] : undefined
             };
         if ((data.y_label) && (data.units)) {
             y_axis.label += ' ( ' + data.units + ' )';
         }
         if ($.jqplot.CanvasAxisLabelRenderer) {
             y_axis.labelRenderer = $.jqplot.CanvasAxisLabelRenderer;
-            y_axis.labelOptions = { fontFamily:'Helvetica,Arial,Sans Serif', fontSize:'12pt' };
+            y_axis.labelOptions = {
+                fontFamily: 'Helvetica,Arial,Sans Serif',
+                fontSize: '12pt'
+            };
         }
         return y_axis;
     };
 
     ns.fillchart = function (divid, data) {
-        var legend = {show:false}, //default is none
+        var legend = { show: false }, //default is none
             legend_placement = 'outsideGrid',
             goal_color = "#333333",
             x_axis = {},
@@ -278,14 +290,13 @@ uu.chart = (function (ns, $) {
             range,
             barwidth,
             line_width,
-            marker_color,
-            range;
+            marker_color;
         if (data.labels) {
             ns.savelabels(divid, data.labels);
         }
-        if ((data.chart_type == "bar") || (data.chart_type == "stacked")) {
+        if ((data.chart_type === "bar") || (data.chart_type === "stacked")) {
             barwidth = ns.bar_config(data).width;
-            if (data.chart_type == "stacked") {
+            if (data.chart_type === "stacked") {
                 stack = true;
                 barwidth = barwidth * data.series.length;
             }
@@ -293,21 +304,21 @@ uu.chart = (function (ns, $) {
                 renderer : $.jqplot.BarRenderer,
                 rendererOptions : {
                     barWidth : barwidth
-                    }
-                };
-            }
+                }
+            };
+        }
         series_colors = ns.series_colors(data);
         line_width = 4;
         marker_color = null;
         if (data.goal) {
-            if (data.goal_color) goal_color = data.goal_color;
+            goal_color = data.goal_color || undefined;
             series_defaults.thresholdLines = {
                 lineColor: goal_color,
                 labelColor: goal_color,
                 yValues: [data.goal]
             };
         }
-        if (data.x_axis_type == 'date') {
+        if (data.x_axis_type === 'date') {
             interval = ns.timeseries_interval(data);
             range = ns.padded_timeseries_range(data);
             // note:    jqplot padding causes problems with tick locations and
@@ -325,19 +336,19 @@ uu.chart = (function (ns, $) {
             // also:    intervals of one month are tricky, we always want the
             //          min date to be the same day-of-month as each subsequent
             //          data point, when the interval is monthly.
-            x_axis = {  
+            x_axis = {
                 renderer: $.jqplot.DateAxisRenderer,
-                tickInterval: '' + interval[0] + ' ' + interval[1],
+                tickInterval:  String(interval[0]) + ' ' + interval[1],
                 min: range[0],
                 max: range[1],
                 tickRenderer: $.jqplot.CanvasAxisTickRenderer,
                 tickOptions: {
-                    angle:-65,
-                    fontSize:'10pt',
-                    fontFamily:'Arial',
-                    fontWeight:'bold',
-                    enableFontSupport:true,
-                    textColor:'#00f'
+                    angle: -65,
+                    fontSize: '10pt',
+                    fontFamily: 'Arial',
+                    fontWeight: 'bold',
+                    enableFontSupport: true,
+                    textColor: '#00f'
                 }
             };
         } else { /* named */
@@ -348,22 +359,27 @@ uu.chart = (function (ns, $) {
             if (data.legend_placement) {
                 legend_placement = data.legend_placement;
             }
-            legend = {show:true, location:data.legend_location, placement:legend_placement, marginTop:'2em'};
+            legend = {
+                show: true,
+                location: data.legend_location,
+                placement: legend_placement,
+                marginTop: '2em'
+            };
         }
         x_axis.label = data.x_label || undefined;
         $.jqplot.config.enablePlugins = true;
         $.jqplot(divid, ns.seriesdata(data), {
             stackSeries: stack,
-            axes:{
+            axes: {
                 xaxis: x_axis,
                 yaxis: ns.jqplot_yaxis_config(data)
             },
-            axesDefaults: {tickOptions: {fontSize:'7pt'}},
-            series:ns.seriesoptions(data),
+            axesDefaults: {tickOptions: {fontSize: '7pt'}},
+            series: ns.seriesoptions(data),
             seriesDefaults: series_defaults,
             legend: legend,
             seriesColors : series_colors
-            });
+        });
         // finally, adjust label colors to match line colors using CSS/jQuery:
         ns.label_color_fixups(data, divid, series_colors);
     };
@@ -371,23 +387,27 @@ uu.chart = (function (ns, $) {
     ns.biggest_label = function (labels) {
         var k,
             v,
-            biggest=0;
+            biggest = 0;
         for (k in labels) {
-            v = labels[k];
-            if (v.length > biggest) biggest = v.length;
+            if (labels.hasOwnProperty(k)) {
+                v = labels[k];
+                biggest = (v.length > biggest) ? v.length : biggest;
+            }
         }
         return biggest;
     };
 
     ns.custom_label = function (plotid, value) {
-        var k, m, v, lkeys, padding;
+        var k, m, lkeys, padding;
         k = value.toString();
         m = uu.chart.custom_labels[plotid];
-        if (!m) return null;
+        if (!m) {
+            return null;
+        }
         lkeys = Object.keys(m);
         padding = ns.biggest_label(m);
-        if ($.inArray(k, lkeys) != -1) {
-            return ('        ' + m[k]).slice(-1*padding);
+        if ($.inArray(k, lkeys) !== -1) {
+            return ('        ' + m[k]).slice(-1 * padding);
         }
         if (m) {
             return ' ';
@@ -405,21 +425,21 @@ uu.chart = (function (ns, $) {
         new_draw = function (ctx, plot) {
             // use plot.target[0].id (plot div id), this.value for custom label
             var custom_label = ns.custom_label(plot.target[0].id, this.value);
-            if (custom_label !== null) this.label = custom_label;
+            this.label = (custom_label !== null) ? custom_label : this.label;
             return this.orig_draw(ctx, plot);  // call orig in context of this
-        }
+        };
 
         //monkey patch original tick-label draw method with wrapper
         $.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
 
-        $('.chartdiv').each(function (index) {
+        $('.chartdiv').each(function () {
             var div = $(this),
                 json_url = $('a[type="application/json"]', div).attr('href'),
-                divid = div.attr('id'); 
+                divid = div.attr('id');
             $.ajax({
                 url: json_url,
                 success: function (responseText) { /*callback*/
-                    if (!ns.saved_data) ns.saved_data = {};
+                    ns.saved_data = ns.saved_data || {};
                     ns.saved_data[divid] = responseText;
                     ns.fillchart(divid, responseText);
                 }
@@ -434,6 +454,8 @@ uu.chart = (function (ns, $) {
 
 
 jq('document').ready(function () {
+    "use strict";
+
     uu.chart.loadcharts();
 });
 
