@@ -19,7 +19,7 @@ var uu = (function (ns, $) {
     };
 
     ns.has_value = function (v) {
-        return (!($.inArray(v, [null, undefined])));
+        return ($.inArray(v, [null, undefined]) !== -1);
     };
 
     /**  array max/min for any data-type (req. EC5 Array.prototype.reduce)
@@ -179,11 +179,18 @@ uu.chart = (function (ns, $) {
      *   millisecond, second, minute, hour, day, week, month, year
      */
     ns.timeseries_interval = function (data) {
-        if (data.interval instanceof Array) {
-            return data.interval.slice(0, 2);
-        }
+        var freqmap = {
+                monthly: [1, 'month'],
+                weekly: [1, 'week'],
+                quarterly: [3, 'month'],
+                yearly: [1, 'year']
+            },
+            supported_freq = Object.keys(freqmap);
+        if ($.inArray(data.frequency, supported_freq) !== -1) {
+            return freqmap[data.frequency];
+        } 
         // monthly default:
-        return [1, 'month'];
+        return freqmap.monthly;
     };
 
     /* padded_timeseries_range():
