@@ -228,210 +228,209 @@ uu.chart = (function (ns, $) {
         }
     };
 
+    ns.label_color_fixups = function (data, divid, series_colors) {
+        var i, points, labelselect;
+        for (i=0; i<series_colors.length; i++) {
+            labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
+            points = $(labelselect);
+            points.each(function () {
+                var point = $(this);
+                if (data.chart_type == "stacked") {
+                    if (parseInt(point.html()) < 20) {
+                        point.css('margin-left', '2.2em');
+                    }
+                    point.css('backgroundColor', series_colors[i]);
+                    point.css('padding', '0 0.2em');
+                    point.css('margin-top', '3em');
+                } else {
+                    point.css('color', series_colors[i]);
+                }
+            });
+        }
+    };
+
+    ns.jqplot_yaxis_config = function (data) {
+        var range = uu.chart.range(data),
+            y_axis = {
+                label: data.y_label || undefined,
+                min: (range[0] != null) ? range[0] : undefined,
+                max: (range[1] != null) ? range[1] : undefined
+            };
+        if ((data.y_label) && (data.units)) {
+            y_axis.label += ' ( ' + data.units + ' )';
+        }
+        if ($.jqplot.CanvasAxisLabelRenderer) {
+            y_axis.labelRenderer = $.jqplot.CanvasAxisLabelRenderer;
+            y_axis.labelOptions = { fontFamily:'Helvetica,Arial,Sans Serif', fontSize:'12pt' };
+        }
+        return y_axis;
+    };
+
+    ns.fillchart = function (divid, data) {
+        var legend = {show:false}, //default is none
+            legend_placement = 'outsideGrid',
+            goal_color = "#333333",
+            x_axis = {},
+            stack = false,
+            series_defaults = {},
+            series_colors = $.jqplot.config.defaultColors,
+            interval,
+            range,
+            barwidth,
+            line_width,
+            marker_color,
+            range;
+        if (data.labels) {
+            ns.savelabels(divid, data.labels);
+        }
+        if ((data.chart_type == "bar") || (data.chart_type == "stacked")) {
+            barwidth = ns.bar_config(data).width;
+            if (data.chart_type == "stacked") {
+                stack = true;
+                barwidth = barwidth * data.series.length;
+            }
+            series_defaults = {
+                renderer : $.jqplot.BarRenderer,
+                rendererOptions : {
+                    barWidth : barwidth
+                    }
+                };
+            }
+        series_colors = ns.series_colors(data);
+        line_width = 4;
+        marker_color = null;
+        if (data.goal) {
+            if (data.goal_color) goal_color = data.goal_color;
+            series_defaults.thresholdLines = {
+                lineColor: goal_color,
+                labelColor: goal_color,
+                yValues: [data.goal]
+            };
+        }
+        if (data.x_axis_type == 'date') {
+            interval = ns.timeseries_interval(data);
+            range = ns.padded_timeseries_range(data);
+            // note:    jqplot padding causes problems with tick locations and
+            //          intervals.  The pratical implications of this include:
+            //          (1) we use updated DateAxisRenderer plugin from
+            //              hg/bitbucket downloaded on 2013-03-05i (deac87b).
+            //              This is to correctly parse interval string when min
+            //              and/or max are specified.
+            //          (2) we need to pad using same intervals as between
+            //              the data points, and specify the tickInterval.
+            //          (3) we may need to specify max for some unknown
+            //              jqplot regression in latest plugin, as it does
+            //              not appear to correctly infer (displays years out).
+            //
+            // also:    intervals of one month are tricky, we always want the
+            //          min date to be the same day-of-month as each subsequent
+            //          data point, when the interval is monthly.
+            x_axis = {  
+                renderer: $.jqplot.DateAxisRenderer,
+                tickInterval: '' + interval[0] + ' ' + interval[1],
+                min: range[0],
+                max: range[1],
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                tickOptions: {
+                    angle:-65,
+                    fontSize:'10pt',
+                    fontFamily:'Arial',
+                    fontWeight:'bold',
+                    enableFontSupport:true,
+                    textColor:'#00f'
+                }
+            };
+        } else { /* named */
+            x_axis.renderer = $.jqplot.CategoryAxisRenderer;
+            x_axis.ticks = ns.uniquekeys(data);
+        }
+        if ((data.legend_location) && (data.series.length > 1)) {
+            if (data.legend_placement) {
+                legend_placement = data.legend_placement;
+            }
+            legend = {show:true, location:data.legend_location, placement:legend_placement, marginTop:'2em'};
+        }
+        x_axis.label = data.x_label || undefined;
+        $.jqplot.config.enablePlugins = true;
+        $.jqplot(divid, ns.seriesdata(data), {
+            stackSeries: stack,
+            axes:{
+                xaxis: x_axis,
+                yaxis: ns.jqplot_yaxis_config(data)
+            },
+            axesDefaults: {tickOptions: {fontSize:'7pt'}},
+            series:ns.seriesoptions(data),
+            seriesDefaults: series_defaults,
+            legend: legend,
+            seriesColors : series_colors
+            });
+        // finally, adjust label colors to match line colors using CSS/jQuery:
+        ns.label_color_fixups(data, divid, series_colors);
+    };
+
+    ns.biggest_label = function (labels) {
+        var k,
+            v,
+            biggest=0;
+        for (k in labels) {
+            v = labels[k];
+            if (v.length > biggest) biggest = v.length;
+        }
+        return biggest;
+    };
+
+    ns.custom_label = function (plotid, value) {
+        var k, m, v, lkeys, padding;
+        k = value.toString();
+        m = uu.chart.custom_labels[plotid];
+        if (!m) return null;
+        lkeys = Object.keys(m);
+        padding = ns.biggest_label(m);
+        if ($.inArray(k, lkeys) != -1) {
+            return ('        ' + m[k]).slice(-1*padding);
+        }
+        if (m) {
+            return ' ';
+        }
+        return null;
+    };
+
+    ns.loadcharts = function () {
+        var new_draw;
+        // copy original tick-label draw method on CanvasAxisTickRenderer
+        // prototype, to make available to a monkey patched method:
+        $.jqplot.CanvasAxisTickRenderer.prototype.orig_draw = $.jqplot.CanvasAxisTickRenderer.prototype.draw;
+
+        // wrapper tick-label draw method supporting custom labels:
+        new_draw = function (ctx, plot) {
+            // use plot.target[0].id (plot div id), this.value for custom label
+            var custom_label = ns.custom_label(plot.target[0].id, this.value);
+            if (custom_label !== null) this.label = custom_label;
+            return this.orig_draw(ctx, plot);  // call orig in context of this
+        }
+
+        //monkey patch original tick-label draw method with wrapper
+        $.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
+
+        $('.chartdiv').each(function (index) {
+            var div = $(this),
+                json_url = $('a[type="application/json"]', div).attr('href'),
+                divid = div.attr('id'); 
+            $.ajax({
+                url: json_url,
+                success: function (responseText) { /*callback*/
+                    if (!ns.saved_data) ns.saved_data = {};
+                    ns.saved_data[divid] = responseText;
+                    ns.fillchart(divid, responseText);
+                }
+            });
+        });
+    };
+
     // return module namespace
     return ns;
 
 }(uu.chart || {}, jQuery));  // uu.chart namespace, loose-augmented
-
-
-
-uu.chart.fillchart = function (divid, data) {
-    var legend = {show:false}, //default is none
-        legend_placement = 'outsideGrid',
-        goal_color = "#333333",
-        x_axis = {},
-        y_axis = {},
-        stack = false,
-        series_defaults = {},
-        series_colors = jq.jqplot.config.defaultColors,
-        interval,
-        range,
-        barwidth,
-        line_width,
-        marker_color,
-        range,
-        labelselect,
-        points,
-        i,
-        j;
-    if (data.labels) {
-        uu.chart.savelabels(divid, data.labels);
-    }
-    if ((data.chart_type == "bar") || (data.chart_type == "stacked")) {
-        barwidth = uu.chart.bar_config(data).width;
-        if (data.chart_type == "stacked") {
-            stack = true;
-            barwidth = barwidth * data.series.length;
-        }
-        series_defaults = {
-            renderer : jq.jqplot.BarRenderer,
-            rendererOptions : {
-                barWidth : barwidth
-                }
-            };
-        }
-    series_colors = uu.chart.series_colors(data);
-    line_width = 4;
-    marker_color = null;
-    if (data.goal) {
-        if (data.goal_color) goal_color = data.goal_color;
-        series_defaults.thresholdLines = {
-            lineColor: goal_color,
-            labelColor: goal_color,
-            yValues: [data.goal]
-        };
-    }
-    if (data.x_axis_type == 'date') {
-        interval = uu.chart.timeseries_interval(data);
-        range = uu.chart.padded_timeseries_range(data);
-        // note:    jqplot padding causes problems with tick locations and
-        //          intervals.  The pratical implications of this include:
-        //          (1) we use updated DateAxisRenderer plugin from
-        //              hg/bitbucket downloaded on 2013-03-05i (deac87b).
-        //              This is to correctly parse interval string when min
-        //              and/or max are specified.
-        //          (2) we need to pad using same intervals as between
-        //              the data points, and specify the tickInterval.
-        //          (3) we may need to specify max for some unknown
-        //              jqplot regression in latest plugin, as it does
-        //              not appear to correctly infer (displays years out).
-        //
-        // also:    intervals of one month are tricky, we always want the
-        //          min date to be the same day-of-month as each subsequent
-        //          data point, when the interval is monthly.
-        x_axis = {  
-            renderer: jq.jqplot.DateAxisRenderer,
-            tickInterval: '' + interval[0] + ' ' + interval[1],
-            min: range[0],
-            max: range[1],
-            tickRenderer: jq.jqplot.CanvasAxisTickRenderer,
-            tickOptions: {
-                angle:-65,
-                fontSize:'10pt',
-                fontFamily:'Arial',
-                fontWeight:'bold',
-                enableFontSupport:true,
-                textColor:'#00f'
-            }
-        };
-    } else { /* named */
-        x_axis.renderer = jq.jqplot.CategoryAxisRenderer;
-        x_axis.ticks = uu.chart.uniquekeys(data);
-    }
-    if ((data.legend_location) && (data.series.length > 1)) {
-        if (data.legend_placement) {
-            legend_placement = data.legend_placement;
-        }
-        legend = {show:true, location:data.legend_location, placement:legend_placement, marginTop:'2em'};
-    }
-    if (data.y_label) {
-        y_axis.label = data.y_label;
-        if (data.units) {
-            y_axis.label += ' ( ' + data.units + ' )';
-        }
-        if (jq.jqplot.CanvasAxisLabelRenderer) {
-            y_axis.labelRenderer = jq.jqplot.CanvasAxisLabelRenderer;
-            y_axis.labelOptions = { fontFamily:'Helvetica,Arial,Sans Serif', fontSize:'12pt' };
-        }
-    }
-    range = uu.chart.range(data);
-    if ((range[0]) || (range[0] === 0)) { /*min*/
-        y_axis.min = range[0];
-    }
-    if ((range[1]) || (range[1] === 0)) { /*max*/
-        y_axis.max = range[1];
-    }
-    if (data.x_label) {
-        x_axis.label = data.x_label;
-    }
-    jq.jqplot.config.enablePlugins = true;
-    jq.jqplot(divid, uu.chart.seriesdata(data), {
-        stackSeries: stack,
-        axes:{xaxis:x_axis, yaxis:y_axis},
-        axesDefaults: {tickOptions: {fontSize:'7pt'}},
-        series:uu.chart.seriesoptions(data),
-        seriesDefaults: series_defaults,
-        legend: legend,
-        seriesColors : series_colors
-        });
-    // finally, adjust label colors to match line colors using CSS/jQuery:
-    for (i=0; i<series_colors.length; i++) {
-        labelselect = '#' + divid + ' .jqplot-series-' + i + '.jqplot-point-label';
-        points = jq(labelselect);
-        for (j=0; j<points.length; j++) {
-            point = jq(points[j]);
-            if (data.chart_type == "stacked") {
-                v = parseInt(point.html());
-                if (v < 20) {
-                    point.css('margin-left', '2.2em');
-                }
-                point.css('backgroundColor', series_colors[i]);
-                point.css('padding', '0 0.2em');
-                point.css('margin-top', '3em');
-            } else {
-                point.css('color', series_colors[i]);
-            }
-        }
-    }
-};
-
-uu.chart.biggest_label = function (labels) {
-    var k,
-        v,
-        biggest=0;
-    for (k in labels) {
-        v = labels[k];
-        if (v.length > biggest) biggest = v.length;
-    }
-    return biggest;
-};
-
-uu.chart.custom_label = function (plotid, value) {
-    var k, m, v, lkeys, padding;
-    k = value.toString();
-    m = uu.chart.custom_labels[plotid];
-    if (!m) return null;
-    lkeys = Object.keys(m);
-    padding = uu.chart.biggest_label(m);
-    if (jQuery.inArray(k, lkeys) != -1) {
-        return ('        ' + m[k]).slice(-1*padding);
-    }
-    if (m) {
-        return ' ';
-    }
-    return null;
-};
-
-uu.chart.loadcharts = function () {
-    // copy original tick-label draw method on CanvasAxisTickRenderer
-    // prototype, to make available to a monkey patched method:
-    jQuery.jqplot.CanvasAxisTickRenderer.prototype.orig_draw = jQuery.jqplot.CanvasAxisTickRenderer.prototype.draw;
-
-    // wrapper tick-label draw method supporting custom labels:
-    new_draw = function (ctx, plot) {
-        // use plot.target[0].id (plot div id), this.value for custom label
-        var custom_label = uu.chart.custom_label(plot.target[0].id, this.value);
-        if (custom_label !== null) this.label = custom_label;
-        return this.orig_draw(ctx, plot);  // call orig in context of this
-    }
-
-    //monkey patch original tick-label draw method with wrapper
-    jQuery.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
-
-    jq('.chartdiv').each(function (index) {
-        var div = jq(this),
-            json_url = jq('a[type="application/json"]', div).attr('href'),
-            divid = div.attr('id'); 
-        jq.ajax({
-            url: json_url,
-            success: function (responseText) { /*callback*/
-                if (!uu.chart.saved_data) uu.chart.saved_data = {};
-                uu.chart.saved_data[divid] = responseText;
-                uu.chart.fillchart(divid, responseText);
-            }
-        });
-    });
-};
 
 
 jq('document').ready(function () {
