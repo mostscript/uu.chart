@@ -75,10 +75,10 @@ class MeasureSeriesProvider(Item):
             return []
         group = measure.group()
         dataset_uid = getattr(self, 'dataset', None)
-        topic = resolve_uid(dataset_uid)
-        if getattr(topic, 'portal_type', None) != 'Topic':
+        dataset = resolve_uid(dataset_uid)
+        if getattr(dataset, 'portal_type', None) != 'uu.formlibrary.setspecifier':
             return []  # no topic or wrong type
-        infos = measure.dataset_points(topic)  # list of info dicts
+        infos = measure.dataset_points(dataset)  # list of info dicts
         if not infos:
             return []
         pointcls = self.pointcls()

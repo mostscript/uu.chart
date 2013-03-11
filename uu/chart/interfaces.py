@@ -913,13 +913,13 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
     
     dataset = schema.Choice(
         title=u'Data set (collection)',
-        description=u'Select a collection that enumerates which forms are '
+        description=u'Select a dataset that enumerates which forms are '
                     u'considered part of the data set to query for data. '\
-                    u'You must select a collection within the same measure '\
+                    u'You must select a dataset within the same measure '\
                     u'group in which the bound measure definition is '\
                     u'contained.',                    
         source=MeasureGroupContentSourceBinder(
-            portal_type='Topic',
+            portal_type='uu.formlibrary.setspecifier',
             ),
         required=False,
         )
