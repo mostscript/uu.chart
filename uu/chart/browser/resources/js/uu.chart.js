@@ -455,6 +455,30 @@ uu.chart = (function (ns, $) {
         return null;
     }
     
+    ns.cleardiv = function (div) {
+        var chartdiv = $(div),
+            apilink = $('a[rel="api"][type="application/json"]', chartdiv);
+        chartdiv.empty();
+        apilink.appendTo(chartdiv);
+    };
+    
+    ns.loadcharts = function () {
+        $('.chartdiv').each(function () {
+            var div = $(this),
+                json_url = $('a[type="application/json"]', div).attr('href'),
+                divid = div.attr('id');
+            ns.cleardiv(div);
+            $.ajax({
+                url: json_url,
+                success: function (responseText) { /*callback*/
+                    ns.saved_data = ns.saved_data || {};
+                    ns.saved_data[divid] = responseText;
+                    ns.fillchart(divid, responseText);
+                }
+            });
+        });
+    };
+    
     ns.patch_jqplot = function () {
         var new_draw;
         
@@ -478,25 +502,11 @@ uu.chart = (function (ns, $) {
         $.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
         
         ns.patched = true;  // only patch once!
-    }
-    
-    ns.loadcharts = function () {
-
-        $('.chartdiv').each(function () {
-            var div = $(this),
-                json_url = $('a[type="application/json"]', div).attr('href'),
-                divid = div.attr('id');
-            $.ajax({
-                url: json_url,
-                success: function (responseText) { /*callback*/
-                    ns.saved_data = ns.saved_data || {};
-                    ns.saved_data[divid] = responseText;
-                    ns.fillchart(divid, responseText);
-                }
-            });
-        });
     };
     
+    $(window).resize(function () {
+        ns.loadcharts();
+    });
     
     if ($.jqplot) {
         ns.patch_jqplot();
