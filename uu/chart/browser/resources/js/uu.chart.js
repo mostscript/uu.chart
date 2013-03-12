@@ -287,8 +287,10 @@ uu.chart = (function (ns, $) {
                 min: (uu.has_value(range[0])) ? range[0] : undefined,
                 max: (uu.has_value(range[1])) ? range[1] : undefined
             };
-        if ((data.y_label) && (data.units)) {
+        if (data.y_label && data.units) {
             y_axis.label += ' ( ' + data.units + ' )';
+        } else if (data.units) {
+            y_axis.label = data.units;
         }
         if ($.jqplot.CanvasAxisLabelRenderer) {
             y_axis.labelRenderer = $.jqplot.CanvasAxisLabelRenderer;
@@ -316,7 +318,7 @@ uu.chart = (function (ns, $) {
         if (data.labels) {
             ns.savelabels(divid, data.labels);
         }
-        if ((data.chart_type === "bar") || (data.chart_type === "stacked")) {
+        if (data.chart_type === "bar" || data.chart_type === "stacked") {
             barwidth = ns.bar_config(data).width;
             if (data.chart_type === "stacked") {
                 stack = true;
@@ -377,7 +379,7 @@ uu.chart = (function (ns, $) {
             x_axis.renderer = $.jqplot.CategoryAxisRenderer;
             x_axis.ticks = ns.uniquekeys(data);
         }
-        if ((data.legend_location) && (data.series.length > 1)) {
+        if (data.legend_location && data.series.length > 1) {
             if (data.legend_placement) {
                 legend_placement = data.legend_placement;
             }
