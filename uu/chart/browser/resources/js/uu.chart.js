@@ -304,8 +304,17 @@ uu.chart = (function (ns, $) {
         return y_axis;
     };
 
-    ns.fillchart = function (divid, data) {
-        var legend = { show: false }, //default is none
+    ns.cleardiv = function (div) {
+        var chartdiv = $(div),
+            apilink = $('a[rel="api"][type="application/json"]', chartdiv);
+        chartdiv.empty();
+        apilink.appendTo(chartdiv);
+    };
+
+    ns.fillchart = function (div, data) {
+        var chart_div = $(div),
+            divid = div.attr('id'),
+            legend = { show: false }, //default is none
             legend_placement = 'outsideGrid',
             goal_color = "#333333",
             x_axis = {},
@@ -317,6 +326,7 @@ uu.chart = (function (ns, $) {
             barwidth,
             line_width,
             marker_color;
+        ns.cleardiv(chart_div);
         if (data.labels) {
             ns.savelabels(divid, data.labels);
         }
@@ -454,31 +464,28 @@ uu.chart = (function (ns, $) {
         }
         return null;
     }
-    
-    ns.cleardiv = function (div) {
-        var chartdiv = $(div),
-            apilink = $('a[rel="api"][type="application/json"]', chartdiv);
-        chartdiv.empty();
-        apilink.appendTo(chartdiv);
-    };
-    
+
     ns.loadcharts = function () {
         $('.chartdiv').each(function () {
             var div = $(this),
                 json_url = $('a[type="application/json"]', div).attr('href'),
                 divid = div.attr('id');
-            ns.cleardiv(div);
-            $.ajax({
-                url: json_url,
-                success: function (responseText) { /*callback*/
-                    ns.saved_data = ns.saved_data || {};
-                    ns.saved_data[divid] = responseText;
-                    ns.fillchart(divid, responseText);
-                }
-            });
+            if (ns.saved_data && ns.saved_data[divid]) {
+                // load (synchronously) from cache, not (async) from server
+                ns.fillchart(div, ns.saved_data[divid]);
+            } else {
+                $.ajax({
+                    url: json_url,
+                    success: function (responseText) { /*callback*/
+                        ns.saved_data = ns.saved_data || {};
+                        ns.saved_data[divid] = responseText;
+                        ns.fillchart(div, responseText);
+                    }
+                });
+            }
         });
     };
-    
+
     ns.patch_jqplot = function () {
         var new_draw;
         
@@ -503,15 +510,15 @@ uu.chart = (function (ns, $) {
         
         ns.patched = true;  // only patch once!
     };
-    
+
     $(window).resize(function () {
         ns.loadcharts();
     });
-    
+
     if ($.jqplot) {
         ns.patch_jqplot();
     }
-    
+
     // return module namespace
     return ns;
 
