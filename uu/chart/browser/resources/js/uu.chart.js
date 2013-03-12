@@ -39,6 +39,8 @@ var uu = (function (ns, $) {
 uu.chart = (function (ns, $) {
     "use strict";
 
+    ns.patched = false;
+
     ns.custom_labels = ns.custom_labels || {};
     
     // saved data keyed by div (chart) id
@@ -452,9 +454,14 @@ uu.chart = (function (ns, $) {
         }
         return null;
     }
-
-    ns.loadcharts = function () {
+    
+    ns.patch_jqplot = function () {
         var new_draw;
+        
+        if (ns.patched) {
+            return;
+        }
+        
         // copy original tick-label draw method on CanvasAxisTickRenderer
         // prototype, to make available to a monkey patched method:
         $.jqplot.CanvasAxisTickRenderer.prototype.orig_draw = $.jqplot.CanvasAxisTickRenderer.prototype.draw;
@@ -469,6 +476,11 @@ uu.chart = (function (ns, $) {
 
         //monkey patch original tick-label draw method with wrapper
         $.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
+        
+        ns.patched = true;  // only patch once!
+    }
+    
+    ns.loadcharts = function () {
 
         $('.chartdiv').each(function () {
             var div = $(this),
@@ -484,7 +496,12 @@ uu.chart = (function (ns, $) {
             });
         });
     };
-
+    
+    
+    if ($.jqplot) {
+        ns.patch_jqplot();
+    }
+    
     // return module namespace
     return ns;
 
@@ -493,7 +510,7 @@ uu.chart = (function (ns, $) {
 
 jQuery('document').ready(function () {
     "use strict";
-
+    
     uu.chart.loadcharts();
 });
 
