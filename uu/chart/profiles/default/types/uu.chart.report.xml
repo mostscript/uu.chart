@@ -44,7 +44,7 @@
   <alias from="(Default)" to="@@report_view"/>
   <alias from="edit" to="@@edit"/>
   <alias from="sharing" to="@@sharing"/>
-  <alias from="view" to="(selected layout)"/>
+  <alias from="view" to="@@report_view"/>
  
   <!-- Actions -->
   <action title="View" action_id="view" category="object" condition_expr=""
