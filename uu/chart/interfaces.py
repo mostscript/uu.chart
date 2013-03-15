@@ -412,6 +412,9 @@ class IDataSeries(form.Schema):
     
     def __len__():
         """Return number of data points"""
+    
+    def display_value(point):
+        """Return normalized string display value for point"""
 
 
 class IDataCollection(Interface):

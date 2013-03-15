@@ -25,14 +25,6 @@ class DataTableView(object):
     
     def field_value(self, point, name):
         if name == 'value':
-            precision = getattr(
-                aq_base(self.context),
-                'display_precision',
-                1,
-                )
-            v = getattr(point, name, None)
-            v = round(v, precision) if v is not None else v
-            fmt = '%%.%if' % precision
-            return fmt % v if v is not None else ''
+            return self.context.display_value(point)
         return getattr(point, name, '')
 

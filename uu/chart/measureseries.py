@@ -1,6 +1,6 @@
 import math
 
-from Acquisition import aq_parent, aq_inner
+from Acquisition import aq_parent, aq_inner, aq_base
 from plone.dexterity.content import Item
 from plone.uuid.interfaces import IUUID
 from zope.component.hooks import getSite
@@ -93,4 +93,10 @@ class MeasureSeriesProvider(Item):
             )
         all_points = map(_point, infos)
         return self.summarize(all_points)
-
+    
+    def display_value(self, point):
+        precision = getattr(aq_base(self), 'display_precision', 1)
+        v = getattr(point, 'value', None)
+        v = round(v, precision) if v is not None else v
+        fmt = '%%.%if' % precision
+        return fmt % v if v is not None else ''

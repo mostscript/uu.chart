@@ -70,7 +70,13 @@ class BaseDataSequence(Item):
     def __len__(self):
         """Return number of data points"""
         return len(self.data)
-
+    
+    def display_value(self, point):
+        precision = getattr(aq_base(self), 'display_precision', 1)
+        v = getattr(point, 'value', None)
+        v = round(v, precision) if v is not None else v
+        fmt = '%%.%if' % precision
+        return fmt % v if v is not None else ''
 
 class TimeDataSequence(BaseDataSequence):
     implements(ITimeDataSequence)
