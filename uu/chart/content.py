@@ -3,6 +3,7 @@ from datetime import datetime, date
 from hashlib import md5
 from StringIO import StringIO
 
+from Acquisition import aq_base
 from persistent.dict import PersistentDict
 from plone.dexterity.content import Item, Container
 from five import grok
