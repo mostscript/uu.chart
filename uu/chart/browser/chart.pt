@@ -41,31 +41,49 @@
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
   <style>
+  div.chartwrap { border:1px solid #ddd; }
+  div.richelement, div.chartinfo { margin-left: 0.4em; }
   div.chartdiv { margin-bottom:3em; }
   div.chartdiv .jqplot-xaxis-tick { text-align:center; left:0; }
   td.jqplot-table-legend { min-width:10em; padding-left:0.5em; border-bottom:1px dotted #ccc; }
   td.jqplot-table-legend:first-child { min-width:1.5em; max-width:1.5em; padding-left:0; }
+
+  .report-management h4 { font-size:90%; border-bottom:1px solid #494; background-color:#dfefe8; margin:0.5em 0; padding:0 0.3em; }
+  .report-actions { width:50%; float:left; }
+  .report-actions ul { width:80%; }
+  .report-actions li { background-color:#ddd; border:1px solid #444; border-radius:0.4em; list-style-type:none; padding:0; }
+  .report-actions li { font-weight:bold; background-color:#75ad0a; font-weight:bold; margin-left:-1em; }
+  .report-actions li a { font-size:100% !important; margin:0; padding:0.3em 0.6em; }
+  .report-actions li.manage { background-color:#ffd; padding-left:1.2em; }
+  .report-actions ul li a { display:block; border-bottom:none !important; text-decoration:none !Important; color:#444 !Important; font-weight:bold; font-size:120%;  }
+  .report-actions ul li a:hover { color:white !important; }
+  .report-actions ul li:hover { background-color:#444 !Important; color:white !important; }
+  .report-actions ul li:hover a { background-color:#444 !Important; color:white !important; }
+  .chart-data-listing { border:1px solid #ddd; background-color:#eee; float:left; width:46%; } 
   </style>
 </metal:block>
 </head>
 
 <body>
-<div metal:fill-slot="main">
+<div metal:fill-slot="content-core" tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')">
 
  <tal:block repeat="element view/chart_elements">
   <tal:block define="ischart python:context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
-   <div style="width:700px;"
+   <div style="width:99%;"
         tal:define="uid python:view.UID(element);
                     json python:view.json_url(element);
                     chart_width python:getattr(element, 'width', None) or 600;
                     float python:(chart_width <= 260) and 'float:left' or 'clear:both'">
-   <div class="chartwrap" style="" tal:attributes="style string:width:${chart_width}px;;${float}" tal:condition="ischart">
+   <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${float}" tal:condition="ischart">
     <hr />
-    <h3 tal:content="element/Title" style="width:90%">Chart title</h3>
-    <p tal:condition="element/Description">
-      <span class="description" tal:content="element/Description">
-      </span>
-    </p>
+    <tal:block condition="python: element.getId() != context.getId()">
+      <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href element/absolute_url" tal:condition="is_report" target="_blank">&#x2794</a>
+      </h3>
+      <p tal:condition="element/Description">
+        <span class="description" tal:content="element/Description">
+        </span>
+      </p>
+    </tal:block>
     <div class="chartdiv" id="" style="" tal:attributes="id string:chartdiv-${uid}; style python:view.divstyle(element)">
       <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
     </div>
@@ -73,13 +91,68 @@
       <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
     </tal:block>
    </div>
-   <div style="clear:both" tal:condition="python:not context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
+   <div class="richelement" style="clear:both" tal:condition="python:not context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
     <div tal:replace="structure element/CookedBody"></div>
    </div>
   </div>
   </tal:block>
  </tal:block>
  <div style="clear:both"></div>
+ 
+ <div class="report-management">
+   <h4 tal:content="python:'Manage this %s' % ('report' if is_report else 'chart')">Manage this report:</h4>
+
+   <div class="report-actions" tal:condition="python:view.can_add() and is_report">
+    <ul>
+     <li class="create">
+      <a href="++add++uu.chart.timeseries">&thinsp;&#43;&nbsp; Add time series chart to this report</a>
+     </li>
+     <li class="create">
+      <a href="++add++uu.chart.namedseries">&thinsp;&#43;&nbsp; Add named series chart to this report</a>
+     </li>
+     <li class="manage">
+      <a href="edit">Edit report title or description</a>
+     </li>
+     <li class="manage">
+      <a href="folder_contents">Re-order, remove, or rename report elements</a>
+     </li>
+    </ul>
+   </div>
+
+   <div class="report-actions" tal:condition="python:view.can_add() and not is_report">
+    <ul>
+     <li class="create" tal:condition="python: view.addable('uu.chart.data.measureseries')">
+      <a href="++add++uu.chart.data.measureseries">&thinsp;&#43;&nbsp; Add a data series bound to a measure</a>
+     </li>
+     <li class="create" tal:condition="python: context.portal_type=='uu.chart.timeseries'">
+      <a href="++add++uu.chart.data.timeseries">&thinsp;&#43;&nbsp; Add static time-series data (CSV)</a>
+     </li>
+     <li class="create" tal:condition="python: context.portal_type=='uu.chart.namedseries'">
+      <a href="++add++uu.chart.data.namedseries">&thinsp;&#43;&nbsp; Add static named-series data (CSV)</a>
+     </li>
+     <li class="manage">
+      <a href="edit">Edit chart information, goal, styles</a>
+     </li>
+     <li class="manage">
+      <a href="folder_contents">Re-order, remove, or rename data series</a>
+     </li>
+    </ul>
+   </div>
+
+   <div class="chart-data-listing">
+    <h4 tal:content="python:'Current report components:' if is_report else 'Current chart data:'">Current chart data:</h4>
+    <ul>
+      <li tal:repeat="item context/contentValues">
+        <a href="" tal:attributes="href item/absolute_url">
+          <img src="" tal:attributes="src item/getIcon" />
+          <span tal:content="item/Title" />
+        </a>
+      </li>
+    </ul>
+   </div>
+
+ </div>
+
 </div>
 </body>
 </html>
