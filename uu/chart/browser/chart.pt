@@ -102,44 +102,44 @@
  <div class="report-management">
    <h4 tal:content="python:'Manage this %s' % ('report' if is_report else 'chart')">Manage this report:</h4>
 
-   <div class="report-actions" tal:condition="python:view.can_add() and is_report">
+   <div class="report-actions" tal:condition="is_report">
     <ul>
-     <li class="create">
+     <li class="create" tal:condition="view/can_add">
       <a href="++add++uu.chart.timeseries">&thinsp;&#43;&nbsp; Add time series chart to this report</a>
      </li>
-     <li class="create">
+     <li class="create" tal:condition="view/can_add">
       <a href="++add++uu.chart.namedseries">&thinsp;&#43;&nbsp; Add named series chart to this report</a>
      </li>
-     <li class="manage">
+     <li class="manage" tal:condition="view/can_manage">
       <a href="edit">Edit report title or description</a>
      </li>
-     <li class="manage">
+     <li class="manage" tal:condition="view/can_manage">
       <a href="folder_contents">Re-order, remove, or rename report elements</a>
      </li>
     </ul>
    </div>
 
-   <div class="report-actions" tal:condition="python:view.can_add() and not is_report">
+   <div class="report-actions" tal:condition="python:not is_report">
     <ul>
-     <li class="create" tal:condition="python: view.addable('uu.chart.data.measureseries')">
+     <li class="create" tal:condition="python: view.addable('uu.chart.data.measureseries') and view.can_add()">
       <a href="++add++uu.chart.data.measureseries">&thinsp;&#43;&nbsp; Add a data series bound to a measure</a>
      </li>
-     <li class="create" tal:condition="python: context.portal_type=='uu.chart.timeseries'">
+     <li class="create" tal:condition="python: context.portal_type=='uu.chart.timeseries' and view.can_add()">
       <a href="++add++uu.chart.data.timeseries">&thinsp;&#43;&nbsp; Add static time-series data (CSV)</a>
      </li>
-     <li class="create" tal:condition="python: context.portal_type=='uu.chart.namedseries'">
+     <li class="create" tal:condition="python: context.portal_type=='uu.chart.namedseries' and view.can_manage()">
       <a href="++add++uu.chart.data.namedseries">&thinsp;&#43;&nbsp; Add static named-series data (CSV)</a>
      </li>
-     <li class="manage">
+     <li class="manage" tal:condition="view/can_manage">
       <a href="edit">Edit chart information, goal, styles</a>
      </li>
-     <li class="manage">
+     <li class="manage" tal:condition="view/can_manage">
       <a href="folder_contents">Re-order, remove, or rename data series</a>
      </li>
     </ul>
    </div>
 
-   <div class="chart-data-listing">
+   <div class="chart-data-listing" tal:condition="view/can_manage">
     <h4 tal:content="python:'Current report components:' if is_report else 'Current chart data:'">Current chart data:</h4>
     <ul>
       <li tal:repeat="item context/contentValues">
