@@ -77,7 +77,7 @@
    <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${float}" tal:condition="ischart">
     <hr />
     <tal:block condition="python: element.getId() != context.getId()">
-      <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href element/absolute_url" tal:condition="is_report" target="_blank">&#x2794</a>
+      <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href element/absolute_url" tal:condition="python: is_report and view.can_manage()" target="_blank">&#x2794</a>
       </h3>
       <p tal:condition="element/Description">
         <span class="description" tal:content="element/Description">
