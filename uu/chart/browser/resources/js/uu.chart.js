@@ -18,16 +18,16 @@ var uu = (function (ns, $) {
         return arr.slice().sort();
     };
 
-    ns.has_value = function (v) {
-        return ($.inArray(v, [null, undefined]) !== -1);
+    ns.has_value = function (value) {
+        return (value !== null && value !== undefined);
     };
-
-    /**  array max/min for any data-type (req. EC5 Array.prototype.reduce)
-      *  prefers non-null values over any null values in sequence always
-      *  for both max and min.
+    
+    /**  array max/min for any data-type:
+      *   - prefers non-null values over any null.
+      *   - unlike bare Math.min(), Math.max(), supports dates sensibly.
       */
-    ns.maxcmp = function (a, b) { return ((a && (a > b)) || !b) ? a : b; };
-    ns.mincmp = function (a, b) { return ((a && (a < b)) || !b) ? a : b; };
+    ns.maxcmp = function (a, b) { return ((ns.has_value(a) && (a > b)) || !ns.has_value(b)) ? a : b; };
+    ns.mincmp = function (a, b) { return ((ns.has_value(a) && (a < b)) || !ns.has_value(b)) ? a : b; };
     ns.max = function (seq) { return seq.reduce(uu.maxcmp); };
     ns.min = function (seq) { return seq.reduce(uu.mincmp); };
 
@@ -50,6 +50,9 @@ uu.chart = (function (ns, $) {
     ns.uniquekeys = function (data) {
         var rset = {};      // Object as fake set-of-names type
         (data.series || []).forEach(function (s) {
+            if (!(s.data && s.data.length)) {
+                return;  // no data, ignore series
+            }
             (s.data || []).forEach(function (pair) {
                 var propname = pair[0];
                 rset[propname] = 1;
@@ -62,6 +65,9 @@ uu.chart = (function (ns, $) {
         var r = [];
         (data.series || []).forEach(function (s) {
             var s_rep = [];
+            if (!(s.data && s.data.length)) {
+                return;  // no/empty data, ignore series
+            }
             (s.data || []).forEach(function (pair) {
                 var key = pair[0],
                     point = pair[1],
@@ -87,6 +93,9 @@ uu.chart = (function (ns, $) {
         var min = null,
             max = null;
         (data.series || []).forEach(function (s) {
+            if (!(s.data && s.data.length)) {
+                return;  // no data for series, ignore
+            }
             min = (uu.has_value(s.range_min)) ? Math.min(min, s.range_min) : min;
             max = (uu.has_value(s.range_max)) ? Math.max(max, s.range_max) : max;
         });
@@ -97,6 +106,9 @@ uu.chart = (function (ns, $) {
         var i = 0,
             r = $.jqplot.config.defaultColors.slice(); //copy defaults
         (data.series || []).forEach(function (s) {
+            if (!(s.data && s.data.length)) {
+                return;  // no data, ignore to avoid incorrect colors
+            }
             // overwrite default only if color specified:
             r[i] = s.color || r[i];
             i += 1;
@@ -107,6 +119,9 @@ uu.chart = (function (ns, $) {
     ns.seriesoptions = function (data) {
         var r = [];
         (data.series || []).forEach(function (s) {
+            if (!(s.data && s.data.length)) {
+                return;  // no data, no need for options
+            }
             var options = {
                     markerOptions: {
                         style: s.marker_style || 'square',
@@ -149,7 +164,7 @@ uu.chart = (function (ns, $) {
             },
             chart_width = data.width || 600;
         r.max_points = uu.max(data.series.map(function (series) {
-            return (series.data || []).length;
+            return (ns.seriesdata(data) || []).length;
         }));
         r.width = Math.min(r.width, Math.max(5, (((chart_width * 0.8) / (r.max_points + 1)) / (r.series_length + 1))));
         return r;
@@ -166,10 +181,12 @@ uu.chart = (function (ns, $) {
             },
             min = data.start,
             max = data.end;    // start,end may be null or undefined in JSON
-            
         if (!min) {
             // no explicit start date, calculate earliest date in data
             (data.series || []).forEach(function (s) {
+                if (!(s.data && s.data.length)) {
+                    return;  // no data, ignore for calculating
+                }
                 if (s.data instanceof Array) {
                     min = uu.min([min, uu.min(s.data.map(pointkey))]);
                 }
@@ -178,6 +195,9 @@ uu.chart = (function (ns, $) {
         if (!max) {
             // no explicit end date, calculate latest date in data
             (data.series || []).forEach(function (s) {
+                if (!(s.data && s.data.length)) {
+                    return;  // no data, ignore for calculating
+                }
                 if (s.data instanceof Array) {
                     if (data.auto_crop) {
                         max = uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))]);
@@ -311,6 +331,18 @@ uu.chart = (function (ns, $) {
         apilink.appendTo(chartdiv);
     };
 
+    ns.fit_chart_div = function (div, data) {
+        var chart_width = $(div)[0].scrollWidth,
+            chart_height,
+            aspect_multiplier;
+        if (!data.aspect_ratio || data.aspect_ratio.length != 2) {
+            return;
+        }
+        aspect_multiplier = 1.0 / (data.aspect_ratio[0] / data.aspect_ratio[1]);
+        chart_height = Math.round(aspect_multiplier * chart_width); // in px
+        div[0].style.height = String(chart_height) + 'px';
+    }
+
     ns.fillchart = function (div, data) {
         var chart_div = $(div),
             divid = div.attr('id'),
@@ -325,8 +357,10 @@ uu.chart = (function (ns, $) {
             range,
             barwidth,
             line_width,
+            aspect_ratio,
             marker_color;
         ns.cleardiv(chart_div);
+        ns.fit_chart_div(chart_div, data);
         if (data.labels) {
             ns.savelabels(divid, data.labels);
         }
@@ -404,6 +438,7 @@ uu.chart = (function (ns, $) {
         }
         x_axis.label = data.x_label || undefined;
         $.jqplot.config.enablePlugins = true;
+        
         $.jqplot(divid, ns.seriesdata(data), {
             stackSeries: stack,
             axes: {
