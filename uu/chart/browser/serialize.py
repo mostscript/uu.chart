@@ -29,14 +29,15 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | x_axis_type : String      [0..1]|   Either 'date' or omitted.
 | legend_location : String  [0..1]|   null ==> hide legend
 | legend_placement : String [0..1]|
-'---------------------------------'
-       1 /%\ 
-         \%/  series                  (Array of objects)
+| aspect_ratio : Array      [0..1]|   Optional array of [W,H] numbers (ratio)
+'---------------------------------'     Should be omitted when chart is not
+       1 /%\                            configued to tie height to width.
+         \%/  
           Y   
           |   
-    0..*  |
+    0..*  | series                  (Array of objects)
  _________!___________________
-|  Data series                |   
+|  Data series                |     SERIES WITH NO/EMPTY DATA WILL BE OMITTED 
 +-----------------------------+
 | title : String              |   
 | description : String  [0..1]|
@@ -57,11 +58,11 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
        1 /%\ 
-         \%/  data                  Array of two-item key-value pairs (arrays)
-          Y                         of name or date keys and point objects.
+         \%/    
+          Y     
           |   
-    0..*  |
- _________!_____________
+    0..*  | data                    Array of two-item key-value pairs (arrays)
+ _________!_____________            of name or date keys and point objects.
 | Data point Object     |
 +-----------------------+
 | key : String          |       (key is either name or Date representation)
@@ -93,6 +94,7 @@ Notes, enumerated choices:
 from datetime import date, datetime
 import json
 import math
+from fractions import Fraction
 
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
 
@@ -120,6 +122,8 @@ class ChartJSON(object):
             series['data'] = list(
                 [(p['key'], p) for p in map(self._datapoint, seq.data)]
                 )
+            if not series['data']:
+                continue  # omit series with no data from JSON output
             for name in (
                 'title',
                 'description',
@@ -216,7 +220,22 @@ class ChartJSON(object):
             del(r['goal']) #omit if show_goal is false
         if not self.context.show_goal and r.get('goal_color', None):
             del(r['goal_color']) #superfluous if show_goal is false
+        self._set_aspect_ratio(context, r)
         return r
+    
+    def _set_aspect_ratio(self, context, r):
+        height_units = getattr(context, 'height_units', '2:1')
+        if height_units == 'px':
+            return  # fixed pixels (job of template, so JSON API omits)
+        if ':' in height_units:
+            r['aspect_ratio'] = map(int, height_units.strip().split(':')[:2])
+        if height_units == '%':
+            height = getattr(context, 'height', None)
+            if not height:
+                r['aspect_ratio'] = [2,1]  # height not specified, use default
+            # aproximate a fraction precision about +/- 0.5%
+            f = Fraction(1.0 / (height/100.0)).limit_denominator(20)
+            r['aspect_ratio'] = [f.numerator, f.denominator]
     
     def render(self):
         return json.dumps(self._chart(), indent=2)
