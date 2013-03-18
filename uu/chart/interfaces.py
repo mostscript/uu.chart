@@ -169,6 +169,26 @@ FREQ_VOCAB = SimpleVocabulary(
     ]]
 )
 
+WIDTH_UNITS = SimpleVocabulary(
+    [SimpleTerm(v, title=title) for v, title in [
+        ('%', u'Percentage of content area'),
+        ('px', u'Pixels on screen'),
+    ]]
+)
+
+HEIGHT_UNITS = SimpleVocabulary(
+    [SimpleTerm(v, title=title) for v, title in [
+        ('%', u'Percentage of specified width (variable aspect ratio)'),
+        ('px', u'Pixels: a fixed number of pixels on screen'),
+        ('1:1', u'Square aspect ratio (1:1)'),
+        ('2:1', u'2:1 fixed rectangular aspect ratio'),
+        ('2:3', u'2:3 fixed rectangular aspect ratio'),
+        ('3:5', u'3:5 fixed rectangular aspect ratio'),
+        ('4:3', u'4:3 fixed rectangular aspect ratio'),
+        ('16:9', u'16:9 fixed rectangular aspect ratio'),
+    ]]
+)
+
 
 def resolve_uid(uid):
     catalog = getSite().portal_catalog
@@ -505,30 +525,48 @@ class IChartDisplay(form.Schema):
     form.fieldset(
         'display',
         label=u"Display settings",
-        fields=['height',
-                'width',
-                'show_goal',
-                'goal_color',
-                'legend_location',
-                'legend_placement',
-                'x_label',
-                'y_label',
-                'chart_styles',
-                ]
+        fields=[
+            'width',
+            'width_units',
+            'height', 
+            'height_units',
+            'show_goal',
+            'goal_color',
+            'legend_location',
+            'legend_placement',
+            'x_label',
+            'y_label',
+            'chart_styles',
+            ]
         )
-
+    
     width = schema.Int(
         title=_(u'Width'),
-        description=_(u'Display width of chart in pixels.'),
-        default=600,
+        description=_(u'Display width of chart, including Y-axis labels, '\
+                      u'grid, and legend (if applicable) in units '\
+                      u'configured.'),
+        default=100,
+        )
+    
+    width_units = schema.Choice(
+        title=_(u'Units of width'),
+        vocabulary=WIDTH_UNITS,
+        default='%',
         )
     
     height = schema.Int(
         title=_(u'Height'),
-        description=_(u'Display height of chart in pixels.'),
-        default=300,
+        description=_(u'Display height of chart in units configured '\
+                      u'(either as percentage of width, or in pixels).'),
+        default=50,
         )
-
+    
+    height_units = schema.Choice(
+        title=_(u'Units of height'),
+        vocabulary=HEIGHT_UNITS,
+        default='2:1',
+        )
+     
     show_goal = schema.Bool(
         title=_(u'Show goal-line?'),
         description=_(u'If defined, show (constant horizontal) goal line?'),
