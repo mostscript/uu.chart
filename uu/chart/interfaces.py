@@ -195,7 +195,7 @@ def resolve_uid(uid):
     r = catalog.search({'UID': str(uid)})
     if not r:
         return None
-    return r[0].getObject()
+    return r[0]._unrestrictedGetObject()
 
 
 def provider_measure(context):
@@ -205,6 +205,23 @@ def provider_measure(context):
     if measure_uid is None:
         return None
     return resolve_uid(measure_uid)
+
+
+class PermissiveVocabulary(SimpleVocabulary):
+    def __contains__(self, value):
+        return True
+    
+    def getTermByToken(self, token):
+        """
+        this works around z3c.form.widget.SequenceWidget.extract()
+        pseudo-validation (which is broken for a permissive vocabulary).
+        """
+        try:
+            v = super(PermissiveVocabulary, self).getTermByToken(token)
+        except LookupError:
+            # fallback using dummy term, assumes token==value
+            return SimpleTerm(token)
+        return v
 
 
 class MeasureGroupContentSourceBinder(object):
@@ -221,9 +238,9 @@ class MeasureGroupContentSourceBinder(object):
     def __call__(self, context):
         measure = provider_measure(context)
         if measure is None:
-            return UUIDSourceBinder(portal_type=self.typename)(context)
+            return PermissiveVocabulary([])  # likely on add-form
         group = measure.group()  # group (folder) containing measure def'n
-        contained = group.contentValues()
+        contained = group.objectValues()
         if self.typename:
             contained = filter(
                 lambda o: o.portal_type == self.typename,
@@ -233,7 +250,7 @@ class MeasureGroupContentSourceBinder(object):
             lambda o: SimpleTerm(IUUID(o), title=o.Title().decode('utf-8')),
             contained,
             )
-        return SimpleVocabulary(terms)
+        return PermissiveVocabulary(terms)
 
 
 class RWColorPickerWidget(colorpicker.ColorpickerWidget):

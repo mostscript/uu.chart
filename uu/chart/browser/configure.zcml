@@ -46,6 +46,22 @@
     layer="uu.chart.interfaces.IChartProductLayer"
     permission="cmf.ModifyPortalContent"
     />
+  
+  <browser:page
+    name="list_datasets"
+    for="..interfaces.IBaseChart"
+    class=".measureseries.DatasetListerView"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="list_datasets"
+    for="..interfaces.IDataSeries"
+    class=".measureseries.DatasetListerView"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
 
   <!-- resources -->
   <browser:resourceDirectory
