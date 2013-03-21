@@ -771,11 +771,10 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
         description=u'When a value is missing for name or date on the '\
                     u'X axis, should the line be broken/discontinuous '\
                     u'such that no line runs through the empty/null '\
-                    u'value?  This defaults to False, which means that '\
-                    u'a line will run from adjacent values through the '\
-                    u'missing value; if you do not want this, enable '\
-                    u'this.',
-        default=False,
+                    u'value?  This defaults to True, which means that '\
+                    u'no line will run from adjacent values through the '\
+                    u'missing value.',
+        default=True,
         )
 
 # --- content type interfaces: ---
