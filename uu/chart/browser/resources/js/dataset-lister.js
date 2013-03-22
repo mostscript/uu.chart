@@ -4,6 +4,9 @@
     
     var ns = {};
 
+    // MutationObserver for WebKit || Mozilla
+    ns.MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
     // global state
     ns.observer_installed = false;
     ns.last_json_url = '';
@@ -48,7 +51,7 @@
         });
     };
 
-    if (MutationObserver) {
+    if (ns.MutationObserver) {
 
         // handle change in measure selection via widget DOM change:
         ns.install_measure_observer = function () {
@@ -57,7 +60,7 @@
             if (!swidget) {
                 return;
             }
-            observer = new MutationObserver(function (mutations) {
+            observer = new ns.MutationObserver(function (mutations) {
                 mutations.forEach(function (mutation) {
                     var target = mutation.target,
                         radio = $('input#form-widgets-measure-0', $(target));
