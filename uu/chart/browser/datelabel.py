@@ -10,6 +10,7 @@ from zope.i18n.locales import locales, LoadLocaleError
 from zope.publisher.browser import BrowserLanguages
 
 from uu.chart.interfaces import DATE_AXIS_LABEL_CHOICES
+from utils import withtz
 
 
 def get_locale(request):
@@ -91,6 +92,7 @@ class DateLabelView(object):
         return d.strftime('%m/%d/%Y')
     
     def date_to_jstime(self, d):
+        d = withtz(d)  # datetime with user, site, or system tz
         return int(time.mktime(d.timetuple())) * 1000
     
     def jstime_to_date(self, t):

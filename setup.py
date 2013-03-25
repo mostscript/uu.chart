@@ -31,6 +31,7 @@ setup(name='uu.chart',
           'plone.browserlayer',
           'uu.smartdate',
           'uu.formlibrary',
+          'tzlocal',
           # -*- Extra requirements: -*-
       ],
       extras_require = {

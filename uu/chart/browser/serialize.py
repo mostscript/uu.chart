@@ -92,19 +92,33 @@ Notes, enumerated choices:
 """
 
 from datetime import date, datetime
+from fractions import Fraction
 import json
 import math
-from fractions import Fraction
+import re
 
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
 
 from datelabel import DateLabelView
+from utils import withtz
+
+
+def stripms(stamp):
+    """
+    Given ISO 8601 datestamp, strip out any milliseconds in representation
+    using a regular expression safe for either stamps with or stamps
+    without milliseconds included.
+    """
+    stamp_pattern = re.compile('([^.]+)([.][0-9]+)?([+-].*)')
+    return stamp_pattern.sub('\g<1>\g<3>', stamp)
 
 
 def isodate(dt):
-    if isinstance(dt, date):
-        dt = datetime(*dt.timetuple()[0:6])
-    return dt.isoformat().split('.')[0] #microseconds removed
+    # get datetime (from date or datetime) with user, site, or system tz:
+    dt = withtz(dt)
+    # copy, normalize to same timezone, such that microseconds are stripped:
+    dt = dt.tzinfo.normalize(datetime(*dt.timetuple()[:7], tzinfo=dt.tzinfo))
+    return stripms(dt.isoformat())
 
 
 class ChartJSON(object):

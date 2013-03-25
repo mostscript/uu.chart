@@ -77,7 +77,7 @@ uu.chart = (function (ns, $) {
                 //    value = null;
                 //}
                 if (data.x_axis_type === 'date') {
-                    s_rep.push([(Date.parse(key) || key), value]);
+                    s_rep.push([(new Date(key) || key), value]);
                 } else {
                     // named series elements for jqplot are Y-value onl
                     s_rep.push(value);
