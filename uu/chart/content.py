@@ -37,6 +37,8 @@ class BaseDataSequence(Item):
         """Parse self.input, return list of point objects"""
         if not hasattr(self, '_v_data'):
             self._v_data = {}
+        if not self.input:
+            return []
         cachekey = md5(self.input).hexdigest()
         if cachekey not in self._v_data:
             result = []
