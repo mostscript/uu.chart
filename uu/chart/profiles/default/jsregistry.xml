@@ -10,4 +10,16 @@
     expression=""
     />
 
+ <javascript
+    authenticated="False"
+    bundle=""
+    cacheable="False"
+    compression="none"
+    conditionalcomment="lte IE 9"
+    cookable="False"
+    enabled="on"
+    expression=""
+    id="++resource++uu.chart.js/ec5compat.js"
+    inline="False"/>
+
 </object>

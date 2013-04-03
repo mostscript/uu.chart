@@ -10,7 +10,6 @@
 
 <!--[if lte IE 9]>
   <script type="text/javascript" src="++resource++uu.chart.jqplot/excanvas.min.js"></script>
-  <script type="text/javascript" src="++resource++uu.chart.js/ec5compat.js"></script>
 <![endif]-->
 <tal:block condition="python:request.get('devmode', None) is None">
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.js"></script>
