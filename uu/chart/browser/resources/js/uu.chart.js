@@ -2,6 +2,8 @@
   * JSON chart API into jqplot charts.
   */
 
+/*jshint browser: true, nomen: false, eqnull: true, es5:true, trailing:true */
+
 // global namspaces:
 var $ = jQuery;  // For jqPlot, somehow needed for MSIE8
 
@@ -21,7 +23,7 @@ var uu = (function (ns, $) {
     ns.has_value = function (value) {
         return (value !== null && value !== undefined);
     };
-    
+
     /**  array max/min for any data-type:
       *   - prefers non-null values over any null.
       *   - unlike bare Math.min(), Math.max(), supports dates sensibly.
@@ -42,7 +44,7 @@ uu.chart = (function (ns, $) {
     ns.patched = false;
 
     ns.custom_labels = ns.custom_labels || {};
-    
+
     // saved data keyed by div (chart) id
     ns.saved_data = ns.saved_data || {};
 
@@ -226,7 +228,7 @@ uu.chart = (function (ns, $) {
             supported_freq = Object.keys(freqmap);
         if ($.inArray(data.frequency, supported_freq) !== -1) {
             return freqmap[data.frequency];
-        } 
+        }
         // monthly default:
         return freqmap.monthly;
     };
@@ -341,7 +343,7 @@ uu.chart = (function (ns, $) {
         aspect_multiplier = 1.0 / (data.aspect_ratio[0] / data.aspect_ratio[1]);
         chart_height = Math.round(aspect_multiplier * chart_width); // in px
         div[0].style.height = String(chart_height) + 'px';
-    }
+    };
 
     ns.fillchart = function (div, data) {
         var chart_div = $(div),
@@ -376,6 +378,10 @@ uu.chart = (function (ns, $) {
                     barWidth : barwidth
                 }
             };
+        } else {
+            // line-rendering only config here:
+            chart_div.addClass('fitmarkers');
+            uu.chart.fitmarkers.init_behavior();
         }
         series_colors = ns.series_colors(data);
         line_width = 4;
@@ -438,7 +444,7 @@ uu.chart = (function (ns, $) {
         }
         x_axis.label = data.x_label || undefined;
         $.jqplot.config.enablePlugins = true;
-        
+
         $.jqplot(divid, ns.seriesdata(data), {
             stackSeries: stack,
             axes: {
@@ -491,14 +497,14 @@ uu.chart = (function (ns, $) {
         }
         return null;
     };
-    
+
     ns.custom_label = function (plotid, value) {
         var data = ns.saved_data[plotid];
         if (data.x_axis_type === 'date') {
             return ns.timeseries_custom_label(plotid, value, data);
         }
         return null;
-    }
+    };
 
     ns.loadcharts = function () {
         $('.chartdiv').each(function () {
@@ -523,11 +529,11 @@ uu.chart = (function (ns, $) {
 
     ns.patch_jqplot = function () {
         var new_draw;
-        
+
         if (ns.patched) {
             return;
         }
-        
+
         // copy original tick-label draw method on CanvasAxisTickRenderer
         // prototype, to make available to a monkey patched method:
         $.jqplot.CanvasAxisTickRenderer.prototype.orig_draw = $.jqplot.CanvasAxisTickRenderer.prototype.draw;
@@ -542,7 +548,7 @@ uu.chart = (function (ns, $) {
 
         //monkey patch original tick-label draw method with wrapper
         $.jqplot.CanvasAxisTickRenderer.prototype.draw = new_draw;
-        
+
         ns.patched = true;  // only patch once!
     };
 
@@ -562,7 +568,7 @@ uu.chart = (function (ns, $) {
 
 jQuery('document').ready(function () {
     "use strict";
-    
+
     uu.chart.loadcharts();
 });
 
