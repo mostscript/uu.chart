@@ -1320,13 +1320,10 @@
         var temp = [], i, l;
         for (i=0, l=d.length; i<l; i++) {
             if (! this.breakOnNull) {
-                console.log(d[i]);
                 if (d[i] == null || d[i][0] == null || d[i][1] == null) {
-                    console.log('continue');
                     continue;
                 }
                 else {
-                    console.log('push');
                     temp.push(d[i]);
                 }
             }
@@ -5524,35 +5521,27 @@
         var hasNull = false;
         for (var i=0, l=data.length; i < l; i++) {
             // if not a line series or if no nulls in data, push the converted point onto the array.
-            console.log('>>>', data[i], new Date(data[i][0]));
             if (data[i][0] != null && data[i][1] != null) {
                 this.gridData.push([xp.call(this._xaxis, data[i][0]), yp.call(this._yaxis, data[i][1])]);
             }
             // else if there is a null, preserve it.
             else if (data[i][0] == null) {
-                //console.log('aa');
                 hasNull = true;
                 this.gridData.push([null, yp.call(this._yaxis, data[i][1])]);
             }
             else if (data[i][1] == null) {
-                //console.log('bb');
                 hasNull = true;
                 this.gridData.push([xp.call(this._xaxis, data[i][0]), null]);
             }
-            console.log(pdata, i);
-            console.log(pdata[i]);
             // if not a line series or if no nulls in data, push the converted point onto the array.
             if (pdata[i] != null && pdata[i][0] != null && pdata[i][1] != null) {
-                //console.log('cc');
                 this._prevGridData.push([xp.call(this._xaxis, pdata[i][0]), yp.call(this._yaxis, pdata[i][1])]);
             }
             // else if there is a null, preserve it.
             else if (pdata[i] != null && pdata[i][0] == null) {
-                //console.log('dd');
                 this._prevGridData.push([null, yp.call(this._yaxis, pdata[i][1])]);
             }  
             else if (pdata[i] != null && pdata[i][0] != null && pdata[i][1] == null) {
-                //console.log('ee');
                 this._prevGridData.push([xp.call(this._xaxis, pdata[i][0]), null]);
             }
         }
