@@ -244,7 +244,6 @@ var colortool = colortool || {};  // ns
             table,
             firstTh = $('<th class="keycell">&nbsp;</th>'),
             headingRow;
-        console.log(plot);
         this._elem = $('<table class="tabular-legend" />');
         table = this._elem;
         table.css('table-layout', 'fixed');
