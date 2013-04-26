@@ -12,5 +12,5 @@ class ReportView(ChartView):
 
     def chart_elements(self):
         contained = self.context.contentValues()
-        return [ o for o in contained if o.portal_type in self.ELEMENT_TYPES]
+        return [o for o in contained if o.portal_type in self.ELEMENT_TYPES]
  

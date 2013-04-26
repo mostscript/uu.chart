@@ -1,6 +1,5 @@
 import unittest2 as unittest
 
-from plone.registry.interfaces import IRegistry
 from plone.app.testing import TEST_USER_ID, setRoles
 from Products.CMFPlone.utils import getToolByName
 
@@ -47,7 +46,7 @@ class DefaultProfileTest(unittest.TestCase):
         from uu.chart.tests.fixtures import CreateContentFixtures
         CreateContentFixtures(self, self.layer).create()
         """
-        pass #TODO implement fixtures for content with which to test
+        pass  # TODO implement fixtures for content with which to test
     
     def test_tinymce_settings(self):
         tool = self.portal.portal_tinymce
@@ -56,7 +55,7 @@ class DefaultProfileTest(unittest.TestCase):
         ## test for regressions from base profile, defaults still set:
         self.assertTrue(tool.styles)  # non-empty === product does not touch
         base_plone_folders = (
-            'Folder', 
+            'Folder',
             'Large Plone Folder',
             'Plone Site',
             )
@@ -66,7 +65,7 @@ class DefaultProfileTest(unittest.TestCase):
             'Topic',
             'Event',
             'File',
-            'Folder', 
+            'Folder',
             'Large Plone Folder',
             'Image',
             'News Item',

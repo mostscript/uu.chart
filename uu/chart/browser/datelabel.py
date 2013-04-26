@@ -14,12 +14,12 @@ from utils import withtz
 
 
 def get_locale(request):
-    """ 
-    return locale based on HTTP request header ACCEPT_LANGUAGES.    
+    """
+    return locale based on HTTP request header ACCEPT_LANGUAGES.
     
     We need languages to get locale, and the locale on the request
     object gets this wrong (removes territory part of locale). This
-    does essentially what ZPublisher.HTTPRequest does to load a 
+    does essentially what ZPublisher.HTTPRequest does to load a
     locale, but with a fixed (predictable, correct) adapter.
     
     zope.publisher.browser.BrowserLangauges is an adapter with
@@ -45,7 +45,7 @@ class DateLabelView(object):
     """View for managing date label aliases"""
     
     DEFAULT_FORMAT = 'locale'
-    FORMAT_CHOICES =  DATE_AXIS_LABEL_CHOICES  # vocab of terms w/title
+    FORMAT_CHOICES = DATE_AXIS_LABEL_CHOICES  # vocab of terms w/title
     
     def __init__(self, context, request=None):
         self.context = context  # ITimeSeriesChart
@@ -65,7 +65,7 @@ class DateLabelView(object):
         
         Template should use by iterating over dates and calling .isoformat()
         method for a label, and view.date_to_jstime() for an integer
-        key representation equivalent to JavaScript representation of 
+        key representation equivalent to JavaScript representation of
         time as an integer in ms since the epoch.
         """
         all_series = self.context.series()
@@ -97,7 +97,7 @@ class DateLabelView(object):
     
     def jstime_to_date(self, t):
         t = int(t)
-        return date.fromtimestamp(t/1000)
+        return date.fromtimestamp(t / 1000)
     
     def label_for(self, d):
         """Given a date or JavaScript time key (as integer), get any label"""
@@ -115,7 +115,7 @@ class DateLabelView(object):
             # save button clicked
             _datekey = lambda k: self.jstime_to_date(int(k))
             overrides = [
-                (_datekey(k.replace('override.','')), v)
+                (_datekey(k.replace('override.', '')), v)
                 for k, v in req.form.items()
                 if k.startswith('override.')
                 ]

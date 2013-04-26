@@ -1,13 +1,9 @@
-from datetime import date
-
-from Acquisition import aq_base
-
-from uu.chart.interfaces import INamedDataSequence, ITimeDataSequence
+from uu.chart.interfaces import INamedDataSequence
 
 
 class DataTableView(object):
     """
-    View provides HTML table output for INamedDataSequence and 
+    View provides HTML table output for INamedDataSequence and
     ITimeDataSequence objects.
     """
     
@@ -21,7 +17,7 @@ class DataTableView(object):
     def keyname(self):
         if INamedDataSequence.providedBy(self.context):
             return 'name'
-        return 'date' # assume ITimeDataSequence
+        return 'date'  # assume ITimeDataSequence
     
     def field_value(self, point, name):
         if name == 'value':

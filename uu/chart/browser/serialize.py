@@ -5,7 +5,7 @@ JSON structure pseudo-UML
 -------------------------
 
 Note: properties marked with multiplicity [0..1] either have a typed
-      value or are null.  These properties with optional values may 
+      value or are null.  These properties with optional values may
       also be omitted (undefined) from the JSON payload.
 
       Rendering code should have suitable defaults for ommited
@@ -21,7 +21,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | description : String      [0..1]| `   | start : String      |  start, end,
 | css : String              [0..1]|     | end : String        |  frequency,
 | x_label : String          [0..1]|     | labels : Object     |  labels fields
-| y_label : String          [0..1]|     | auto_crop : Boolean |  
+| y_label : String          [0..1]|     | auto_crop : Boolean |
 | chart_type : String       [0..1]|     '---------------------'
 | units : String            [0..1]|
 | goal : Number             [0..1]|   Common goal; omit if None or hidden.
@@ -32,14 +32,14 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | aspect_ratio : Array      [0..1]|   Optional array of [W,H] numbers (ratio)
 '---------------------------------'     Should be omitted when chart is not
        1 /%\                            configued to tie height to width.
-         \%/  
-          Y   
-          |   
+         \%/
+          Y
+          |
     0..*  | series                  (Array of objects)
  _________!___________________
-|  Data series                |     SERIES WITH NO/EMPTY DATA WILL BE OMITTED 
+|  Data series                |     SERIES WITH NO/EMPTY DATA WILL BE OMITTED
 +-----------------------------+
-| title : String              |   
+| title : String              |
 | description : String  [0..1]|
 | units  : String       [0..1]|
 | line_width : Number   [0..1]|       (note: line_width=0 : do not show line,
@@ -51,16 +51,16 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | range_min : Number    [0..1]|       (y-axis min/max)
 | range_max : Number    [0..1]|
 | show_trend : String   [0..1]|     'true' or 'false' in JSON
-| trend_width : Number  [0..1]| 
+| trend_width : Number  [0..1]|
 | trend_color : String  [0..1]|     if empty, default same as color
 | goal : Number         [0..1]|
 | display_format:String [0..1]|     == '%%.%if' % display_precision
 | break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
-       1 /%\ 
-         \%/    
-          Y     
-          |   
+       1 /%\
+         \%/
+          Y
+          |
     0..*  | data                    Array of two-item key-value pairs (arrays)
  _________!_____________            of name or date keys and point objects.
 | Data point Object     |
@@ -97,7 +97,7 @@ import json
 import math
 import re
 
-from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
+from uu.chart.interfaces import ITimeSeriesChart
 
 from datelabel import DateLabelView
 from utils import withtz
@@ -155,7 +155,7 @@ class ChartJSON(object):
                 'trend_color',
                 'goal',
                 'break_lines',
-                ):
+                    ):
                 v = getattr(seq, name, None)
                 if v is not None and v != '':
                     if not (name.endswith('color') and
@@ -231,9 +231,9 @@ class ChartJSON(object):
                 else:
                     r[name] = v
         if not self.context.show_goal and r.get('goal', None):
-            del(r['goal']) #omit if show_goal is false
+            del(r['goal'])  # omit if show_goal is false
         if not self.context.show_goal and r.get('goal_color', None):
-            del(r['goal_color']) #superfluous if show_goal is false
+            del(r['goal_color'])  # superfluous if show_goal is false
         self._set_aspect_ratio(context, r)
         return r
     
@@ -246,9 +246,9 @@ class ChartJSON(object):
         if height_units == '%':
             height = getattr(context, 'height', None)
             if not height:
-                r['aspect_ratio'] = [2,1]  # height not specified, use default
+                r['aspect_ratio'] = [2, 1]  # height not specified, use default
             # aproximate a fraction precision about +/- 0.5%
-            f = Fraction(1.0 / (height/100.0)).limit_denominator(20)
+            f = Fraction(1.0 / (height / 100.0)).limit_denominator(20)
             r['aspect_ratio'] = [f.numerator, f.denominator]
     
     def render(self):

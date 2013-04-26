@@ -1,5 +1,4 @@
 import json
-import uuid
 
 from plone.uuid.interfaces import IUUID
 from zope.component.hooks import getSite
@@ -31,7 +30,7 @@ class DatasetListerView(object):
     
     def _datasets(self, group):
         return filter(
-            lambda o: o.portal_type==DATASET_TYPE,
+            lambda o: o.portal_type == DATASET_TYPE,
             group.objectValues(),
             )
     
@@ -47,9 +46,9 @@ class DatasetListerView(object):
         measure_uid = self.request.get('measure', None)
         catalog = getToolByName(self.portal, 'portal_catalog')
         if self.ispath(measure_uid):
-            r = catalog.search({'path':{'query': measure_uid, 'depth': 0}})
+            r = catalog.search({'path': {'query': measure_uid, 'depth': 0}})
             measure_uid = r[0].UID if r else None  # value from catalog brain
-        r = catalog.search({'UID':measure_uid})
+        r = catalog.search({'UID': measure_uid})
         if not measure_uid or not r:
             req.response.setHeader('Content-Length', 2)
             return '[]'   # empty

@@ -13,7 +13,7 @@ class ChartView(object):
         self.request = request
     
     def chart_elements(self):
-        return [ self.context ]
+        return [self.context]
     
     def UID(self, context=None):
         if context is None:
@@ -29,7 +29,7 @@ class ChartView(object):
     def json_url(self, context=None):
         if context is None:
             context = self.context
-        cache_bust = 'cache_bust=%s' % random.randint(1,2**32)
+        cache_bust = 'cache_bust=%s' % random.randint(1, 2 ** 32)
         return '%s/%s?%s' % (
             context.absolute_url(),
             '@@chart_json',
@@ -38,7 +38,7 @@ class ChartView(object):
     
     def _fixedheight(self, context):
         """return fixed height in pixels or None"""
-        height = getattr(context, 'height', None) or height
+        height = getattr(context, 'height', None) or 200
         height_units = getattr(context, 'height_units', None)
         if height_units == 'px':
             return height

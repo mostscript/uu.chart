@@ -3,7 +3,6 @@ import math
 from Acquisition import aq_parent, aq_inner, aq_base
 from plone.dexterity.content import Item
 from plone.uuid.interfaces import IUUID
-from zope.component.hooks import getSite
 from zope.interface import implements
 
 from uu.chart.data import NamedDataPoint, TimeSeriesDataPoint
@@ -13,13 +12,16 @@ from uu.chart.interfaces import provider_measure, resolve_uid
 from uu.chart.interfaces import AGGREGATE_FUNCTIONS, AGGREGATE_LABELS
 
 
+DATASET_TYPE = 'uu.formlibrary.setspecifier'
+
+
 class MeasureSeriesProvider(Item):
     
     implements(IMeasureSeriesProvider)
     
     def pointcls(self):
         """
-        Use re-acquisition of self via catalog to ensure proper 
+        Use re-acquisition of self via catalog to ensure proper
         acquisition wrapping, get point class to use based on the
         acquisition parent (chart) type containing this provider.
         """
@@ -44,12 +46,12 @@ class MeasureSeriesProvider(Item):
             return dict(reversed(items)).values()
         if strategy == 'IGNORE':
             # return only points without duplicated keys
-            return [v for k,v in items if keys.count(k) == 1]
+            return [v for k, v in items if keys.count(k) == 1]
         if strategy in AGGREGATE_FUNCTIONS:
             sorted_uniq_keys = []
             fn = AGGREGATE_FUNCTIONS.get(strategy)
             keymap = {}
-            for k,v in items:
+            for k, v in items:
                 if math.isnan(v.value):
                     continue  # skip NaN values
                 if k not in keymap:
@@ -73,11 +75,10 @@ class MeasureSeriesProvider(Item):
         measure = provider_measure(self)
         if measure is None:
             return []
-        group = measure.group()
         dataset_uid = getattr(self, 'dataset', None)
         dataset = resolve_uid(dataset_uid)
-        if getattr(dataset, 'portal_type', None) != 'uu.formlibrary.setspecifier':
-            return []  # no topic or wrong type
+        if getattr(dataset, 'portal_type', None) != DATASET_TYPE:
+            return []  # no dataset or wrong type
         infos = measure.dataset_points(dataset)  # list of info dicts
         if not infos:
             return []

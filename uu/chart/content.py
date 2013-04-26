@@ -1,12 +1,11 @@
 import csv
-from datetime import datetime, date
+from datetime import date
 from hashlib import md5
 from StringIO import StringIO
 
 from Acquisition import aq_base
 from persistent.dict import PersistentDict
 from plone.dexterity.content import Item, Container
-from five import grok
 from zope.interface import implements
 from plone.uuid.interfaces import IAttributeUUID
 
@@ -20,7 +19,7 @@ from uu.chart.interfaces import MEASURE_DATA_TYPE
 from uu.chart.data import TimeSeriesDataPoint, NamedDataPoint
 
 
-_type_filter = lambda o,t: hasattr(o, 'portal_type') and o.portal_type == t
+_type_filter = lambda o, t: hasattr(o, 'portal_type') and o.portal_type == t
 
 
 class BaseDataSequence(Item):
@@ -43,18 +42,18 @@ class BaseDataSequence(Item):
         if cachekey not in self._v_data:
             result = []
             reader = csv.reader(StringIO(getattr(self, 'input', u'')))
-            rows = list(reader) #iterate over CSV
+            rows = list(reader)  # iterate over CSV
             for row in rows:
-                note = uri = None #default empty optional values
+                note = uri = None  # default empty optional values
                 if len(row) < 2:
-                    continue #silently ignore
+                    continue  # silently ignore
                 try:
                     key = row[0]
                     if self.KEYTYPE == date:
                         key = normalize_usa_date(key)
                     value = float(row[1])
                 except ValueError:
-                    continue #failed to type-cast value, ignore row
+                    continue  # failed to type-cast value, ignore row
                 if len(row) >= 3:
                     note = row[2]
                 if len(row) >= 4:
@@ -64,7 +63,7 @@ class BaseDataSequence(Item):
         return self._v_data[cachekey]
      
     def __iter__(self):
-        """ 
+        """
         Iterable of date, number data point objects providing
         (at least) IDataPoint.
         """
@@ -80,6 +79,7 @@ class BaseDataSequence(Item):
         v = round(v, precision) if v is not None else v
         fmt = '%%.%if' % precision
         return fmt % v if v is not None else ''
+
 
 class TimeDataSequence(BaseDataSequence):
     implements(ITimeDataSequence)
@@ -103,7 +103,7 @@ class TimeSeriesChart(Container):
         contained items.
         """
         contained = self.objectValues()
-        _f = lambda o: _type_filter(o, TIME_DATA_TYPE) 
+        _f = lambda o: _type_filter(o, TIME_DATA_TYPE)
         _f_measure = lambda o: _type_filter(o, MEASURE_DATA_TYPE)
         v1 = list(filter(_f, contained))
         return v1 + list(filter(_f_measure, contained))
@@ -130,7 +130,7 @@ class NamedSeriesChart(Container):
         contained items.
         """
         contained = self.objectValues()
-        _f = lambda o: _type_filter(o, NAMED_DATA_TYPE) 
+        _f = lambda o: _type_filter(o, NAMED_DATA_TYPE)
         _f_measure = lambda o: _type_filter(o, MEASURE_DATA_TYPE)
         v1 = list(filter(_f, contained))
         return v1 + list(filter(_f_measure, contained))
