@@ -36,10 +36,12 @@
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
 </tal:block>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.fitmarkersPatch.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.tabularLegendRenderer.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js?api=20130325"></script>
 </metal:block>
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
+  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/tabular-legend.css" />
   <style>
   div.chartwrap { border:1px solid #ddd; }
   div.richelement, div.chartinfo { margin-left: 0.4em; }

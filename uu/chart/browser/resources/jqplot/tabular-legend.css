@@ -1,0 +1,38 @@
+canvas { overflow:auto !important; }
+
+table.tabular-legend td.keycell {
+    color:black;
+    padding-right:0.3em;
+}
+
+table.tabular-legend tr.legend-headings th {
+    color:#256;
+    font-size:75%;
+    background-color:white;
+    border-bottom:1px solid #999;
+}
+
+table.tabular-legend td.keycell {
+    font-size:75%;
+}
+
+table.tabular-legend td.keycell div.legendkey {
+    width:90%;
+    float:right;
+    text-align:right;
+}
+
+table.tabular-legend {
+    width:100%;
+}
+
+table.tabular-legend td.value {
+    border-top:1px dotted #bbb !important;
+}
+
+table.tabular-legend td.value {
+    text-align:center;
+    border-left:1px dotted #bbb;
+}
+
+.chartdiv { margin-bottom:1em; }

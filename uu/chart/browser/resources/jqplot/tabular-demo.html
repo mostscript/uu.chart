@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Tabular legend testing/demonstration</title>
+
+  <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script> -->
+  <script type="text/javascript" src="file:///Users/sean/projects/dev42/app/eggs/plone.app.jquery-1.4.4-py2.7.egg/plone/app/jquery/jquery-1.4.4.js"></script>
+  <script type="text/javascript" src="jquery.jqplot.js"></script>
+  <script type="text/javascript" src="jqplot.dateAxisRenderer.js"></script>
+  <script type="text/javascript" src="jqplot.canvasTextRenderer.js"></script>
+  <script type="text/javascript" src="jqplot.canvasAxisLabelRenderer.js"></script>
+  <script type="text/javascript" src="jqplot.canvasAxisTickRenderer.js"></script>
+  <script type="text/javascript" src="jqplot.tabularLegendRenderer.js"></script>
+  <script type="text/javascript" src="jqplot.pointLabels.js"></script>
+  <script type="text/javascript" src="jqplot.fitmarkersPatch.js"></script>
+
+<script type="text/javascript">
+
+var uu = uu || {};
+uu.chart = uu.chart || {};
+uu.chart.example = uu.chart.example || {};
+
+(function ($) {
+
+    $(document).ready(function () {
+        var targets = ['chartdiv1', 'chartdiv2', 'chartdiv3'],
+            plots = [],
+            line1 = [
+                [new Date('2013-01-01T00:00:00-07:00'), 3],
+                [new Date('2013-02-01T00:00:00-07:00'), 4],
+                [new Date('2013-03-01T00:00:00-07:00'), 5],
+                [new Date('2013-04-01T00:00:00-06:00'), 2],
+                [new Date('2013-05-01T00:00:00-06:00'), 1],
+            ],
+            line2 = [
+                [new Date('2013-01-01T00:00:00-07:00'), 6],
+                [new Date('2013-02-01T00:00:00-07:00'), 7],
+                [new Date('2013-03-01T00:00:00-07:00'), 5],
+                [new Date('2013-04-01T00:00:00-06:00'), 0],
+                [new Date('2013-05-01T00:00:00-06:00'), 6],
+            ],
+            targetdata = {
+                chartdiv1: [line1, line2],
+                chartdiv2: [line1],
+                chartdiv3: [line2]
+            },
+            targetopts = {
+                chartdiv1: 
+                {
+                    legend: { show:true, renderer: $.jqplot.tabularLegendRenderer, location: 'nw', yoffset:0, xoffset:0, preDraw:false },
+                    seriesDefaults: {
+                        pointLabels: {
+                            formatString: "%.1f",
+                            show: true,
+                            hideZeros: false
+                        },
+                    },
+                    axes: {
+                        yaxis: { min:0, max:7, pad:1.1 },
+                        xaxis: {
+                            renderer: $.jqplot.DateAxisRenderer,
+                            tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                            tickInterval: '1 month',
+                            min: new Date('2012-12-01T00:00:00-07:00'),
+                            max: new Date('2013-06-01T00:00:00-06:00'),
+                            tickOptions: {
+                                angle: -45,
+                                fontSize: '10pt',
+                                fontFamily: 'Arial',
+                                fontWeight: 'bold',
+                                enableFontSupport: true,
+                                textColor: '#00f'
+                            }
+                        }
+                    },
+                    //gridPadding: { left:100, top:10 }
+                }
+            };
+        // copy options:
+        targetopts['chartdiv2'] = $.extend(true, {}, targetopts['chartdiv1']);
+        targetopts['chartdiv3'] = $.extend(true, {}, targetopts['chartdiv1']);
+        // chartdiv1 and chartdiv3 are opted-into fitmarkers behavior:
+        $('#chartdiv1').addClass('fitmarkers');
+        $('#chartdiv3').addClass('fitmarkers');
+        // ...however, chartdiv3 has a yaxis max of 10 to avoid rendering
+        targetopts.chartdiv3.axes.yaxis.max = 10;
+        // chartdiv1 omits labels from line1 data
+        targetopts['chartdiv1'].series = [ {pointLabels: {show:false}}, {} ];
+        targetopts['chartdiv2'].series = [ {pointLabels: {show:true}} ];
+        // initialize behavior:
+        uu.chart.fitmarkers.init_behavior();
+        targets.forEach(function (target) {
+            plots.push(
+                $.jqplot(
+                    target,
+                    targetdata[target],
+                    targetopts[target]
+                )
+            );
+        });
+        uu.chart.example.plots = plots;
+    });
+
+}(jQuery));
+
+
+</script>
+
+  <link rel="stylesheet" type="text/css" href="jquery.jqplot.min.css" />
+  <link rel="stylesheet" type="text/css" href="tabular-legend.css" />
+
+</head>
+<body>
+
+<div id="chartdiv1" class="chartdiv" style="width:100%;height:200px;background-color:#fff;">
+</div>
+
+<div id="chartdiv2" class="chartdiv" style="width:100%;height:200px;background-color:#ddd;">
+</div>
+
+<div id="chartdiv3" class="chartdiv" style="width:100%;height:200px;background-color:#ddd;">
+</div>
+
+</body>
+</html>
