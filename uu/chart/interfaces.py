@@ -610,11 +610,31 @@ class IChartDisplay(form.Schema):
         default=u'line',
         )
    
+    legend_placement = schema.Choice(
+        title=_(u'Legend placement'),
+        description=_(
+            u'Where to place legend in relationship to the grid.'
+            u'Note: the legend is disabled for less than two '
+            u'series/line unless the tabular legend is selected.'
+            ),
+        vocabulary=SimpleVocabulary((
+            SimpleTerm(value=None, token=str(None), title=u'Legend disabled'),
+            SimpleTerm(value='outside', title=_(u'Outside grid')),
+            SimpleTerm(value='inside', title=_(u'Inside grid')),
+            SimpleTerm(value='tabular', title=_(
+                u'Tabular legend with data, below plot')),
+            )),
+        required=False,
+        default='tabular',
+        )
+
     legend_location = schema.Choice(
         title=_(u'Legend location'),
-        description=_(u'Select a directional position for legend.'),
+        description=_(u'Select a directional position for legend. '
+                      u'This setting is ignored if either the tabular '
+                      u'legend placement is selected or if the '
+                      u'legend is hidden (for less than two series).'),
         vocabulary=SimpleVocabulary((
-            SimpleTerm(value=None, token=str(None), title=u'Disabled'),
             SimpleTerm(value='nw', title=_(u'Top left')),
             SimpleTerm(value='n', title=_(u'Top')),
             SimpleTerm(value='ne', title=_(u'Top right')),
@@ -628,17 +648,6 @@ class IChartDisplay(form.Schema):
         default='e',  # right hand side
         )
    
-    legend_placement = schema.Choice(
-        title=_(u'Legend placement'),
-        description=_(u'Where to place legend in relationship to the grid.'),
-        vocabulary=SimpleVocabulary((
-            SimpleTerm(value='outside', title=_(u'Outside grid')),
-            SimpleTerm(value='inside', title=_(u'Inside grid')),
-            )),
-        required=True,
-        default='outside',
-        )
-  
     x_label = schema.TextLine(
         title=_(u'X axis label'),
         default=u'',

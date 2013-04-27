@@ -349,7 +349,11 @@ uu.chart = (function (ns, $) {
         var chart_div = $(div),
             divid = div.attr('id'),
             legend = { show: false }, //default is none
-            legend_placement = 'outsideGrid',
+            legend_placement = data.legend_placement || 'tabular',
+            legend_location = data.legend_location || 'e',
+            tabularLegend = (legend_placement === 'tabular'),
+            tabularRenderer = $.jqplot.tabularLegendRenderer,
+            legendRenderer = (tabularLegend) ? tabularRenderer : undefined,
             goal_color = "#333333",
             x_axis = {},
             stack = false,
@@ -431,16 +435,16 @@ uu.chart = (function (ns, $) {
             x_axis.renderer = $.jqplot.CategoryAxisRenderer;
             x_axis.ticks = ns.uniquekeys(data);
         }
-        if (data.legend_location && data.series.length > 1) {
-            if (data.legend_placement) {
-                legend_placement = data.legend_placement;
+        if (legend_placement) {
+            if (data.series.length > 1 || legend_placement === 'tabular') {
+                legend = {
+                    show: true,
+                    location: legend_location,
+                    placement: legend_placement,
+                    marginTop: '2em',
+                    renderer: legendRenderer
+                };
             }
-            legend = {
-                show: true,
-                location: data.legend_location,
-                placement: legend_placement,
-                marginTop: '2em'
-            };
         }
         x_axis.label = data.x_label || undefined;
         $.jqplot.config.enablePlugins = true;
