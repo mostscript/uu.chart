@@ -266,18 +266,26 @@ var colortool = colortool || {};  // ns
             var legendkey = $('<div class="legendkey" />'),
                 keytd = $('<td class="keycell">').append(legendkey),
                 tr = $('<tr>').append(keytd),
-                seriesdata = s.data,
+                seriesdata = {},
                 keyClr = (colortool.avgLum(s.color) > 127) ? 'black' : 'white';
+            s.data.forEach(function (pair) {
+                var key = pair[0], value = pair[1];
+                seriesdata[key] = value;
+            });
             keytd.css('background-color', s.color);
             keytd.css('color', keyClr);
             legendkey.append(s.label);
-            seriesdata.forEach(function (pair) {
-                var v = pair[1],
+            headings.forEach(function (h) {
+                var v = seriesdata[h.key],
                     td = $('<td class="value" />').append(v),
                     colorLight = colortool.rgbaCSS(s.color, 0.45);
                 // RGBA opacity lightens background color:
                 td.css('background-color', colorLight);
                 td.css('color', '#444');
+                if (v == null) {
+                    td.text('--');
+                    td.css('color', '#bbb');
+                }
                 td.appendTo(tr);
             });
             table.append(tr);
