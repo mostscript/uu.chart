@@ -37,6 +37,13 @@ var colortool = colortool || {};  // ns
         return 'rgba(' + rgba.join(', ') + ')';
     };
 
+    ns.avgLum = function (color) {
+        var _add = function (a, b) { return a + b; },
+            _sum = function (seq) { return seq.reduce(_add); },
+            _avg = function (seq) { return _sum(seq) / seq.length; };
+        return _avg(ns.rgb(color));
+    };
+
 }(jQuery, colortool));
 
 
@@ -259,8 +266,10 @@ var colortool = colortool || {};  // ns
             var legendkey = $('<div class="legendkey" />'),
                 keytd = $('<td class="keycell">').append(legendkey),
                 tr = $('<tr>').append(keytd),
-                seriesdata = s.data;
+                seriesdata = s.data,
+                keyClr = (colortool.avgLum(s.color) > 127) ? 'black' : 'white';
             keytd.css('background-color', s.color);
+            keytd.css('color', keyClr);
             legendkey.append(s.label);
             seriesdata.forEach(function (pair) {
                 var v = pair[1],
