@@ -277,7 +277,7 @@ var colortool = colortool || {};  // ns
             legendkey.append(s.label);
             headings.forEach(function (h) {
                 var v = seriesdata[h.key],
-                    td = $('<td class="value" />').append(v),
+                    td = $('<td class="value" />'),
                     colorLight = colortool.rgbaCSS(s.color, 0.45);
                 // RGBA opacity lightens background color:
                 td.css('background-color', colorLight);
@@ -285,6 +285,8 @@ var colortool = colortool || {};  // ns
                 if (v == null) {
                     td.text('--');
                     td.css('color', '#bbb');
+                } else {
+                    td.text($.jqplot.sprintf('%.1f', v));
                 }
                 td.appendTo(tr);
             });
@@ -316,7 +318,7 @@ var colortool = colortool || {};  // ns
             h = headings[i];
             th = $($('th', headingRow)[i+1]);
             dim = celldim[i];
-            width = dim.width * 0.98;
+            width = dim.width * 0.9865;
             th.width(width);
             if (i===0) {
                 dataRows.each(padleft);

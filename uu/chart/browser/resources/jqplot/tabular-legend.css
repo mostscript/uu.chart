@@ -10,6 +10,7 @@ table.tabular-legend tr.legend-headings th {
     font-size:75%;
     background-color:white;
     border-bottom:1px solid #999;
+    text-align:center;
 }
 
 table.tabular-legend td.keycell {
@@ -24,15 +25,16 @@ table.tabular-legend td.keycell div.legendkey {
 
 table.tabular-legend {
     width:100%;
+    border-collapse: separate !important;
+    border-spacing: 2px !important;
+    border-color: gray !important;
 }
 
 table.tabular-legend td.value {
-    border-top:1px dotted #bbb !important;
-}
-
-table.tabular-legend td.value {
-    text-align:center;
+    border-top:1.3333px dotted #bbb !important;
     border-left:1px dotted #bbb;
+    text-align:center;
+    font-size:80%;
 }
 
 .chartdiv { margin-bottom:1em; }
