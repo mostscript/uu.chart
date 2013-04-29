@@ -7,14 +7,14 @@ table.tabular-legend td.keycell {
 
 table.tabular-legend tr.legend-headings th {
     color:#256;
-    font-size:75%;
+    font-size:87%;
     background-color:white;
     border-bottom:1px solid #999;
     text-align:center;
 }
 
 table.tabular-legend td.keycell {
-    font-size:75%;
+    font-size:92%;
 }
 
 table.tabular-legend td.keycell div.legendkey {
@@ -34,7 +34,7 @@ table.tabular-legend td.value {
     border-top:1.3333px dotted #bbb !important;
     border-left:1px dotted #bbb;
     text-align:center;
-    font-size:80%;
+    font-size:100%;
 }
 
 .chartdiv { margin-bottom:1em; }
