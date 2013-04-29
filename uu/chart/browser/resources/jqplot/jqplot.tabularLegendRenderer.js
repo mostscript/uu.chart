@@ -307,12 +307,16 @@ var colortool = colortool || {};  // ns
             celldim = ns.cellDimensions(gridData, gridRight, gridLeft),
             headingRow = $('tr.legend-headings', chartdiv),
             dataRows = $('tr', chartdiv).not('.legend-headings'),
-            i, h, th, dim, width, padleft, padright;
+            i, h, th, dim, width, padleft, padright, useWidth;
         padleft = function () {
-            $($('td', $(this))[1]).width(width - width*0.3333).css('padding-left', width*0.3333);
+            var w = useWidth,
+                pad = width - useWidth;
+            $($('td', $(this))[1]).width(w).css('padding-left', pad);
         };
         padright = function () {
-            $($('td', $(this)).slice(-1)[0]).width(width - width*0.3333).css('padding-right', width*0.3333);
+            var w = useWidth,
+                pad = width - useWidth;
+            $($('td', $(this)).slice(-1)[0]).width(w).css('padding-right', pad);
         };
         for (i=0; i < celldim.length; i += 1) {
             h = headings[i];
@@ -321,12 +325,22 @@ var colortool = colortool || {};  // ns
             width = dim.width * 0.9865;
             th.width(width);
             if (i===0) {
+                if (gridData[1]) {
+                    useWidth = gridData[1][0] - gridData[i][0];
+                } else {
+                    useWidth = width - (width * 0.3333);  // fallback
+                }
                 dataRows.each(padleft);
-                th.width(width - width*0.3333).css('padding-left', width*0.3333);
+                th.width(useWidth).css('padding-left', width - useWidth);
             }
             if (i===celldim.length-1) {
+                if (i !== 0) {
+                    useWidth = gridData[i][0] - gridData[i-1][0];
+                } else {
+                    useWidth = width - (width * 0.3333);  // fallback
+                }
                 dataRows.each(padright);
-                th.width(width - width*0.3333).css('padding-right', width*0.3333);
+                th.width(useWidth).css('padding-right', width - useWidth);
             }
         }
     };
