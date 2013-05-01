@@ -8,6 +8,47 @@
 
 var colortool = colortool || {};  // ns
 
+
+// auto-wrap contents of jQuery-wrapped cell in wrapper div, if:
+//  (a) more than one child node, OR
+//  (b) only text node
+// Returns wrapper element.
+function autoWrap(cell) {
+    var outer = $(cell),
+        contents = outer.contents(),    // all nodes
+        children = outer.children(),    // element nodes only
+        inner = $('<div class="content-wrap" />'),
+        empty = (contents.length === 0),
+        alreadyWrapped = (children.length === 1 && children[0].tagName === 'div');
+    if (empty) {
+        return inner.appendTo(outer);
+    }
+    if (alreadyWrapped) {
+        return $(children[0]);  // use existing singular element
+    }
+    inner.appendTo(outer);
+    // reparent each node within outer inside inner div
+    contents.each(function () { inner.append($(this)); });
+    return inner;
+}
+
+// given a specified width, wrap cell contents and adjust font-size to fit
+function autofitTextSize(cell, width) {
+    var tableCell = $($(cell)[0]),  // cell is singular && jquery object
+        innerDiv = autoWrap(tableCell),
+        fontSize = parseInt(innerDiv.css('font-size'), 10),
+        minSize = 6;
+    while (innerDiv[0].scrollWidth > width) {
+        fontSize *= 0.95;
+        if (fontSize <= minSize) {
+            break;
+        }
+        innerDiv.css('font-size', fontSize);
+    }
+    return fontSize;
+}
+
+
 (function ($, ns) {
     "use strict";
 
@@ -307,7 +348,8 @@ var colortool = colortool || {};  // ns
             celldim = ns.cellDimensions(gridData, gridRight, gridLeft),
             headingRow = $('tr.legend-headings', chartdiv),
             dataRows = $('tr', chartdiv).not('.legend-headings'),
-            i, h, th, dim, width, padleft, padright, useWidth;
+            i, h, th, dim, width, padleft, padright, useWidth,
+            minsize = 18;
         padleft = function () {
             var w = useWidth,
                 pad = width - useWidth;
@@ -323,6 +365,9 @@ var colortool = colortool || {};  // ns
             th = $($('th', headingRow)[i+1]);
             dim = celldim[i];
             width = dim.width * 0.9865;
+            if ($('td.value', $(dataRows[0])).length > 12) {
+                width = dim.width * 0.94;
+            }
             th.width(width);
             if (i===0) {
                 if (gridData[1]) {
@@ -332,8 +377,7 @@ var colortool = colortool || {};  // ns
                 }
                 dataRows.each(padleft);
                 th.width(useWidth).css('padding-left', width - useWidth);
-            }
-            if (i===celldim.length-1) {
+            } else if (i===celldim.length-1) {
                 if (i !== 0) {
                     useWidth = gridData[i][0] - gridData[i-1][0];
                 } else {
@@ -341,6 +385,28 @@ var colortool = colortool || {};  // ns
                 }
                 dataRows.each(padright);
                 th.width(useWidth).css('padding-right', width - useWidth);
+            } else {
+                useWidth = width;  // for future use in dynamic text sizing
+            }
+            // auto-size pass 1: set text size shrink to fit calculated width
+            minsize = Math.min(autofitTextSize(th, useWidth), minsize);
+        }
+        // auto-size th text pass 2: each cell in heading row consistent size:
+        if (minsize <= 7) {
+            $('div.content-wrap', headingRow).css(
+                'font-family',
+                '"Helvetica Neue","Segoe UI","Tahoma","Ubuntu Condensed"'
+            );
+            minsize += 1.5;
+        }
+        $('div.content-wrap', headingRow).css('font-size', minsize);
+        // ad-hoc auto-size value cells based on number of cells:
+        if (dataRows.length) {
+            if ($('td.value', dataRows[0]).length > 15) {
+                $('td.value', dataRows).css(
+                    'font-size',
+                    9
+                );
             }
         }
     };
@@ -364,7 +430,6 @@ var colortool = colortool || {};  // ns
         ns.adjustKeycells(this);
         // set width for each table data column based on calculated:
         ns.fixColumnWidths(plot);
-
         this._elem.css('width', String() + gridRight + 'px');
         this._elem.css('left', offsets.left + 0);
         this._elem.css('margin-top', pxtop - 10);
