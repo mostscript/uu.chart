@@ -182,7 +182,8 @@ uu.chart.fitmarkers = uu.chart.fitmarkers || {};
             plot = this._plot,  // was bound in series_plot_refs postInitHook
             additionalHeight = ns.additionalHeight(plot),
             origTopMargin = parseInt(series.canvas._ctx.canvas.style.top, 10),
-            newTopMargin = Math.max(0, origTopMargin - additionalHeight);
+            newTopMargin = Math.max(0, origTopMargin - additionalHeight),
+            eventCanvas = plot.eventCanvas;
         if (!ns.qualifies(plot)) {
             return;  // speific chart not eligible for behavior
         }
@@ -191,13 +192,42 @@ uu.chart.fitmarkers = uu.chart.fitmarkers || {};
             $.jqplot.LineRenderer.prototype.setGridData = ns.setGridData;
         }
         series.canvas._ctx.canvas.style.top = String(newTopMargin) + 'px';
+        if (eventCanvas) {
+            // adjust event canvas for plugins (e.g. highlighter)
+            if (parseInt(plot.eventCanvas._ctx.canvas.style.top, 10) !== 0) {
+                eventCanvas._ctx.canvas.style.top = String(newTopMargin) + 'px';
+                eventCanvas._ctx.canvas.height += additionalHeight;
+            }
+        }
         series.canvas._ctx.canvas.height += additionalHeight;
         series._optsref = options;
+    };
+
+    ns.fixupHighlightCanvas = function () {
+        var plot = this,
+            series = plot.series[0],
+            hlPlugin = plot.plugins.highlighter,
+            hlCanvas = hlPlugin.highlightCanvas,
+            additionalHeight = ns.additionalHeight(plot),
+            origTopMargin = parseInt(series.canvas._ctx.canvas.style.top, 10),
+            newTopMargin = Math.max(0, origTopMargin - additionalHeight),
+            canvas = $(hlCanvas._ctx.canvas);
+        canvas.css('top', String(newTopMargin) + 'px');
+        canvas[0].height += additionalHeight;
     };
 
     // load behavior hooks, just once:
     ns.init_behavior = function () {
         if (!ns.behavior_loaded) {
+            if ($.jqplot.Highlighter) {
+                if ($.inArray(
+                        $.jqplot.Highlighter.postPlotDraw,
+                        $.jqplot.postDrawHooks) === -1
+                    ) {
+                    $.jqplot.postDrawHooks.push($.jqplot.Highlighter.postPlotDraw);
+                }
+                $.jqplot.postDrawHooks.push(ns.fixupHighlightCanvas);
+            }
             $.jqplot.postInitHooks.push(ns.series_plot_refs);
             $.jqplot.preDrawHooks.push(ns.plot_overlap_padding);
             $.jqplot.preDrawSeriesHooks.push(ns.seriesDrawOverlapFixups);
