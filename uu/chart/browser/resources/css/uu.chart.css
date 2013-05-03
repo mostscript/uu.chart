@@ -1,0 +1,16 @@
+.jqplot-highlighter-tooltip {
+    background-color:rgba(192,192,192,0.8) !important;
+    text-align:center;
+    z-index:10000;
+}
+
+.jqplot-highlighter-tooltip em.tip {
+    font-size:80%;
+    color:purple;
+}
+
+.pointOverlay p.note {
+    font-style:italic;
+    color:#999;
+    font-size:90%;
+}

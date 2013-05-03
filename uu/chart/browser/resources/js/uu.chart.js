@@ -345,9 +345,61 @@ uu.chart = (function (ns, $) {
         div[0].style.height = String(chart_height) + 'px';
     };
 
+    ns.overlayHookups = function (div, data) {
+        var chart_div = $(div),
+            divid = div.attr('id'),
+            colorGen = new $.jqplot.ColorGenerator(),
+            mkHTML = function (series, point, color) {
+                var wrap = $('<div>'),
+                    seriesLabel = series.title,
+                    title = $('<h5>').appendTo(wrap),
+                    detail = $('<dl>').appendTo(wrap),
+                    fmt = series.display_format || '%.1f',
+                    v = $.jqplot.sprintf(fmt, point.value);
+                title.css('color', color);
+                title.text(seriesLabel);
+                $('<dt class="name">').appendTo(detail).text(point.title);
+                $('<dd class="value">').appendTo(detail).text('Value: ' + v);
+                $('<p class="note">').appendTo(wrap).text(point.note);
+                if (point.uri) {
+                    $('<a>').attr({
+                        href: point.uri,
+                        target: '_blank'
+                        }
+                    ).appendTo(wrap).text('View data source');
+                }
+                return wrap;
+            };
+        // hook up click handlers for data-points
+        chart_div.bind('jqplotDataClick',
+            function (ev, seriesIndex, pointIndex, datapair) {
+                var series = data.series[seriesIndex],
+                    pointData = series.data[pointIndex][1],
+                    seriesLabel = series.title,
+                    seriesColor = series.color || colorGen.get(seriesIndex),
+                    overlay = new tinyOverlay.Overlay(
+                    mkHTML(series, pointData, seriesColor),
+                    {
+                        classname: 'pointOverlay',
+                        style: {
+                            left: ev.pageX - 244,
+                            top: ev.pageY - 3,
+                            width: 220,
+                            border: '2px solid ' + seriesColor,
+                            'z-index': 10000
+                        }
+                    }
+                );
+                $('.jqplot-highlighter-tooltip', chart_div).hide();
+                overlay.open();
+            }
+        );
+    };
+
     ns.fillchart = function (div, data) {
         var chart_div = $(div),
             divid = div.attr('id'),
+            seriesData = ns.seriesdata(data),
             legend = { show: false }, //default is none
             legend_placement = data.legend_placement || 'tabular',
             legend_location = data.legend_location || 'e',
@@ -449,11 +501,17 @@ uu.chart = (function (ns, $) {
         x_axis.label = data.x_label || undefined;
         $.jqplot.config.enablePlugins = true;
 
-        $.jqplot(divid, ns.seriesdata(data), {
+        $.jqplot(divid, seriesData, {
             stackSeries: stack,
             axes: {
                 xaxis: x_axis,
                 yaxis: ns.jqplot_yaxis_config(data)
+            },
+            highlighter: {
+                show: true,
+                sizeAdjust: 7.5,
+                formatString: '%s, %.1f <br />' +
+                    '<em class="tip">Click data-point for details</em>'
             },
             axesDefaults: {tickOptions: {fontSize: '7pt'}},
             series: ns.seriesoptions(data),
@@ -461,6 +519,8 @@ uu.chart = (function (ns, $) {
             legend: legend,
             seriesColors : series_colors
         });
+        // hookup on-click overlays:
+        ns.overlayHookups(chart_div, data);
         // finally, adjust label colors to match line colors using CSS/jQuery:
         ns.label_color_fixups(data, divid, series_colors);
     };

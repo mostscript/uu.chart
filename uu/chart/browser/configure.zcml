@@ -77,6 +77,12 @@
     />
 
   <browser:resourceDirectory
+    name="uu.chart.css"
+    directory="resources/css"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    />
+
+  <browser:resourceDirectory
     name="uu.chart.icons"
     directory="resources/icons"
     layer="uu.chart.interfaces.IChartProductLayer"
