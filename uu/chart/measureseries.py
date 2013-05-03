@@ -90,7 +90,7 @@ class MeasureSeriesProvider(Item):
             _key(info),
             info.get('value'),
             note=measure.value_note(info),
-            uri=info.get('uri', None),
+            uri=info.get('url', None),
             )
         all_points = map(_point, infos)
         return self.summarize(all_points)

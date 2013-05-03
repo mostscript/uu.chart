@@ -22,5 +22,9 @@ class DataTableView(object):
     def field_value(self, point, name):
         if name == 'value':
             return self.context.display_value(point)
+        if name == 'uri':
+            url = getattr(point, name, '')
+            if url:
+                return '<a href="%s" target="_blank">%s</a>' % (url, url)
         return getattr(point, name, '')
 
