@@ -11,6 +11,7 @@
   <script type="text/javascript" src="jqplot.canvasTextRenderer.js"></script>
   <script type="text/javascript" src="jqplot.canvasAxisLabelRenderer.js"></script>
   <script type="text/javascript" src="jqplot.canvasAxisTickRenderer.js"></script>
+  <script type="text/javascript" src="jqplot.highlighter.js"></script>
   <script type="text/javascript" src="jqplot.tabularLegendRenderer.js"></script>
   <script type="text/javascript" src="jqplot.pointLabels.js"></script>
   <script type="text/javascript" src="jqplot.fitmarkersPatch.js"></script>
@@ -55,6 +56,11 @@ uu.chart.example = uu.chart.example || {};
                             show: true,
                             hideZeros: false
                         },
+                    },
+                    highlighter: {
+                        show:true,
+                        sizeAdjust:7.5,
+                        formatString: '%s, %.1f <br /><em style="font-size:80%">Click for details</em>'
                     },
                     axes: {
                         yaxis: { min:0, max:7, pad:1.1 },
