@@ -53,7 +53,6 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | show_trend : String   [0..1]|     'true' or 'false' in JSON
 | trend_width : Number  [0..1]|
 | trend_color : String  [0..1]|     if empty, default same as color
-| goal : Number         [0..1]|
 | display_format:String [0..1]|     == '%%.%if' % display_precision
 | break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
@@ -153,7 +152,6 @@ class ChartJSON(object):
                 'show_trend',
                 'trend_width',
                 'trend_color',
-                'goal',
                 'break_lines',
                     ):
                 v = getattr(seq, name, None)

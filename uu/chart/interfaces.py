@@ -396,7 +396,6 @@ class IDataSeries(form.Schema):
         label=u"Configuration",
         fields=[
             'units',
-            'goal',
             'range_min',
             'range_max',
             'display_precision',
@@ -412,12 +411,6 @@ class IDataSeries(form.Schema):
     units = schema.TextLine(
         title=_(u'Units'),
         description=_(u'Units of measure for the series.'),
-        required=False,
-        )
-   
-    goal = schema.Float(
-        title=_(u'Goal'),
-        description=_(u'Goal value as floating point / decimal number'),
         required=False,
         )
    
@@ -706,11 +699,6 @@ class ISeriesDisplay(form.Schema):
 class ILineDisplay(form.Schema, ISeriesDisplay):
     """
     Mixin interface for display-line configuration metadata for series line.
-   
-    Note: while a series can have a specific goal value, only one
-    goal per-chart is considered for goal-line display.  It is therefore up
-    to implementation to choose reasonable aspects for display (or omission)
-    of line/series specific goals.
     """
     
     form.fieldset(
