@@ -99,6 +99,7 @@ from plone.formwidget.contenttree.source import UUIDSourceBinder
 from plone.uuid.interfaces import IAttributeUUID
 from plone.uuid.interfaces import IUUID
 from z3c.form import widget
+from z3c.form.browser.textarea import TextAreaFieldWidget
 from zope.interface import Interface, Invalid, invariant, implements
 from zope.component.hooks import getSite
 from zope.container.interfaces import IOrderedContainer
@@ -533,25 +534,7 @@ class IChartDisplay(form.Schema):
     """
     Display configuration for chart settings (as a whole).
     """
-   
-    form.fieldset(
-        'display',
-        label=u"Display settings",
-        fields=[
-            'width',
-            'width_units',
-            'height',
-            'height_units',
-            'show_goal',
-            'goal_color',
-            'legend_location',
-            'legend_placement',
-            'x_label',
-            'y_label',
-            'chart_styles',
-            ]
-        )
-   
+
     width = schema.Int(
         title=_(u'Width'),
         description=_(u'Display width of chart, including Y-axis labels, '
@@ -593,6 +576,7 @@ class IChartDisplay(form.Schema):
         default=u'Auto',
         )
    
+    form.order_after(chart_type='description')
     chart_type = schema.Choice(
         title=_(u'Chart type'),
         description=_(u'Type of chart to display.'),
@@ -618,7 +602,7 @@ class IChartDisplay(form.Schema):
                 u'Tabular legend with data, below plot')),
             )),
         required=False,
-        default='tabular',
+        default='outside',
         )
 
     legend_location = schema.Choice(
@@ -653,6 +637,7 @@ class IChartDisplay(form.Schema):
         required=False,
         )
 
+    form.widget(chart_styles=TextAreaFieldWidget)
     chart_styles = schema.Bytes(
         title=_(u'Chart styles'),
         description=_(u'CSS stylesheet rules for chart (optional).'),
@@ -779,11 +764,46 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
 
 # --- content type interfaces: ---
 
-class IBaseChart(form.Schema, ILocation, IAttributeUUID):
+class IBaseChart(form.Schema, ILocation, IAttributeUUID, IChartDisplay):
     """Base chart (content item) interface"""
    
     form.omitted('__name__')
    
+    form.fieldset(
+        'goal',
+        label=u'Goal',
+        fields=[
+            'show_goal',
+            'goal',
+            'goal_color',
+            ]
+        )
+    
+    form.fieldset(
+        'legend',
+        label=u'Axes & Legend',
+        fields=[
+            'legend_placement',
+            'legend_location',
+            'x_label',
+            'y_label',
+            'units',
+            ]
+        )
+    
+    form.fieldset(
+        'display',
+        label=u"Display",
+        fields=[
+            'width',
+            'width_units',
+            'height',
+            'height_units',
+            'chart_styles',
+            #'point_labels',
+            ]
+        )
+
     form.fieldset(
         'about',
         label=u"About",
@@ -800,11 +820,10 @@ class IBaseChart(form.Schema, ILocation, IAttributeUUID):
 
 # -- timed series chart interfaces:
 
-class ITimeSeriesChart(IBaseChart,
-                       ITimeSeriesCollection,
-                       IChartDisplay):
+class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
     """Chart content item; container for sequences"""
 
+    form.order_after(auto_crop='frequency')
     auto_crop = schema.Bool(
         title=u'Auto-crop to completed data?',
         description=u'If data contains sequential null values (incomplete '

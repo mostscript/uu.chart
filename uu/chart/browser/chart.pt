@@ -67,6 +67,9 @@
   .report-actions ul li:hover a { background-color:#444 !Important; color:white !important; }
   .chart-data-listing { border:1px solid #ddd; background-color:#eee; float:left; width:46%; } 
   </style>
+ <tal:block repeat="element view/chart_elements">
+  <style tal:condition="python:element.chart_styles and element.chart_styles.strip()" tal:content="element/chart_styles" />
+ </tal:block>
 </metal:block>
 </head>
 
