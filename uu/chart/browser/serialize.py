@@ -29,6 +29,9 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | x_axis_type : String      [0..1]|   Either 'date' or omitted.
 | legend_location : String  [0..1]|   null ==> hide legend
 | legend_placement : String [0..1]|
+| range_min : Number              |   (y-axis min/max)
+| range_max : Number              |
+| point_labels : String           |   Choices: 'show', 'omit'
 | aspect_ratio : Array      [0..1]|   Optional array of [W,H] numbers (ratio)
 '---------------------------------'     Should be omitted when chart is not
        1 /%\                            configued to tie height to width.
@@ -41,19 +44,17 @@ Note: properties marked with multiplicity [0..1] either have a typed
 +-----------------------------+
 | title : String              |
 | description : String  [0..1]|
-| units  : String       [0..1]|
 | line_width : Number   [0..1]|       (note: line_width=0 : do not show line,
 | color : String        [0..1]|               however, markers may be shown).
 | marker_color : Number [0..1]|
 | marker_width : Number [0..1]|       (integer value)
 | marker_size : Number  [0..1]|       (floating point value)
 | marker_style : String [0..1]|
-| range_min : Number    [0..1]|       (y-axis min/max)
-| range_max : Number    [0..1]|
 | show_trend : String   [0..1]|     'true' or 'false' in JSON
 | trend_width : Number  [0..1]|
 | trend_color : String  [0..1]|     if empty, default same as color
 | display_format:String [0..1]|     == '%%.%if' % display_precision
+| point_labels : String       |     Choices: 'defer' (def), 'show', 'omit'
 | break_lines : Boolean       |     'true'/'false': display null points?
 '-----------------------------'
        1 /%\
@@ -140,19 +141,17 @@ class ChartJSON(object):
             for name in (
                 'title',
                 'description',
-                'units',
                 'line_width',
                 'color',
                 'marker_color',
                 'marker_size',
                 'marker_width',
                 'marker_style',
-                'range_min',
-                'range_max',
                 'show_trend',
                 'trend_width',
                 'trend_color',
                 'break_lines',
+                'point_labels',
                     ):
                 v = getattr(seq, name, None)
                 if v is not None and v != '':
@@ -191,6 +190,9 @@ class ChartJSON(object):
             'y_label',
             'legend_placement',
             'legend_location',
+            'range_min',
+            'range_max',
+            'point_labels',
             'width',
             'height',
             ]

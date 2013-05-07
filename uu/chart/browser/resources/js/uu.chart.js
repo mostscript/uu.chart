@@ -92,8 +92,8 @@ uu.chart = (function (ns, $) {
 
     /* min, max Y-values for chart for all respective data series */
     ns.range = function (data) {
-        var min = null,
-            max = null;
+        var min = data.range_min || null,
+            max = data.range_max || null;
         (data.series || []).forEach(function (s) {
             if (!(s.data && s.data.length)) {
                 return;  // no data for series, ignore
@@ -118,6 +118,15 @@ uu.chart = (function (ns, $) {
         return r;
     };
 
+    ns.showPointLabels = function (data, series) {
+        var chartValue = data.point_labels,
+            seriesValue = series.point_labels,
+            chartDefault = (chartValue) ? (chartValue === 'show') : true,
+            defer = (seriesValue) ? (seriesValue === 'defer') : true,
+            optIn = (seriesValue === 'show');
+        return (defer) ? chartDefault : optIn;
+    };
+
     ns.seriesoptions = function (data) {
         var r = [];
         (data.series || []).forEach(function (s) {
@@ -134,6 +143,7 @@ uu.chart = (function (ns, $) {
                     label: s.title || undefined,
                     breakOnNull: s.break_lines || undefined,
                     pointLabels: {
+                        show: ns.showPointLabels(data, s),
                         formatString: "%.1f",
                         hideZeros: false
                     },

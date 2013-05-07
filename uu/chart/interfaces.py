@@ -396,9 +396,6 @@ class IDataSeries(form.Schema):
         'configuration',
         label=u"Configuration",
         fields=[
-            'units',
-            'range_min',
-            'range_max',
             'display_precision',
             ],
         )
@@ -407,26 +404,6 @@ class IDataSeries(form.Schema):
         title=_(u'Title'),
         description=_(u'Name of data series; may be displayed as a label.'),
         required=True,
-        )
-   
-    units = schema.TextLine(
-        title=_(u'Units'),
-        description=_(u'Units of measure for the series.'),
-        required=False,
-        )
-   
-    range_min = schema.Float(
-        title=_(u'Range minimum'),
-        description=_(u'Minimum anticipated value of any data point '
-                      u'(optional).'),
-        required=False,
-        )
-   
-    range_max = schema.Float(
-        title=_(u'Range maximum'),
-        description=_(u'Maximum anticipated value of any data point '
-                      u'(optional).'),
-        required=False,
         )
    
     display_precision = schema.Int(
@@ -484,6 +461,20 @@ class IDataCollection(Interface):
         description=_(u'Common goal value as decimal number.  If each '
                       u'series has different respective goals, edit '
                       u'those goals on each series.'),
+        required=False,
+        )
+   
+    range_min = schema.Float(
+        title=_(u'Range minimum'),
+        description=_(u'Minimum anticipated value of any data point '
+                      u'(optional).'),
+        required=False,
+        )
+   
+    range_max = schema.Float(
+        title=_(u'Range maximum'),
+        description=_(u'Maximum anticipated value of any data point '
+                      u'(optional).'),
         required=False,
         )
    
@@ -644,6 +635,17 @@ class IChartDisplay(form.Schema):
         required=False,
         )
 
+    point_labels = schema.Choice(
+        title=u'Show point labels?',
+        description=u'Show labels above data-point markers?  '
+                    u'This may be overridden on individual lines/series.',
+        default='show',
+        vocabulary=SimpleVocabulary([
+                SimpleTerm('show', title=u'Show labels'),
+                SimpleTerm('omit', title=u'Omit labels'),
+            ])
+        )
+
 
 class ISeriesDisplay(form.Schema):
     """
@@ -700,6 +702,7 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
             'trend_width',
             'trend_color',
             'break_lines',
+            'point_labels',
             ],
         )
    
@@ -761,6 +764,17 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
         default=True,
         )
 
+    point_labels = schema.Choice(
+        title=u'Show point labels?',
+        description=u'Show labels above data-point markers for this series?',
+        default='defer',
+        vocabulary=SimpleVocabulary([
+                SimpleTerm('defer', title=u'Defer to chart default'),
+                SimpleTerm('show', title=u'Show labels'),
+                SimpleTerm('omit', title=u'Omit labels'),
+            ])
+        )
+
 
 # --- content type interfaces: ---
 
@@ -800,7 +814,7 @@ class IBaseChart(form.Schema, ILocation, IAttributeUUID, IChartDisplay):
             'height',
             'height_units',
             'chart_styles',
-            #'point_labels',
+            'point_labels',
             ]
         )
 
