@@ -166,7 +166,7 @@ uu.chart.fitmarkers = uu.chart.fitmarkers || {};
         }
         series.gridData.forEach(function (point) {
             var y = point[1];
-            point[1] = y + additionalHeight;
+            point[1] = (y === null) ? null : y + additionalHeight;
         });
         if (series._optsref) {
             // Series.prototype.draw first tries to get gridData from
