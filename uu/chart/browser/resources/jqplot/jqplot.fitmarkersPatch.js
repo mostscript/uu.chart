@@ -212,8 +212,10 @@ uu.chart.fitmarkers = uu.chart.fitmarkers || {};
             origTopMargin = parseInt(series.canvas._ctx.canvas.style.top, 10),
             newTopMargin = Math.max(0, origTopMargin - additionalHeight),
             canvas = $(hlCanvas._ctx.canvas);
-        canvas.css('top', String(newTopMargin) + 'px');
-        canvas[0].height += additionalHeight;
+        if (ns.qualifies(plot)) {
+            canvas.css('top', String(newTopMargin) + 'px');
+            canvas[0].height += additionalHeight;
+        }
     };
 
     // load behavior hooks, just once:
