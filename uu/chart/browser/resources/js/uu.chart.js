@@ -369,7 +369,11 @@ uu.chart = (function (ns, $) {
                 title.css('color', color);
                 title.text(seriesLabel);
                 $('<dt class="name">').appendTo(detail).text(point.title);
-                $('<dd class="value">').appendTo(detail).text('Value: ' + v);
+                if (point.value !== null) {
+                    $('<dd class="value">').appendTo(detail).text('Value: ' + v);
+                } else {
+                    $('<dd class="value">').appendTo(detail).text('Value: n/a (null)');
+                }
                 $('<p class="note">').appendTo(wrap).text(point.note);
                 if (point.uri) {
                     $('<a>').attr({
