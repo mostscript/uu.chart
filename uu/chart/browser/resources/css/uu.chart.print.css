@@ -1,0 +1,32 @@
+#portal-column-content.position-1\3a 4 {
+    margin-left: 0 !important;
+}
+
+#portal-column-content.width-1\3a 2 {
+    width: 95% !important;
+}
+
+#content-core .chartwrap {
+    page-break-inside: avoid !important;
+}
+
+#content-core .chartdiv {
+    max-width:700px !important;
+    page-break-inside: avoid !important;
+}
+
+div.report-management {
+    display:none !important;
+}
+
+table.tabular-legend {
+    border-spacing: 1px !important;
+    width:90%;
+}
+
+table.tabular-legend td {
+  -webkit-print-color-adjust:exact !important;
+  font-size:80%;
+}
+
+div.printlink { display:none !important; }

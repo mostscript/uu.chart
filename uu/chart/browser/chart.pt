@@ -41,11 +41,15 @@
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jqplot.tabularLegendRenderer.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/tinyOverlay.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js?api=20130325"></script>
+  <script type="text/javascript" tal:condition="python:request.form.get('goprint')">
+    $(document).ready(function () {  window.print(); });
+  </script>
 </metal:block>
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/jquery.jqplot.min.css" />
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.jqplot/tabular-legend.css" />
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/uu.chart.css" />
+  <link rel="stylesheet" type="text/css" media="print" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/uu.chart.print.css" />
   <style>
   div.chartwrap { border:1px solid #ddd; }
   div.richelement, div.chartinfo { margin-left: 0.4em; }
@@ -75,7 +79,7 @@
 
 <body>
 <div metal:fill-slot="content-core" tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')">
-
+ <div tal:condition="python:not request.form.get('goprint')" class="printlink"><a href="" target="_blank" tal:attributes="href string:${context/absolute_url}?ajax_load=1&ajax_include_head=1&goprint=1">&#x2399; Print report</a></div>
  <tal:block repeat="element view/chart_elements">
   <tal:block define="ischart python:context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
    <div style="width:99%;"
@@ -108,7 +112,7 @@
  </tal:block>
  <div style="clear:both"></div>
  
- <div class="report-management">
+ <div class="report-management" tal:condition="python:not request.form.get('goprint')">
    <h4 tal:content="python:'Manage this %s' % ('report' if is_report else 'chart')">Manage this report:</h4>
 
    <div class="report-actions" tal:condition="is_report">
