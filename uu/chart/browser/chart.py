@@ -67,12 +67,14 @@ class ChartView(object):
         width = getattr(context, 'width', None) or width
         width_units = getattr(context, 'width_units', None)
         height = self._fixedheight(context)
+        if not context.objectIds():
+            height = 0
         if width and not width_units:
             # backward compatibility for old charts, set to 100%
             width = 100
         width_units = width_units or '%'
         base = 'width:%s%s;' % (width, width_units)
-        if height:
+        if height is not None:
             base += 'height:%spx;' % (height,)
         return base
 
