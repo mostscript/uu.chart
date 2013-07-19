@@ -51,6 +51,7 @@ class MeasureSeriesProvider(Item):
             sorted_uniq_keys = []
             fn = AGGREGATE_FUNCTIONS.get(strategy)
             keymap = {}
+            pointmap = {}  # original points
             for k, v in items:
                 if math.isnan(v.value):
                     continue  # skip NaN values
@@ -58,13 +59,14 @@ class MeasureSeriesProvider(Item):
                     sorted_uniq_keys.append(k)  # only once
                     keymap[k] = []
                 keymap[k].append(v.value)  # sequence of 1..* values per key
+                pointmap[k].append(v)
             pointcls = self.pointcls()
             label = dict(AGGREGATE_LABELS).get(strategy)
             result = []
             for k in sorted_uniq_keys:
                 vcount = len(keymap[k])
                 if vcount == 1:
-                    result.append(keymap[k])
+                    result.append(pointmap[k])  # original point preserved
                 else:
                     note = u'%s of %s values found.' % (label, vcount)
                     result.append(pointcls(k, fn(keymap[k]), note=note))
