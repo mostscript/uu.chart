@@ -63,10 +63,11 @@ class MeasureSeriesProvider(Item):
             result = []
             for k in sorted_uniq_keys:
                 vcount = len(keymap[k])
-                note = u''
-                if vcount > 1:
+                if vcount == 1:
+                    result.append(keymap[k])
+                else:
                     note = u'%s of %s values found.' % (label, vcount)
-                result.append(pointcls(k, fn(keymap[k]), note=note))
+                    result.append(pointcls(k, fn(keymap[k]), note=note))
             return result
         return points  # fallback
     
