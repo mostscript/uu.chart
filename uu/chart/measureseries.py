@@ -59,7 +59,7 @@ class MeasureSeriesProvider(Item):
                     sorted_uniq_keys.append(k)  # only once
                     keymap[k] = []
                 keymap[k].append(v.value)  # sequence of 1..* values per key
-                pointmap[k].append(v)
+                pointmap[k] = v  # last point seen for key
             pointcls = self.pointcls()
             label = dict(AGGREGATE_LABELS).get(strategy)
             result = []
