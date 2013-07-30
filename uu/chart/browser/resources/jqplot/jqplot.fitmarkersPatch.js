@@ -96,12 +96,15 @@ uu.chart.fitmarkers = uu.chart.fitmarkers || {};
         var max = -Infinity;
         plot.data.forEach(
             function (series) {
-                max = Math.max.apply(
-                    null,
-                    series.map(
-                        function (point) {
-                            return point[1];  // y value
-                        }
+                max = Math.max(
+                    max,
+                    Math.max.apply(
+                        null,
+                        series.map(
+                            function (point) {
+                                return point[1];  // y value
+                            }
+                        )
                     )
                 );
             }

@@ -523,7 +523,7 @@ uu.chart = (function (ns, $) {
         x_axis.label = data.x_label || undefined;
         $.jqplot.config.enablePlugins = true;
 
-        $.jqplot(divid, seriesData, {
+        chart_div.data('plot', $.jqplot(divid, seriesData, {
             stackSeries: stack,
             axes: {
                 xaxis: x_axis,
@@ -540,7 +540,7 @@ uu.chart = (function (ns, $) {
             seriesDefaults: series_defaults,
             legend: legend,
             seriesColors : series_colors
-        });
+        }));
         // hookup on-click overlays:
         ns.overlayHookups(chart_div, data);
         // finally, adjust label colors to match line colors using CSS/jQuery:
