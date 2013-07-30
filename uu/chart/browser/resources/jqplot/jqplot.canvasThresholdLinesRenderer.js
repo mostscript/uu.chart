@@ -58,6 +58,7 @@
         options = $.extend(true, {}, this.thresholdRenderer, options);
 				var inputDataX = [];
 				var inputDataY = [];
+                var additionalHeight;
 				for (var i=0; i < options.xValues.length; i++) {
 					inputDataX.push([options.xValues[i], 0]);
 				}
@@ -66,6 +67,17 @@
 				}
 				var gridDataX = this.renderer.makeGridData.call(this, inputDataX);
 				var gridDataY = this.renderer.makeGridData.call(this, inputDataY);
+                if (uu.chart.fitmarkers) {
+                    if (uu.chart.fitmarkers.qualifies(this._plot)) {
+                        additionalHeight = uu.chart.fitmarkers.additionalHeight(this._plot);
+                        gridDataY.forEach(function (point) {
+                            var y = point[1];
+                            point[1] = (y === null) ? null : y + additionalHeight;
+                        });
+                    }
+                }
+
+
         sctx.save();
 				
 				
