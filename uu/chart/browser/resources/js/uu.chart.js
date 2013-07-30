@@ -92,8 +92,8 @@ uu.chart = (function (ns, $) {
 
     /* min, max Y-values for chart for all respective data series */
     ns.range = function (data) {
-        var min = data.range_min || null,
-            max = data.range_max || null;
+        var min = (ns.has_value(data.range_min)) ? data.range_min : null,
+            max = (ns.has_value(data.range_max)) ? data.range_max : null;
         (data.series || []).forEach(function (s) {
             if (!(s.data && s.data.length)) {
                 return;  // no data for series, ignore
