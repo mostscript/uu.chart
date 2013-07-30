@@ -235,7 +235,7 @@ uu.chart.fitmarkers = uu.chart.fitmarkers || {};
             }
             $.jqplot.postInitHooks.push(ns.series_plot_refs);
             $.jqplot.preDrawHooks.push(ns.plot_overlap_padding);
-            $.jqplot.preDrawSeriesHooks.push(ns.seriesDrawOverlapFixups);
+            $.jqplot.preDrawSeriesHooks.splice(0, 0, ns.seriesDrawOverlapFixups);
             ns.behavior_loaded = true;
         }
     };
