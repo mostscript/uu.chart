@@ -405,7 +405,7 @@ function autofitTextSize(cell, width) {
             if ($('td.value', dataRows[0]).length > 15) {
                 $('td.value', dataRows).css(
                     'font-size',
-                    9
+                    '70%'
                 );
             }
         }
