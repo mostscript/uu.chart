@@ -114,6 +114,15 @@ from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
 from uu.chart import _  # MessageFactory for package
 
 
+# type name globals:
+TIMESERIES_TYPE = 'uu.chart.timeseries'
+NAMEDSERIES_TYPE = 'uu.chart.namedseries'
+REPORT_TYPE = 'uu.chart.report'
+TIMESERIES_DATA = 'uu.chart.data.timeseries'
+NAMEDSERIES_DATA = 'uu.chart.data.namedseries'
+MEASURESERIES_DATA = 'uu.chart.data.measureseries'
+
+
 ## globals for vocabulary and summarization/aggregate functions
 
 F_MEAN = lambda l: float(sum(l)) / len(l) if len(l) > 0 else float('nan')

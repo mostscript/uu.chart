@@ -63,6 +63,15 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    name="populate"
+    for="..interfaces.IDataReport"
+    class=".populate.ReportPopulateView"
+    template="populate.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
   <!-- resources -->
   <browser:resourceDirectory
     name="uu.chart.jqplot"

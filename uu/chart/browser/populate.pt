@@ -1,0 +1,186 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.chart">
+<head>
+<metal:block fill-slot="javascript_head_slot">
+  <script type="text/javascript"
+          src=""
+          tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/populate.js">
+  </script>
+</metal:block>
+<metal:block fill-slot="style_slot">
+<style>
+#group-selector {
+  display:block;
+}
+
+#component-selection {
+  display:block;
+}
+
+#group-selector {
+  border:1px solid black;
+  background-color:#ccc;
+  padding:0.4em;
+}
+
+#group-selector ul {
+  margin-left:2em;
+  min-width:20em;
+  max-width:80%;
+  border:1px solid #999;
+  background-color:#fff;
+  margin:0.6em;
+}
+
+#group-selector ul li {
+  list-style-type:none;
+  margin:1em 0.3em;
+}
+
+#group-selector ul li label {
+  margin-left:1em;
+}
+
+#button-create-plots,
+#button-select-group {
+  font-size:130%;
+}
+
+#component-selection {
+  display:none;  /* initially hidden */
+  border:1px solid black;
+  padding:0.4em;
+}
+
+#component-selection h4, #group-selector h4 {
+  margin-bottom:0.4em;
+  border-bottom:1px solid #aaa;
+}
+
+#component-selection h5 {
+  font-size:120%;
+  color:navy;
+  margin-left:1em;
+}
+
+#component-selection th {
+  color:#999;
+  border-bottom:1px solid #ddd;
+  font-size:90%;
+  padding:0.2em;
+}
+
+#measure-selection {
+  border:1px solid #999;
+  width:97%;
+}
+
+#measure-selection tr:nth-child(odd), #dataset-selection tr:nth-child(odd) {
+  background-color:#eef;
+}
+
+label {
+  padding-left:0.3em;
+}
+
+#component-selection label, #component-selection input,
+#component-selection select {
+  font-size:90%;
+  font-family:Arial Narrow;
+}
+
+.legend_label, .chart_title {
+  width:180px;
+}
+
+.legend_label, .chart_title, .chart_goal {
+  background-color:transparent;
+  color:#999;
+  outline:none;
+  border:1px solid #999;
+}
+
+.legend_label:focus, .chart_title:focus, .chart_goal:focus,
+.legend_label.modified, .chart_title.modified, .chart_goal.modified {
+  color:black;
+  font-weight:bold;
+}
+
+input.chart_goal {
+  width:3em;
+}
+
+#component-selection table {
+  margin-left:0.5em;
+}
+
+#component-selection .center-check {
+  text-align:center;
+}
+
+#component-selection tr.selected td {
+  color:#009;
+  background-color:yellow;
+}
+
+#component-selection p {
+  font-size:90%;
+}
+
+#dataset-selection {
+  border:1px solid #999;
+  width:97%;
+}
+
+#dataset-selection td:first-child, #measure-selection td:first-child {
+  width:225px !important;
+}
+
+</style>
+</metal:block>
+</head>
+<body>
+<div metal:fill-slot="main">
+
+  <h2>Report population tool</h2>
+  <p>
+    This tool assists you in quickly creating one or more plots/charts
+    from measures and data-sets that have been defined within measure
+    groups.  <em>This tool may be run more than once, should you need it.</em>
+  </p>
+  <hr />
+
+  <form id="group-selector">
+    <h4><a href="javascript:void(0)">Step 1: select a measure group.</a></h4>
+    <div class="detail">
+      <ul id="group-selector-choices"></ul>
+      <input id="button-select-group" name="choice" type="button" value="Proceed &gt;&gt;&gt;" />
+    </div>
+  </form>
+
+  <form id="component-selection" method="post">
+    <h4>Step 2: select from available measures and data-sets.</h4>
+  <p>
+    You must select at least one measure and one dataset; you optionally
+    may specify a goal for the chart/measure.  If this is provided by the
+    measure, and you wish to omit a goal-line, leave the goal value blank.
+  </p>
+
+    <h5>Select measures (per-chart)</h5>
+    <table id="measure-selection">
+    </table>
+
+    <h5>Select data-sets (one per line/bar)</h5>
+    <table id="dataset-selection">
+    </table>
+   
+    <input id="button-create-plots" name="create.plots" type="submit" value="Create report components &gt;&gt;&gt;" />
+  </form>
+
+</div>
+</body>
+</html>

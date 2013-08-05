@@ -55,5 +55,9 @@
           url_expr="string:${object_url}/edit" visible="True">
     <permission value="Modify portal content"/>
   </action>
+  <action title="Populate" action_id="populate" category="object" condition_expr=""
+          url_expr="string:${object_url}/@@populate" visible="True">
+    <permission value="Add portal content"/>
+  </action>
 
 </object>
