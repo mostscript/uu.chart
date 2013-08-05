@@ -91,7 +91,7 @@
 						var labelCoordinates = determineLabelCoordinatesHorizontal(sctx, options.labelLocation, options.yValues[i]);
 						sctx.font = options.font;
 						sctx.fillStyle = options.labelColor;
-						sctx.fillText(options.yValues[i], labelCoordinates[0], gridDataY[i][1] + labelCoordinates[1]);
+						sctx.fillText('Goal: ' + options.yValues[i], labelCoordinates[0], gridDataY[i][1] + labelCoordinates[1]);
 					}
 					
 				}
