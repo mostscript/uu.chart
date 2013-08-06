@@ -149,10 +149,14 @@ function autofitTextSize(cell, width) {
             baseLeftGridPadding = plot._gridPadding.left || 0,
             axisCss = '#' + plot.target[0].id + ' ' + ns.snippets.AXISCSS,
             styleTag = $('<style />');
-        styleTag.text(axisCss);
-        styleTag.appendTo($('head'));
-        if (plot._gridPadding && plot._gridPadding.left != null) {
-            plot._gridPadding.left = ns.LABEL_WIDTH + 10;
+        if (plot.legend && plot.legend.renderer) {
+            if (plot.legend.renderer instanceof $.jqplot.tabularLegendRenderer) {
+                styleTag.text(axisCss);
+                styleTag.appendTo($('head'));
+                if (plot._gridPadding && plot._gridPadding.left != null) {
+                    plot._gridPadding.left = ns.LABEL_WIDTH + 10;
+                }
+            }
         }
     };
 
