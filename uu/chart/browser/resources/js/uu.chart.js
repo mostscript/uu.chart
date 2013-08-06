@@ -347,7 +347,6 @@ uu.chart = (function (ns, $) {
         var chart_width = $(div)[0].scrollWidth,
             chart_height,
             aspect_multiplier;
-        console.log(data.series.length);
         if (data.series && !data.series.length) {
             // empty chart, no height modifications
             return;
