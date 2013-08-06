@@ -36,7 +36,7 @@ uu.chart.populate = (function ($, ns) {
         ' <th>Plot type</th>' +
         ' <th>Goal</th>' +
         ' <th class="center-check">Use tabular legend?</th>' +
-        ' <th class="center-check">Extend to project end-date?</th>' +
+        ' <th class="center-check">Extend to workspace end-date?</th>' +
         '</tr>';
     ns.html.datasetHeadings = String() + 
         '<tr>' +
@@ -45,8 +45,8 @@ uu.chart.populate = (function ($, ns) {
         '</tr>';
     ns.html.tabularLegendCheck = String() +
         '<input name="tabular_legend:list" type="checkbox" />';
-    ns.html.projectEndCheck = String() +
-        '<input name="use_project_end_date:list" type="checkbox" />';
+    ns.html.workspaceEndCheck = String() +
+        '<input name="use_workspace_end_date:list" type="checkbox" />';
 
     // namespaced functions:
 
@@ -120,17 +120,17 @@ uu.chart.populate = (function ($, ns) {
                         legendCheckCell = $('<td />')
                             .addClass('center-check')
                             .append(tabularLegendCheck),
-                        projectEndCheck = $(ns.html.projectEndCheck)
+                        workspaceEndCheck = $(ns.html.workspaceEndCheck)
                             .attr('value', uid),
-                        projectEndCheckCell = $('<td />')
+                        workspaceEndCheckCell = $('<td />')
                             .addClass('center-check')
-                            .append(projectEndCheck);
+                            .append(workspaceEndCheck);
                     tr.append(titleCell);
                     tr.append(titleInputCell);
                     tr.append(chartTypeInputCell);
                     tr.append(goalCell);
                     tr.append(legendCheckCell);
-                    tr.append(projectEndCheckCell);
+                    tr.append(workspaceEndCheckCell);
                     if (info.subject && info.subject.length) {
                         info.subject.forEach(function(tag) {
                             if (tag.substring(0, 11) === 'goal_value_') {
@@ -149,12 +149,12 @@ uu.chart.populate = (function ($, ns) {
                     goalInput.change(function () {
                         $(this).addClass('modified');
                     });
-                    legendCheckCell.click(function () {
+                    tabularLegendCheck.click(function () {
                         if (!tr.hasClass('selected')) {
                             check.click();
                         }
                     });
-                    projectEndCheckCell.click(function () {
+                    workspaceEndCheck.click(function () {
                         if (!tr.hasClass('selected')) {
                             check.click();
                         }

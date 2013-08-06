@@ -69,7 +69,9 @@
   .report-actions ul li a:hover { color:white !important; }
   .report-actions ul li:hover { background-color:#444 !Important; color:white !important; }
   .report-actions ul li:hover a { background-color:#444 !Important; color:white !important; }
-  .chart-data-listing { border:1px solid #ddd; background-color:#eee; float:left; width:46%; } 
+  .chart-data-listing { border:1px solid #ddd; background-color:#eee; float:left; width:46%; padding:0.2em; } 
+  li.create.populate { background-color:#9da; }
+  li.create.populate a { font-size:130% !important; color:#009 !important; }
   </style>
  <tal:block repeat="element view/chart_elements">
   <style tal:condition="python:getattr(element, 'chart_styles', None) and element.chart_styles.strip()" tal:content="element/chart_styles" />
@@ -117,6 +119,9 @@
 
    <div class="report-actions" tal:condition="is_report">
     <ul>
+     <li class="create populate" tal:condition="view/can_add">
+      <a href="./@@populate">Add measure-based charts to report using population tool</a>
+     </li>
      <li class="create" tal:condition="view/can_add">
       <a href="++add++uu.chart.timeseries">&thinsp;&#43;&nbsp; Add time series chart to this report</a>
      </li>
@@ -152,16 +157,20 @@
     </ul>
    </div>
 
-   <div class="chart-data-listing" tal:condition="view/can_manage">
+   <div class="chart-data-listing" tal:condition="view/can_manage" tal:define="content context/contentValues">
     <h4 tal:content="python:'Current report components:' if is_report else 'Current chart data:'">Current chart data:</h4>
     <ul>
-      <li tal:repeat="item context/contentValues">
+      <li tal:repeat="item content">
         <a href="" tal:attributes="href item/absolute_url">
           <img src="" tal:attributes="src item/getIcon" />
           <span tal:content="item/Title" />
         </a>
       </li>
     </ul>
+    <div tal:condition="python:is_report and len(content)==0">
+      <em>This report is empty; you can use the <a href="./@@populate">population tool</a> or
+      <a href="./folder_factories">add individual components</a> in this report.</em>
+    </div>
    </div>
 
  </div>

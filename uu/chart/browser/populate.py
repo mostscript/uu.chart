@@ -1,3 +1,6 @@
+import datetime
+
+from Acquisition import aq_base
 from plone.dexterity.utils import addContentToContainer, createContent
 from plone.app.uuid.utils import uuidToObject
 from Products.statusmessages.interfaces import IStatusMessage
@@ -6,7 +9,7 @@ from uu.chart.interfaces import TIMESERIES_TYPE, NAMEDSERIES_TYPE
 from uu.chart.interfaces import MEASURESERIES_DATA
 
 try:
-    from uu.qiext.interfaces import IProjectContext
+    from uu.qiext.utils import workspace_stack
     HAS_QIEXT = True
 except ImportError:
     HAS_QIEXT = False
@@ -37,11 +40,14 @@ class ReportPopulateView(object):
                 r['range_max'] = 100
             r['label_default'] = 'abbr+year'
             if HAS_QIEXT:
-                project = IProjectContext(self.context, None)
-                if project:
-                    project_end = getattr(project, 'end', None)
-                    if project_end:
-                        r['end'] = project_end
+                w_end = raw.get('use_project_end_date', [])
+                if uid in w_end:
+                    workspaces = workspace_stack(self.context)
+                    for workspace in reversed(workspaces):
+                        end = getattr(aq_base(workspace), 'end', None)
+                        if isinstance(end, datetime.date):
+                            r['end'] = end
+                            break
         r['chart_type'] = 'bar' if chart_type.endswith('bar') else 'line'
         goal = raw.get('goal-%s' % uid, None)
         if goal:
