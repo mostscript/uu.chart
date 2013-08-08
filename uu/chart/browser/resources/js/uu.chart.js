@@ -661,6 +661,20 @@ uu.chart = (function (ns, $) {
             return;
         }
 
+        // monkey-patch default colors of jqplot, new first-eight colors
+        $.jqplot.config.defaultColors.splice(
+            0,
+            0,
+            '#4682B4',
+            '#9370DB',
+            '#2E8B57',
+            '#FF7F50',
+            '#191970',
+            '#FFD700',
+            '#DA70D6',
+            '#008080'
+        );
+
         // copy original tick-label draw method on CanvasAxisTickRenderer
         // prototype, to make available to a monkey patched method:
         $.jqplot.CanvasAxisTickRenderer.prototype.orig_draw = $.jqplot.CanvasAxisTickRenderer.prototype.draw;
