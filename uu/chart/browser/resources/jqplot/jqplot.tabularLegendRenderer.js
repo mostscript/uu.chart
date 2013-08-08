@@ -353,7 +353,10 @@ function autofitTextSize(cell, width) {
             headingRow = $('tr.legend-headings', chartdiv),
             dataRows = $('tr', chartdiv).not('.legend-headings'),
             i, h, th, dim, width, padleft, padright, useWidth,
-            minsize = 18;
+            tickCount = plot.axes.xaxis._ticks.length,
+            gridWidth = $($('.jqplot-series-canvas', chartdiv)[0]).width(),
+            cellWidth = gridWidth / (tickCount - 1),
+            baseFontSize = Math.min(cellWidth / 2.3, 12.5);
         padleft = function () {
             var w = useWidth,
                 pad = width - useWidth;
@@ -392,27 +395,23 @@ function autofitTextSize(cell, width) {
             } else {
                 useWidth = width;  // for future use in dynamic text sizing
             }
-            // auto-size pass 1: set text size shrink to fit calculated width
-            minsize = Math.min(autofitTextSize(th, useWidth), minsize);
+            // auto-size pass 1: wrap cell contents with div
+            autoWrap(th);
         }
+        // auto-size the header cell font-size based on number of ticks:
+        $('div.content-wrap', headingRow).css('font-size', baseFontSize);
         // auto-size th text pass 2: each cell in heading row consistent size:
-        if (minsize <= 7) {
+        if (tickCount > 12) {
             $('div.content-wrap', headingRow).css(
                 'font-family',
                 '"Helvetica Neue","Segoe UI","Tahoma","Ubuntu Condensed"'
             );
-            minsize += 1.5;
         }
-        $('div.content-wrap', headingRow).css('font-size', minsize);
+        $('th', headingRow).slice(2,-1).width(cellWidth - 3);
         // ad-hoc auto-size value cells based on number of cells:
-        if (dataRows.length) {
-            if ($('td.value', dataRows[0]).length > 15) {
-                $('td.value', dataRows).css(
-                    'font-size',
-                    '70%'
-                );
-            }
-        }
+        $('td.value', chartdiv).each(function () {
+            autoWrap($(this)).css('font-size', baseFontSize);
+        });
     };
 
     // pack() positions the table element in the chart div:

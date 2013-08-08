@@ -10,6 +10,8 @@ table.tabular-legend tr.legend-headings th {
     font-size:87%;
     background-color:white;
     border-bottom:1px solid #999;
+    border-left:1px dotted gray;
+    overflow:hidden;
     text-align:center;
 }
 
@@ -35,6 +37,7 @@ table.tabular-legend td.value {
     border-left:1px dotted #bbb;
     text-align:center;
     font-size:83%;
+    overflow:hidden;
 }
 
 .chartdiv { margin-bottom:1em; }
