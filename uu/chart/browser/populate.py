@@ -40,7 +40,7 @@ class ReportPopulateView(object):
                 r['range_max'] = 100
             r['label_default'] = 'abbr+year'
             if HAS_QIEXT:
-                w_end = raw.get('use_project_end_date', [])
+                w_end = raw.get('use_workspace_end_date', [])
                 if uid in w_end:
                     workspaces = workspace_stack(self.context)
                     for workspace in reversed(workspaces):
