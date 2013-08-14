@@ -693,9 +693,9 @@ uu.chart = (function (ns, $) {
         ns.patched = true;  // only patch once!
     };
 
-    $(window).resize(function () {
+    $(window).resize($.debounce( 250, function () {
         ns.loadcharts();
-    });
+    }));
 
     if ($.jqplot) {
         ns.patch_jqplot();
