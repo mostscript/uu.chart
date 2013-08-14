@@ -343,50 +343,12 @@ uu.chart = (function (ns, $) {
         apilink.appendTo(chartdiv);
     };
 
-    ns.sizeAdjustment = function (chartDiv, data) {
-        var sizingWrapper = chartDiv
-                .wrap($('<div class="sizing" />'))
-                .parent(),
-            leftLocations = ['w', 'sw', 'nw'],
-            rightLocations = ['e', 'ne', 'se'],
-            legendLeft = (leftLocations.indexOf(data.legend_location) >= 0),
-            legendRight = (rightLocations.indexOf(data.legend_location) >= 0),
-            legendSide = (legendLeft || legendRight),
-            legendOutside = (data.legend_placement === 'outside'),
-            legendTable,
-            legendWidth,
-            xPadding = 10;
-        if (legendSide && legendOutside) {
-            // include legend in the total width of the plot
-            legendTable = $('table.jqplot-table-legend', chartDiv);
-            if (legendTable.length) {
-                // legend actually shown, get width:
-                legendWidth = legendTable.width();
-                // copy width of chart div to sizing wrapper
-                sizingWrapper.width(chartDiv.width());
-                // if left-side, add left-padding to sizing div:
-                if (legendLeft) {
-                    xPadding += 10;
-                    sizingWrapper.css('padding-left', legendWidth + xPadding);
-                }
-                // shrink chartDiv width by size of legendWidth
-                chartDiv.width(chartDiv.width() - legendWidth - xPadding);
-                // replot:
-                chartDiv.data('plot').replot();
-                // finally, give legend on left-side breathing room, if applicable
-                if (legendLeft) {
-                    legendTable = $('table.jqplot-table-legend', chartDiv);
-                    legendTable.css('right', parseInt(legendTable.css('right'), 10) + xPadding);
-                }
-            }
-        }
-    };
-
     ns.getWrapper = function (div) {
-        var _wrapper = div.parent('div.wrapper'),
+        var _wrapper = div.parents('div.sizing'),
             hasWrapper = Boolean(_wrapper.length),
             w = '<div class="sizing" />',
             sizingWrapper = (hasWrapper) ? _wrapper : div.wrap(w).parent();
+        console.log(_wrapper);
         return sizingWrapper;  // existing or new wrapper, only once
     };
 
@@ -419,7 +381,8 @@ uu.chart = (function (ns, $) {
             wrapper = ns.getWrapper(div),
             chartWidth;
         // reset previous widths:
-        div[0].style.width = String(width) + widthUnits;
+        //div[0].style.width = String(width) + widthUnits;
+        div[0].style.width = '100%';
         // set width
         wrapper[0].style.width = String(width) + widthUnits;
         chartWidth = wrapper[0].style.clientWidth;
@@ -534,7 +497,6 @@ uu.chart = (function (ns, $) {
             barwidth,
             line_width,
             aspect_ratio,
-            sizing_wrapper,
             marker_color;
         if (!seriesData.length) {
             return;
