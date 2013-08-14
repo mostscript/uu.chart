@@ -32,6 +32,10 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | range_min : Number              |   (y-axis min/max)
 | range_max : Number              |
 | point_labels : String           |   Choices: 'show', 'omit'
+| width_units : String            |   Choices: '%', 'px'
+| width : Number                  |
+| height_units : String           |   Choices: '%', 'px', various ratios
+| height : Number                 |     Height may be width-dependent
 | aspect_ratio : Array      [0..1]|   Optional array of [W,H] numbers (ratio)
 '---------------------------------'     Should be omitted when chart is not
        1 /%\                            configued to tie height to width.
@@ -194,6 +198,8 @@ class ChartJSON(object):
             'range_max',
             'point_labels',
             'width',
+            'width_units',
+            'height_units',
             'height',
             ]
         timeseries_chart_attrs = [
