@@ -372,7 +372,7 @@ uu.chart = (function (ns, $) {
     ns.sizeDiv = function (div, data) {
         var widthUnits = data.width_units || '%',
             heightUnits = data.height_units || '%',
-            isRelativeHeight = (heightUnits === '%'),
+            isRelativeHeight = (heightUnits !== 'px'),
             isFixedWidth = (widthUnits === 'px'),
             width = data.width,  // || (isFixedWidth) ? 600 : 100,
             height = data.height || 50,
@@ -381,11 +381,10 @@ uu.chart = (function (ns, $) {
             wrapper = ns.getWrapper(div),
             chartWidth;
         // reset previous widths:
-        //div[0].style.width = String(width) + widthUnits;
         div[0].style.width = '100%';
         // set width
         wrapper[0].style.width = String(width) + widthUnits;
-        chartWidth = wrapper[0].style.clientWidth;
+        chartWidth = wrapper[0].clientWidth;
         if (data.series && !data.series.length) {
             // empty chart, trivial height:
             wrapper[0].style.height = '15px';
@@ -403,23 +402,8 @@ uu.chart = (function (ns, $) {
         }
         height = Math.round(aspectMultiplier * chartWidth);
         wrapper[0].style.height = String(height) + 'px';
+        div[0].style.height = String(height) + 'px';
         ns.sizeAdjust(wrapper, div, data);
-    };
-
-    ns.fit_chart_div = function (div, data) {
-        var chart_width = $(div)[0].scrollWidth,
-            chart_height,
-            aspect_multiplier;
-        if (data.series && !data.series.length) {
-            // empty chart, no height modifications
-            return;
-        }
-        if (!data.aspect_ratio || data.aspect_ratio.length != 2) {
-            return;
-        }
-        aspect_multiplier = 1.0 / (data.aspect_ratio[0] / data.aspect_ratio[1]);
-        chart_height = Math.round(aspect_multiplier * chart_width); // in px
-        div[0].style.height = String(chart_height) + 'px';
     };
 
     ns.overlayHookups = function (div, data) {
@@ -502,7 +486,6 @@ uu.chart = (function (ns, $) {
             return;
         }
         ns.cleardiv(chart_div);
-        //ns.fit_chart_div(chart_div, data);
         ns.sizeDiv(chart_div, data);
         if (data.labels) {
             ns.savelabels(divid, data.labels);
@@ -606,8 +589,6 @@ uu.chart = (function (ns, $) {
         }));
         // hookup on-click overlays:
         ns.overlayHookups(chart_div, data);
-        // adjust and replot size
-        //ns.sizeAdjustment(chart_div, data);
         // finally, adjust label colors to match line colors using CSS/jQuery:
         ns.label_color_fixups(data, divid, series_colors);
     };
