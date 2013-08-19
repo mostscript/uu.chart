@@ -91,6 +91,8 @@ function autofitTextSize(cell, width) {
 (function ($) {
     "use strict";
 
+    var round = Math.round;
+
     /** Class: $jqplot.tabularLegendRenderer
       * Renders a tabular legend, color coded, something like:
       *
@@ -283,6 +285,33 @@ function autofitTextSize(cell, width) {
         };
     };
 
+    ns.syncColumnCount = function (plot, legend) {
+        var xaxis = plot.axes.xaxis,
+            u2p = xaxis.series_u2p,
+            ticks = xaxis._ticks,
+            rows = $('tr', legend._elem),
+            seriesIndex = -1;
+        rows.each(function () {
+            var row = $(this),
+                columns = $('td,th', row),
+                added = 0,
+                cellTag = (row.hasClass('legend-headings')) ? 'th' : 'td class="value"',
+                s = plot.series[seriesIndex],
+                colorLight = '#fff';
+            if (s) {
+                colorLight = colortool.rgbaCSS(s.color, 0.45);
+            }
+            while (added < (ticks.length - columns.length - 1)) {
+                autoWrap(
+                    $('<' + cellTag + '>&nbsp;</' + cellTag + '>')
+                        .css('background-color', colorLight)
+                        .appendTo(row));
+                added += 1;
+            }
+            seriesIndex += 1;
+        });
+    };
+
     $.jqplot.tabularLegendRenderer = function () {};
     $.jqplot.tabularLegendRenderer.prototype.init = function (options) {
         $.extend(true, this, options);
@@ -305,6 +334,7 @@ function autofitTextSize(cell, width) {
         headings.forEach(function (h) {
             var th = $('<th />').appendTo(headingRow);
             th.addClass(h.key);
+            th.data('key', h.key);
             th.text(h.title);
         });
         series.forEach(function (s) {
@@ -342,13 +372,17 @@ function autofitTextSize(cell, width) {
     };
 
     ns.fixColumnWidths = function (plot) {
-        var gridLeft = 0,
+        var xaxis = plot.axes.xaxis,
+            u2p = xaxis.series_u2p,
+            ticks = xaxis._ticks,
+            gridLeft = 0,
             chartdiv = plot.target,
             padLeft = plot._gridPadding.left || 0,
             padRight = plot._gridPadding.right || 10,
             gridRight = plot._plotDimensions.width - padLeft - padRight,
             headings = ns.headingData(plot),
-            gridData = headings.map(function (h) { return [h.x, null]; }),
+            dimfn = function (tick) { return [u2p(tick.value), null]; },
+            gridData = ticks.slice(1).map(dimfn),
             celldim = ns.cellDimensions(gridData, gridRight, gridLeft),
             headingRow = $('tr.legend-headings', chartdiv),
             dataRows = $('tr', chartdiv).not('.legend-headings'),
@@ -359,15 +393,19 @@ function autofitTextSize(cell, width) {
             baseFontSize = Math.min(cellWidth / 2.3, 12.5);
         padleft = function () {
             var w = useWidth,
-                pad = width - useWidth;
-            $($('td', $(this))[1]).width(w).css('padding-left', pad);
+                pad = round(w * 0.5);
+            $($('td', $(this))[1])
+                .width(round(w))
+                .css('padding-left', pad);
         };
         padright = function () {
             var w = useWidth,
-                pad = width - useWidth;
-            $($('td', $(this)).slice(-1)[0]).width(w).css('padding-right', pad);
+                pad = round(w * 0.5);
+            $($('td', $(this)).slice(-1)[0])
+                .width(round(w))
+                .css('padding-right', pad);
         };
-        for (i=0; i < celldim.length; i += 1) {
+        for (i=0; i < (celldim.length - 1); i += 1) {
             h = headings[i];
             th = $($('th', headingRow)[i+1]);
             dim = celldim[i];
@@ -375,28 +413,32 @@ function autofitTextSize(cell, width) {
             if ($('td.value', $(dataRows[0])).length > 12) {
                 width = dim.width * 0.94;
             }
-            th.width(width);
-            if (i===0) {
+            // auto-size pass 1: wrap cell contents with div
+            autoWrap(th);
+            if (i === 0) {
+                // first cell
                 if (gridData[1]) {
                     useWidth = gridData[1][0] - gridData[i][0];
                 } else {
                     useWidth = width - (width * 0.3333);  // fallback
                 }
                 dataRows.each(padleft);
-                th.width(useWidth).css('padding-left', width - useWidth);
-            } else if (i===celldim.length-1) {
+                th.width(round(useWidth) - 2)
+                    .css('padding-left', round(useWidth * 0.5));
+            } else if (i === celldim.length-2) {
+                // last cell
                 if (i !== 0) {
                     useWidth = gridData[i][0] - gridData[i-1][0];
                 } else {
                     useWidth = width - (width * 0.3333);  // fallback
                 }
                 dataRows.each(padright);
-                th.width(useWidth).css('padding-right', width - useWidth);
+                th.width(round(useWidth) - 2)
+                    .css('padding-right', round(useWidth * 0.5));
             } else {
-                useWidth = width;  // for future use in dynamic text sizing
+                // middle cells
+                th.width(round(width - 1.0 - (celldim.length/26.015)));
             }
-            // auto-size pass 1: wrap cell contents with div
-            autoWrap(th);
         }
         // auto-size the header cell font-size based on number of ticks:
         $('div.content-wrap', headingRow).css('font-size', baseFontSize);
@@ -407,10 +449,52 @@ function autofitTextSize(cell, width) {
                 '"Helvetica Neue","Segoe UI","Tahoma","Ubuntu Condensed"'
             );
         }
-        $('th', headingRow).slice(2,-1).width(cellWidth - 3);
         // ad-hoc auto-size value cells based on number of cells:
         $('td.value', chartdiv).each(function () {
             autoWrap($(this)).css('font-size', baseFontSize);
+        });
+    };
+
+    ns.tickIndexFor = function (plot, value) {
+        var xaxis = plot.axes.xaxis,
+            result = -1,
+            idx = 0;
+        xaxis._ticks.forEach(function (tick) {
+            if (tick.value === value) {
+                result = idx;
+            }
+            idx += 1;
+        });
+        return result;
+    };
+
+    ns.moveColumn = function (legend, fromIdx, toIdx) {
+        var table = legend._elem,
+            rows = $('tr', table);
+        rows.each(function (rowIdx) {
+            var row = $(this),
+                cells = $('td,th', row);
+            $(cells[fromIdx]).insertAfter($(cells[toIdx]));
+        });
+    };
+
+    ns.columnOrderFixups = function (plot, legend) {
+        var headingRow = $('tr.legend-headings', legend._elem),
+            headings = $('th', headingRow),
+            adjust = [];
+        headings.each(function (idx) {
+            var th = $(this),
+                value = th.data('key'),
+                tickIdx = ns.tickIndexFor(plot, value),
+                filler = (tickIdx === -1),
+                gap = tickIdx - idx,
+                i;
+            if (gap && !filler) {
+                adjust.splice(0, 0, [idx, tickIdx]);
+            }
+        });
+        adjust.forEach(function (spec) {
+            ns.moveColumn(legend, spec[0], spec[1]);
         });
     };
 
@@ -421,7 +505,6 @@ function autofitTextSize(cell, width) {
             divid = chartdiv.attr('id'),
             yaxis = $('div.jqplot-yaxis', chartdiv),
             pxtop = chartdiv[0].scrollHeight,
-            //keywidth = yaxis.outerWidth(true),
             keytd = $('td.keycell', this._elem),
             tableHeight = this._elem.outerHeight(),
             xaxis = $('.jqplot-xaxis', chartdiv),
@@ -429,6 +512,11 @@ function autofitTextSize(cell, width) {
             padLeft = plot._gridPadding.left || 0,
             padRight = plot._gridPadding.right || 10,
             gridRight = plot._plotDimensions.width - padLeft - padRight;
+        // adjust number of columns to match number of ticks, which
+        // can only be done in pack(), not draw() since draw of legend
+        // takes place prior to draw of grid:
+        ns.syncColumnCount(plot, this);
+        ns.columnOrderFixups(plot, this);
         // adjust key-cell (for labels) width:
         ns.adjustKeycells(this);
         // set width for each table data column based on calculated:
@@ -437,7 +525,11 @@ function autofitTextSize(cell, width) {
         this._elem.css('left', offsets.left + 0);
         this._elem.css('margin-top', pxtop - 10);
         // adjust div size, x axis label loc
+        tableHeight = this._elem.outerHeight(),
         chartdiv.height(chartdiv.height() + tableHeight);
+        if (chartdiv.parents('.sizing').length) {
+            chartdiv.parents('.sizing').height(chartdiv.height());
+        }
     };
 
 })(jQuery);
