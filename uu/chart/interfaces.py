@@ -97,7 +97,6 @@ from plone.directives import form
 from plone.formwidget.contenttree import ContentTreeFieldWidget
 from plone.formwidget.contenttree.source import UUIDSourceBinder
 from plone.uuid.interfaces import IAttributeUUID
-from plone.uuid.interfaces import IUUID
 from z3c.form import widget
 from z3c.form.browser.textarea import TextAreaFieldWidget
 from zope.interface import Interface, Invalid, invariant, implements
@@ -110,6 +109,8 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from collective.z3cform.colorpicker import colorpicker
 
 from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
+from uu.formlibrary.measure.interfaces import MeasureGroupContentSourceBinder
+from uu.formlibrary.measure.interfaces import PermissiveVocabulary
 
 from uu.chart import _  # MessageFactory for package
 
@@ -219,24 +220,7 @@ def provider_measure(context):
     return resolve_uid(measure_uid)
 
 
-class PermissiveVocabulary(SimpleVocabulary):
-    def __contains__(self, value):
-        return True
-   
-    def getTermByToken(self, token):
-        """
-        this works around z3c.form.widget.SequenceWidget.extract()
-        pseudo-validation (which is broken for a permissive vocabulary).
-        """
-        try:
-            v = super(PermissiveVocabulary, self).getTermByToken(token)
-        except LookupError:
-            # fallback using dummy term, assumes token==value
-            return SimpleTerm(token)
-        return v
-
-
-class MeasureGroupContentSourceBinder(object):
+class MeasureGroupParentBinder(MeasureGroupContentSourceBinder):
     """
     Source binder for listing items contained in measure group parent of
     a measure context, filtered by type.
@@ -244,25 +228,13 @@ class MeasureGroupContentSourceBinder(object):
    
     implements(IContextSourceBinder)
    
-    def __init__(self, portal_type=None):
-        self.typename = str(portal_type)
-   
     def __call__(self, context):
         measure = provider_measure(context)
         if measure is None:
             return PermissiveVocabulary([])  # likely on add-form
-        group = measure.group()  # group (folder) containing measure def'n
-        contained = group.objectValues()
-        if self.typename:
-            contained = filter(
-                lambda o: o.portal_type == self.typename,
-                contained,
-                )
-        terms = map(
-            lambda o: SimpleTerm(IUUID(o), title=o.Title().decode('utf-8')),
-            contained,
-            )
-        return PermissiveVocabulary(terms)
+        ## get a context (indirection) of measure bound, use that to get
+        ## group and contained content in superclass implementation:
+        return super(MeasureGroupParentBinder, self).__call__(measure)
 
 
 class RWColorPickerWidget(colorpicker.ColorpickerWidget):
@@ -1020,7 +992,7 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
                     u'You must select a dataset within the same measure '
                     u'group in which the bound measure definition is '
                     u'contained.',
-        source=MeasureGroupContentSourceBinder(
+        source=MeasureGroupParentBinder(
             portal_type='uu.formlibrary.setspecifier',
             ),
         required=False,
