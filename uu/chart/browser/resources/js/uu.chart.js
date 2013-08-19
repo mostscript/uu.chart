@@ -348,7 +348,6 @@ uu.chart = (function (ns, $) {
             hasWrapper = Boolean(_wrapper.length),
             w = '<div class="sizing" />',
             sizingWrapper = (hasWrapper) ? _wrapper : div.wrap(w).parent();
-        console.log(_wrapper);
         return sizingWrapper;  // existing or new wrapper, only once
     };
 
