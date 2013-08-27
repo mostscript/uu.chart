@@ -759,7 +759,12 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
 
 # --- content type interfaces: ---
 
-class IBaseChart(form.Schema, ILocation, IAttributeUUID, IChartDisplay):
+class IBaseChart(
+        form.Schema,
+        ILocation,
+        IAttributeUUID,
+        IDataCollection,
+        IChartDisplay):
     """Base chart (content item) interface"""
    
     form.omitted('__name__')
