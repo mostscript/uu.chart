@@ -1,10 +1,10 @@
 """
 uu.chart.interfaces -- narrative summary of components:
- 
+
   * Reports are ordered containers (folders) of one or more charts.
- 
+
   * Charts are made up of data collections and presentation metadata.
- 
+
   * Data collections (and therefore charts) contain a sequence of one or
     more data series.
 
@@ -13,32 +13,32 @@ uu.chart.interfaces -- narrative summary of components:
                      synonymously with "sequence" -- in our case a series
                      is a labeled/named sequence, for which each label
                      provides a facet for grouping related data points.
-                   
+
                      In strictly mathematical sense, what we call "points"
                      are relations:
-                    
+
                         value    R           sequencename
                                   pointname
-                    
+
                      and a "series" is a sequence of these relations.
-                   
+
                      We can also group all values sharing the same point
                      identity/name across multiple sequences as being
                      set members of an equivalence class for that point
                      identity/name:
-                   
+
                         [x]
                            R
                             pointname
-                    
+
                      This is essentially what a multi-line or bar chart
                      presents in horizontal x-axis groupings.  In a way,
                      this is a visualization of faceted classification --
                      whether such facets are dates (as in a chronological
                      time-series) or nominal classifiers.
-                    
+
   * Each series is named and is an iterable sequence of points.
- 
+
   * Points have a unique identity within a series, usually either a name
     or a date.  This name/identity is does double-duty as an identifier and
     as a title.
@@ -46,14 +46,14 @@ uu.chart.interfaces -- narrative summary of components:
     * It is useful to think of each point as a single key/value pair, where
       the key is usually visualized and grouped along the X-axis and the
       value is usually treated as a Y-axis value.
- 
+
   * Points contain one numeric value each and simple annotation metadata
     (note, URL) fields.
- 
+
   * Charts can contain presentation metadata for:
- 
+
     * Display for the chart at large.
-   
+
     * Display for one series within the chart.
 
   * Implementations can store data series intrinsically on the chart, or
@@ -63,27 +63,27 @@ uu.chart.interfaces -- narrative summary of components:
   * User experience:
 
     (a) User creates a report in application.
-   
+
     (b) User visits reports and adds "chart" items to the report.
-   
+
       * User chooses a chart type at this time:
-   
+
         * Named-series chart
             * May be line or bar chart, configurable.
-       
+
         * Time-series chart:
             * May be line or bar chart, configurable.
-   
+
       * User optionally re-orders chart position in report at creation
         time or any time thereafter.
- 
+
     (c) User visits chart, adds "Data series" to chart:
-       
+
         If chart is time-series, user add a "Time-series sequence"
-       
+
             A type for an externally defined measure, might be called
             "Time-series measure" in the add menu.
-       
+
         If chart is named-series chart, user adds "Named-series sequence"
 
 """
@@ -225,9 +225,9 @@ class MeasureGroupParentBinder(MeasureGroupContentSourceBinder):
     Source binder for listing items contained in measure group parent of
     a measure context, filtered by type.
     """
-   
+
     implements(IContextSourceBinder)
-   
+
     def __call__(self, context):
         measure = provider_measure(context)
         if measure is None:
@@ -244,7 +244,7 @@ class RWColorPickerWidget(colorpicker.ColorpickerWidget):
     color values.
     """
     readonly = False
-   
+
     def getJS(self):
         orig = super(RWColorPickerWidget, self).getJS()
         lines = orig.split('\n')
@@ -286,11 +286,11 @@ def cmp_point_identities(a, b):
     """
     Given point identities a, b (may be string, number, date, etc),
     collation algorithm compares:
-   
+
       (a) strings case-insensitively
 
       (b) dates and datetimes compared by normalizing date->datetime.
-     
+
       (c) all other types use __cmp__(self, other) defaults from type.
 
     """
@@ -308,25 +308,25 @@ class IChartProductLayer(Interface):
 
 class IDataPoint(Interface):
     """Data point contains single value and optional note and URI"""
-   
+
     value = schema.Float(
         title=_(u'Number value'),
         description=_(u'Decimal number value.'),
         default=0.0,
         )
-   
+
     note = schema.Text(
         title=_(u'Note'),
         description=_(u'Note annotating the data value for this point.'),
         required=False,
         )
-   
+
     uri = schema.BytesLine(
         title=_(u'URI'),
         description=_(u'URI/URL or identifier to source of data'),
         required=False,
         )
-   
+
     def identity():
         """
         Return identity (such as a name, date, id) for the point unique
@@ -336,25 +336,25 @@ class IDataPoint(Interface):
 
 class INamedBase(Interface):
     """Mix-in schema for name field"""
-   
+
     name = schema.TextLine(
         title=_(u'Name'),
         description=_(u'Series-unique name or category for data point.'),
         required=True,
         )
-   
+
     def identity():
         """return self.name"""
 
 
 class IDateBase(Interface):
     """Mix-in schema with date field"""
-   
+
     date = schema.Date(
         title=_(u'Date'),
         required=True,
         )
-       
+
     def identity():
         """return self.date"""
 
@@ -372,38 +372,22 @@ class ITimeSeriesDataPoint(IDateBase, IDataPoint):
 
 class IDataSeries(form.Schema):
     """Iterable of IDataPoint objects"""
-   
-    form.fieldset(
-        'configuration',
-        label=u"Configuration",
-        fields=[
-            'display_precision',
-            ],
-        )
-   
+
     title = schema.TextLine(
         title=_(u'Title'),
         description=_(u'Name of data series; may be displayed as a label.'),
         required=True,
         )
-   
-    display_precision = schema.Int(
-        title=u'Digits after decimal point (display precision)?',
-        description=u'When displaying a decimal value, how many places '
-                    u'beyond the decimal point should be displayed in '
-                    u'output?  Default: two digits after the decimal point.',
-        default=1,
-        )
-   
+
     def __iter__():
         """
         Return iterable of date, number data point objects providing
         (at least) IDataPoint.
         """
-   
+
     def __len__():
         """Return number of data points"""
-   
+
     def display_value(point):
         """Return normalized string display value for point"""
 
@@ -413,20 +397,20 @@ class IDataCollection(Interface):
     Collection of one or more (related) data series and associated metadata.
     Usually the logical component of a chart with multiple data series.
     """
-   
+
     title = schema.TextLine(
         title=_(u'Title'),
         description=_(u'Data collection name or title; may be displayed '
                       u'in legend.'),
         required=False,
         )
-   
+
     description = schema.Text(
         title=_(u'Description'),
         description=_(u'Textual description of the data collection.'),
         required=False,
         )
-   
+
     units = schema.TextLine(
         title=_(u'Units'),
         description=_(u'Common set of units of measure for the data '
@@ -436,7 +420,7 @@ class IDataCollection(Interface):
                       u'May be displayed as part of Y-axis label.'),
         required=False,
         )
-   
+
     goal = schema.Float(
         title=_(u'Goal'),
         description=_(u'Common goal value as decimal number.  If each '
@@ -444,26 +428,26 @@ class IDataCollection(Interface):
                       u'those goals on each series.'),
         required=False,
         )
-   
+
     range_min = schema.Float(
         title=_(u'Range minimum'),
         description=_(u'Minimum anticipated value of any data point '
                       u'(optional).'),
         required=False,
         )
-   
+
     range_max = schema.Float(
         title=_(u'Range maximum'),
         description=_(u'Maximum anticipated value of any data point '
                       u'(optional).'),
         required=False,
         )
-   
+
     def series():
         """
         return a iterable of IDataSeries objects.
         """
-   
+
     def identities():
         """
         Return a sequence of sorted point identities (names, dates, etc)
@@ -477,23 +461,23 @@ class ITimeSeriesCollection(IDataCollection):
     Time series interface for configured range of time for all data
     series contained.  Adds date range configuration to collection.
     """
-   
+
     start = schema.Date(
         title=_(u'Start date'),
         required=False,
         )
-   
+
     end = schema.Date(
         title=_(u'End date'),
         required=False,
         )
-   
+
     frequency = schema.Choice(
         title=u'Chart frequency',
         vocabulary=FREQ_VOCAB,
         default='monthly',
         )
-   
+
     @invariant
     def validate_start_end(obj):
         if not (obj.start is None or obj.end is None) and obj.start > obj.end:
@@ -514,32 +498,32 @@ class IChartDisplay(form.Schema):
                       u'configured.'),
         default=100,
         )
-   
+
     width_units = schema.Choice(
         title=_(u'Units of width'),
         vocabulary=WIDTH_UNITS,
         default='%',
         )
-   
+
     height = schema.Int(
         title=_(u'Height'),
         description=_(u'Display height of chart in units configured '
                       u'(either as percentage of width, or in pixels).'),
         default=50,
         )
-   
+
     height_units = schema.Choice(
         title=_(u'Units of height'),
         vocabulary=HEIGHT_UNITS,
         default='2:1',
         )
-    
+
     show_goal = schema.Bool(
         title=_(u'Show goal-line?'),
         description=_(u'If defined, show (constant horizontal) goal line?'),
         default=False,
         )
-   
+
     form.widget(goal_color=ColorpickerFieldWidget)
     goal_color = schema.TextLine(
         title=_(u'Goal-line color'),
@@ -547,7 +531,7 @@ class IChartDisplay(form.Schema):
         required=False,
         default=u'Auto',
         )
-   
+
     form.order_after(chart_type='description')
     chart_type = schema.Choice(
         title=_(u'Chart type'),
@@ -558,7 +542,7 @@ class IChartDisplay(form.Schema):
             ]),
         default=u'line',
         )
-   
+
     legend_placement = schema.Choice(
         title=_(u'Legend placement'),
         description=_(
@@ -596,7 +580,7 @@ class IChartDisplay(form.Schema):
         required=False,
         default='e',  # right hand side
         )
-   
+
     x_label = schema.TextLine(
         title=_(u'X axis label'),
         default=u'',
@@ -633,7 +617,7 @@ class ISeriesDisplay(form.Schema):
     Common display settings for visualizing a series as either a bar
     or line chart.
     """
-   
+
     form.widget(color=ColorpickerFieldWidget)
     color = schema.TextLine(
         title=_(u'Series color'),
@@ -641,20 +625,20 @@ class ISeriesDisplay(form.Schema):
         required=False,
         default=u'Auto',
         )
-   
+
     show_trend = schema.Bool(
         title=_(u'Show trend-line?'),
         description=_(u'Display a linear trend line?  If enabled, uses '
                       u'configuration options specified.'),
         default=False,
         )
-   
+
     trend_width = schema.Int(
         title=_(u'Trend-line width'),
         description=_(u'Line width of trend-line in pixel units.'),
         default=2,
         )
-   
+
     form.widget(trend_color=ColorpickerFieldWidget)
     trend_color = schema.TextLine(
         title=_(u'Trend-line color'),
@@ -663,12 +647,31 @@ class ISeriesDisplay(form.Schema):
         default=u'Auto',
         )
 
+    display_precision = schema.Int(
+        title=u'Digits after decimal point (display precision)?',
+        description=u'When displaying a decimal value, how many places '
+                    u'beyond the decimal point should be displayed in '
+                    u'output?  Default: two digits after the decimal point.',
+        default=1,
+        )
+
+    point_labels = schema.Choice(
+        title=u'Show point labels?',
+        description=u'Show labels above data-point markers for this series?',
+        default='defer',
+        vocabulary=SimpleVocabulary([
+                SimpleTerm('defer', title=u'Defer to chart default'),
+                SimpleTerm('show', title=u'Show labels'),
+                SimpleTerm('omit', title=u'Omit labels'),
+            ])
+        )
+
 
 class ILineDisplay(form.Schema, ISeriesDisplay):
     """
     Mixin interface for display-line configuration metadata for series line.
     """
-    
+
     form.fieldset(
         'display',
         label=u"Display settings",
@@ -684,15 +687,16 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
             'trend_color',
             'break_lines',
             'point_labels',
+            'display_precision',
             ],
         )
-   
+
     line_width = schema.Int(
         title=_(u'Line width'),
         description=_(u'Width/thickness of line in pixel units.'),
         default=2,
         )
-   
+
     marker_style = schema.Choice(
         title=_(u'Marker style'),
         description=_(u'Shape/type of the point-value marker.'),
@@ -709,7 +713,7 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
             ]),
         default=u'square',
         )
-   
+
     marker_size = schema.Float(
         title=_(u'Marker size'),
         description=_(u'Size of the marker (diameter or circle, length of '
@@ -717,7 +721,7 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
         required=False,
         default=9.0,
         )
-   
+
     marker_width = schema.Int(
         title=_(u'Marker line width'),
         description=_(u'Line width of marker in pixel units for '
@@ -725,7 +729,7 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
         required=False,
         default=2,
         )
-   
+
     form.widget(marker_color=ColorpickerFieldWidget)
     marker_color = schema.TextLine(
         title=_(u'Marker color'),
@@ -733,7 +737,7 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
         required=False,
         default=u'Auto',
         )
-    
+
     break_lines = schema.Bool(
         title=u'Break lines?',
         description=u'When a value is missing for name or date on the '
@@ -743,17 +747,6 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
                     u'no line will run from adjacent values through the '
                     u'missing value.',
         default=True,
-        )
-
-    point_labels = schema.Choice(
-        title=u'Show point labels?',
-        description=u'Show labels above data-point markers for this series?',
-        default='defer',
-        vocabulary=SimpleVocabulary([
-                SimpleTerm('defer', title=u'Defer to chart default'),
-                SimpleTerm('show', title=u'Show labels'),
-                SimpleTerm('omit', title=u'Omit labels'),
-            ])
         )
 
 
@@ -766,9 +759,9 @@ class IBaseChart(
         IDataCollection,
         IChartDisplay):
     """Base chart (content item) interface"""
-   
+
     form.omitted('__name__')
-   
+
     form.fieldset(
         'goal',
         label=u'Goal',
@@ -778,7 +771,7 @@ class IBaseChart(
             'goal_color',
             ]
         )
-    
+
     form.fieldset(
         'legend',
         label=u'Axes & Legend',
@@ -790,7 +783,7 @@ class IBaseChart(
             'units',
             ]
         )
-    
+
     form.fieldset(
         'display',
         label=u"Display",
@@ -809,7 +802,7 @@ class IBaseChart(
         label=u"About",
         fields=['info'],
         )
-   
+
     info = RichText(
         title=_(u'Informative notes'),
         description=_(u'This allows any rich text and may contain free-form '
@@ -857,7 +850,7 @@ DATE_AXIS_LABEL_CHOICES = SimpleVocabulary(
 
 class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
     """Content item interface for a data series stored as content"""
-   
+
     input = schema.Text(
         title=_(u'Data input'),
         description=_(u'Comma-separated records, one per line '
@@ -867,14 +860,14 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
         default=u'',
         required=False,
         )
-   
+
     label_default = schema.Choice(
         title=_(u'Label default'),
         description=_(u'Default format for X-Axis labels.'),
         default='locale',
         vocabulary=DATE_AXIS_LABEL_CHOICES,
         )
-   
+
     form.omitted('label_overrides')
     label_overrides = schema.Dict(
         key_type=schema.Date(),
@@ -882,7 +875,7 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
         defaultFactory=PersistentDict,
         required=False,
         )
-   
+
     form.omitted('data')
     data = schema.List(
         title=_(u'Data'),
@@ -893,7 +886,7 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
             ),
         readonly=True,
         )
-   
+
 
 # -- named series chart interfaces:
 
@@ -903,7 +896,7 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
     categorical enumerated names/labels, and Y-axis representing values
     for that label.
     """
-   
+
     chart_type = schema.Choice(
         title=_(u'Chart type'),
         description=_(u'Type of chart to display.'),
@@ -913,7 +906,7 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
             ]),
         default=u'bar',
         )
-   
+
     def series():
         """
         return a iterable of IDataSeries objects for all contained
@@ -923,7 +916,7 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
 
 class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
     """Named category seqeuence with embedded data stored as content"""
-   
+
     form.fieldset(
         'display',
         label=u"Display settings",
@@ -932,9 +925,11 @@ class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
             'show_trend',
             'trend_width',
             'trend_color',
+            'display_precision',
+            'point_labels',
             ],
         )
-   
+
     input = schema.Text(
         title=_(u'Data input'),
         description=_(u'Comma-separated records, one per line '
@@ -943,7 +938,7 @@ class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
         default=u'',
         required=False,
         )
-   
+
     # data field to store CSV source:
     form.omitted('data')
     data = schema.List(
@@ -963,13 +958,13 @@ class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
     """
     Ordered container/folder of contained charts providing ITimeSeriesChart.
     """
-   
+
     title = schema.TextLine(
         title=_(u'Title'),
         description=_(u'Report title; may be displayed in output.'),
         required=False,
         )
-   
+
     description = schema.Text(
         title=_(u'Description'),
         description=_(u'Textual description of the report.'),
@@ -978,7 +973,7 @@ class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
 
 
 class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
-   
+
     form.widget(measure=ContentTreeFieldWidget)
     measure = schema.Choice(
         title=u'Bound measure',
@@ -989,7 +984,7 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
             portal_type=MEASURE_DEFINITION_TYPE,
             ),
         )
-   
+
     dataset = schema.Choice(
         title=u'Data set (collection)',
         description=u'Select a dataset that enumerates which forms are '
@@ -1002,7 +997,7 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
             ),
         required=False,
         )
-   
+
     summarization_strategy = schema.Choice(
         title=u'Summarization strategy',
         description=u'How should data be summarized into a single value '
@@ -1015,7 +1010,7 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
         vocabulary=VOCAB_SUMMARIZATION,
         default='AVG',
         )
-   
+
     form.omitted('data')
     data = schema.List(
         title=_(u'Data'),
