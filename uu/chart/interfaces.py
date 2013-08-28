@@ -667,29 +667,10 @@ class ISeriesDisplay(form.Schema):
         )
 
 
-class ILineDisplay(form.Schema, ISeriesDisplay):
+class ILineDisplayCore(form.Schema, ISeriesDisplay):
     """
     Mixin interface for display-line configuration metadata for series line.
     """
-
-    form.fieldset(
-        'display',
-        label=u"Display settings",
-        fields=[
-            'color',
-            'line_width',
-            'marker_style',
-            'marker_size',
-            'marker_width',
-            'marker_color',
-            'show_trend',
-            'trend_width',
-            'trend_color',
-            'break_lines',
-            'point_labels',
-            'display_precision',
-            ],
-        )
 
     line_width = schema.Int(
         title=_(u'Line width'),
@@ -749,6 +730,29 @@ class ILineDisplay(form.Schema, ISeriesDisplay):
         default=True,
         )
 
+
+class ILineDisplay(ILineDisplayCore):
+    """Use of Line Display in chart settings"""
+
+    form.fieldset(
+        'display',
+        label=u"Display settings",
+        fields=[
+            'color',
+            'line_width',
+            'marker_style',
+            'marker_size',
+            'marker_width',
+            'marker_color',
+            'show_trend',
+            'trend_width',
+            'trend_color',
+            'break_lines',
+            'point_labels',
+            'display_precision',
+            ],
+        )
+    
 
 # --- content type interfaces: ---
 
@@ -1035,9 +1039,12 @@ class IChartStyleBook(IChartDisplay):
     in an ordered manner.
     """
 
+    # hide fields that are per-chart-specific
+    form.omitted('x_label')
+    form.omitted('y_label')
 
-class ILineStyle(ILineDisplay):
+
+class ILineStyle(ILineDisplayCore):
     """
     Style book entry for a specific line or bar.
     """
-
