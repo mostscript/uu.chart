@@ -1026,3 +1026,18 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
         readonly=True,
         )
 
+
+## style book content interfaces:
+
+class IChartStyleBook(IChartDisplay):
+    """
+    Style book for charts, can contain (as folder) ILineStyle items,
+    in an ordered manner.
+    """
+
+
+class ILineStyle(ILineDisplay):
+    """
+    Style book entry for a specific line or bar.
+    """
+
