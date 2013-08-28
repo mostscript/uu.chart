@@ -5,4 +5,6 @@
   <object name="uu.chart.data.timeseries" meta_type="Dexterity FTI" />
   <object name="uu.chart.data.namedseries" meta_type="Dexterity FTI" />
   <object name="uu.chart.data.measureseries" meta_type="Dexterity FTI" />
+  <object name="uu.chart.stylebook" meta_type="Dexterity FTI" />
+  <object name="uu.chart.linestyle" meta_type="Dexterity FTI" />
 </object>

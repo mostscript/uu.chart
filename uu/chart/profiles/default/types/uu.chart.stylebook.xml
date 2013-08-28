@@ -1,29 +1,25 @@
 <?xml version="1.0"?>
-<object name="uu.chart.report"
+<object name="uu.chart.stylebook"
         meta_type="Dexterity FTI"
         i18n:domain="uu.chart"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">Data Report</property>
-  <property name="description" i18n:translate="">An ordered container for charts and data-reporting components.</property>
-  <property name="content_icon">++resource++uu.chart.icons/report.png</property>
+  <property name="title" i18n:translate="">Style book</property>
+  <property name="description" i18n:translate="">A style book for plots within a data report.</property>
+  <property name="content_icon">book_icon.png</property>
   <property name="allow_discussion">False</property>
-  <property name="global_allow">True</property>
+  <property name="global_allow">False</property>
   <property name="filter_content_types">True</property>
   <property name="allowed_content_types">
-    <element value="uu.chart.timeseries" />
-    <element value="uu.chart.namedseries" />
-    <element value="uu.chart.stylebook" />
-    <element value="Document" />
-    <element value="Image" />
+    <element value="uu.chart.linestyle" />
   </property>
   
   <!-- schema interface -->
-  <property name="schema">uu.chart.interfaces.IDataReport</property> 
+  <property name="schema">uu.chart.interfaces.IChartStyleBook</property> 
   
   <!-- class used for content items -->
-  <property name="klass">uu.chart.content.DataReport</property>
+  <property name="klass">uu.chart.styles.ChartStyleBook</property>
   
   <!-- add permission -->
   <property name="add_permission">cmf.AddPortalContent</property>
@@ -42,10 +38,10 @@
   </property>
  
   <!-- Method aliases -->
-  <alias from="(Default)" to="@@report_view"/>
-  <alias from="edit" to="@@edit"/>
-  <alias from="sharing" to="@@sharing"/>
-  <alias from="view" to="@@report_view"/>
+  <alias from="(Default)" to="(dynamic view)" />
+  <alias from="view" to="(selected layout)" />
+  <alias from="edit" to="@@edit" />
+  <alias from="sharing" to="@@sharing" />
  
   <!-- Actions -->
   <action title="View" action_id="view" category="object" condition_expr=""
@@ -55,10 +51,6 @@
   <action title="Edit" action_id="edit" category="object" condition_expr=""
           url_expr="string:${object_url}/edit" visible="True">
     <permission value="Modify portal content"/>
-  </action>
-  <action title="Populate" action_id="populate" category="object" condition_expr=""
-          url_expr="string:${object_url}/@@populate" visible="True">
-    <permission value="Add portal content"/>
   </action>
 
 </object>
