@@ -20,4 +20,17 @@
   <!-- register directory view for policy product skin overrides -->
   <cmf:registerDirectory name="uu_chart" />
 
+  <!-- event subscribers for stylebook updates -->
+  <subscriber
+    for="uu.chart.interfaces.IChartStyleBook
+         zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+    handler=".styles.handle_stylebook_modified"
+    />
+
+  <subscriber
+    for="uu.chart.interfaces.ILineStyle
+         zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+    handler=".styles.handle_line_style_modified"
+    />
+
 </configure>

@@ -10,6 +10,7 @@
   <property name="content_icon">book_icon.png</property>
   <property name="allow_discussion">False</property>
   <property name="global_allow">False</property>
+  <property name="immediate_view">../@@styles</property>
   <property name="filter_content_types">True</property>
   <property name="allowed_content_types">
     <element value="uu.chart.linestyle" />

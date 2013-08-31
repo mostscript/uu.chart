@@ -1,0 +1,240 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.chart">
+<head>
+<metal:block fill-slot="javascript_head_slot">
+<script>
+
+(function ($) {
+    "use strict";
+
+    var toggled = false;
+    
+    function toggleCheckboxes(context) {
+        if (toggled) {
+            $(context).attr('checked', false);
+            toggled = false;
+        } else {
+            $(context).attr('checked', 'CHECKED');
+            toggled = true;
+        }
+    }
+
+    $(document).ready(function () {
+        var select_all = $('#select-all-chart-checkboxes'),
+            target = $('.apply-styles .chartlist input');
+        select_all.click(function () {
+            toggleCheckboxes(target);
+        });
+    });
+
+}(jQuery));
+
+</script>
+</metal:block>
+<metal:block fill-slot="style_slot">
+<style>
+
+div.style-tools>div {
+    border:1px solid #999;
+    margin:0.5em;
+    padding:0.3em;
+}
+
+div.style-tools {
+}
+
+.stylebook-creation, .existing-control {
+    width:46%;
+    float:left;
+    border-radius:0.4em;
+    padding:0.5em;
+}
+
+.stylebook-creation {
+    background-color:#f0fff9;
+}
+
+.add-button {
+    margin:0.6em 0.2em;
+    padding:0.4em 0.1em;
+    background-color:#dfd;
+}
+
+.add-button a {
+    text-decoration:none;
+    border-bottom:none !important;
+    display:block;
+    width:100%;
+}
+
+.add-button a:before {
+    content:"\2009\002b\2009";
+}
+
+.existing-control {
+    background-color:#ddd;
+}
+
+.apply-styles {
+    clear:both;
+    background-color:#fffff0;
+}
+
+.apply-styles ul {
+    width:40%;
+    float:left;
+    padding:0.5em;
+}
+
+#select-all-chart-checkboxes {
+}
+
+.selcharts {
+    clear:both;
+    border-bottom:none !important;
+    padding:0.5em;
+    text-align:right;
+}
+
+.style-tools input.apply-button, .add-button {
+    font-size:100%;
+    font-weight:bold;
+    height:2em;
+    border-radius:0.3em;
+    border:1px solid #999;
+    margin-right:0.5em;
+}
+
+.style-tools .notes {
+    margin:0.5em;
+    padding:0.5em;
+    font-size:90%;
+    color:#888;
+}
+
+p.stylebook-desc {
+    font-size:85%;
+    color:#aaa;
+}
+
+.subtle {
+    font-size:80%;
+    color:#9bb;
+    font-style:italic;
+    border:1px solid #ddd;
+}
+
+.subtle:before {
+    width:2em;
+    background-color:#ddd;
+    content:"\2009\2009\2009\2009\2009\2009";
+    margin-right:0.5em;
+}
+
+</style>
+</metal:block>
+</head>
+<body>
+<div metal:fill-slot="main">
+
+ <div class="stylebook-listing">
+  <h2>Style books for: <em tal:content="context/Title">REPORT TITLE</em></h2>
+  <tal:block condition="view/stylebooks">
+    <ul>
+        <li tal:repeat="stylebook view/stylebooks">
+            <a href=""
+               target="_blank"
+               tal:attributes="href string:${stylebook/absolute_url}/edit"
+               tal:content="stylebook/Title"
+               >STYLEBOOK TITLE</a>
+            <p tal:condition="python: stylebook.Description().strip()"
+               tal:content="stylebook/Description"
+               class="stylebook-desc"
+               >Description</p>
+        </li>
+    </ul>
+    <p class="subtle">Links to edit style books will open in a new window or tab.</p>
+  </tal:block>
+  <p tal:condition="python: not view.stylebooks()">There are no style books in your report.</p>
+ </div>
+ <div class="style-tools">
+  <h3>Style tools</h3>
+  <div class="stylebook-creation">
+      <div class="add-button"><a class="create-button" href="++add++uu.chart.stylebook">Create new style book</a></div>
+      <div class="add-button" tal:condition="view/show_paste"><a class="create-button" href="object_paste">Click here to paste copied stylebook.</a></div>
+  </div>
+  <div class="existing-control" tal:condition="view/charts">
+   <form method="post">
+    <p>Create a new style book based on an existing chart:</p>
+    <select name="existing-charts">
+      <option tal:repeat="chart view/charts"
+              tal:attributes="value chart/getId"
+              tal:content="chart/Title"
+              />
+    </select>
+    <input type="submit" class="apply-button" value="Create stylebook based on this chart" name="existing-mimic" />
+   </form>
+  </div>
+  <div class="apply-styles" tal:condition="view/stylebooks">
+    <h3>Apply a style book to charts</h3>
+    <form method="post">
+      <ul class="booklist">
+        <li tal:repeat="stylebook view/stylebooks">
+            <input type="radio"
+                   name="selected-stylebook"
+                   tal:attributes="value stylebook/getId;
+                                   id string:apply-stylebook-${stylebook/getId}"
+                   />
+            <label tal:attributes="for string:apply-stylebook-${stylebook/getId}"
+                   tal:content="stylebook/Title">LABEL</label>
+        </li>
+      </ul>
+      <ul class="chartlist">
+        <li tal:repeat="chart view/charts">
+            <input type="checkbox"
+                   name="selected-charts:list"
+                   tal:attributes="value chart/getId;
+                                   id string:selected-charts-${chart/getId}"
+                   />
+            <label tal:attributes="for string:selected-charts-${chart/getId}"
+                   tal:content="chart/Title">LABEL</label>
+        </li>
+      </ul>
+      <div class="selcharts"><a href="javascript:void(0)" id="select-all-chart-checkboxes">Select all charts</a></div>
+     <br />
+     <input class="apply-button" type="submit" value=" &#x2194; Bind selected styles to selected charts" name="bind-stylebook" />
+     <input class="apply-button" type="submit" value=" &#xd7;1 Apply selected styles just once" name="apply-stylebook" />
+
+     <div class="notes">
+      <h5>Notes</h5>
+      <p><em>* If you bind selected styles, updates to a stylebook will update the associated charts.  If you apply only once, subsequent updates will not be applied automatically.</em></p>
+      <p>Only one stylebook can be applied to any chart, though you may change which is applied at any time.</p>
+     </div>
+    </form>
+  </div>
+
+ </div>
+
+  <div>
+    <h5>To create a new stylebook, you can:</h5>
+    <ol>
+      <li><a href="++add++uu.chart.stylebook">Create an original style book.</a></li>
+      <li>
+            Paste a style book from another report:
+            <em tal:condition="not:view/show_paste">
+                no style books are currently in clipboard or
+                the clipboard contains non-stylebook items.
+            </em>
+            <a href="object_paste" tal:condition="view/show_paste">Click here to paste.</a>
+      </li>
+      <li>Create a style book based on an existing chart (below).</li>
+    </ol>
+    <p class="subtle">To remove a style book, visit the <a href="folder_contents">folder contents</a> tab of the report.</p>
+  </div>
+</div>
+</body>
+</html>

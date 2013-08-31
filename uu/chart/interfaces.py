@@ -118,11 +118,13 @@ from uu.chart import _  # MessageFactory for package
 # type name globals:
 TIMESERIES_TYPE = 'uu.chart.timeseries'
 NAMEDSERIES_TYPE = 'uu.chart.namedseries'
+CHART_TYPES = (TIMESERIES_TYPE, NAMEDSERIES_TYPE)
 REPORT_TYPE = 'uu.chart.report'
 TIMESERIES_DATA = 'uu.chart.data.timeseries'
 NAMEDSERIES_DATA = 'uu.chart.data.namedseries'
 MEASURESERIES_DATA = 'uu.chart.data.measureseries'
-
+STYLEBOOK_TYPE = 'uu.chart.stylebook'
+LINESTYLE_TYPE = 'uu.chart.linestyle'
 
 ## globals for vocabulary and summarization/aggregate functions
 
@@ -805,6 +807,18 @@ class IBaseChart(
         'about',
         label=u"About",
         fields=['info'],
+        )
+
+    form.widget(stylebook=ContentTreeFieldWidget)
+    stylebook = schema.Choice(
+        title=u'Bound stylebook',
+        description=u'If a stylebook is bound, any updates to that style '
+                    u'book will OVER-WRITE display configuration saved '
+                    u'on this chart.',
+        source=UUIDSourceBinder(
+            portal_type=STYLEBOOK_TYPE,
+            ),
+        required=False,
         )
 
     info = RichText(

@@ -21,6 +21,15 @@
     />
 
   <browser:page
+    name="styles"
+    for="..interfaces.IDataReport"
+    class=".styles.ReportStylesView"
+    template="styles.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
     name="report_view"
     for="..interfaces.IDataReport"
     class=".report.ReportView"
