@@ -32,7 +32,7 @@ def handle_stylebook_modified(context, event):
     charts = [o for o in report.objectValues() if IBaseChart.providedBy(o)]
     if not charts:
         return
-    bound = [o for on in charts if getattr(o, 'stylebook', None) == bookuid]
+    bound = [o for o in charts if getattr(o, 'stylebook', None) == bookuid]
     if not bound:
         return
     for target in bound:
