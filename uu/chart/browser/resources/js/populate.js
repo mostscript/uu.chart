@@ -12,13 +12,15 @@ uu.chart.populate = (function ($, ns) {
     ns.GROUP_QS = 'root=1&portal_type=' + ns.GROUP_TYPE;
     ns.GROUP_JSON_URL = ns.BASE + '/@@finder?' + ns.GROUP_QS;
 
+    // module-scoped globals:
     ns.GROUPS = [];
 
     // snippets:
 
     ns.html = {};
-    ns.html.mCheck = '<input name="selected_measures:list" '+
-                     'type="checkbox" />';
+    ns.html.mCheck = '<input name="selected_measures:list" ' +
+                     '       class="selected-measures" ' +
+                     '       type="checkbox" />';
     ns.html.mTitleInput = '<input class="chart_title" />';
     ns.html.chartTypeInput = String() + 
         '<select>' +
@@ -26,27 +28,40 @@ uu.chart.populate = (function ($, ns) {
         ' <option value="runchart-bar">Time-series, bar</option>' +
         '</select>';
     ns.html.chartGoalInput = '<input class="chart_goal" />';
-    ns.html.dCheck = '<input name="selected_datasets:list" '+
-                     'type="checkbox" />';
+    ns.html.dCheck = '<input name="selected_datasets:list" ' +
+                     '       class="selected-datasets" ' +
+                     '       type="checkbox" />';
     ns.html.dsLabelInput = '<input class="legend_label" />';
     ns.html.measureHeadings = String() + 
         '<tr>' +
-        ' <th>&nbsp; Measure name</th>' +
+        ' <th>' +
+        '   &nbsp; Measure name <br />' +
+        '   &nbsp; <a href="javascript:void(0)" class="measure-selectall">[All]</a>' +    
+        ' </th>' +
         ' <th>Chart title</th>' +
         ' <th>Plot type</th>' +
         ' <th>Goal</th>' +
-        ' <th class="center-check">Use tabular legend?</th>' +
-        ' <th class="center-check">Extend to workspace end-date?</th>' +
+        ' <th class="center-check">' + 
+        '   Use tabular legend? <br />' +
+        '   <a href="javascript:void(0)" class="tabular-selectall">[All]</a>' +    
+        ' </th>' +
+        ' <th class="center-check">' +
+        '   Extend to workspace end-date? <br />' +
+        '   <a href="javascript:void(0)" class="enddate-selectall">[All]</a>' +    
+        ' </th>' +
         '</tr>';
     ns.html.datasetHeadings = String() + 
         '<tr>' +
-        ' <th>&nbsp; Data-set name</th>' +
+        ' <th>' +
+        '   &nbsp; Data-set name <br />' +
+        '   &nbsp; <a href="javascript:void(0)" class="dataset-selectall">[All]</a>' +    
+        ' </th>' +
         ' <th>Legend label</th>' +
         '</tr>';
     ns.html.tabularLegendCheck = String() +
-        '<input name="tabular_legend:list" type="checkbox" />';
+        '<input name="tabular_legend:list" type="checkbox" class="tabular-check" />';
     ns.html.workspaceEndCheck = String() +
-        '<input name="use_workspace_end_date:list" type="checkbox" />';
+        '<input name="use_workspace_end_date:list" type="checkbox" class="end-check" />';
 
     // namespaced functions:
 
@@ -98,7 +113,8 @@ uu.chart.populate = (function ($, ns) {
         $.ajax({
             url: measureURL,
             success: function (data) {
-                var items = data.items;
+                var items = data.items,
+                    selectall = {};
                 items.forEach(function (info) {
                     var uid = info.uid,
                         check = $(ns.html.mCheck).attr('value', uid),
@@ -160,6 +176,64 @@ uu.chart.populate = (function ($, ns) {
                         }
                     });
                     mSel.append(tr);
+                });
+                $('a.measure-selectall').click(function () {
+                    var inputs = $('input.selected-measures');
+                    if (!selectall.measures) {
+                        inputs.attr('checked', 'CHECKED');
+                        inputs.parents('tr').addClass('selected');
+                        selectall.measures = true;
+                        $(this).text('[Uncheck all]');
+                    } else {
+                        inputs.attr('checked', false);
+                        inputs.parents('tr').removeClass('selected');
+                        selectall.measures = false;
+                        $(this).text('[All]');
+                    }
+                });
+                $('a.dataset-selectall').click(function () {
+                    var inputs = $('input.selected-datasets');
+                    if (!selectall.datasets) {
+                        inputs.attr('checked', 'CHECKED');
+                        inputs.parents('tr').addClass('selected');
+                        selectall.datasets = true;
+                        $(this).text('[Uncheck all]');
+                    } else {
+                        inputs.attr('checked', false);
+                        inputs.parents('tr').removeClass('selected');
+                        selectall.datasets = false;
+                        $(this).text('[All]');
+                    }
+                });
+                $('a.tabular-selectall').click(function () {
+                    var inputs = $('input.tabular-check');
+                    if (!selectall.tabular) {
+                        inputs.attr('checked', 'CHECKED');
+                        if (!selectall.measures) {
+                            $('a.measure-selectall').click();
+                        }
+                        selectall.tabular = true;
+                        $(this).text('[Uncheck all]');
+                    } else {
+                        inputs.attr('checked', false);
+                        selectall.tabular = false;
+                        $(this).text('[All]');
+                    }
+                });
+                $('a.enddate-selectall').click(function () {
+                    var inputs = $('input.end-check');
+                    if (!selectall.end) {
+                        inputs.attr('checked', 'CHECKED');
+                        if (!selectall.measures) {
+                            $('a.measure-selectall').click();
+                        }
+                        selectall.end = true;
+                        $(this).text('[Uncheck all]');
+                    } else {
+                        inputs.attr('checked', false);
+                        selectall.end = false;
+                        $(this).text('[All]');
+                    }
                 });
             }
         });
