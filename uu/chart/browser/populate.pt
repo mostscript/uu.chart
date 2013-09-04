@@ -45,9 +45,9 @@
   margin-left:1em;
 }
 
-#button-create-plots,
+#component-selection #button-create-plots,
 #button-select-group {
-  font-size:130%;
+  font-size:140%;
 }
 
 #component-selection {
@@ -144,6 +144,14 @@ input.chart_goal {
 .radio-group {
     padding:0.5em 1em;
     border:1px solid #aaa;
+}
+
+.chart-defaults {
+    margin:0.5em;
+    margin-left:1em;
+    padding:0.6em;
+    background-color:#ffe;
+    border:1px solid #999;
 }
 
 /* ---- */
@@ -337,7 +345,24 @@ form.reorder div.button-reorder a {
     <h5>Select data-sets (one per line/bar)</h5>
     <table id="dataset-selection">
     </table>
-   
+  
+    <div class="chart-defaults">
+      <h6>Additional chart defaults</h6>
+      <label>Start date to use "Baseline" label, if desired (MM/DD/YYYY):</label> <br />
+      <input class="smartdate-widget date-field" type="text" name="baseline-date" />
+      
+      <br />
+
+      <label>Date label format:</label> <br />
+      <select tal:define="terms view/DATE_LABEL_CHOICES" name="datelabel-choices">
+        <option value="abbr+year">Month abbreviation, with year</option>
+        <tal:block repeat="term terms">
+            <option tal:condition="python:term.value != 'abbr+year'" tal:content="term/title" tal:attributes="value term/value" />
+        </tal:block>
+      </select>
+
+    </div>
+ 
     <input id="button-create-plots" name="create.plots" type="submit" value="Create report components &gt;&gt;&gt;" />
   </form>
 

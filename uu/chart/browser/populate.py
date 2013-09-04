@@ -1,12 +1,14 @@
 import datetime
 import itertools
 
+from persistent.dict import PersistentDict
 from Acquisition import aq_base
 from plone.dexterity.utils import createContentInContainer
 from plone.app.uuid.utils import uuidToObject
 from Products.statusmessages.interfaces import IStatusMessage
 
 from uu.chart.interfaces import TIMESERIES_TYPE, NAMEDSERIES_TYPE
+from uu.chart.interfaces import DATE_AXIS_LABEL_CHOICES
 from uu.chart.interfaces import MEASURESERIES_DATA
 
 try:
@@ -23,6 +25,8 @@ class Naming(object):
 
 class ReportPopulateView(object):
 
+    DATE_LABEL_CHOICES = DATE_AXIS_LABEL_CHOICES
+
     def __init__(self, context, request):
         self.context = context   # report
         self.request = request
@@ -37,18 +41,30 @@ class ReportPopulateView(object):
                     return end
         return None
 
+    def _set_chart_label_overrides(self, chart):
+        label = 'Baseline'
+        baseline_date = self.request.get('baseline-date', None)
+        # attempt to parse date
+        if not baseline_date:
+            return
+        month, day, year = [int(v) for v in baseline_date.split('/')]
+        key = datetime.date(year, month, day)
+        chart.label_overrides = PersistentDict([(key, label)])
+
     def _measureinfo(self, uid):
         raw = self.request.form
         r = {'uid': uid}
         chart_type = raw.get('charttype-%s' % uid, 'runchart-line')
         fti = TIMESERIES_TYPE if 'runchart' in chart_type else NAMEDSERIES_TYPE
         r['portal_type'] = fti
+        r['display_precision'] = 0  # default, assumes count
         if fti == TIMESERIES_TYPE:
             measure = uuidToObject(uid)
             if measure.value_type == 'percentage':
                 r['range_min'] = 0
                 r['range_max'] = 100
-            r['label_default'] = 'abbr+year'
+                r['display_precision'] = 1
+            r['label_default'] = raw.get('datelabel-choices', 'abbr+year')
             if HAS_QIEXT:
                 w_end = raw.get('use_workspace_end_date', [])
                 if uid in w_end:
@@ -119,6 +135,7 @@ class ReportPopulateView(object):
                 m_info.get('portal_type', TIMESERIES_TYPE),
                 **kw
                 )
+            self._set_chart_label_overrides(chart)
             for ds_info in series:
                 kw = dict(
                     (k, v) for k, v in ds_info.items() if k not in _ignore
@@ -130,6 +147,8 @@ class ReportPopulateView(object):
                     )
                 mseries.measure = m_info.get('uid')
                 mseries.dataset = ds_info.get('uid')
+                import pdb; pdb.set_trace()
+                mseries.display_precision = m_info.get('display_precision', 1)
                 mseries.reindexObject()
         self.status.addStatusMessage(
             'Created %s charts (per-measure), containing %s series each.' % (
@@ -159,6 +178,7 @@ class ReportPopulateView(object):
             self.context,
             **kw
             )
+        self._set_chart_label_overrides(chart)
         for measure_uid, ds_uid in itertools.product(measures, datasets):
             m_title = _value('title-%s' % measure_uid)
             ds_title = _value('title-%s' % ds_uid)
@@ -178,6 +198,7 @@ class ReportPopulateView(object):
                 )
             mseries.measure = measure_uid
             mseries.dataset = ds_uid
+            mseries.display_precision = kw.get('display_precision', 1)
             mseries.reindexObject()
         self.status.addStatusMessage(
             'Created a multi-measure chart with %s series and %s '
