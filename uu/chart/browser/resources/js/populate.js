@@ -32,8 +32,18 @@ uu.chart.populate = (function ($, ns) {
                      '       class="selected-datasets" ' +
                      '       type="checkbox" />';
     ns.html.dsLabelInput = '<input class="legend_label" />';
+    ns.html.rowcontrol = String() +
+        ' <td class="rowcontrol">' +
+        '  <a href="javascript:void(0)" class="moveup" title="Move up">' +
+        '   &#x25b2;' +
+        '  </a><br />' +
+        '  <a href="javascript:void(0)" class="movedown" title="Move down">' +
+        '   &#x25bc;' +
+        '  </a>' +
+        ' </td>';
     ns.html.measureHeadings = String() + 
         '<tr>' +
+        ' <th class="rowcontrol">&#x21c5;</th>' +
         ' <th>' +
         '   &nbsp; Measure name <br />' +
         '   &nbsp; <a href="javascript:void(0)" class="measure-selectall">[All]</a>' +    
@@ -52,6 +62,7 @@ uu.chart.populate = (function ($, ns) {
         '</tr>';
     ns.html.datasetHeadings = String() + 
         '<tr>' +
+        ' <th class="rowcontrol">&#x21c5;</th>' +
         ' <th>' +
         '   &nbsp; Data-set name <br />' +
         '   &nbsp; <a href="javascript:void(0)" class="dataset-selectall">[All]</a>' +    
@@ -96,6 +107,39 @@ uu.chart.populate = (function ($, ns) {
         });
     };
 
+    ns.hookupMoveButtons = function (table) {
+        $('a.movedown', table).click(function () {
+            var row = $($(this).parents('tr')[0]),
+                next = row.next('tr');
+            if (!next.length) {
+                return;
+            }
+            row.insertAfter(next).animate(
+                {'background-color': 'orange'},
+                {
+                    duration: 650,
+                    complete: function () {
+                        $(this).css('background-color', '');
+                    }
+                });
+        });
+        $('a.moveup', table).click(function () {
+            var row = $($(this).parents('tr')[0]),
+                prior = row.prev('tr');
+            if (!prior.length) {
+                return;
+            }
+            row.insertBefore(prior).animate(
+                {'background-color': 'orange'},
+                {
+                    duration: 650,
+                    complete: function () {
+                        $(this).css('background-color', '');
+                    }
+                });
+        });
+    };
+
     ns.loadStep2 = function (groupUID) {
         var form = $('#component-selection'),
             mSel = $('#measure-selection', form),
@@ -119,6 +163,7 @@ uu.chart.populate = (function ($, ns) {
                     var uid = info.uid,
                         check = $(ns.html.mCheck).attr('value', uid),
                         tr = $('<tr />'),
+                        rowControl = $(ns.html.rowcontrol).appendTo(tr),
                         titleNode = $('<label>').text(info.title),
                         titleCell = $('<td />').append(check).append(titleNode),
                         titleInput = $(ns.html.mTitleInput)
@@ -235,6 +280,7 @@ uu.chart.populate = (function ($, ns) {
                         $(this).text('[All]');
                     }
                 });
+                ns.hookupMoveButtons(mSel);
             }
         });
         $.ajax({
@@ -245,6 +291,7 @@ uu.chart.populate = (function ($, ns) {
                     var uid = info.uid,
                         check = $(ns.html.dCheck).attr('value', uid),
                         tr = $('<tr />'),
+                        rowControl = $(ns.html.rowcontrol).appendTo(tr),
                         titleNode = $('<label>').text(info.title),
                         titleCell = $('<td />').append(check).append(titleNode),
                         titleInput = $(ns.html.dsLabelInput)
@@ -261,6 +308,7 @@ uu.chart.populate = (function ($, ns) {
                     });
                     dSel.append(tr);
                 });
+                ns.hookupMoveButtons(dSel);
             }
         });
         $('#group-selector .detail').slideToggle();
@@ -294,8 +342,31 @@ uu.chart.populate = (function ($, ns) {
         });
     };
 
+    ns.hookupReorderButton = function () {
+        var form = $('#component-selection'),
+            button = $('div.button-reorder a', form);
+        button.click(function () {
+            form.toggleClass('reorder');
+        });
+    };
+
+    ns.hookupOneChartSelection = function () {
+        var form = $('#component-selection'),
+            perMeasureInput = $('#type-chart-per-measure', form),
+            multiMeasureInput = $('#type-multi-measure-chart', form),
+            configDiv = $('.onechart-config', form);
+        multiMeasureInput.change(function () {
+            form.toggleClass('onechart');
+        });
+        perMeasureInput.change(function () {
+            form.toggleClass('onechart');
+        });
+    };
+
     $(document).ready(function () {
         ns.loadGroups();
+        ns.hookupReorderButton();
+        ns.hookupOneChartSelection();
     });
 
     return ns;

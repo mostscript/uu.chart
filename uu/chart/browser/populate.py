@@ -1,7 +1,8 @@
 import datetime
+import itertools
 
 from Acquisition import aq_base
-from plone.dexterity.utils import addContentToContainer, createContent
+from plone.dexterity.utils import createContentInContainer
 from plone.app.uuid.utils import uuidToObject
 from Products.statusmessages.interfaces import IStatusMessage
 
@@ -27,6 +28,15 @@ class ReportPopulateView(object):
         self.request = request
         self.status = IStatusMessage(self.request)
 
+    def _workspace_end(self):
+        if HAS_QIEXT:
+            workspaces = workspace_stack(self.context)
+            for workspace in reversed(workspaces):
+                end = getattr(aq_base(workspace), 'end', None)
+                if isinstance(end, datetime.date):
+                    return end
+        return None
+
     def _measureinfo(self, uid):
         raw = self.request.form
         r = {'uid': uid}
@@ -42,12 +52,7 @@ class ReportPopulateView(object):
             if HAS_QIEXT:
                 w_end = raw.get('use_workspace_end_date', [])
                 if uid in w_end:
-                    workspaces = workspace_stack(self.context)
-                    for workspace in reversed(workspaces):
-                        end = getattr(aq_base(workspace), 'end', None)
-                        if isinstance(end, datetime.date):
-                            r['end'] = end
-                            break
+                    r['end'] = self._workspace_end()
         r['chart_type'] = 'bar' if chart_type.endswith('bar') else 'line'
         goal = raw.get('goal-%s' % uid, None)
         if goal:
@@ -59,6 +64,29 @@ class ReportPopulateView(object):
             r['point_labels'] = 'omit'
         r['title'] = raw.get('title-%s' % uid, None)
         return r
+
+    def _multi_measure_chart_info(self):
+        _value = lambda key: self.request.get(key)
+        measure_uid = _value('selected_measures')[0]
+        defaults = self._measureinfo(measure_uid)
+        tabular = bool(_value('onechart-tabular'))
+        extend = bool(_value('onechart-enddate'))
+        chart_type = _value('onechart-type') or 'runchart-line'
+        fti = TIMESERIES_TYPE if 'runchart' in chart_type else NAMEDSERIES_TYPE
+        goal = _value('onechart-goal')
+        defaults.update({
+            'portal_type': fti,
+            'title': _value('onechart-title'),
+            'goal': float(goal) if goal else None,
+            'show_goal': bool(goal),
+            'goal_color': '#ff0000',
+            'legend_placement': 'tabular' if tabular else 'outside',
+            'point_labels': 'omit' if tabular else 'show',
+            'chart_type': _value('onechart-title'),
+            'end': self._workspace_end() if extend else None,
+            'chart_type': 'bar' if chart_type.endswith('bar') else 'line',
+            })
+        return defaults
 
     def _datasetinfo(self, uid):
         raw = self.request.form
@@ -86,17 +114,20 @@ class ReportPopulateView(object):
         _ignore = ('portal_type', 'uid')
         for m_info in charts:
             kw = dict((k, v) for k, v in m_info.items() if k not in _ignore)
-            chart = createContent(
+            chart = createContentInContainer(
+                self.context,
                 m_info.get('portal_type', TIMESERIES_TYPE),
                 **kw
                 )
-            chart = addContentToContainer(self.context, chart)
             for ds_info in series:
                 kw = dict(
                     (k, v) for k, v in ds_info.items() if k not in _ignore
                     )
-                mseries = createContent(MEASURESERIES_DATA, **kw)
-                mseries = addContentToContainer(chart, mseries)
+                mseries = createContentInContainer(
+                    chart,
+                    MEASURESERIES_DATA,
+                    **kw
+                    )
                 mseries.measure = m_info.get('uid')
                 mseries.dataset = ds_info.get('uid')
                 mseries.reindexObject()
@@ -107,14 +138,66 @@ class ReportPopulateView(object):
                 ),
             type='info',
             )
- 
+
+    def populate_multimeasure_chart(self, measures, datasets):
+        """
+        Given UID lists of measures, datasets, create one multi-measure
+        chart.
+        """
+        _value = lambda key: self.request.get(key)
+        title = _value('onechart-title')
+        if title is None:
+            msg = u'You must provide a title for a multi-measure chart.'
+            self.status.addStatusMessage(msg, type='error')
+            return
+        if not measures:
+            msg = u'You must select at least one measure'
+            self.status.addStatusMessage(msg, type='error')
+            return
+        kw = self._multi_measure_chart_info()
+        chart = createContentInContainer(
+            self.context,
+            **kw
+            )
+        for measure_uid, ds_uid in itertools.product(measures, datasets):
+            m_title = _value('title-%s' % measure_uid)
+            ds_title = _value('title-%s' % ds_uid)
+            if not m_title and ds_title:
+                msg = u'You must provide legend label information for measure'\
+                      u'and dataset.'
+                self.status.addStatusMessage(msg, type='error')
+                return
+            legend_label = '%s -- %s' % (ds_title, m_title)
+            series_info = {
+                'title': legend_label,
+                'portal_type': MEASURESERIES_DATA,
+                }
+            mseries = createContentInContainer(
+                chart,
+                **series_info
+                )
+            mseries.measure = measure_uid
+            mseries.dataset = ds_uid
+            mseries.reindexObject()
+        self.status.addStatusMessage(
+            'Created a multi-measure chart with %s series and %s '
+            'data-sets' % (len(measure_uid), len(ds_uid)),
+            type='info',
+            )
+
     def update(self, *args, **kwargs):
         req = self.request
         if "create.plots" in req:
-            charts, series = self.extract()
-            if not charts:
-                return
-            self.populate(charts, series)
+            if req.get('chart-type', None) == 'multi-measure-chart':
+                self.populate_multimeasure_chart(
+                    req.get('selected_measures', []),
+                    req.get('selected_datasets', []),
+                    )
+            else:
+                charts, series = self.extract()
+                if not charts:
+                    return
+                self.populate(charts, series)
             req.response.redirect(self.context.absolute_url())
     
     def __call__(self, *args, **kwargs):

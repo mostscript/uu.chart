@@ -136,8 +136,113 @@ input.chart_goal {
   width:97%;
 }
 
-#dataset-selection td:first-child, #measure-selection td:first-child {
+/* #dataset-selection td:first-child, #measure-selection td:first-child { */
+#dataset-selection td:nth-child(0n+2), #measure-selection td:nth-child(0n+2) {
   width:225px !important;
+}
+
+.radio-group {
+    padding:0.5em 1em;
+    border:1px solid #aaa;
+}
+
+/* ---- */
+
+form.onechart #measure-selection tr th:nth-child(0n+4),
+form.onechart #measure-selection tr th:nth-child(0n+5),
+form.onechart #measure-selection tr th:nth-child(0n+6),
+form.onechart #measure-selection tr th:nth-child(0n+7) {
+    display:none;
+}
+
+form.onechart #measure-selection tr td:nth-child(0n+4),
+form.onechart #measure-selection tr td:nth-child(0n+5),
+form.onechart #measure-selection tr td:nth-child(0n+6),
+form.onechart #measure-selection tr td:nth-child(0n+7) {
+    display:none;
+}
+
+form.onechart #measure-selection tr th:nth-child(0n+3):before {
+    content:"Legend label (measure)";
+    color:#999;
+}
+
+form.onechart #measure-selection tr th:nth-child(0n+3) {
+    color:transparent;
+}
+
+form.onechart #dataset-selection tr th:nth-child(0n+3):after {
+    content:" (dataset)";
+}
+
+.onechart-config {
+    display:none;
+}
+
+form.onechart .onechart-config {
+    display:block;
+    border:1px solid #aaa;
+    background-color:#eee;
+    padding:0.4em;
+}
+
+form.onechart .onechart-config h5 {
+    padding:0.2em;
+    margin-left:0 !important;
+}
+
+form.onechart .onechart-config table.onechart-config-fields td {
+    text-align:center;
+    padding-right:0.7em;
+    vertical-align:bottom;
+}
+
+/* row order control, when form is in rowcontrol state: */
+
+td.rowcontrol, th.rowcontrol {
+  display:none;
+}
+
+form.reorder td.rowcontrol, form.reorder th.rowcontrol {
+  display:table-cell;
+  width:1em;
+}
+
+th.rowcontrol a {
+  border-bottom:none !important;
+}
+
+tr:nth-child(0n+2) td.rowcontrol a.moveup {
+  display:none !important;
+}
+
+tr:last-child td.rowcontrol a.movedown {
+  display:none;
+}
+
+div.button-reorder {
+  text-align:right;
+}
+
+div.button-reorder a {
+  display:block;
+  width:20em;
+  border:1px solid #999;
+  background-color:#fed;
+  text-align:center;
+  border-radius:0.4em;
+  position:relative;
+  right:-57%;
+  margin-top:1em;
+  height:2em;
+}
+
+form.reorder div.button-reorder a {
+  background-color:#ff9;
+  border:2px solid #999;
+  -moz-box-shadow: inset -1px -1px 3px #775;
+  -webkit-box-shadow: inset -1px -1px 3px #775;
+  box-shadow: inset -1px -1px 3px #775;
 }
 
 </style>
@@ -169,6 +274,61 @@ input.chart_goal {
     may specify a goal for the chart/measure.  If this is provided by the
     measure, and you wish to omit a goal-line, leave the goal value blank.
   </p>
+
+    <div class="radio-group">
+        <input type="radio" name="chart-type" value="chart-per-measure" id="type-chart-per-measure" checked="CHECKED" />
+        <label for="type-chart-per-measure">Create one chart per measure (default), one line per data-set within each chart.</label>
+        <br />
+        <input type="radio" name="chart-type" value="multi-measure-chart" id="type-multi-measure-chart" />
+        <label for="type-multi-measure-chart">Create one multi-measure chart, one line per measure/data-set combination within. </label>
+
+        <div class="onechart-config">
+            <h5>Display settings for the multi-measure chart to be created:</h5>
+            <table class="onechart-config-fields">
+              <tr>
+                <th style="min-width:225px !important;">
+                  <label>Chart title</label>
+                </th>
+                <th>
+                  <label>Goal value (omit for no goal line)</label>
+                </th>
+                <th>
+                  <label>Chart type</label>
+                </th>
+                <th>
+                  <label>Use tabular legend?</label>
+                </th>
+                <th>
+                  <label>Extend chart end-date to workspace end date?</label>
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  <input name="onechart-title" value="" type="text" style="width:100%" />
+                </td>
+                <td>
+                  <input name="onechart-goal" value="" type="text" />
+                </td>
+                <td>
+                  <select name="onechart-type">
+                    <option value="runchart-line">Time-series, line</option>
+                    <option value="runchart-bar">Time-series, bar</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="checkbox" name="onechart-tabular" />
+                </td>
+                <td>
+                  <input type="checkbox" name="onechart-enddate" />
+                </td>
+              </tr>
+           </table>
+            <!-- TODO -->
+
+        </div>
+    </div>
+
+    <div class="button-reorder"><a href="javascript:void(0)" title="Re-order measures or data-sets"><span style="font-size:140%">&#x21d5;</span> Re-order measures or data-sets</a></div>
 
     <h5>Select measures (per-chart)</h5>
     <table id="measure-selection">
