@@ -33,4 +33,10 @@
     handler=".styles.handle_line_style_modified"
     />
 
+  <!-- indexer adapters -->
+  <adapter
+    name="references"
+    factory=".measureseries.measure_series_references"
+    />
+
 </configure>

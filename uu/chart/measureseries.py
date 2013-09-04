@@ -2,6 +2,7 @@ import math
 
 from Acquisition import aq_parent, aq_inner, aq_base
 from plone.dexterity.content import Item
+from plone.indexer.decorator import indexer
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
 
@@ -104,3 +105,9 @@ class MeasureSeriesProvider(Item):
         v = round(v, precision) if v is not None else v
         fmt = '%%.%if' % precision
         return fmt % v if v is not None else ''
+
+
+@indexer(IMeasureSeriesProvider)
+def measure_series_references(context):
+    return [context.dataset, context.measure]
+
