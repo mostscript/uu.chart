@@ -147,7 +147,6 @@ class ReportPopulateView(object):
                     )
                 mseries.measure = m_info.get('uid')
                 mseries.dataset = ds_info.get('uid')
-                import pdb; pdb.set_trace()
                 mseries.display_precision = m_info.get('display_precision', 1)
                 mseries.reindexObject()
         self.status.addStatusMessage(
