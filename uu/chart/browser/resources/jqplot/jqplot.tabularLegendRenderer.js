@@ -361,7 +361,7 @@ function autofitTextSize(cell, width) {
                     td.text('--');
                     td.css('color', '#bbb');
                 } else {
-                    td.text($.jqplot.sprintf('%.1f', v));
+                    td.text($.jqplot.sprintf(s.formatString || '%.1f', v));
                 }
                 td.appendTo(tr);
             });

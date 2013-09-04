@@ -144,7 +144,7 @@ uu.chart = (function (ns, $) {
                     breakOnNull: s.break_lines || undefined,
                     pointLabels: {
                         show: ns.showPointLabels(data, s),
-                        formatString: "%.1f",
+                        formatString: s.display_format || "%.1f",
                         hideZeros: false
                     },
                     lineWidth: s.line_width || undefined,
@@ -480,10 +480,12 @@ uu.chart = (function (ns, $) {
             barwidth,
             line_width,
             aspect_ratio,
-            marker_color;
+            marker_color,
+            display_format;
         if (!seriesData.length) {
             return;
         }
+        display_format = data.series[0].display_format || '%.1f';
         ns.cleardiv(chart_div);
         ns.sizeDiv(chart_div, data);
         if (data.labels) {
@@ -577,7 +579,7 @@ uu.chart = (function (ns, $) {
             highlighter: {
                 show: true,
                 sizeAdjust: 7.5,
-                formatString: '%s, %.1f <br />' +
+                formatString: '%s, ' + display_format + ' <br />' +
                     '<em class="tip">Click data-point for details</em>'
             },
             axesDefaults: {tickOptions: {fontSize: '7pt'}},
