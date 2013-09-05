@@ -5,7 +5,7 @@ from plone.uuid.interfaces import IUUID
 from Products.statusmessages.interfaces import IStatusMessage
 
 from uu.chart.interfaces import STYLEBOOK_TYPE, CHART_TYPES, LINESTYLE_TYPE
-from uu.chart.interfaces import ILineDisplayCore, IChartDisplay
+from uu.chart.interfaces import ILineDisplayCore
 from uu.chart.interfaces import IChartStyleBook
 
 
@@ -30,7 +30,7 @@ def clone_chart_styles(source, target):
     _clone_attrs(
         source,
         target,
-        IChartDisplay,
+        IChartStylebook,
         exclude=('x_label', 'y_label'),
         )
     source_lines = source.objectValues()

@@ -1053,6 +1053,14 @@ class IChartStyleBook(IChartDisplay):
     in an ordered manner.
     """
 
+    goal = schema.Float(
+        title=_(u'Goal'),
+        description=_(u'Common goal value as decimal number.  If each '
+                      u'series has different respective goals, edit '
+                      u'those goals on each series.'),
+        required=False,
+        )
+
     # hide fields that are per-chart-specific
     form.omitted('x_label')
     form.omitted('y_label')
