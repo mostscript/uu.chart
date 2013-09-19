@@ -229,7 +229,7 @@ function autofitTextSize(cell, width) {
                 }
             });
         });
-        if (plot.axes.xaxis.renderer === $.jqplot.DateAxisRenderer) {
+        if (plot.axes.xaxis.renderer instanceof $.jqplot.DateAxisRenderer) {
             headings.sort(ncmp);  // numerical order ms values
         }
         return headings;
