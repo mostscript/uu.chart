@@ -30,8 +30,8 @@ var uu = (function (ns, $) {
       */
     ns.maxcmp = function (a, b) { return ((ns.has_value(a) && (a > b)) || !ns.has_value(b)) ? a : b; };
     ns.mincmp = function (a, b) { return ((ns.has_value(a) && (a < b)) || !ns.has_value(b)) ? a : b; };
-    ns.max = function (seq) { return seq.reduce(ns.maxcmp, -Infinity); };
-    ns.min = function (seq) { return seq.reduce(ns.mincmp, Infinity); };
+    ns.max = function (seq) { return seq.reduce(ns.maxcmp, null); };
+    ns.min = function (seq) { return seq.reduce(ns.mincmp, null); };
 
     return ns;
 
@@ -224,7 +224,6 @@ uu.chart = (function (ns, $) {
                 }
                 if (s.data instanceof Array) {
                     if (data.auto_crop) {
-                        max = uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))]);
                         max = uu.max(
                             [
                                 max,
