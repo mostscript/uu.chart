@@ -206,10 +206,13 @@ uu.chart = (function (ns, $) {
                     return;  // no data, ignore for calculating
                 }
                 if (s.data instanceof Array) {
-                    min = Math.min(
-                        (new Date()).getTime(),  // fallback to current date/time
-                        uu.min([min, uu.min(s.data.map(pointkey))])
-                    );
+                    min = uu.min([
+                        min,
+                        Math.min(
+                            (new Date()).getTime(),  // fallback to now
+                            uu.min(s.data.map(pointkey))
+                        )
+                    ]);
                 }
             });
         }
