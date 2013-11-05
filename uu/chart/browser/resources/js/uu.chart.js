@@ -221,14 +221,21 @@ uu.chart = (function (ns, $) {
                 }
                 if (s.data instanceof Array) {
                     if (data.auto_crop) {
-                        max = Math.max(
-                            min,
-                            uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))])
+                        max = uu.max(
+                            [
+                                max,
+                                Math.max(
+                                    min,
+                                    uu.max(s.data.filter(cropfilter).map(pointkey))
+                                )
+                            ]
                         );
-                    } else {
-                        max = Math.max(
-                            min,
-                            uu.max([max, uu.max(s.data.map(pointkey))])
+                   } else {
+                        max = uu.max(
+                            [
+                                max,
+                                Math.max(min, uu.max(s.data.map(pointkey)))
+                            ]
                         );
                     }
                 }
