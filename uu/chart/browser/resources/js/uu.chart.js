@@ -30,8 +30,8 @@ var uu = (function (ns, $) {
       */
     ns.maxcmp = function (a, b) { return ((ns.has_value(a) && (a > b)) || !ns.has_value(b)) ? a : b; };
     ns.mincmp = function (a, b) { return ((ns.has_value(a) && (a < b)) || !ns.has_value(b)) ? a : b; };
-    ns.max = function (seq) { return seq.reduce(uu.maxcmp); };
-    ns.min = function (seq) { return seq.reduce(uu.mincmp); };
+    ns.max = function (seq) { return seq.reduce(ns.maxcmp, -Infinity); };
+    ns.min = function (seq) { return seq.reduce(ns.mincmp, Infinity); };
 
     return ns;
 
@@ -175,9 +175,15 @@ uu.chart = (function (ns, $) {
                 width: 32
             },
             chart_width = data.width || 600;
-        r.max_points = uu.max(data.series.map(function (series) {
-            return (ns.seriesdata(data) || []).length;
-        }));
+        r.max_points = Math.max(
+            0,
+            uu.max(
+                data.series.map(
+                    function (series) {
+                        return (ns.seriesdata(data) || []).length;
+                    })
+            )
+        );
         r.width = Math.min(r.width, Math.max(5, (((chart_width * 0.8) / (r.max_points + 1)) / (r.series_length + 1))));
         return r;
     };
@@ -200,7 +206,10 @@ uu.chart = (function (ns, $) {
                     return;  // no data, ignore for calculating
                 }
                 if (s.data instanceof Array) {
-                    min = uu.min([min, uu.min(s.data.map(pointkey))]);
+                    min = Math.min(
+                        (new Date()).getTime(),  // fallback to current date/time
+                        uu.min([min, uu.min(s.data.map(pointkey))])
+                    );
                 }
             });
         }
@@ -212,9 +221,15 @@ uu.chart = (function (ns, $) {
                 }
                 if (s.data instanceof Array) {
                     if (data.auto_crop) {
-                        max = uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))]);
+                        max = Math.max(
+                            min,
+                            uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))])
+                        );
                     } else {
-                        max = uu.max([max, uu.max(s.data.map(pointkey))]);
+                        max = Math.max(
+                            min,
+                            uu.max([max, uu.max(s.data.map(pointkey))])
+                        );
                     }
                 }
             });
@@ -442,18 +457,18 @@ uu.chart = (function (ns, $) {
                     seriesLabel = series.title,
                     seriesColor = series.color || colorGen.get(seriesIndex),
                     overlay = new tinyOverlay.Overlay(
-                    mkHTML(series, pointData, seriesColor),
-                    {
-                        classname: 'pointOverlay',
-                        style: {
-                            left: ev.pageX - 244,
-                            top: ev.pageY - 3,
-                            width: 220,
-                            border: '2px solid ' + seriesColor,
-                            'z-index': 10000
+                        mkHTML(series, pointData, seriesColor),
+                        {
+                            classname: 'pointOverlay',
+                            style: {
+                                left: ev.pageX - 244,
+                                top: ev.pageY - 3,
+                                width: 220,
+                                border: '2px solid ' + seriesColor,
+                                'z-index': 10000
+                            }
                         }
-                    }
-                );
+                    );
                 $('.jqplot-highlighter-tooltip', chart_div).hide();
                 overlay.open();
             }
