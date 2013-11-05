@@ -208,10 +208,10 @@ uu.chart = (function (ns, $) {
                 if (s.data instanceof Array) {
                     min = uu.min([
                         min,
-                        Math.min(
+                        uu.min([
                             (new Date()).getTime(),  // fallback to now
                             uu.min(s.data.map(pointkey))
-                        )
+                        ])
                     ]);
                 }
             });
@@ -224,20 +224,21 @@ uu.chart = (function (ns, $) {
                 }
                 if (s.data instanceof Array) {
                     if (data.auto_crop) {
+                        max = uu.max([max, uu.max(s.data.filter(cropfilter).map(pointkey))]);
                         max = uu.max(
                             [
                                 max,
-                                Math.max(
+                                uu.max([
                                     min,
                                     uu.max(s.data.filter(cropfilter).map(pointkey))
-                                )
+                                ])
                             ]
                         );
                    } else {
                         max = uu.max(
                             [
                                 max,
-                                Math.max(min, uu.max(s.data.map(pointkey)))
+                                uu.max([min, uu.max(s.data.map(pointkey))])
                             ]
                         );
                     }
