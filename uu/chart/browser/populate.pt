@@ -17,6 +17,12 @@
   display:block;
 }
 
+#group-selector span.context {
+  font-weight:normal;
+  font-size:90%;
+  font-style:italic;
+}
+
 #component-selection {
   display:block;
 }
