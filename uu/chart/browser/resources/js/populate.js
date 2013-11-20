@@ -87,12 +87,15 @@ uu.chart.populate = (function ($, ns) {
         return result;
     };
 
-    ns.makeGroupInputItem = function (uid, title) {
+    ns.makeGroupInputItem = function (uid, title, path) {
         var input = $('<input name="group-choice" type="radio" />')
                 .attr('value', uid)
                 .attr('id', uid),
             label = $('<label />').attr('for', uid).text(title),
             li = $('<li />');
+        if (path) {
+            $('<span class="context">').text(' in ' + path).appendTo(label);
+        }
         input.appendTo(li);
         label.appendTo(li);
         return li;
@@ -102,7 +105,8 @@ uu.chart.populate = (function ($, ns) {
         var form = $('#group-selector'),
             target = $('#group-selector-choices');
         ns.GROUPS.forEach(function (group) {
-            var li = ns.makeGroupInputItem(group.uid, group.title);
+            var path = group.path.split('/').slice(2).join('/'),
+                li = ns.makeGroupInputItem(group.uid, group.title, path);
             target.append(li);
         });
     };
