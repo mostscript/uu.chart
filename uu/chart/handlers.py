@@ -14,7 +14,7 @@ def wfinfo(context):
 def publish(context, message=None):
     message = 'Publishing item' + (': %s' % message if message else '')
     state, wftool = wfinfo(context)
-    transition = lambda o, t: wftool.doActionFor(o, o, comment=message)
+    transition = lambda o, t: wftool.doActionFor(o, t, comment=message)
     if state == 'published':
         return
     if state == 'collaborative_editing':
@@ -27,7 +27,7 @@ def publish(context, message=None):
 def unpublish(context, message):
     message = 'Un-publishing item' + (': %s' % message if message else '')
     state, wftool = wfinfo(context)
-    transition = lambda o, t: wftool.doActionFor(o, o, comment=message)
+    transition = lambda o, t: wftool.doActionFor(o, t, comment=message)
     if state == 'published':
         transition(context, 'return_for_editing')
 
