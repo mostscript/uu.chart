@@ -33,6 +33,19 @@
     handler=".styles.handle_line_style_modified"
     />
 
+  <!-- subscribers for workflow publish/unpublish of reports -->
+  <subscriber
+    for="uu.chart.interfaces.IBaseChart
+         Products.CMFCore.interfaces.IActionSucceededEvent"
+    handler=".handlers.after_chart_transition"
+    />
+
+  <subscriber
+    for="uu.chart.interfaces.IDataReport
+         Products.CMFCore.interfaces.IActionSucceededEvent"
+    handler=".handlers.after_report_transition"
+    />
+
   <!-- indexer adapters -->
   <adapter
     name="references"
