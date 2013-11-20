@@ -102,6 +102,7 @@ import math
 import re
 
 from uu.chart.interfaces import ITimeSeriesChart
+from uu.chart.handlers import wfinfo
 
 from datelabel import DateLabelView
 from utils import withtz
@@ -130,7 +131,9 @@ class ChartJSON(object):
 
     def __init__(self, context):
         self.context = context
-    
+        self.state = wfinfo(context)[0]
+        self.show_uris = self.show_notes = self.state != 'published'
+   
     def _series_list(self):
         """Get all series represented as dict"""
         r = []
@@ -167,7 +170,7 @@ class ChartJSON(object):
             series['display_format'] = '%%.%if' % precision
             r.append(series)
         return r
-    
+
     def _datapoint(self, point):
         r = {}
         r['key'] = key = point.identity()
@@ -176,9 +179,9 @@ class ChartJSON(object):
         r['title'] = unicode(point.identity()).title()
         value = None if math.isnan(point.value) else point.value
         r['value'] = value
-        if point.note is not None:
+        if point.note is not None and self.show_notes:
             r['note'] = point.note
-        if point.uri is not None:
+        if point.uri is not None and self.show_uris:
             r['uri'] = point.uri
         return r
 
