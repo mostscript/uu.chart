@@ -39,7 +39,7 @@ def publish_children(context, message):
 
 def unpublish_children(context, message):
     for content in context.contentValues():
-        unpublish(context, message)
+        unpublish(content, message)
 
 
 def after_chart_transition(context, event):
