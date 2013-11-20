@@ -105,7 +105,7 @@ uu.chart.populate = (function ($, ns) {
         var form = $('#group-selector'),
             target = $('#group-selector-choices');
         ns.GROUPS.forEach(function (group) {
-            var path = group.path.split('/').slice(2).join('/'),
+            var path = group.path.split('/').slice(2,-1).join('/'),
                 li = ns.makeGroupInputItem(group.uid, group.title, path);
             target.append(li);
         });
