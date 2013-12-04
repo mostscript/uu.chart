@@ -30,7 +30,7 @@ def clone_chart_styles(source, target):
     _clone_attrs(
         source,
         target,
-        IChartStylebook,
+        IChartStyleBook,
         exclude=('x_label', 'y_label'),
         )
     source_lines = source.objectValues()
