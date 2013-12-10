@@ -45,10 +45,11 @@ class DatasetListerView(object):
         req.response.setHeader('Content-type', 'application/json')
         measure_uid = self.request.get('measure', None)
         catalog = getToolByName(self.portal, 'portal_catalog')
+        find = catalog.unrestrictedSearchResults
         if self.ispath(measure_uid):
-            r = catalog.search({'path': {'query': measure_uid, 'depth': 0}})
+            r = find({'path': {'query': measure_uid, 'depth': 0}})
             measure_uid = r[0].UID if r else None  # value from catalog brain
-        r = catalog.search({'UID': measure_uid})
+        r = find({'UID': measure_uid})
         if not measure_uid or not r:
             req.response.setHeader('Content-Length', 2)
             return '[]'   # empty

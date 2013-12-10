@@ -207,7 +207,7 @@ HEIGHT_UNITS = SimpleVocabulary(
 
 def resolve_uid(uid):
     catalog = getSite().portal_catalog
-    r = catalog.search({'UID': str(uid)})
+    r = catalog.unrestrictedSearchResults({'UID': str(uid)})
     if not r:
         return None
     return r[0]._unrestrictedGetObject()
