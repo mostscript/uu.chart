@@ -354,18 +354,30 @@ form.reorder div.button-reorder a {
   
     <div class="chart-defaults">
       <h6>Additional chart defaults</h6>
-      <label>Start date to use "Baseline" label, if desired (MM/DD/YYYY):</label> <br />
-      <input class="smartdate-widget date-field" type="text" name="baseline-date" />
-      
-      <br />
+      <p><em>These are optional; if start/end dates are not provided, the displayed X-axis domain on time-series plots will fit all available data.</em></p>
 
-      <label>Date label format:</label> <br />
-      <select tal:define="terms view/DATE_LABEL_CHOICES" name="datelabel-choices">
-        <option value="abbr+year">Month abbreviation, with year</option>
-        <tal:block repeat="term terms">
-            <option tal:condition="python:term.value != 'abbr+year'" tal:content="term/title" tal:attributes="value term/value" />
-        </tal:block>
-      </select>
+      <div style="width:15em; float:left">
+        <label>Start date (MM/DD/YYYY):</label> <br />
+        <input class="smartdate-widget date-field" type="text" name="start-date" />
+      </div>
+      <div style="float:left; width:20em;">
+        <label>End date (MM/DD/YYYY):</label> <br />
+        <input class="smartdate-widget date-field" type="text" name="end-date" />
+        <p style="font-size:80%; line-height:100%"><em>Note: end-date should align to the last date you expect data to display; for form data, this is often the beginning of a month/period.</em></p>
+      </div>
+      <div style="clear:both">
+        <input type="checkbox" name="force-crop" />
+        <label>Force crop on time-series plots (if data-points fall before start or after end, they will be omitted)?</label><br />
+        <input type="checkbox" name="use-baseline" />
+        <label>Use 'Baseline' label for start date?</label><br /><br />
+        <label>Date label format:</label>
+        <select tal:define="terms view/DATE_LABEL_CHOICES" name="datelabel-choices">
+         <option value="abbr+year">Month abbreviation, with year</option>
+         <tal:block repeat="term terms">
+             <option tal:condition="python:term.value != 'abbr+year'" tal:content="term/title" tal:attributes="value term/value" />
+         </tal:block>
+        </select>
+      </div>
 
     </div>
  

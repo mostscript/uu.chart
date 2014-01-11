@@ -41,15 +41,24 @@ class ReportPopulateView(object):
                     return end
         return None
 
-    def _set_chart_label_overrides(self, chart):
-        label = 'Baseline'
-        baseline_date = self.request.get('baseline-date', None)
-        # attempt to parse date
-        if not baseline_date:
-            return
-        month, day, year = [int(v) for v in baseline_date.split('/')]
-        key = datetime.date(year, month, day)
-        chart.label_overrides = PersistentDict([(key, label)])
+    def _date(self, stamp):
+        if not stamp:
+            return None
+        month, day, year = [int(v) for v in stamp.strip().split('/')]
+        return datetime.date(year, month, day)
+
+    def _set_date_settings(self, chart):
+        start_date = self._date(self.request.get('start-date', None))
+        end_date = self._date(self.request.get('end-date', None))
+        use_baseline = self.request.get('use-baseline', False)
+        chart.force_crop = self.request.get('force-crop', False)
+        if use_baseline:
+            label = 'Baseline'
+            chart.label_overrides = PersistentDict([(start_date, label)])
+        if start_date:
+            chart.start = start_date
+        if end_date:
+            chart.end = end_date
 
     def _measureinfo(self, uid):
         raw = self.request.form
@@ -135,7 +144,7 @@ class ReportPopulateView(object):
                 m_info.get('portal_type', TIMESERIES_TYPE),
                 **kw
                 )
-            self._set_chart_label_overrides(chart)
+            self._set_date_settings(chart)
             for ds_info in series:
                 kw = dict(
                     (k, v) for k, v in ds_info.items() if k not in _ignore
@@ -177,7 +186,7 @@ class ReportPopulateView(object):
             self.context,
             **kw
             )
-        self._set_chart_label_overrides(chart)
+        self._set_date_settings(chart)
         for measure_uid, ds_uid in itertools.product(measures, datasets):
             m_title = _value('title-%s' % measure_uid)
             ds_title = _value('title-%s' % ds_uid)
