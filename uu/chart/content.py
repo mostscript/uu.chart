@@ -14,6 +14,7 @@ from uu.smartdate.converter import normalize_usa_date
 
 from uu.chart.interfaces import IDataReport
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
+from uu.chart.interfaces import ITimeSeriesCollection
 from uu.chart.interfaces import INamedSeriesChart, INamedDataSequence
 from uu.chart.interfaces import TIME_DATA_TYPE, NAMED_DATA_TYPE
 from uu.chart.interfaces import MEASURE_DATA_TYPE
@@ -32,8 +33,8 @@ def computed_attribute(level=0):
 
 
 def filter_data(context, points):
-    if ITimeDataSequence.providedBy(context):
-        parent = aq_parent(aq_inner(context))
+    parent = aq_parent(aq_inner(context))
+    if ITimeSeriesCollection.providedBy(parent):
         if getattr(parent, 'force_crop', False):
             start, end = parent.start, parent.end
             if parent.start:
