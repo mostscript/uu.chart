@@ -4,6 +4,7 @@ from hashlib import md5
 from StringIO import StringIO
 
 from Acquisition import aq_base, aq_inner, aq_parent
+from ComputedAttribute import ComputedAttribute
 from persistent.dict import PersistentDict
 from plone.dexterity.content import Item, Container
 from zope.interface import implements
@@ -22,16 +23,24 @@ from uu.chart.data import TimeSeriesDataPoint, NamedDataPoint
 _type_filter = lambda o, t: hasattr(o, 'portal_type') and o.portal_type == t
 
 
+# need aq-friendly property decorator, credit to:
+# http://stackoverflow.com/a/12545292/835961
+def computed_attribute(level=0):
+    def computed_attribute_wrapper(func):
+        return ComputedAttribute(func, level)
+    return computed_attribute_wrapper
+
+
 def filter_data(context, points):
     if ITimeDataSequence.providedBy(context):
         parent = aq_parent(aq_inner(context))
         if getattr(parent, 'force_crop', False):
             start, end = parent.start, parent.end
             if parent.start:
-                _after_start = lambda p: p.date >= p.start
+                _after_start = lambda p: p.date >= parent.start
                 points = filter(_after_start, points)
             if parent.end:
-                _before_end = lambda p: p.date <= p.end
+                _before_end = lambda p: p.date <= parent.end
                 points = filter(_before_end, points)
     return points
 
@@ -46,44 +55,43 @@ class BaseDataSequence(Item):
 
     def _data(self, filtered=True, excluded=False):
         """Unfiltered data"""
-        if not hasattr(self, '_v_data'):
-            self._v_data = {}
         if not self.input:
             return []
-        cachekey = md5(self.input).hexdigest()
-        if cachekey not in self._v_data:
-            result = []
-            reader = csv.reader(StringIO(getattr(self, 'input', u'')))
-            rows = list(reader)  # iterate over CSV
-            for row in rows:
-                note = uri = None  # default empty optional values
-                if len(row) < 2:
-                    continue  # silently ignore
-                try:
-                    key = row[0]
-                    if self.KEYTYPE == date:
-                        key = normalize_usa_date(key)
-                    value = float(row[1])
-                except ValueError:
-                    continue  # failed to type-cast value, ignore row
-                if len(row) >= 3:
-                    note = row[2]
-                if len(row) >= 4:
-                    uri = row[3]
-                result.append(self.POINTCLS(key, value, note, uri))
-            self._v_data[cachekey] = result
-        all_points = self._v_data[cachekey]
+        result = []
+        reader = csv.reader(StringIO(getattr(self, 'input', u'')))
+        rows = list(reader)  # iterate over CSV
+        for row in rows:
+            note = uri = None  # default empty optional values
+            if len(row) < 2:
+                continue  # silently ignore
+            try:
+                key = row[0]
+                if self.KEYTYPE == date:
+                    key = normalize_usa_date(key)
+                value = float(row[1])
+            except ValueError:
+                continue  # failed to type-cast value, ignore row
+            if len(row) >= 3:
+                note = row[2]
+            if len(row) >= 4:
+                uri = row[3]
+            result.append(self.POINTCLS(key, value, note, uri))
         if filtered and not excluded:
-            all_points = filter_data(self, all_points)
+            result = filter_data(self, result)
         if excluded:
-            included = filter_data(self, all_points)
-            all_points = [p for p in all_points if p not in included]
-        return all_points
+            included = filter_data(self, result)
+            result = [p for p in result if p not in included]
+        return result
 
-    @property
+    @computed_attribute(level=1)
     def data(self):
         """Parse self.input, return list of point objects"""
-        return self._data(filtered=True)
+        if not hasattr(self, '_v_data'):
+            self._v_data = {}
+        cachekey = md5(self.input).hexdigest()
+        if cachekey not in self._v_data:
+            self._v_data[cachekey] = self._data(filtered=True)
+        return self._v_data[cachekey]
 
     def excluded(self):
         return self._data(excluded=True)

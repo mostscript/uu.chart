@@ -11,8 +11,9 @@
 </metal:block>
 </head>
 <body>
-<div metal:fill-slot="main">
+<div metal:fill-slot="content-core">
 
+<h4 style="color:#689;font-size:85%"><em>Values included for visualization:</em></h4>
 <table style="border:1px solid #999;">
   <tr style="border-bottom:1px solid #999;">
    <th tal:repeat="fieldname view/fieldnames" tal:content="python:fieldname.title()" style="padding:0.5em 1em;">FIELDNAME</th>
@@ -21,6 +22,20 @@
       <td tal:repeat="fieldname view/fieldnames" tal:content="structure python: view.field_value(datapoint, fieldname)" style="padding:0.1em 1em;">VALUE</td>
   </tr>
 </table>
+
+<tal:block define="excluded context/excluded">
+<div tal:condition="excluded" style="color:#aaa;">
+<h4 style="color:#aaa;font-size:85%"><em>Values excluded by crop or filter:</em></h4>
+<table style="border:1px solid #ccc;">
+  <tr style="border-bottom:1px solid #ccc;">
+   <th tal:repeat="fieldname view/fieldnames" tal:content="python:fieldname.title()" style="padding:0.5em 1em;">FIELDNAME</th>
+  </tr>
+  <tr tal:repeat="datapoint context/excluded">
+      <td tal:repeat="fieldname view/fieldnames" tal:content="structure python: view.field_value(datapoint, fieldname)" style="padding:0.1em 1em;">VALUE</td>
+  </tr>
+</table>
+</div>
+</tal:block>
 
 </div>
 </body>

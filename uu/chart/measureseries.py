@@ -5,7 +5,7 @@ from plone.indexer.decorator import indexer
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
 
-from uu.chart.content import BaseDataSequence, filter_data
+from uu.chart.content import BaseDataSequence, filter_data, computed_attribute
 from uu.chart.data import NamedDataPoint, TimeSeriesDataPoint
 from uu.chart.interfaces import IMeasureSeriesProvider
 from uu.chart.interfaces import INamedSeriesChart
@@ -107,6 +107,10 @@ class MeasureSeriesProvider(BaseDataSequence):
             included = self.filter_data(all_points)
             all_points = [p for p in all_points if p not in included]
         return self.summarize(all_points)
+
+    @computed_attribute(level=1)
+    def data(self):
+        return self._data(filtered=True)
 
 
 @indexer(IMeasureSeriesProvider)
