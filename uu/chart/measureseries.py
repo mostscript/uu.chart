@@ -38,6 +38,8 @@ class MeasureSeriesProvider(BaseDataSequence):
     
     def summarize(self, points):
         items = [(point.identity(), point) for point in points]
+        if not items:
+            return []
         keys = zip(*items)[0]
         if len(keys) == len(set(keys)):
             return points  # no duplicate points for each key
