@@ -393,6 +393,14 @@ class IDataSeries(form.Schema):
     def display_value(point):
         """Return normalized string display value for point"""
 
+    def excluded():
+        """
+        If applicable, return a list of data points that were
+        excluded from consideration by relevant filtering process.
+
+        If not applicable, return empty list.
+        """
+
 
 class IDataCollection(Interface):
     """
@@ -843,6 +851,15 @@ class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
                     u'be cropped to only show the latest meaningful '
                     u'data?  The default is to crop automatically.',
         default=True,
+        )
+
+    form.order_after(force_crop='auto_crop')
+    force_crop = schema.Bool(
+        title=u'Forced crop of data?',
+        description=u'If data points are available before a specified '
+                    u'start date or after a specified end-date, should '
+                    u'those points be excluded from the visualization?',
+        default=False,
         )
 
     def series():

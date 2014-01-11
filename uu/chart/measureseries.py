@@ -1,11 +1,11 @@
 import math
 
-from Acquisition import aq_parent, aq_inner, aq_base
-from plone.dexterity.content import Item
+from Acquisition import aq_parent, aq_inner
 from plone.indexer.decorator import indexer
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
 
+from uu.chart.content import BaseDataSequence, filter_data
 from uu.chart.data import NamedDataPoint, TimeSeriesDataPoint
 from uu.chart.interfaces import IMeasureSeriesProvider
 from uu.chart.interfaces import INamedSeriesChart
@@ -16,10 +16,11 @@ from uu.chart.interfaces import AGGREGATE_FUNCTIONS, AGGREGATE_LABELS
 DATASET_TYPE = 'uu.formlibrary.setspecifier'
 
 
-class MeasureSeriesProvider(Item):
+class MeasureSeriesProvider(BaseDataSequence):
     
     implements(IMeasureSeriesProvider)
-    
+
+    @property
     def pointcls(self):
         """
         Use re-acquisition of self via catalog to ensure proper
@@ -61,7 +62,6 @@ class MeasureSeriesProvider(Item):
                     keymap[k] = []
                 keymap[k].append(v.value)  # sequence of 1..* values per key
                 pointmap[k] = v  # last point seen for key
-            pointcls = self.pointcls()
             label = dict(AGGREGATE_LABELS).get(strategy)
             result = []
             for k in sorted_uniq_keys:
@@ -70,12 +70,17 @@ class MeasureSeriesProvider(Item):
                     result.append(pointmap[k])  # original point preserved
                 else:
                     note = u'%s of %s values found.' % (label, vcount)
-                    result.append(pointcls(k, fn(keymap[k]), note=note))
+                    result.append(self.pointcls(k, fn(keymap[k]), note=note))
             return result
         return points  # fallback
-    
-    @property
-    def data(self):
+
+    def filter_data(self, points):
+        """Pre-summarization filtering"""
+        if self.pointcls is TimeSeriesDataPoint:
+            return filter_data(self, points)
+        return points
+
+    def _data(self, filtered=True, excluded=False):
         measure = provider_measure(self)
         if measure is None:
             return []
@@ -86,25 +91,22 @@ class MeasureSeriesProvider(Item):
         infos = measure.dataset_points(dataset)  # list of info dicts
         if not infos:
             return []
-        pointcls = self.pointcls()
         _key = lambda info: info.get('start')  # datetime.date
-        if pointcls == NamedDataPoint:
+        if self.pointcls == NamedDataPoint:
             _key = lambda info: info.get('title')
-        _point = lambda info: pointcls(
+        _point = lambda info: self.pointcls(
             _key(info),
             info.get('value'),
             note=measure.value_note(info),
             uri=info.get('url', None),
             )
         all_points = map(_point, infos)
+        if filtered and not excluded:
+            all_points = self.filter_data(all_points)
+        if excluded:
+            included = self.filter_data(all_points)
+            all_points = [p for p in all_points if p not in included]
         return self.summarize(all_points)
-    
-    def display_value(self, point):
-        precision = getattr(aq_base(self), 'display_precision', 1)
-        v = getattr(point, 'value', None)
-        v = round(v, precision) if v is not None else v
-        fmt = '%%.%if' % precision
-        return fmt % v if v is not None else ''
 
 
 @indexer(IMeasureSeriesProvider)

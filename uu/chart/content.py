@@ -3,7 +3,7 @@ from datetime import date
 from hashlib import md5
 from StringIO import StringIO
 
-from Acquisition import aq_base
+from Acquisition import aq_base, aq_inner, aq_parent
 from persistent.dict import PersistentDict
 from plone.dexterity.content import Item, Container
 from zope.interface import implements
@@ -22,6 +22,20 @@ from uu.chart.data import TimeSeriesDataPoint, NamedDataPoint
 _type_filter = lambda o, t: hasattr(o, 'portal_type') and o.portal_type == t
 
 
+def filter_data(context, points):
+    if ITimeDataSequence.providedBy(context):
+        parent = aq_parent(aq_inner(context))
+        if getattr(parent, 'force_crop', False):
+            start, end = parent.start, parent.end
+            if parent.start:
+                _after_start = lambda p: p.date >= p.start
+                points = filter(_after_start, points)
+            if parent.end:
+                _before_end = lambda p: p.date <= p.end
+                points = filter(_before_end, points)
+    return points
+
+
 class BaseDataSequence(Item):
    
     POINTCLS = None
@@ -29,11 +43,9 @@ class BaseDataSequence(Item):
      
     def __init__(self, id=None, *args, **kwargs):
         super(BaseDataSequence, self).__init__(id, *args, **kwargs)
-        self._v_data = {}
 
-    @property
-    def data(self):
-        """Parse self.input, return list of point objects"""
+    def _data(self, filtered=True, excluded=False):
+        """Unfiltered data"""
         if not hasattr(self, '_v_data'):
             self._v_data = {}
         if not self.input:
@@ -60,19 +72,33 @@ class BaseDataSequence(Item):
                     uri = row[3]
                 result.append(self.POINTCLS(key, value, note, uri))
             self._v_data[cachekey] = result
-        return self._v_data[cachekey]
-     
+        all_points = self._v_data[cachekey]
+        if filtered and not excluded:
+            all_points = filter_data(self, all_points)
+        if excluded:
+            included = filter_data(self, all_points)
+            all_points = [p for p in all_points if p not in included]
+        return all_points
+
+    @property
+    def data(self):
+        """Parse self.input, return list of point objects"""
+        return self._data(filtered=True)
+
+    def excluded(self):
+        return self._data(excluded=True)
+
     def __iter__(self):
         """
         Iterable of date, number data point objects providing
         (at least) IDataPoint.
         """
         return iter(self.data)
-    
+
     def __len__(self):
         """Return number of data points"""
         return len(self.data)
-    
+
     def display_value(self, point):
         precision = getattr(aq_base(self), 'display_precision', 1)
         v = getattr(point, 'value', None)
