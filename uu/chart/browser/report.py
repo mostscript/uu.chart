@@ -1,3 +1,5 @@
+from AccessControl.SecurityManagement import getSecurityManager
+
 from uu.chart.browser.chart import ChartView
 
 
@@ -11,6 +13,13 @@ class ReportView(ChartView):
         )
 
     def chart_elements(self):
-        contained = self.context.contentValues()
-        return [o for o in contained if o.portal_type in self.ELEMENT_TYPES]
+        sm = getSecurityManager()
+        content = filter(
+            lambda o: sm.checkPermission('View', o),
+            filter(
+                lambda o: o.portal_type in self.ELEMENT_TYPES,
+                self.context.contentValues(),
+                )
+            )
+        return content
  
