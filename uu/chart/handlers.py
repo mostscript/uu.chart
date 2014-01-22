@@ -11,11 +11,11 @@ def wfinfo(context):
     return state, wftool
 
 
-def publish(context, message=None):
+def publish(context, message=None, ignore_states=()):
     message = 'Publishing item' + (': %s' % message if message else '')
     state, wftool = wfinfo(context)
     transition = lambda o, t: wftool.doActionFor(o, t, comment=message)
-    if state == 'published':
+    if state == 'published' or state in ignore_states:
         return
     if state == 'collaborative_editing':
         transition(context, 'end_collaboration')
@@ -34,7 +34,7 @@ def unpublish(context, message):
 
 def publish_children(context, message):
     for content in context.contentValues():
-        publish(content, message)
+        publish(content, message, ignore_states=('private',))
 
 
 def unpublish_children(context, message):
