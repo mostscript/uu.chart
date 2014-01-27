@@ -359,7 +359,7 @@ function autofitTextSize(cell, width) {
                 td.css('color', '#444');
                 if (v == null) {
                     td.text('--');
-                    td.css('color', '#bbb');
+                    td.css('color', '#666');
                 } else {
                     td.text($.jqplot.sprintf(s.formatString || '%.1f', v));
                 }
