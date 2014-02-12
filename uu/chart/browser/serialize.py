@@ -114,11 +114,22 @@ def stripms(stamp):
     using a regular expression safe for either stamps with or stamps
     without milliseconds included.
     """
-    stamp_pattern = re.compile('([^.]+)([.][0-9]+)?([+-].*)')
-    return stamp_pattern.sub('\g<1>\g<3>', stamp)
+    parts = stamp.split('.')
+    if len(parts) == 1:
+        return stamp  # no millisecond part; return original
+    found = re.search('([0-9]*)([+-].*)', parts[1])
+    if not found:
+        return parts[0]  # no offset, so the first part is sufficent
+    return '%s%s' % (parts[0], found.groups()[1])
 
 
-def isodate(dt):
+def isodate(dt, offset=None):
+    if offset and isinstance(dt, date):
+        dt = datetime(*dt.timetuple()[:7])
+        return '%s%s' % (
+            stripms(dt.isoformat()),
+            offset.strip(),
+            )
     # get datetime (from date or datetime) with user, site, or system tz:
     dt = withtz(dt)
     # copy, normalize to same timezone, such that microseconds are stripped:
@@ -129,10 +140,14 @@ def isodate(dt):
 class ChartJSON(object):
     """Adapter to create JSON for use by view"""
 
-    def __init__(self, context):
+    timestamp_offset = None
+
+    def __init__(self, context, timestamp_offset=None):
         self.context = context
         self.state = wfinfo(context)[0]
         self.show_uris = self.show_notes = self.state != 'published'
+        if re.match('[+-][0-9]+', timestamp_offset):
+            self.timestamp_offset = timestamp_offset
    
     def _series_list(self):
         """Get all series represented as dict"""
@@ -175,7 +190,7 @@ class ChartJSON(object):
         r = {}
         r['key'] = key = point.identity()
         if isinstance(key, date) or isinstance(key, datetime):
-            r['key'] = key = isodate(key)
+            r['key'] = key = isodate(key, self.timestamp_offset)
         r['title'] = unicode(point.identity()).title()
         value = None if math.isnan(point.value) else point.value
         r['value'] = value
@@ -236,7 +251,7 @@ class ChartJSON(object):
                 if (name.endswith('color') and str(v).upper() == 'AUTO'):
                     continue
                 elif isinstance(v, date) or isinstance(v, datetime):
-                    r[name] = isodate(v)
+                    r[name] = isodate(v, self.timestamp_offset)
                 else:
                     r[name] = v
         if not self.context.show_goal and r.get('goal', None):
@@ -272,7 +287,8 @@ class ChartJSONView(object):
         self.request = request
    
     def __call__(self, *args, **kwargs):
+        timestamp_offset = self.request.get('tzoffset', '').strip() or None
         self.request.response.setHeader('Content-type', 'application/json')
-        return ChartJSON(self.context).render()
+        return ChartJSON(self.context, timestamp_offset).render()
 
 

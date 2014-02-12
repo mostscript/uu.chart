@@ -664,10 +664,22 @@ uu.chart = (function (ns, $) {
         return null;
     };
 
+    // tzoffset(): ISO 8601 timezone offset string
+    ns.tzoffset = function () {
+        var offsetMinutes = new Date().getTimezoneOffset(),
+            offsetBase = Math.abs(offsetMinutes),
+            cardinal = (offsetMinutes < 0) ? '+' : '-',
+            hr = ~~(offsetBase / 60),  //integer division
+            min = offsetBase % 60;
+        return cardinal + ('0' + hr).slice(-2) + ('0' + min).slice(-2);
+    };
+
     ns.loadcharts = function () {
         $('.chartdiv').each(function () {
             var div = $(this),
-                json_url = $('a[type="application/json"]', div).attr('href'),
+                tzoffset = '&tzoffset=' + ns.tzoffset(),
+                base_url = $('a[type="application/json"]', div).attr('href'),
+                json_url = base_url + tzoffset,
                 divid = div.attr('id');
             if (ns.saved_data && ns.saved_data[divid]) {
                 // load (synchronously) from cache, not (async) from server
