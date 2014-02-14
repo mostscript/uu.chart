@@ -862,6 +862,14 @@ class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
         default=False,
         )
 
+    form.omitted('label_overrides')
+    label_overrides = schema.Dict(
+        key_type=schema.Date(),
+        value_type=schema.BytesLine(),
+        defaultFactory=PersistentDict,
+        required=False,
+        )
+
     def series():
         """
         return a iterable of IDataSeries objects for all contained
@@ -901,14 +909,6 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
         description=_(u'Default format for X-Axis labels.'),
         default='locale',
         vocabulary=DATE_AXIS_LABEL_CHOICES,
-        )
-
-    form.omitted('label_overrides')
-    label_overrides = schema.Dict(
-        key_type=schema.Date(),
-        value_type=schema.BytesLine(),
-        defaultFactory=PersistentDict,
-        required=False,
         )
 
     form.omitted('data')
