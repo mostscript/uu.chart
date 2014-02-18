@@ -307,12 +307,25 @@ uu.chart = (function (ns, $) {
         return [min, max];
     };
 
+    ns.parseISO = function (stamp) {
+        // moment.js correctly parses naive datestamps
+        // as local time in all browsers:
+        return moment(stamp).toDate();
+    };
+
+    ns.jstime = function (v) {
+        if (!(v instanceof Date)) {
+            v = ns.parseISO(v);
+        }
+        return v.getTime();
+    };
+
     ns.savelabels = function (divid, labels) {
         var k, m = {};
         ns.custom_labels[divid] = m;
         for (k in labels) {
             if (labels.hasOwnProperty(k)) {
-                m[parseInt(k, 10)] = labels[k];
+                m[ns.jstime(k)] = labels[k];
             }
         }
     };
@@ -664,22 +677,10 @@ uu.chart = (function (ns, $) {
         return null;
     };
 
-    // tzoffset(): ISO 8601 timezone offset string
-    ns.tzoffset = function () {
-        var offsetMinutes = new Date().getTimezoneOffset(),
-            offsetBase = Math.abs(offsetMinutes),
-            cardinal = (offsetMinutes < 0) ? '+' : '-',
-            hr = ~~(offsetBase / 60),  //integer division
-            min = offsetBase % 60;
-        return cardinal + ('0' + hr).slice(-2) + ('0' + min).slice(-2);
-    };
-
     ns.loadcharts = function () {
         $('.chartdiv').each(function () {
             var div = $(this),
-                tzoffset = '&tzoffset=' + ns.tzoffset(),
-                base_url = $('a[type="application/json"]', div).attr('href'),
-                json_url = base_url + tzoffset,
+                json_url = $('a[type="application/json"]', div).attr('href'),
                 divid = div.attr('id');
             if (ns.saved_data && ns.saved_data[divid]) {
                 // load (synchronously) from cache, not (async) from server

@@ -1,6 +1,5 @@
 import calendar
 from datetime import date
-import time
 import itertools
 
 from Acquisition import aq_base
@@ -10,7 +9,6 @@ from zope.i18n.locales import locales, LoadLocaleError
 from zope.publisher.browser import BrowserLanguages
 
 from uu.chart.interfaces import DATE_AXIS_LABEL_CHOICES
-from utils import withtz
 
 
 def get_locale(request):
@@ -64,9 +62,7 @@ class DateLabelView(object):
         computed by chart.  Returns list of datetime.date.
         
         Template should use by iterating over dates and calling .isoformat()
-        method for a label, and view.date_to_jstime() for an integer
-        key representation equivalent to JavaScript representation of
-        time as an integer in ms since the epoch.
+        method for a label and key.
         """
         all_series = self.context.series()
         # we can de-dupe point dates since hash(datetime.date()) is reliable:
@@ -91,31 +87,31 @@ class DateLabelView(object):
             return name.split(' ')[0]  # name, no year
         return d.strftime('%m/%d/%Y')
     
-    def date_to_jstime(self, d):
-        d = withtz(d)  # datetime with user, site, or system tz
-        return int(time.mktime(d.timetuple())) * 1000
-    
-    def jstime_to_date(self, t):
-        t = int(t)
-        return date.fromtimestamp(t / 1000)
-    
-    def label_for(self, d):
+    def parse_date(self, d):
+        if isinstance(d, date):
+            return d
+        d = str(d)
+        return date(*map(int, (d[0:4], d[5:7], d[8:10])))
+ 
+    def custom_label_for(self, d):
         """Given a date or JavaScript time key (as integer), get any label"""
-        if not isinstance(d, date):
-            d = self.jstime_to_date(int(d))
+        if isinstance(d, basestring):
+            d = self.parse_date(d)
         store = getattr(aq_base(self.context), 'label_overrides', None)
         if store and d in store:
             return store.get(d)
         return ''
-    
+
+    def label_for(self, d):
+        return self.custom_label_for(d) or self.date_to_formatted(d)
+
     def update(self, *args, **kwargs):
         req = self.request
         method = req.get('REQUEST_METHOD')
         if method == 'POST' and 'save.datelabels' in req.form:
             # save button clicked
-            _datekey = lambda k: self.jstime_to_date(int(k))
             overrides = [
-                (_datekey(k.replace('override.', '')), v)
+                (self.parse_date(k.replace('override.', '').strip()), v)
                 for k, v in req.form.items()
                 if k.startswith('override.')
                 ]

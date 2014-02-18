@@ -105,7 +105,6 @@ from uu.chart.interfaces import ITimeSeriesChart
 from uu.chart.handlers import wfinfo
 
 from datelabel import DateLabelView
-from utils import withtz
 
 
 def stripms(stamp):
@@ -123,31 +122,19 @@ def stripms(stamp):
     return '%s%s' % (parts[0], found.groups()[1])
 
 
-def isodate(dt, offset=None):
-    if offset and isinstance(dt, date):
-        dt = datetime(*dt.timetuple()[:7])
-        return '%s%s' % (
-            stripms(dt.isoformat()),
-            offset.strip(),
-            )
-    # get datetime (from date or datetime) with user, site, or system tz:
-    dt = withtz(dt)
-    # copy, normalize to same timezone, such that microseconds are stripped:
-    dt = dt.tzinfo.normalize(datetime(*dt.timetuple()[:7], tzinfo=dt.tzinfo))
+def isodate(dt):
+    # convert to naive datetime:
+    dt = datetime(*dt.timetuple()[:7])
     return stripms(dt.isoformat())
 
 
 class ChartJSON(object):
     """Adapter to create JSON for use by view"""
 
-    timestamp_offset = None
-
-    def __init__(self, context, timestamp_offset=None):
+    def __init__(self, context):
         self.context = context
         self.state = wfinfo(context)[0]
         self.show_uris = self.show_notes = self.state != 'published'
-        if re.match('[+-][0-9]+', timestamp_offset):
-            self.timestamp_offset = timestamp_offset
    
     def _series_list(self):
         """Get all series represented as dict"""
@@ -190,7 +177,7 @@ class ChartJSON(object):
         r = {}
         r['key'] = key = point.identity()
         if isinstance(key, date) or isinstance(key, datetime):
-            r['key'] = key = isodate(key, self.timestamp_offset)
+            r['key'] = key = isodate(key)
         r['title'] = unicode(point.identity()).title()
         value = None if math.isnan(point.value) else point.value
         r['value'] = value
@@ -234,14 +221,9 @@ class ChartJSON(object):
             included = label_view.included_dates()
             r['x_axis_type'] = 'date'
             r['auto_crop'] = True  # default, explcit value may disable
-            r['labels'] = labels = {}
-            for d in included:
-                k = label_view.date_to_jstime(d)
-                custom = label_view.label_for(d) or None
-                if custom is None:
-                    labels[k] = label_view.date_to_formatted(d)
-                else:
-                    labels[k] = custom
+            r['labels'] = dict(
+                (d.isoformat(), label_view.label_for(d)) for d in included
+                )
         r['series'] = self._series_list()
         if context.chart_styles:
             r['css'] = context.chart_styles
@@ -251,7 +233,7 @@ class ChartJSON(object):
                 if (name.endswith('color') and str(v).upper() == 'AUTO'):
                     continue
                 elif isinstance(v, date) or isinstance(v, datetime):
-                    r[name] = isodate(v, self.timestamp_offset)
+                    r[name] = isodate(v)
                 else:
                     r[name] = v
         if not self.context.show_goal and r.get('goal', None):
@@ -287,8 +269,7 @@ class ChartJSONView(object):
         self.request = request
    
     def __call__(self, *args, **kwargs):
-        timestamp_offset = self.request.get('tzoffset', '').strip() or None
         self.request.response.setHeader('Content-type', 'application/json')
-        return ChartJSON(self.context, timestamp_offset).render()
+        return ChartJSON(self.context).render()
 
 

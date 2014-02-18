@@ -93,13 +93,15 @@ more meaningful label in context, such as "Baseline".
   </div>
 
   <div class="row" tal:repeat="d view/included_dates">
-   <div class="col_date" tal:content="python:d.isoformat()">2013-08-01</div>
+   <tal:block define="dstamp python:d.isoformat()">
+   <div class="col_date" tal:content="dstamp">2013-08-01</div>
    <div class="col_label">
     <input name=""
            value=""
-           tal:attributes="name python:'override.%s' % view.date_to_jstime(d);
-                           value python:view.label_for(d);" />
+           tal:attributes="name python:'override.%s' % dstamp;
+                           value python:view.custom_label_for(d);" />
    </div>
+   </tal:block>
   </div>
 
  </div>
