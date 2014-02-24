@@ -866,7 +866,6 @@ class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
     label_overrides = schema.Dict(
         key_type=schema.Date(),
         value_type=schema.BytesLine(),
-        defaultFactory=PersistentDict,
         required=False,
         )
 
