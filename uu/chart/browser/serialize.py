@@ -101,10 +101,13 @@ import json
 import math
 import re
 
+from plone.uuid.interfaces import IUUID
+
 from uu.chart.interfaces import ITimeSeriesChart
 from uu.chart.handlers import wfinfo
 
 from datelabel import DateLabelView
+from report import ReportView
 
 
 def stripms(stamp):
@@ -261,6 +264,37 @@ class ChartJSON(object):
         return json.dumps(self._chart(), indent=2)
 
 
+class ReportJSON(object):
+    """
+    Report JSON adapter, containing all data for all reports,
+    keyed by the UID of each chart.
+    """
+
+    ELEMENT_TYPES = (
+        'uu.chart.timeseries',
+        'uu.chart.namedseries',
+        )
+
+    def __init__(self, context):
+        self.context = context
+
+    def _contained_charts(self):
+        _typecheck = lambda o: o.portal_type in self.ELEMENT_TYPES
+        visible = ReportView(self.context, None).chart_elements()
+        return filter(_typecheck, visible)
+
+    def getdata(self, chart):
+        return (IUUID(chart), ChartJSON(chart)._chart())
+
+    def update(self, *args, **kwargs):
+        charts = self._contained_charts()
+        self._data = dict(map(self.getdata, charts))
+
+    def render(self, *args, **kwargs):
+        self.update()
+        return json.dumps(self._data, indent=2)
+
+
 class ChartJSONView(object):
     """Browser view for JSON representation of chart context"""
     
@@ -272,4 +306,12 @@ class ChartJSONView(object):
         self.request.response.setHeader('Content-type', 'application/json')
         return ChartJSON(self.context).render()
 
+
+class ReportJSONView(ChartJSONView):
+
+    def __call__(self, *args, **kwargs):
+        data = ReportJSON(self.context).render()
+        self.request.response.setHeader('Content-type', 'application/json')
+        self.request.response.setHeader('Content-length', str(len(data)))
+        return data
 

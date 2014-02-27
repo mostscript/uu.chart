@@ -21,6 +21,14 @@
     />
 
   <browser:page
+    name="report_json"
+    for="..interfaces.IDataReport"
+    class=".serialize.ReportJSONView"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
+
+  <browser:page
     name="styles"
     for="..interfaces.IDataReport"
     class=".styles.ReportStylesView"
