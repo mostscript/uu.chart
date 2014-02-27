@@ -7,39 +7,154 @@
 // global namspaces:
 var $ = jQuery;  // For jqPlot, somehow needed for MSIE8
 
-var uu = (function (ns, $) {
-    "use strict";
+var uu = uu || {};
 
-    // uu namespace functions:
+uu.utils = (function () {
 
-    /* return a new sorted array from original */
-    ns.sorted = function (arr, cmp) {
-        if (cmp) {
-            return arr.slice().sort(cmp);
-        }
-        return arr.slice().sort();
+    var ns = {};
+
+    /**
+     * Is value v "empty" by common sense?
+     *  - undefined OR null,
+     *  - an empty object (has none of its own keys, via ES5 Object.keys()),
+     *  - any non-object, non-array, non-string scalar value,
+     *  - an empty string or Array,
+     *  - an Array of (recursively) empty arrays?
+     */
+    ns.isEmpty = function (v) {
+        var _alltrue = function (a, b) { return Boolean(a && b); };
+        return (v === undefined || v === null) ? true : (    // null,undef
+                (v instanceof String && ('' + v).length) ||  // String object
+                (v instanceof Object && Object.keys(v)) ||   // Object
+                (v.length === undefined),                    // non-str scalar
+                (v.length === 0) ||                          // str/Array
+                (v[0] instanceof Array &&
+                    v.map(ns.isEmpty).reduce(_alltrue)
+                )
+               );
     };
 
-    ns.has_value = function (value) {
-        return (value !== null && value !== undefined);
+    /**
+     * hasValue(): is non-empty value?
+     */
+    ns.hasValue = function (v) {
+        return (!ns.isEmpty(v));
     };
 
-    /**  array max/min for any data-type:
-      *   - prefers non-null values over any null.
-      *   - unlike bare Math.min(), Math.max(), supports dates sensibly.
+    /** 
+     * any(): given a sequence, are any elements within true
+     */
+    ns.any = function (seq) {
+        var either = function (a, b) {
+                return a || b;
+            };
+        return seq.map(function (v) { return !!v; }).reduce(either, false);
+    };
+
+    /**
+     * all(): given a sequence are all elements within true
+     */
+    ns.all = function (seq) {
+        var both = function (a, b) {
+                return a && b;
+            };
+        return seq.map(function (v) { return !!v; }).reduce(both, true);
+    };
+
+    /**
+     *  cmp function (max a>b) for use in Array.prototype.reduce():
+     */
+    ns.maxcmp = function (a, b) {
+        return ((ns.hasValue(a) && (a > b)) || !ns.hasValue(b)) ? a : b;
+    };
+
+    /**
+     *  cmp function (min a<b) for use in Array.prototype.reduce():
+     */
+    ns.mincmp = function (a, b) {
+        return ((ns.hasValue(a) && (a < b)) || !ns.hasValue(b)) ? a : b;
+    };
+
+    /**
+      * sorted(): return a new sorted array from original
       */
-    ns.maxcmp = function (a, b) { return ((ns.has_value(a) && (a > b)) || !ns.has_value(b)) ? a : b; };
-    ns.mincmp = function (a, b) { return ((ns.has_value(a) && (a < b)) || !ns.has_value(b)) ? a : b; };
-    ns.max = function (seq) { return seq.reduce(ns.maxcmp, null); };
-    ns.min = function (seq) { return seq.reduce(ns.mincmp, null); };
+    ns.sorted = function (arr, cmp) {
+        return (cmp) ? arr.slice().sort(cmp) : arr.slice().sort();
+    };
+
+    /**
+     * make Date object from variety of values:
+     *  - A null, zero, or undefined value passed returns a Date for NOW;
+     *  - An integer value is assumed milliseconds since epoch;
+     *  - A string value is parsed by moment.js, assumed ISO 8601.
+     *    (The latter two are constructed by moment.js).
+     */
+    ns.date = function (v) {
+        return (!v || v === 'now') ? new Date() : moment(v).toDate();
+    };
+
+
+    /**
+     * given a function to apply to arguments, apply to either an array or
+     * sequential positional arguments.
+     */
+    ns.exemplar = function (fn, args, fallback) {
+        return (ns.isEmpty(args)) ? (fallback || null) : fn(args);
+    };
+
+    /**
+     * fallback comparison application via Array.prototype.reduce()
+     */
+    ns.bindcmp = function (fn) {
+        var applied = function (seq) {
+                return seq.reduce(fn, null);
+            };
+        return applied;
+    };
+
+    /** 
+     * Shared implementation for tendency (max, min, etc) finding, where
+     * a function to apply to a sequence or and a comparison function are
+     * supplied, allong with a fallback value for empty sequence.
+     */
+    ns.tendency = function (fn, cmp, args, fallback) {
+        var isString = function (v) { return (typeof v === 'string'); },
+            useArray = (args.length === 1 && args[0] instanceof Array),
+            usecmp = ns.any((useArray ? args[0] : args).map(isString));
+        args = (useArray) ? args[0] : args;
+        return ns.exemplar((usecmp) ? ns.bindcmp(cmp) : fn, args, fallback);
+    };
+
+    /**
+     * max of either Array of values or sequential positional arguments.
+     * if any arguments are strings, a reduced comparison function will
+     * be used in lieu of Math.max().
+     */
+    ns.max = function () {
+        var args = Array.prototype.slice.call(arguments),
+            fn = function (seq) { return Math.max.apply(null, seq); };
+        return ns.tendency(fn, ns.maxcmp, args, -Infinity);
+    };
+
+    /**
+     * min of either Array of values or sequential positional arguments.
+     */
+    ns.min = function () {
+        var args = Array.prototype.slice.call(arguments),
+            fn = function (seq) { return Math.min.apply(null, seq); };
+        return ns.tendency(fn, ns.mincmp, args, Infinity);
+    };
 
     return ns;
 
-}(uu || {}, jQuery));  // uu namespace, loose-augmented
+}());
 
 
 uu.chart = (function (ns, $) {
     "use strict";
+
+    var hasValue = uu.utils.hasValue,
+        utils = uu.utils;
 
     ns.patched = false;
 
@@ -79,7 +194,7 @@ uu.chart = (function (ns, $) {
                 //    value = null;
                 //}
                 if (data.x_axis_type === 'date') {
-                    s_rep.push([(new Date(key) || key), value]);
+                    s_rep.push([(utils.date(key) || key), value]);
                 } else {
                     // named series elements for jqplot are Y-value onl
                     s_rep.push(value);
@@ -92,14 +207,14 @@ uu.chart = (function (ns, $) {
 
     /* min, max Y-values for chart for all respective data series */
     ns.range = function (data) {
-        var min = (uu.has_value(data.range_min)) ? data.range_min : null,
-            max = (uu.has_value(data.range_max)) ? data.range_max : null;
+        var min = (hasValue(data.range_min)) ? data.range_min : null,
+            max = (hasValue(data.range_max)) ? data.range_max : null;
         (data.series || []).forEach(function (s) {
             if (!(s.data && s.data.length)) {
                 return;  // no data for series, ignore
             }
-            min = (uu.has_value(s.range_min)) ? Math.min(min, s.range_min) : min;
-            max = (uu.has_value(s.range_max)) ? Math.max(max, s.range_max) : max;
+            min = (hasValue(s.range_min)) ? Math.min(min, s.range_min) : min;
+            max = (hasValue(s.range_max)) ? Math.max(max, s.range_max) : max;
         });
         return [min, max];
     };
@@ -177,7 +292,7 @@ uu.chart = (function (ns, $) {
             chart_width = data.width || 600;
         r.max_points = Math.max(
             0,
-            uu.max(
+            utils.max(
                 data.series.map(
                     function (series) {
                         return (ns.seriesdata(data) || []).length;
@@ -188,63 +303,37 @@ uu.chart = (function (ns, $) {
         return r;
     };
 
-    /* timeseries_range(data):
-     * Returns actual time-series range, not including any padding as an
-     * array of [min, max] (each element is a Date object).
+    /** 
+     * return start/end Date objects for x-axis domain crop or calculated
+     * range with possible auto-crop; returns Array of Date objects.
      */
-    ns.timeseries_range = function (data) {
-        var pointkey = function (pair) { return pair[0]; },
-            cropfilter = function (pair) {
-                return (pair[1] && pair[1].value !== null);
-            },
-            min = data.start,
-            max = data.end;    // start,end may be null or undefined in JSON
-        if (!min) {
-            // no explicit start date, calculate earliest date in data
-            (data.series || []).forEach(function (s) {
-                if (!(s.data && s.data.length)) {
-                    return;  // no data, ignore for calculating
-                }
-                if (s.data instanceof Array) {
-                    min = uu.min([
-                        min,
-                        uu.min([
-                            (new Date()).getTime(),  // fallback to now
-                            uu.min(s.data.map(pointkey))
-                        ])
-                    ]);
-                }
-            });
-        }
-        if (!max) {
-            // no explicit end date, calculate latest date in data
-            (data.series || []).forEach(function (s) {
-                if (!(s.data && s.data.length)) {
-                    return;  // no data, ignore for calculating
-                }
-                if (s.data instanceof Array) {
-                    if (data.auto_crop) {
-                        max = uu.max(
-                            [
-                                max,
-                                uu.max([
-                                    min,
-                                    uu.max(s.data.filter(cropfilter).map(pointkey))
-                                ])
-                            ]
-                        );
-                   } else {
-                        max = uu.max(
-                            [
-                                max,
-                                uu.max([min, uu.max(s.data.map(pointkey))])
-                            ]
-                        );
-                    }
-                }
-            });
-        }
-        return [new Date(min), new Date(max)];  // RFC 2822 dates to native Date
+    ns.timeseriesDomain = function (data) {
+        var keyFor = function (pair) { return utils.date(pair[0]); },
+            // Data getters (raw and cropped):
+            rawSeriesData = function (series) { return series.data || []; },
+            nonNullSeriesData = function (series) {
+                var cropfilter = function (pair) {
+                    return (pair[1] && pair[1].value !== null);
+                    };
+                return (series.data || []).filter(cropfilter);
+                },
+            // select series data function on whether to crop or not:
+            getData = (data.auto_crop) ? nonNullSeriesData : rawSeriesData,
+            // All date keys as Date objects, mapped from series data:
+            keys = [].concat.apply([], data.series.map(getData)).map(keyFor),
+            // All date keys as integer milliseconds:
+            msKeys = keys.map(function (d) { return d.getTime(); }),
+            // Earliest date key:
+            minKey = msKeys.length ? utils.date(utils.min(msKeys)) : null,
+            // Latest date key:
+            maxKey = msKeys.length ? utils.date(utils.max(msKeys)) : null,
+            // Configured start/end, if provided:
+            specifiedStart = (data.start) ? utils.date(data.start) : null,
+            specifiedEnd = (data.end) ? utils.date(data.end) : null,
+            // Merged start/end from config, data (fallback start/end is NOW):
+            start = (specifiedStart || minKey) || utils.date('now'),
+            end = (specifiedEnd || maxKey) || start;
+        return [start, end];
     };
 
     /* timeseries_interval():
@@ -268,15 +357,16 @@ uu.chart = (function (ns, $) {
         return freqmap.monthly;
     };
 
-    /* padded_timeseries_range():
-     * Return timeseries_range with appropriate, equal padding equivalent to
-     * one interval on each side of graph.
+    /**
+     * paddedTimeseriesDomain():
+     * Return timeseries domain start/end with appropriate, equal padding
+     * equivalent to one interval on each side of graph.
      * Intervals can be of type:
      *   millisecond, second, minute, hour, day, week, month, year
      * Intervals are array of [N, type] where N is a number, type is string.
      */
-    ns.padded_timeseries_range = function (data) {
-        var r = ns.timeseries_range(data),
+    ns.paddedTimeseriesDomain = function (data) {
+        var r = ns.timeseriesDomain(data),
             interval = ns.timeseries_interval(data),
             has_datediff = Boolean($.jsDate),
             valid_itypes = [
@@ -302,22 +392,13 @@ uu.chart = (function (ns, $) {
             max = max.add(interval[0], interval[1]);
         }
         // finally convert jsDate instances back to native Date:
-        min = new Date(min.getTime());
-        max = new Date(max.getTime());
+        min = utils.date(min.getTime());
+        max = utils.date(max.getTime());
         return [min, max];
     };
 
-    ns.parseISO = function (stamp) {
-        // moment.js correctly parses naive datestamps
-        // as local time in all browsers:
-        return moment(stamp).toDate();
-    };
-
     ns.jstime = function (v) {
-        if (!(v instanceof Date)) {
-            v = ns.parseISO(v);
-        }
-        return v.getTime();
+        return utils.date(v).getTime();
     };
 
     ns.savelabels = function (divid, labels) {
@@ -356,8 +437,8 @@ uu.chart = (function (ns, $) {
         var range = uu.chart.range(data),
             y_axis = {
                 label: data.y_label || undefined,
-                min: (uu.has_value(range[0])) ? range[0] : undefined,
-                max: (uu.has_value(range[1])) ? range[1] : undefined
+                min: (hasValue(range[0])) ? range[0] : undefined,
+                max: (hasValue(range[1])) ? range[1] : undefined
             };
         if (data.y_label && data.units) {
             y_axis.label += ' ( ' + data.units + ' )';
@@ -559,7 +640,7 @@ uu.chart = (function (ns, $) {
         }
         if (data.x_axis_type === 'date') {
             interval = ns.timeseries_interval(data);
-            range = ns.padded_timeseries_range(data);
+            range = ns.paddedTimeseriesDomain(data);
             // note:    jqplot padding causes problems with tick locations and
             //          intervals.  The pratical implications of this include:
             //          (1) we use updated DateAxisRenderer plugin from
@@ -648,7 +729,7 @@ uu.chart = (function (ns, $) {
     ns.timeseries_custom_label = function (plotid, value, data) {
         var k, m, lkeys, padding,
             auto_crop = data.auto_crop || true,
-            maxkey = ns.timeseries_range(data)[1];
+            maxkey = ns.timeseriesDomain(data)[1];
         if (maxkey.getTime() < value) {
             // empty label === auto-cropped tick with no values
             return ' ';
