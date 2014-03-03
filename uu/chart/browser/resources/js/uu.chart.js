@@ -9,7 +9,9 @@ var $ = jQuery;  // For jqPlot, somehow needed for MSIE8
 
 var uu = uu || {};
 
+
 uu.utils = (function () {
+    "use strict";
 
     var ns = {};
 
@@ -80,6 +82,17 @@ uu.utils = (function () {
       */
     ns.sorted = function (arr, cmp) {
         return (cmp) ? arr.slice().sort(cmp) : arr.slice().sort();
+    };
+
+    /**
+     * chain(): given Array of Arrays, or multiple Array arguments,
+     * construct a single array of all contained members, in order.
+     */
+    ns.chain = function () {
+        var args = Array.prototype.slice.call(arguments),
+            useArray = (args.length === 1 && args[0] instanceof Array);
+        args = (useArray) ? args[0] : args;
+        return [].concat.apply([], args);
     };
 
     /**
@@ -155,6 +168,9 @@ uu.chart = (function (ns, $) {
 
     var hasValue = uu.utils.hasValue,
         utils = uu.utils;
+
+    // prefix constant, used in DOM ids, prefixing a [U]UID
+    ns.DIVPREFIX = 'chartdiv-';
 
     ns.patched = false;
 
@@ -320,7 +336,7 @@ uu.chart = (function (ns, $) {
             // select series data function on whether to crop or not:
             getData = (data.auto_crop) ? nonNullSeriesData : rawSeriesData,
             // All date keys as Date objects, mapped from series data:
-            keys = [].concat.apply([], data.series.map(getData)).map(keyFor),
+            keys = utils.chain(data.series.map(getData)).map(keyFor),
             // All date keys as integer milliseconds:
             msKeys = keys.map(function (d) { return d.getTime(); }),
             // Earliest date key:
@@ -397,16 +413,12 @@ uu.chart = (function (ns, $) {
         return [min, max];
     };
 
-    ns.jstime = function (v) {
-        return utils.date(v).getTime();
-    };
-
-    ns.savelabels = function (divid, labels) {
+    ns.savelabels = function (uid, labels) {
         var k, m = {};
-        ns.custom_labels[divid] = m;
+        ns.custom_labels[uid] = m;
         for (k in labels) {
             if (labels.hasOwnProperty(k)) {
-                m[ns.jstime(k)] = labels[k];
+                m[utils.date(k).getTime()] = labels[k];
             }
         }
     };
@@ -579,8 +591,26 @@ uu.chart = (function (ns, $) {
         );
     };
 
+    /**
+     * plotid(): given value of div, divid, return uid of plot.
+     */
+    ns.plotid = function (v) {
+        var divid = (typeof v === 'string') ? v : $(v).attr('id');
+        return divid.replace(ns.DIVPREFIX, '');
+    };
+
+    /**
+     * divfor(): given uid of chart/plot component, get its div as
+     * jQuery-wrapped DOM node.
+     */
+    ns.divfor = function (uid) {
+        var divid = ns.DIVPREFIX + uid;
+        return $('#' + divid);
+    };
+
     ns.fillchart = function (div, data) {
         var chart_div = $(div),
+            uid = ns.plotid(chart_div),
             divid = div.attr('id'),
             seriesData = ns.seriesdata(data),
             legend = { show: false }, //default is none
@@ -608,7 +638,7 @@ uu.chart = (function (ns, $) {
         ns.cleardiv(chart_div);
         ns.sizeDiv(chart_div, data);
         if (data.labels) {
-            ns.savelabels(divid, data.labels);
+            ns.savelabels(uid, data.labels);
         }
         if (data.chart_type === "bar" || data.chart_type === "stacked") {
             barwidth = ns.bar_config(data).width;
@@ -726,7 +756,7 @@ uu.chart = (function (ns, $) {
         return biggest;
     };
 
-    ns.timeseries_custom_label = function (plotid, value, data) {
+    ns.timeseries_custom_label = function (uid, value, data) {
         var k, m, lkeys, padding,
             auto_crop = data.auto_crop || true,
             maxkey = ns.timeseriesDomain(data)[1];
@@ -735,7 +765,7 @@ uu.chart = (function (ns, $) {
             return ' ';
         }
         k = value.toString();
-        m = uu.chart.custom_labels[plotid];
+        m = uu.chart.custom_labels[uid];
         if (!m) {
             return null;
         }
@@ -750,33 +780,66 @@ uu.chart = (function (ns, $) {
         return null;
     };
 
-    ns.custom_label = function (plotid, value) {
-        var data = ns.saved_data[plotid];
+    ns.custom_label = function (uid, value) {
+        var data = ns.saved_data[uid];
         if (data.x_axis_type === 'date') {
-            return ns.timeseries_custom_label(plotid, value, data);
+            return ns.timeseries_custom_label(uid, value, data);
         }
         return null;
     };
 
-    ns.loadcharts = function () {
-        $('.chartdiv').each(function () {
-            var div = $(this),
-                json_url = $('a[type="application/json"]', div).attr('href'),
-                divid = div.attr('id');
-            if (ns.saved_data && ns.saved_data[divid]) {
-                // load (synchronously) from cache, not (async) from server
-                ns.fillchart(div, ns.saved_data[divid]);
-            } else {
-                $.ajax({
-                    url: json_url,
-                    success: function (responseText) { /*callback*/
-                        ns.saved_data = ns.saved_data || {};
-                        ns.saved_data[divid] = responseText;
-                        ns.fillchart(div, responseText);
-                    }
-                });
-            }
+
+    ns.drawchart = function (uid, data) {
+        var div = ns.divfor(uid);
+        if (!div) {
+            return;
+        }
+        ns.saved_data[uid] = data;
+        ns.fillchart(div, data);
+    };
+
+    /**
+     * redraw(): unlike loadcharts, redraw only loads from saved data,
+     * primarily here to avoid any race conditions. 
+     */
+    ns.redraw = function () {
+        Object.keys(ns.saved_data).forEach(function (uid) {
+            var data = ns.saved_data[uid];
+            ns.drawchart(uid, data);
         });
+    };
+
+    ns.loadcharts = function () {
+        var report_json_url = $('#report-core').attr('data-report-json');
+        if (report_json_url) {
+            $.ajax({
+                url: report_json_url,
+                success: function (responseText) {
+                    Object.keys(responseText).forEach(function (k) {
+                        ns.drawchart(k, responseText[k]);
+                    });
+                }
+            });
+        } else {
+            $('.chartdiv').each(function () {
+                var div = $(this),
+                    json_url = $('a[type="application/json"]', div).attr('href'),
+                    uid = ns.plotid(div);
+                    //divid = div.attr('id'),
+                    //uid = divid.replace(ns.DIVPREFIX, '');
+                if (ns.saved_data && ns.saved_data[uid]) {
+                    // load (synchronously) from cache, not (async) from server
+                    ns.fillchart(div, ns.saved_data[uid]);
+                } else {
+                    $.ajax({
+                        url: json_url,
+                        success: function (responseText) { /*callback*/
+                            ns.drawchart(uid, responseText);
+                        }
+                    });
+                }
+            });
+        }
     };
 
     ns.patch_jqplot = function () {
@@ -807,7 +870,7 @@ uu.chart = (function (ns, $) {
         // wrapper tick-label draw method supporting custom labels:
         new_draw = function (ctx, plot) {
             // use plot.target[0].id (plot div id), this.value for custom label
-            var custom_label = ns.custom_label(plot.target[0].id, this.value);
+            var custom_label = ns.custom_label(ns.plotid(plot.target), this.value);
             this.label = (custom_label !== null) ? custom_label : this.label;
             return this.orig_draw(ctx, plot);  // call orig in context of this
         };
@@ -819,7 +882,7 @@ uu.chart = (function (ns, $) {
     };
 
     $(window).resize($.debounce( 250, function () {
-        ns.loadcharts();
+        ns.redraw();
     }));
 
     if ($.jqplot) {

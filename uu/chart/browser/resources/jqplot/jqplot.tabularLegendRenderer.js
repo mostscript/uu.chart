@@ -248,7 +248,7 @@ function autofitTextSize(cell, width) {
             h.title = k;
             if (plot.data[0][0][0] instanceof Date) {
                 if (uu.chart.custom_label) {
-                    h.title = uu.chart.custom_label(plot.target[0].id, k);
+                    h.title = uu.chart.custom_label(uu.chart.plotid(plot.target), k);
                 } else {
                     h.title = (new Date(k)).toISOString().split('T')[0];
                 }
