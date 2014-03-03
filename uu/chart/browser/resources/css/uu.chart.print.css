@@ -1,5 +1,6 @@
 #portal-column-content.position-1\3a 4 {
     margin-left: 0 !important;
+    width:95% !important;
 }
 
 #portal-column-content.width-1\3a 2 {
@@ -11,8 +12,7 @@
 }
 
 #content-core .chartdiv {
-    max-width:700px !important;
-    page-break-inside: avoid !important;
+    max-width:640px !important;
 }
 
 div.report-management {
