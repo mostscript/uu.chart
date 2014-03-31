@@ -75,7 +75,7 @@ class DateLabelView(object):
         usage = getattr(aq_base(self.context), 'label_default', 'locale')
         locname = 'en_US'  # default locale
         r_locale = get_locale(self.request)
-        if r_locale:
+        if r_locale and r_locale.id.territory:
             locname = '_'.join((r_locale.id.language, r_locale.id.territory))
         cal1 = calendar.LocaleTextCalendar(locale=(locname, 'UTF-8'))
         name = cal1.formatmonthname(*d.timetuple()[:2], width=0)  # month name
