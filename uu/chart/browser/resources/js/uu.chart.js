@@ -809,17 +809,23 @@ uu.chart = (function (ns, $) {
         });
     };
 
+    ns.loadreport = function (url) {
+        $.ajax({
+            url: url,
+            success: function (response) {
+                response.forEach(function (pair) {
+                    var uid = pair[0],
+                        data = pair[1];
+                    ns.drawchart(uid, data);
+                });
+            }
+        });
+    };
+
     ns.loadcharts = function () {
         var report_json_url = $('#report-core').attr('data-report-json');
         if (report_json_url) {
-            $.ajax({
-                url: report_json_url,
-                success: function (responseText) {
-                    Object.keys(responseText).forEach(function (k) {
-                        ns.drawchart(k, responseText[k]);
-                    });
-                }
-            });
+            ns.loadreport(report_json_url);
         } else {
             $('.chartdiv').each(function () {
                 var div = $(this),
@@ -833,8 +839,8 @@ uu.chart = (function (ns, $) {
                 } else {
                     $.ajax({
                         url: json_url,
-                        success: function (responseText) { /*callback*/
-                            ns.drawchart(uid, responseText);
+                        success: function (response) { /*callback*/
+                            ns.drawchart(uid, response);
                         }
                     });
                 }

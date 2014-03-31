@@ -288,7 +288,7 @@ class ReportJSON(object):
 
     def update(self, *args, **kwargs):
         charts = self._contained_charts()
-        self._data = dict(map(self.getdata, charts))
+        self._data = map(self.getdata, charts)
 
     def render(self, *args, **kwargs):
         self.update()
