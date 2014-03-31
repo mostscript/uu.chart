@@ -278,21 +278,21 @@ class ReportJSON(object):
     def __init__(self, context):
         self.context = context
 
-    def _contained_charts(self):
-        _typecheck = lambda o: o.portal_type in self.ELEMENT_TYPES
-        visible = ReportView(self.context, None).chart_elements()
-        return filter(_typecheck, visible)
+    def _contained_charts(self, b_start=0, b_size=None):
+        visible = ReportView(self.context, None).chart_elements(
+            types=self.ELEMENT_TYPES,
+            b_start=b_start,
+            b_size=b_size,
+            )
+        return visible
 
     def getdata(self, chart):
         return (IUUID(chart), ChartJSON(chart)._chart())
 
-    def update(self, *args, **kwargs):
-        charts = self._contained_charts()
-        self._data = map(self.getdata, charts)
-
-    def render(self, *args, **kwargs):
-        self.update()
-        return json.dumps(self._data, indent=2)
+    def render(self, b_start=0, b_size=None, **kwargs):
+        charts = self._contained_charts(b_start, b_size)
+        data = map(self.getdata, charts)
+        return json.dumps(data, indent=2)
 
 
 class ChartJSONView(object):
@@ -310,7 +310,10 @@ class ChartJSONView(object):
 class ReportJSONView(ChartJSONView):
 
     def __call__(self, *args, **kwargs):
-        data = ReportJSON(self.context).render()
+        adapter = ReportJSON(self.context)
+        b_start = int(self.request.get('b_start', 0))
+        b_size = int(self.request.get('b_size', 0)) or None
+        data = adapter.render(b_start, b_size)
         self.request.response.setHeader('Content-type', 'application/json')
         self.request.response.setHeader('Content-length', str(len(data)))
         return data
