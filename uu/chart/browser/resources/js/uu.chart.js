@@ -809,16 +809,35 @@ uu.chart = (function (ns, $) {
         });
     };
 
+    ns.geometric_batch = function (length) {
+        var r = [],
+            size = 1,
+            pos = 0;
+        while (size <= length) {
+            r.push([pos, Math.min(size, length-pos)]);
+            pos = pos + size;
+            size += size;  // 1, 2, 4, 8, 16, 32,...N
+        }
+        return r;
+    };
+
     ns.loadreport = function (url) {
-        $.ajax({
-            url: url,
-            success: function (response) {
-                response.forEach(function (pair) {
-                    var uid = pair[0],
-                        data = pair[1];
-                    ns.drawchart(uid, data);
-                });
-            }
+        var total = $('.chartdiv').length,
+            batch_spec = ns.geometric_batch(total);
+        batch_spec.forEach(function (pair) {
+            var pos = pair[0],
+                size = pair[1],
+                batchurl = url + '?b_size=' + size + '&b_start=' + pos;
+            $.ajax({
+                url: batchurl,
+                success: function (response) {
+                    response.forEach(function (info) {
+                        var uid = info[0],      // uid key
+                            data = info[1];     // chart data value
+                        ns.drawchart(uid, data);
+                    });
+                }
+            });
         });
     };
 
