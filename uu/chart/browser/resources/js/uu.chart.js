@@ -632,6 +632,7 @@ uu.chart = (function (ns, $) {
             marker_color,
             display_format;
         if (!seriesData.length) {
+            chart_div.html('<em>No available data at this time for plot.</em>');
             return;
         }
         display_format = data.series[0].display_format || '%.1f';
