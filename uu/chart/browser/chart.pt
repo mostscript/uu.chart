@@ -93,8 +93,8 @@
         tal:define="uid python:view.UID(element);
                     json python:view.json_url(element);
                     chart_width python:getattr(element, 'width', None) or 600;
-                    float python:(chart_width <= 260) and 'float:left' or 'clear:both'">
-   <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${float}" tal:condition="ischart">
+                    dofloat python:(chart_width <= 260) and 'dofloat:left' or 'clear:both'">
+   <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${dofloat}" tal:condition="ischart">
     <hr />
     <tal:block condition="python: element.getId() != context.getId()">
       <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href element/absolute_url" tal:condition="python: is_report and view.can_manage()" target="_blank">&#x2794</a>
