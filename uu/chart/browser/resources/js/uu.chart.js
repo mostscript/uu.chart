@@ -447,10 +447,13 @@ uu.chart = (function (ns, $) {
 
     ns.jqplot_yaxis_config = function (data) {
         var range = uu.chart.range(data),
+            min = (hasValue(range[0])) ? range[0] : undefined,
+            max = (hasValue(range[1])) ? range[1] : undefined,
             y_axis = {
                 label: data.y_label || undefined,
-                min: (hasValue(range[0])) ? range[0] : undefined,
-                max: (hasValue(range[1])) ? range[1] : undefined
+                tickInterval: (min === 0 && max === 100) ? 20 : undefined,
+                min: min,
+                max: max
             };
         if (data.y_label && data.units) {
             y_axis.label += ' ( ' + data.units + ' )';
