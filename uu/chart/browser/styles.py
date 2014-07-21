@@ -132,7 +132,7 @@ class ReportStylesView(object):
 
     def _stylebook_title(self):
         """get next stylebook title"""
-        base = 'Style book %s'
+        base = u'Style book %s'
         books = self.stylebooks()
         if not books:
             return base % 1
