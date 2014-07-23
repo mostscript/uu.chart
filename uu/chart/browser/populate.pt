@@ -281,7 +281,8 @@ form.reorder div.button-reorder a {
     </div>
   </form>
 
-  <form id="component-selection" method="post">
+  <form id="component-selection" method="post"
+        tal:attributes="data-defaultplot python:getattr(context, 'timeseries_default_type', 'line')">
     <h4>Step 2: select from available measures and data-sets.</h4>
   <p>
     You must select at least one measure and one dataset; you optionally

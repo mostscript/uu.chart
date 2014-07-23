@@ -91,7 +91,6 @@ uu.chart.interfaces -- narrative summary of components:
 from datetime import date, datetime
 import operator
 
-from persistent.dict import PersistentDict
 from plone.app.textfield import RichText
 from plone.directives import form
 from plone.formwidget.contenttree import ContentTreeFieldWidget
@@ -174,7 +173,6 @@ VOCAB_SUMMARIZATION = SimpleVocabulary(
     [SimpleTerm(v, title=title) for v, title in SUMMARIZATION_STRATEGIES]
 )
 
-
 FREQ_VOCAB = SimpleVocabulary(
     [SimpleTerm(v, title=title) for v, title in [
         ('monthly', u'Monthly'),
@@ -203,6 +201,11 @@ HEIGHT_UNITS = SimpleVocabulary(
         ('16:9', u'16:9 fixed rectangular aspect ratio'),
     ]]
 )
+
+VOCAB_PLOT_TYPES = SimpleVocabulary([
+    SimpleTerm(value=u'line', title=u'Line chart'),
+    SimpleTerm(value=u'bar', title=u'Bar chart'),
+    ])
 
 
 def resolve_uid(uid):
@@ -546,10 +549,7 @@ class IChartDisplay(form.Schema):
     chart_type = schema.Choice(
         title=_(u'Chart type'),
         description=_(u'Type of chart to display.'),
-        vocabulary=SimpleVocabulary([
-            SimpleTerm(value=u'line', title=u'Line chart'),
-            SimpleTerm(value=u'bar', title=u'Bar chart'),
-            ]),
+        vocabulary=VOCAB_PLOT_TYPES,
         default=u'line',
         )
 
@@ -1003,6 +1003,12 @@ class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
         title=_(u'Description'),
         description=_(u'Textual description of the report.'),
         required=False,
+        )
+
+    timeseries_default_type = schema.Choice(
+        title=u'Default plot type for time-series',
+        vocabulary=VOCAB_PLOT_TYPES,
+        default=u'line',
         )
 
 

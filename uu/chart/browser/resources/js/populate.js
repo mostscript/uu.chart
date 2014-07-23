@@ -162,6 +162,7 @@ uu.chart.populate = (function ($, ns) {
             url: measureURL,
             success: function (data) {
                 var items = data.items,
+                    plotdefault = form.attr('data-defaultplot') || 'line',
                     selectall = {};
                 items.forEach(function (info) {
                     var uid = info.uid,
@@ -175,7 +176,8 @@ uu.chart.populate = (function ($, ns) {
                             .attr('value', info.title),
                         titleInputCell = $('<td />').append(titleInput),
                         chartTypeInput = $(ns.html.chartTypeInput)
-                            .attr('name', 'charttype-' + uid),
+                            .attr('name', 'charttype-' + uid)
+                            .attr('value', 'runchart-' + plotdefault),
                         chartTypeInputCell = $('<td />').append(chartTypeInput),
                         goalInput = $(ns.html.chartGoalInput)
                             .attr('name', 'goal-' + uid),
