@@ -8,7 +8,7 @@
 <metal:block fill-slot="javascript_head_slot">
   <script type="text/javascript"
           src=""
-          tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/populate.js">
+          tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/populate.js?api=20140723">
   </script>
 </metal:block>
 <metal:block fill-slot="style_slot">
