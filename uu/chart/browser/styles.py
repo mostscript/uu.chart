@@ -37,7 +37,7 @@ def clone_chart_styles(source, target):
     target_lines = target.objectValues()
     target.reindexObject()
     for i in range(len(source_lines)):
-        if len(target_lines) >= i:
+        if i >= len(target_lines):
             break
         source_line = source_lines[i]
         target_line = target_lines[i]
