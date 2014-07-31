@@ -300,7 +300,9 @@
                 
                 if (label != null) {
                     label = p.formatter(p.formatString, label);
-                } 
+                } else {
+                    label = '';
+                }
 
                 helem = document.createElement('div');
                 p._elems[i] = $(helem);
