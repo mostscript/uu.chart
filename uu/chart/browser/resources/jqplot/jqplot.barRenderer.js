@@ -375,6 +375,9 @@
                     if (!this._stack && this.data[i][1] == null) {
                         continue;
                     }
+                    if (this._plotData[i][1] === null) {
+                        continue;
+                    }
                     points = [];
                     base = gridData[i][0] + this._barNudge;
                     
@@ -470,6 +473,9 @@
             else if (this.barDirection == 'horizontal'){
                 for (var i=0; i<gridData.length; i++) {
                     if (!this._stack && this.data[i][0] == null) {
+                        continue;
+                    }
+                    if (this._plotData[i][1] === null) {
                         continue;
                     }
                     points = [];
