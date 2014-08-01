@@ -327,14 +327,21 @@ uu.chart = (function (ns, $) {
         var keyFor = function (pair) { return utils.date(pair[0]); },
             // Data getters (raw and cropped):
             rawSeriesData = function (series) { return series.data || []; },
-            nonNullSeriesData = function (series) {
-                var cropfilter = function (pair) {
-                    return (pair[1] && pair[1].value !== null);
-                    };
-                return (series.data || []).filter(cropfilter);
-                },
+            // Right-hand-side crop trims only null values, if applicable:
+            seriesDataCropped = function (series) {
+                 var nonNullValue = function (pair) {
+                        return (pair[1] && pair[1].value !== null);
+                    },
+                    result = series.data.slice(),  // shallow copy of pairs
+                    lastSeen = [];
+                while (!nonNullValue(lastSeen)) {
+                    lastSeen = result.pop();
+                }
+                result.push(lastSeen);  // add last non-null value back
+                return result;
+            },
             // select series data function on whether to crop or not:
-            getData = (data.auto_crop) ? nonNullSeriesData : rawSeriesData,
+            getData = (data.auto_crop) ? seriesDataCropped : rawSeriesData,
             // All date keys as Date objects, mapped from series data:
             keys = utils.chain(data.series.map(getData)).map(keyFor),
             // All date keys as integer milliseconds:
