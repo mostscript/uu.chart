@@ -373,9 +373,7 @@
             if (this.barDirection == 'vertical') {
                 for (var i=0; i<gridData.length; i++) {
                     if (!this._stack && this.data[i][1] == null) {
-                        continue;
-                    }
-                    if (this._plotData[i][1] === null) {
+                        this._barPoints.push(null);
                         continue;
                     }
                     points = [];
