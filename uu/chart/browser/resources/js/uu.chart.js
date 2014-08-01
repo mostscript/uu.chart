@@ -825,13 +825,17 @@ uu.chart = (function (ns, $) {
         return r;
     };
 
+
     ns.loadreport = function (url) {
         var total = $('.chartdiv').length,
+            rnd = (Math.floor(Math.random() * Math.pow(10,8))),
+            cacheBust = '&cache_bust=' + rnd,
             batch_spec = ns.geometric_batch(total);
         batch_spec.forEach(function (pair) {
             var pos = pair[0],
                 size = pair[1],
-                batchurl = url + '?b_size=' + size + '&b_start=' + pos;
+                qs = 'b_size=' + size + '&b_start=' + pos + cacheBust,
+                batchurl = url + '?' + qs;
             $.ajax({
                 url: batchurl,
                 success: function (response) {
@@ -854,19 +858,12 @@ uu.chart = (function (ns, $) {
                 var div = $(this),
                     json_url = $('a[type="application/json"]', div).attr('href'),
                     uid = ns.plotid(div);
-                    //divid = div.attr('id'),
-                    //uid = divid.replace(ns.DIVPREFIX, '');
-                if (ns.saved_data && ns.saved_data[uid]) {
-                    // load (synchronously) from cache, not (async) from server
-                    ns.fillchart(div, ns.saved_data[uid]);
-                } else {
-                    $.ajax({
-                        url: json_url,
-                        success: function (response) { /*callback*/
-                            ns.drawchart(uid, response);
-                        }
-                    });
-                }
+                $.ajax({
+                    url: json_url,
+                    success: function (response) { /*callback*/
+                        ns.drawchart(uid, response);
+                    }
+                });
             });
         }
     };
