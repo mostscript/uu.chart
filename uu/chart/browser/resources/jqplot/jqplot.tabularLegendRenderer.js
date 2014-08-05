@@ -357,20 +357,20 @@ function autofitTextSize(cell, width) {
                 // RGBA opacity lightens background color:
                 td.css('background-color', colorLight);
                 td.css('color', '#444');
-                // no data point:
-                if (v === undefined) {
-                    td.text('--');
-                    td.css('color', '#999');
-                }
-                // null data: there is explicitly null/NaN (n/a) point value:
-                if (v === null) {
-                    td.text('N/A');
-                    td.css({
-                        color: '#666',
-                        fontSize: '85%'
-                    });
-                } else {
-                    td.text($.jqplot.sprintf(s.formatString || '%.1f', v));
+                switch (v) {
+                    // no data point:
+                    case undefined:
+                        td.text('--');
+                        td.css('color', '#999');
+                        break;
+                    // null data: explicitly null/NaN (n/a) point value:
+                    case null:
+                        td.text('--');
+                        td.css('color', '#999');
+                        break;
+                    // finite value:
+                    default:
+                        td.text($.jqplot.sprintf(s.formatString || '%.1f', v));
                 }
                 td.appendTo(tr);
             });
