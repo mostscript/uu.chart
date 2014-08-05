@@ -365,8 +365,11 @@ function autofitTextSize(cell, width) {
                         break;
                     // null data: explicitly null/NaN (n/a) point value:
                     case null:
-                        td.text('--');
-                        td.css('color', '#999');
+                        td.text('N/A');
+                        td.css({
+                            color: '#666',
+                            fontSize: '85%'
+                        });
                         break;
                     // finite value:
                     default:
