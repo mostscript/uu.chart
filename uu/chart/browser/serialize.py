@@ -218,7 +218,11 @@ class ChartJSON(object):
             'end',
             ]
         context = self.context
-        r = {'uid': IUUID(context)}
+        r = {
+            'uid': IUUID(context),
+            'url': context.absolute_url(),
+            'name': context.getId(),
+            }
         if ITimeSeriesChart.providedBy(context):
             chart_attrs = chart_attrs + timeseries_chart_attrs
             label_view = DateLabelView(context)
