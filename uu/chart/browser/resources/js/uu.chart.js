@@ -847,6 +847,7 @@ uu.chart = (function (ns, $) {
                 batchurl = url + '?' + qs;
             $.ajax({
                 url: batchurl,
+                dataType: 'json',
                 success: function (response) {
                     response.forEach(function (info) {
                         var uid = info[0],      // uid key
@@ -869,6 +870,7 @@ uu.chart = (function (ns, $) {
                     uid = ns.plotid(div);
                 $.ajax({
                     url: json_url,
+                    dataType: 'json',
                     success: function (response) { /*callback*/
                         ns.drawchart(uid, response);
                     }

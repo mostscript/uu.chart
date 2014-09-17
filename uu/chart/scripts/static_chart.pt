@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="uu.chart">
+<head>
+
+  <!-- jquery from CDN -->
+  <script type="text/javascript" src="../../../resources/js/jquery-1.7.2.min.js"></script>
+
+  <!--[if lte IE 9]>
+    <script type="text/javascript" src="../../../resources/jqplot/excanvas.min.js"></script>
+  <![endif]-->
+
+  <!-- jqplot core and used plugins -->
+  <script type="text/javascript" src="../../../resources/jqplot/jquery.jqplot.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.dateAxisRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.barRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.categoryAxisRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.canvasTextRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.canvasAxisLabelRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.pointLabels.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.trendline.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.highlighter.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.canvasAxisTickRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.canvasThresholdLinesRenderer.js"></script>
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.fitmarkersPatch.js"></script>
+
+  <!-- UPIQ custom tabular legend plugin for jqPlot -->
+  <script type="text/javascript" src="../../../resources/jqplot/jqplot.tabularLegendRenderer.js"></script>
+
+  <!-- Other third-party components: debouncer for window resize event, moment.js -->
+  <script type="text/javascript" src="../../../resources/js/jquery.ba-throttle-debounce.min.js"></script>
+  <script type="text/javascript" src="../../../resources/js/moment.min.js"></script>
+
+  <!-- UPIQ JavaScript resources -->
+  <script type="text/javascript" src="../../../resources/js/tinyOverlay.js"></script>
+  <script type="text/javascript" src="../../../resources/js/uu.chart.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../../resources/jqplot/jquery.jqplot.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../../resources/jqplot/tabular-legend.css" />
+  <link rel="stylesheet" type="text/css" href="../../../resources/css/uu.chart.css" />
+  <link rel="stylesheet" type="text/css" media="print" href="../../../resources/css/uu.chart.print.css" />
+  <style>
+    div.chartwrap { border:1px solid #ddd; }
+    div.richelement, div.chartinfo { margin-left: 0.4em; }
+    div.chartdiv { margin-bottom:3em; }
+    div.chartdiv .jqplot-xaxis-tick { text-align:center; left:0; }
+    td.jqplot-table-legend { min-width:10em; padding-left:0.5em; border-bottom:1px dotted #ccc; }
+    td.jqplot-table-legend:first-child { min-width:1.5em; max-width:1.5em; padding-left:0; }
+  </style>
+</head>
+
+<body>
+<div id="report-core"
+     tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')"
+     tal:attributes="data-report-json python:'report.json' if is_report else '';">
+ <tal:block repeat="element view/chart_elements">
+  <tal:block define="ischart python:context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
+   <div style="width:99%;"
+        tal:define="uid python:view.UID(element);
+                    json python:view.json_url(element);
+                    chart_width python:getattr(element, 'width', None) or 600;
+                    dofloat python:(chart_width <= 260) and 'dofloat:left' or 'clear:both'">
+   <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${dofloat}" tal:condition="ischart">
+    <hr />
+    <tal:block condition="python: element.getId() != context.getId()">
+      <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href string:${element/getId}.html" target="_blank">&#x2794</a>
+      </h3>
+      <p tal:condition="element/Description">
+        <span class="description" tal:content="element/Description">
+        </span>
+      </p>
+    </tal:block>
+    <div class="chartdiv" id="" style="" tal:attributes="id string:chartdiv-${uid}; style python:view.divstyle(element)">
+      <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
+    </div>
+    <tal:block condition="python:hasattr(element.info, 'output')">
+      <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
+    </tal:block>
+   </div>
+   <div class="richelement" style="clear:both" tal:condition="python:not context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
+    <div tal:replace="structure element/CookedBody"></div>
+   </div>
+  </div>
+  </tal:block>
+ </tal:block>
+ <div style="clear:both"></div>
+
+</div>
+</body>
+</html>
+

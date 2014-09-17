@@ -23,6 +23,7 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | x_label : String          [0..1]|     | labels : Object     |  labels fields
 | y_label : String          [0..1]|     | auto_crop : Boolean |
 | chart_type : String       [0..1]|     '---------------------'
+| uid : String              [0..1]|   UUID of chart
 | units : String            [0..1]|
 | goal : Number             [0..1]|   Common goal; omit if None or hidden.
 | goal_color : String       [0..1]|   include IFF configured, goal not hidden
@@ -54,12 +55,12 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | marker_width : Number [0..1]|       (integer value)
 | marker_size : Number  [0..1]|       (floating point value)
 | marker_style : String [0..1]|
-| show_trend : String   [0..1]|     'true' or 'false' in JSON
+| show_trend : Boolean  [0..1]|     'true' or 'false' literal in JSON
 | trend_width : Number  [0..1]|
 | trend_color : String  [0..1]|     if empty, default same as color
 | display_format:String [0..1]|     == '%%.%if' % display_precision
 | point_labels : String       |     Choices: 'defer' (def), 'show', 'omit'
-| break_lines : Boolean       |     'true'/'false': display null points?
+| break_lines : Boolean       |     'true'/'false': break time-series on null?
 '-----------------------------'
        1 /%\
          \%/
@@ -217,7 +218,11 @@ class ChartJSON(object):
             'end',
             ]
         context = self.context
-        r = {}
+        r = {
+            'uid': IUUID(context),
+            'url': context.absolute_url(),
+            'name': context.getId(),
+            }
         if ITimeSeriesChart.providedBy(context):
             chart_attrs = chart_attrs + timeseries_chart_attrs
             label_view = DateLabelView(context)
