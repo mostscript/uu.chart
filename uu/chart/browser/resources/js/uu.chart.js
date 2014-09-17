@@ -334,10 +334,12 @@ uu.chart = (function (ns, $) {
                     },
                     result = series.data.slice(),  // shallow copy of pairs
                     lastSeen = [];
-                while (!nonNullValue(lastSeen)) {
+                while (lastSeen !== undefined && !nonNullValue(lastSeen)) {
                     lastSeen = result.pop();
                 }
-                result.push(lastSeen);  // add last non-null value back
+                if (lastSeen) {
+                    result.push(lastSeen);  // add last non-null value back
+                }
                 return result;
             },
             // select series data function on whether to crop or not:
