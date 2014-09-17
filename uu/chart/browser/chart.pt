@@ -42,7 +42,7 @@
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/tinyOverlay.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/jquery.ba-throttle-debounce.min.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/moment.min.js"></script>
-  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js?api=20140708"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/uu.chart.js?api=20140917"></script>
   <script type="text/javascript" tal:condition="python:request.form.get('goprint')">
     $(document).ready(function () {  window.print(); });
   </script>
