@@ -1,4 +1,9 @@
-from uu.chart.interfaces import INamedDataSequence
+from plone.app.uuid.utils import uuidToCatalogBrain
+
+from uu.chart.interfaces import INamedDataSequence, IMeasureSeriesProvider
+from uu.chart.interfaces import SUMMARIZATION_STRATEGIES
+
+STRATEGIES = dict(SUMMARIZATION_STRATEGIES)
 
 
 class DataTableView(object):
@@ -10,6 +15,36 @@ class DataTableView(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+
+    def strategy(self):
+        """Summarization strategy, if applicable"""
+        if IMeasureSeriesProvider.providedBy(self.context):
+            strategy = self.context.summarization_strategy or 'AVG'
+            return STRATEGIES.get(strategy)  # label
+        return None
+
+    def links(self):
+        """Named links for context, if applicable"""
+        result = []
+        _get = lambda uid: uuidToCatalogBrain(uid)
+        if IMeasureSeriesProvider.providedBy(self.context):
+            measure_uid = self.context.measure
+            dataset_uid = self.context.dataset
+            if measure_uid:
+                brain = _get(measure_uid)
+                if brain:
+                    result.append((
+                        'Measure: %s' % brain.Title,
+                        brain.getURL()
+                        ))
+            if dataset_uid:
+                brain = _get(dataset_uid)
+                if brain:
+                    result.append((
+                        'Data set: %s' % brain.Title,
+                        brain.getURL()
+                        ))
+        return result
 
     def fieldnames(self):
         return (self.keyname(), 'value', 'note', 'uri')

@@ -32,6 +32,26 @@ table.points td, table.points th {
 <body>
 <div metal:fill-slot="content-core">
 
+<tal:block define="links view/links">
+  <div class="measure-detail" tal:condition="links">
+    <h4>Links to series definition:</h4>
+    <p>This series is the cross product of a data set of forms and a measure applied to each key.  If more than one form is available key (e.g. date), a summarization function chosen for this series
+        <tal:block define="strategy view/strategy">
+         <span tal:condition="strategy">(<em tal:content="strategy"></em>)</span>
+        </tal:block>
+is applied.</p>
+    <ul>
+        <li tal:repeat="link links">
+            <a href=""
+               target="_blank"
+               tal:attributes="href python:link[1]"
+               tal:content="python:link[0]"
+               />
+        </li>
+    </ul>
+  </div>
+</tal:block>
+
 <h4 style="color:#689;font-size:85%"><em>Values included for visualization:</em></h4>
 <table class="points">
   <tr>
@@ -55,6 +75,7 @@ table.points td, table.points th {
 </table>
 </div>
 </tal:block>
+
 
 </div>
 </body>
