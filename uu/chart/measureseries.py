@@ -57,20 +57,29 @@ class MeasureSeriesProvider(BaseDataSequence):
             keymap = {}
             pointmap = {}  # original points
             for k, v in items:
-                if math.isnan(v.value):
-                    continue  # skip NaN values
                 if k not in keymap:
                     sorted_uniq_keys.append(k)  # only once
                     keymap[k] = []
+                if math.isnan(v.value):
+                    continue  # ignore NaN values in keymap
                 keymap[k].append(v.value)  # sequence of 1..* values per key
                 pointmap[k] = v  # last point seen for key
             label = dict(AGGREGATE_LABELS).get(strategy)
             result = []
             for k in sorted_uniq_keys:
                 vcount = len(keymap[k])
+                if vcount == 0:
+                    # special case, only NaN values must have been found,
+                    # so we will append a constructed NaN point:
+                    point = self.pointcls(
+                        date=k,
+                        value=float('NaN'),
+                        note='All respective forms have N/A values for point',
+                        )
+                    result.append(point)
                 if vcount == 1:
                     result.append(pointmap[k])  # original point preserved
-                else:
+                elif vcount > 1:
                     note = u'%s of %s values found.' % (label, vcount)
                     result.append(self.pointcls(k, fn(keymap[k]), note=note))
             return result
