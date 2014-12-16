@@ -12,10 +12,14 @@ from uu.chart.interfaces import DATE_AXIS_LABEL_CHOICES
 from uu.chart.interfaces import MEASURESERIES_DATA
 
 try:
-    from uu.qiext.utils import workspace_stack
-    HAS_QIEXT = True
+    from collective.teamwork.utils import get_workspaces
+    HAS_WORKSPACES = True
 except ImportError:
-    HAS_QIEXT = False
+    try:
+        from uu.qiext.utils import get_workspaces
+        HAS_WORKSPACES = True
+    except ImportError:
+        HAS_WORKSPACES = False
 
 
 class Naming(object):
@@ -33,8 +37,8 @@ class ReportPopulateView(object):
         self.status = IStatusMessage(self.request)
 
     def _workspace_end(self):
-        if HAS_QIEXT:
-            workspaces = workspace_stack(self.context)
+        if HAS_WORKSPACES:
+            workspaces = get_workspaces(self.context)
             for workspace in reversed(workspaces):
                 end = getattr(aq_base(workspace), 'end', None)
                 if isinstance(end, datetime.date):
@@ -74,7 +78,7 @@ class ReportPopulateView(object):
                 r['range_max'] = 100
                 r['display_precision'] = 1
             r['label_default'] = raw.get('datelabel-choices', 'abbr+year')
-            if HAS_QIEXT:
+            if HAS_WORKSPACES:
                 w_end = raw.get('use_workspace_end_date', [])
                 if uid in w_end:
                     r['end'] = self._workspace_end()
