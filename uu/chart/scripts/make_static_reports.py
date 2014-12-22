@@ -39,10 +39,13 @@ from uu.chart.interfaces import REPORT_TYPE, IBaseChart
 from uu.chart.browser.serialize import ReportJSON, ChartJSON
 from uu.chart.browser.chart import ChartView as BaseChartView
 from uu.chart.browser.report import ReportView as BaseReportView
-from uu.qiext.utils import get_projects
 from uu.formlibrary.utils import local_query
 from uu.formlibrary.tests import test_request
 
+try:
+    from collective.teamwork.utils import get_projects
+except ImportError:
+    from uu.qiext.utils import get_projects
 
 PKG_PATH = uu.chart.__path__[0]
 
