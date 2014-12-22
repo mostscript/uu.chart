@@ -210,7 +210,7 @@ class ReportPopulateView(object):
             mseries.reindexObject()
         self.status.addStatusMessage(
             'Created a multi-measure chart with %s series and %s '
-            'data-sets' % (len(measure_uid), len(ds_uid)),
+            'data-sets' % (len(measures), len(datasets)),
             type='info',
             )
 
