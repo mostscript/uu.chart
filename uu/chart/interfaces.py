@@ -179,6 +179,7 @@ FREQ_VOCAB = SimpleVocabulary(
         ('weekly', u'Weekly'),
         ('yearly', u'Yearly'),
         ('quarterly', u'Quarterly'),
+        ('daily', u'Daily'),
     ]]
 )
 

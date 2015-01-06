@@ -372,6 +372,7 @@ uu.chart = (function (ns, $) {
                 monthly: [1, 'month'],
                 weekly: [1, 'week'],
                 quarterly: [3, 'month'],
+                daily: [1, 'day'],
                 yearly: [1, 'year']
             },
             supported_freq = Object.keys(freqmap);

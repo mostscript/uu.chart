@@ -84,6 +84,7 @@ Notes, enumerated choices:
     'weekly'
     'yearly'
     'quarterly'
+    'daily'
 
  * Chart types:
     'line' (default)
