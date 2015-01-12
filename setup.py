@@ -33,7 +33,6 @@ setup(
         'Products.CMFPlone',
         'plone.browserlayer',
         'uu.smartdate',
-        'uu.qiext',
         'uu.formlibrary',
         'tzlocal',
         # -*- Extra requirements: -*-
