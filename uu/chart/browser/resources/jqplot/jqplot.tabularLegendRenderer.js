@@ -537,7 +537,7 @@ function autofitTextSize(cell, width) {
         this._elem.css('left', offsets.left + 0);
         this._elem.css('margin-top', pxtop - 10);
         // adjust div size, x axis label loc
-        tableHeight = this._elem.outerHeight(),
+        tableHeight = this._elem.outerHeight();
         chartdiv.height(chartdiv.height() + tableHeight);
         if (chartdiv.parents('.sizing').length) {
             chartdiv.parents('.sizing').height(chartdiv.height());
