@@ -166,8 +166,9 @@
     <h4 tal:content="python:'Current report components:' if is_report else 'Current chart data:'">Current chart data:</h4>
     <ul>
       <li tal:repeat="item content">
-        <a href="" tal:attributes="href item/absolute_url">
-          <img src="" tal:attributes="src item/getIcon" />
+        <a href="" tal:attributes="href item/absolute_url" tal:define="icon item/getIcon">
+          <img src="" tal:condition="icon" tal:attributes="src icon" />
+          <img src="document_icon.png" tal:condition="python: not icon" />
           <span tal:content="item/Title" />
         </a>
       </li>
