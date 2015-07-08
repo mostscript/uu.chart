@@ -97,6 +97,12 @@
     />
 
   <browser:resourceDirectory
+    name="uu.chart.plotqi"
+    directory="resources/plotqi"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    />
+
+  <browser:resourceDirectory
     name="uu.chart.js"
     directory="resources/js"
     layer="uu.chart.interfaces.IChartProductLayer"
