@@ -12,6 +12,7 @@
     permission="zope2.View"
     />
 
+  <!-- single chart json -->
   <browser:page
     name="chart_json"
     for="..interfaces.IBaseChart"
@@ -20,6 +21,16 @@
     permission="zope2.View"
     />
 
+  <!-- single chart, wrapped in array of uid/data pair interface: -->
+  <browser:page
+    name="report_json"
+    for="..interfaces.IBaseChart"
+    class=".serialize.SingleChartReportJSONView"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="zope2.View"
+    />
+
+  <!-- multiple chart, wrapped in array of uid/data pair interface: -->
   <browser:page
     name="report_json"
     for="..interfaces.IDataReport"

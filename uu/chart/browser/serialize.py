@@ -324,3 +324,17 @@ class ReportJSONView(ChartJSONView):
         self.request.response.setHeader('Content-length', str(len(data)))
         return data
 
+
+class SingleChartReportJSONView(ChartJSONView):
+    """
+    View for single chart that outputs single-item JSON array of one
+    contained uid, data object pair.
+    """
+
+    def __call__(self, *args, **kwrgs):
+        adapter = ChartJSON(self.context)
+        data = json.dumps([IUUID(self.context), adapter._chart()], indent=2)
+        self.request.response.setHeader('Content-type', 'application/json')
+        self.request.response.setHeader('Content-length', str(len(data)))
+        return data
+
