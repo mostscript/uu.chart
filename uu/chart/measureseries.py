@@ -2,7 +2,6 @@ import math
 
 from Acquisition import aq_parent, aq_inner
 from plone.indexer.decorator import indexer
-from plone.uuid.interfaces import IUUID
 from zope.interface import implements
 
 from uu.chart.content import BaseDataSequence, filter_data, computed_attribute
@@ -20,22 +19,18 @@ class MeasureSeriesProvider(BaseDataSequence):
     
     implements(IMeasureSeriesProvider)
 
-    @property
+    @computed_attribute(level=1)
     def pointcls(self):
         """
-        Use re-acquisition of self via catalog to ensure proper
-        acquisition wrapping, get point class to use based on the
-        acquisition parent (chart) type containing this provider.
+        Get point class / factory based on type of parent chart.
         """
-        own_uid = IUUID(self)
-        wrapped = resolve_uid(own_uid)
-        if wrapped is None:
-            return TimeSeriesDataPoint  # fallback!
-        parent = aq_parent(aq_inner(self))
-        if INamedSeriesChart.providedBy(parent):
-            return NamedDataPoint
-        return TimeSeriesDataPoint
-    
+        if not hasattr(self, '_v_pointcls'):
+            self._v_pointcls = TimeSeriesDataPoint
+            parent = aq_parent(aq_inner(self))
+            if INamedSeriesChart.providedBy(parent):
+                self._v_pointcls = NamedDataPoint
+        return self._v_pointcls
+
     def summarize(self, points):
         items = [(point.identity(), point) for point in points]
         if not items:
