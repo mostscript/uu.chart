@@ -56,7 +56,7 @@ class DateLabelView(object):
             self.DEFAULT_FORMAT,
             )
 
-    def included_dates(self):
+    def included_dates(self, data=None):
         """
         Returns dates of unique date keys in use by all series data
         computed by chart.  Returns list of datetime.date.
@@ -65,10 +65,12 @@ class DateLabelView(object):
         method for a label and key.
         """
         all_series = self.context.series()
-        # we can de-dupe point dates since hash(datetime.date()) is reliable:
+        if data is None:
+            data = [(s, s.data) for s in all_series]
         q = itertools.chain(
-            *[[p.identity() for p in series.data] for series in all_series]
+            *[[p.identity() for p in t[1]] for t in data]
             )
+        # we can de-dupe point dates since hash(datetime.date()) is reliable:
         return sorted(list(set(q)))  # iterate all unique point identity dates
     
     def date_to_formatted(self, d):

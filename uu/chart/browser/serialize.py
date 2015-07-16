@@ -144,11 +144,14 @@ class ChartJSON(object):
     def _series_list(self):
         """Get all series represented as dict"""
         r = []
-        for seq in self.context.series():
+        if not hasattr(self, '_data'):
+            self._data = [(s, s.data) for s in self.context.series()]
+        #for seq in self.context.series():
+        for seq, data in self._data:
             series = {}
             # series data is mapping of keys to point objects
             series['data'] = list(
-                [(p['key'], p) for p in map(self._datapoint, seq.data)]
+                [(p['key'], p) for p in map(self._datapoint, data)]
                 )
             if not series['data']:
                 continue  # omit series with no data from JSON output
@@ -224,16 +227,16 @@ class ChartJSON(object):
             'url': context.absolute_url(),
             'name': context.getId(),
             }
+        r['series'] = self._series_list()
         if ITimeSeriesChart.providedBy(context):
             chart_attrs = chart_attrs + timeseries_chart_attrs
             label_view = DateLabelView(context)
-            included = label_view.included_dates()
+            included = label_view.included_dates(data=self._data)
             r['x_axis_type'] = 'date'
             r['auto_crop'] = True  # default, explcit value may disable
             r['labels'] = dict(
                 (d.isoformat(), label_view.label_for(d)) for d in included
                 )
-        r['series'] = self._series_list()
         if context.chart_styles:
             r['css'] = context.chart_styles
         for name in chart_attrs:
@@ -333,7 +336,7 @@ class SingleChartReportJSONView(ChartJSONView):
 
     def __call__(self, *args, **kwrgs):
         adapter = ChartJSON(self.context)
-        data = json.dumps([IUUID(self.context), adapter._chart()], indent=2)
+        data = json.dumps([[IUUID(self.context), adapter._chart()]], indent=2)
         self.request.response.setHeader('Content-type', 'application/json')
         self.request.response.setHeader('Content-length', str(len(data)))
         return data
