@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="uu.chart">
+<head>
+  <title tal:content="context/Title"></title>
+  <tal:block condition="python:request.get('devmode', None) is None">
+    <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.min.js"></script>
+  </tal:block>
+  <tal:block condition="python:request.get('devmode', None) is not None">
+    <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.js"></script>
+  </tal:block>
+    <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/integration.js"></script>
+    <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/datefix.js"></script>
+    <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report.css" />
+    <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.css" />
+    <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report-management.css" />
+  <style>
+    .report-core { width:800px; }
+    .plotdiv { page-break-inside:avoid; }
+  </style>
+    <!-- per-chart styles if any -->
+    <tal:block repeat="element view/chart_elements">
+    <style tal:condition="python:getattr(element, 'chart_styles', None) and element.chart_styles.strip()" tal:content="element/chart_styles" />
+  </tal:block>
+</head>
+
+<body>
+<div id="uu-chart-report"
+     tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')">
+  <div class="report-core enumeration"
+       data-report-prefix="plot"
+       data-report-batch-step="geometric"
+       tal:attributes="data-report-json string:${context/absolute_url}/@@report_json;
+                       data-report-size view/size;">
+
+    <h1 tal:content="context/Title" tal:condition="is_report">Report title here</h1>
+    <div class="report-description" tal:content="context/Description" tal:condition="python: is_report and context.Description()">Report description here</div>
+
+    <!-- enumerate through elements -->
+    <tal:loop repeat="element view/chart_elements">
+     <tal:defs define="title element/Title;
+                        description python:(context.description or '').strip();">
+      <tal:useplot condition="python:element.portal_type in view.PLOT_TYPES">
+        <div class="plotdiv" id="plot" tal:attributes="id python: 'plot-%s' % view.UID(element)">
+          <h3 class="plot-title" tal:content="title">CHART TITLE</h3>
+          <p class="plot-description" tal:condition="description" tal:content="description">
+            CHART DESCRIPTION, IF NON-EMPTY
+          </p>
+          <div class="chart-div"></div>
+          <tal:block condition="python:hasattr(element.info, 'output')">
+            <div class="plot-info" tal:content="structure element/info/output">CAPTION</div>
+          </tal:block>
+        </div>
+      </tal:useplot>
+      <tal:nonplot condition="python:element.portal_type not in view.PLOT_TYPES">
+        <div class="nonplot" tal:attributes="id python: 'nonplot-%s' % view.UID(element)" style="clear:both">
+          <div class="richelement">
+            <div tal:replace="structure element/CookedBody"></div>
+          </div>
+        </div>
+      </tal:nonplot>
+     </tal:defs>
+    </tal:loop>
+  </div>
+
+</div>
+</body>
+</html>
+

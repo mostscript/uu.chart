@@ -1,0 +1,159 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.chart">
+<head>
+
+<metal:block fill-slot="javascript_head_slot">
+
+<tal:block condition="python:request.get('devmode', None) is None">
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.min.js"></script>
+</tal:block>
+<tal:block condition="python:request.get('devmode', None) is not None">
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.js"></script>
+</tal:block>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/datefix.js"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/integration.js"></script>
+</metal:block>
+<metal:block fill-slot="style_slot">
+  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report.css" />
+  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.css" />
+  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report-management.css" />
+<style>
+@media print {
+  .report-core { width:1920px; }
+  .plotdiv { page-break-inside:avoid; }
+}
+
+</style>
+
+  <!-- per-chart styles if any -->
+  <tal:block repeat="element view/chart_elements">
+   <style tal:condition="python:getattr(element, 'chart_styles', None) and element.chart_styles.strip()" tal:content="element/chart_styles" />
+ </tal:block>
+</metal:block>
+</head>
+
+<body>
+<div metal:fill-slot="content-core"
+     id="uu-chart-report"
+     tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')">
+  <div class="report-core"
+       data-report-prefix="plot"
+       data-report-batch-step="geometric"
+       tal:attributes="class python:'report-core' + (' enumeration' if is_report else '');
+                       data-report-json string:${context/absolute_url}/@@report_json;
+                       data-report-size view/size;">
+
+    <!-- print links (legacy) -->
+    <div class="printlink">
+      <a href=""
+         target="_blank"
+         tal:attributes="href string:${context/absolute_url}/@@print_report">
+          &#x2399; Print report
+      </a>
+    </div>
+
+    <!-- enumerate through elements -->
+    <tal:loop repeat="element view/chart_elements">
+     <tal:defs define="title element/Title;
+                        description python:(context.description or '').strip();">
+      <tal:useplot condition="python:element.portal_type in view.PLOT_TYPES">
+        <div class="plotdiv" id="plot" tal:attributes="id python: 'plot-%s' % view.UID(element)">
+          <h3 class="plot-title" tal:content="title">CHART TITLE</h3>
+          <div class="plot-more">
+            <a href=""
+               tal:attributes="href string:${element/absolute_url}/@@report"
+               tal:condition="python: is_report"
+               title="Load this plot in a new window or tab of your browser."
+               target="_blank">&#x2794</a>
+          </div>
+          <p class="plot-description" tal:condition="description" tal:content="description">
+            CHART DESCRIPTION, IF NON-EMPTY
+          </p>
+          <div class="chart-div"></div>
+          <tal:block condition="python:hasattr(element.info, 'output')">
+            <div class="plot-info" tal:content="structure element/info/output">CAPTION</div>
+          </tal:block>
+        </div>
+      </tal:useplot>
+      <tal:nonplot condition="python:element.portal_type not in view.PLOT_TYPES">
+        <div class="nonplot" tal:attributes="id python: 'nonplot-%s' % view.UID(element)" style="clear:both">
+          <div class="richelement">
+            <div tal:replace="structure element/CookedBody"></div>
+          </div>
+        </div>
+      </tal:nonplot>
+     </tal:defs>
+    </tal:loop>
+  </div>
+
+ <!-- report management, if applicable -->
+ <div class="report-management" tal:condition="python:not request.form.get('goprint')">
+   <h4 tal:content="python:'Manage this %s' % ('report' if is_report else 'chart')">Manage this report:</h4>
+
+   <div class="report-actions" tal:condition="is_report">
+    <ul>
+     <li class="create populate" tal:condition="view/can_add">
+      <a href="./@@populate">Add measure-based charts to report using population tool</a>
+     </li>
+     <li class="create" tal:condition="view/can_add">
+      <a href="++add++uu.chart.timeseries">&thinsp;&#43;&nbsp; Add time series chart to this report</a>
+     </li>
+     <li class="create" tal:condition="view/can_add">
+      <a href="++add++uu.chart.namedseries">&thinsp;&#43;&nbsp; Add named series chart to this report</a>
+     </li>
+     <li class="manage" tal:condition="view/can_manage">
+      <a href="edit">Edit report title or description</a>
+     </li>
+     <li class="manage" tal:condition="view/can_manage">
+      <a href="folder_contents">Re-order, remove, or rename report elements</a>
+     </li>
+    </ul>
+   </div>
+
+   <div class="report-actions" tal:condition="python:not is_report">
+    <ul>
+     <li class="create" tal:condition="python: view.addable('uu.chart.data.measureseries') and view.can_add()">
+      <a href="++add++uu.chart.data.measureseries">&thinsp;&#43;&nbsp; Add a data series bound to a measure</a>
+     </li>
+     <li class="create" tal:condition="python: context.portal_type=='uu.chart.timeseries' and view.can_add()">
+      <a href="++add++uu.chart.data.timeseries">&thinsp;&#43;&nbsp; Add static time-series data (CSV)</a>
+     </li>
+     <li class="create" tal:condition="python: context.portal_type=='uu.chart.namedseries' and view.can_manage()">
+      <a href="++add++uu.chart.data.namedseries">&thinsp;&#43;&nbsp; Add static named-series data (CSV)</a>
+     </li>
+     <li class="manage" tal:condition="view/can_manage">
+      <a href="edit">Edit chart information, goal, styles</a>
+     </li>
+     <li class="manage" tal:condition="view/can_manage">
+      <a href="folder_contents">Re-order, remove, or rename data series</a>
+     </li>
+    </ul>
+   </div>
+
+   <div class="chart-data-listing" tal:condition="view/can_manage" tal:define="content context/contentValues">
+    <h4 tal:content="python:'Current report components:' if is_report else 'Current chart data:'">Current chart data:</h4>
+    <ul>
+      <li tal:repeat="item content">
+        <a href="" tal:attributes="href item/absolute_url" tal:define="icon item/getIcon">
+          <img src="" tal:condition="icon" tal:attributes="src icon" />
+          <img src="document_icon.png" tal:condition="python: not icon" />
+          <span tal:content="item/Title" />
+        </a>
+      </li>
+    </ul>
+    <div tal:condition="python:is_report and len(content)==0">
+      <em>This report is empty; you can use the <a href="./@@populate">population tool</a> or
+      <a href="./folder_factories">add individual components</a> in this report.</em>
+    </div>
+   </div>
+
+ </div>
+
+</div>
+</body>
+</html>
+

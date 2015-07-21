@@ -7,14 +7,22 @@ from zope.security import checkPermission
 
 class ChartView(object):
     """Page using jqPlot to render a chart from AJAX-loaded JSON"""
-    
+
+    PLOT_TYPES = [
+        'uu.chart.timeseries',
+        'uu.chart.namedseries',
+        ]
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
-    
+
+    def size(self):
+        return 1
+
     def chart_elements(self):
         return [self.context]
-    
+
     def UID(self, context=None):
         if context is None:
             context = self.context
@@ -25,7 +33,7 @@ class ChartView(object):
                 uid = context.UID()
             raise
         return uid
-    
+
     def json_url(self, context=None):
         if context is None:
             context = self.context
@@ -35,7 +43,7 @@ class ChartView(object):
             '@@chart_json',
             cache_bust,
             )
-    
+
     def _fixedheight(self, context):
         """return fixed height in pixels or None"""
         height = getattr(context, 'height', None) or 200
@@ -43,16 +51,16 @@ class ChartView(object):
         if height_units == 'px':
             return height
         return None
-    
+
     def can_manage(self):
         return checkPermission('cmf.ModifyPortalContent', self.context)
 
     def can_add(self):
         return checkPermission('cmf.AddPortalContent', self.context)
-    
+
     def addable(self, typename):
         return typename in getSite().portal_types.objectIds()
-    
+
     def divstyle(self, context=None, width=100, height=50):
         """
         Get width, possibly height styles for chart div.  Note that the

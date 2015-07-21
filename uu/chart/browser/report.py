@@ -21,26 +21,37 @@ def batch(items, b_start=0, b_size=None):
 
 class ReportView(ChartView):
     """Report is aggregate of charts and page (html fragment) elements"""
-    
-    ELEMENT_TYPES = (
+
+    PLOT_TYPES = [
         'uu.chart.timeseries',
         'uu.chart.namedseries',
+        ]
+
+    ELEMENT_TYPES = PLOT_TYPES + [
         'Document',
-        )
+        ]
+
+    def __init__(self, context, request):
+        super(ReportView, self).__init__(context, request)
+
+    def size(self):
+        return len([o for o in self.chart_elements(types=self.PLOT_TYPES)])
 
     def chart_elements(self, types=None, b_start=0, b_size=None):
-        sm = getSecurityManager()
-        content = filter(
-            lambda o: sm.checkPermission('View', o),
-            filter(
-                lambda o: o.portal_type in self.ELEMENT_TYPES,
-                self.context.contentValues(),
+        if not hasattr(self, '_content'):
+            sm = getSecurityManager()
+            self._content = filter(
+                lambda o: sm.checkPermission('View', o),
+                filter(
+                    lambda o: o.portal_type in self.ELEMENT_TYPES,
+                    self.context.contentValues(),
+                    )
                 )
-            )
+        content = self._content
         if types:
             content = filter(
                 lambda o: o.portal_type in types,
                 content,
                 )
         return batch(content, b_start, b_size)
- 
+

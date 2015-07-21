@@ -1,0 +1,48 @@
+div.printlink {
+    float:right;
+    margin-top:-1em;
+    margin-right:0.8em;
+}
+
+.report-core h3.plot-title, .report-core p.plot-description{
+  display:none;
+}
+
+.report-core.enumeration h3.plot-title, .report-core.enumeration p.plot-description{
+  display:block;
+  clear:both;
+}
+
+.plot-more {
+  font-size:130%;
+  float:right;
+  margin: 0 0.5em;
+}
+
+#content-core #uu-chart-report .report-core .plotdiv .plot-more a {
+  text-decoration:none;
+  border-bottom:none;
+}
+
+.report-core .plotdiv .plot-more a:hover {
+  font-size:150%;
+}
+
+.plotdiv .plot-title {
+  float:left;
+  max-width:94%;
+}
+
+#content-core #uu-chart-report .report-core .plotdiv {
+  margin-top:0.3em;
+}
+
+#content-core #uu-chart-report .report-core {
+  padding: 0.3em;
+}
+
+#content-core #uu-chart-report .report-core .plotdiv h3,
+#content-core #uu-chart-report .report-core .plotdiv .plot-description,
+#content-core #uu-chart-report .report-core .plotdiv .plot-info {
+  padding: 0.4em;
+}

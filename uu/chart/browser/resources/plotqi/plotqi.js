@@ -130,6 +130,7 @@
 	
 	var chartLoader = _loader.chartLoader;
 	var loadReports = _loader.loadReports;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	
 	
 	var nv = __webpack_require__(5);
@@ -138,7 +139,24 @@
 	  document.addEventListener("DOMContentLoaded", callback);
 	}
 	
-	readySetGo(loadReports);
+	window.plotqi = window.plotqi || {};
+	window.plotqi.ready = readySetGo;
+	window.plotqi.load = loadReports;
+	window.plotqi.BaseRenderingPlugin = BaseRenderingPlugin;
+	
+	// Calling semantics:
+	//  <script type="text/javascript">
+	//    (function () {
+	//      // break if no reasonable ES5 support:
+	//      if (!Array.prototype.forEach || !Object.create) {
+	//        alert('Your browser does not support this application.');
+	//        return;
+	//      }
+	//      // add any integration-specific custom plugins:
+	//      window.plotqi.ADDITIONAL_PLUGINS.push(MyCustomPlugin);
+	//      window.plotqi.ready(window.plotqi.load);
+	//    }());
+	//  </script>
 
 /***/ },
 /* 3 */
@@ -12659,7 +12677,7 @@
 	    }
 	}).call(this);
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10)(module)))
 
 /***/ },
 /* 5 */
@@ -24628,13 +24646,13 @@
 	exports.Chart = Chart;
 	/*jshint -W097 */
 	
-	var Klass = __webpack_require__(10).Klass;
+	var Klass = __webpack_require__(11).Klass;
 	var _utilsEs6Js = __webpack_require__(6);
 	
 	var DEFAULT_COLORS = _utilsEs6Js.DEFAULT_COLORS;
 	var dataSym = Symbol();
 	var d3 = __webpack_require__(3);
-	var _schemavizEs6Js = __webpack_require__(11);
+	var _schemavizEs6Js = __webpack_require__(12);
 	
 	var dataPointSchema = _schemavizEs6Js.dataPointSchema;
 	var timeDataPointSchema = _schemavizEs6Js.timeDataPointSchema;
@@ -25128,7 +25146,7 @@
 	/*globals require, window */
 	
 	var d3 = __webpack_require__(3);
-	var TimeSeriesPlotter = __webpack_require__(12).TimeSeriesPlotter;
+	var TimeSeriesPlotter = __webpack_require__(13).TimeSeriesPlotter;
 	var _utils = __webpack_require__(6);
 	
 	var forReportJSON = _utils.forReportJSON;
@@ -25141,7 +25159,7 @@
 	function batchURLs(base, spec, total) {
 	  var cacheBust = "cache_bust=" + Math.floor(Math.random() * Math.pow(10, 8)),
 	      _bSpec = function (pair) {
-	    return "" + base + "b_size=" + pair[1] + "&b_start=" + pair[0];
+	    return "b_size=" + pair[1] + "&b_start=" + pair[0];
 	  },
 	      _qs = function (pair) {
 	    return _bSpec(pair) + "&" + cacheBust;
@@ -25185,7 +25203,7 @@
 	  function divFor(uid) {
 	    var _prefix = (opts.prefix || "plot") + "-",
 	        divId = _prefix + uid,
-	        plotDiv = container.select("div#" + _prefix);
+	        plotDiv = container.select("#" + divId);
 	    if (!plotDiv.size()) {
 	      plotDiv = container.append("div").classed("plotdiv", true).attr("id", divId);
 	    }
@@ -25200,9 +25218,12 @@
 	    divFor(chart.uid).call(function (plotDiv) {
 	      return chartLoader(plotDiv, chart, opts)();
 	    });
-	  };
+	  },
+	      plotCount = size();
 	
-	  batchURLs(url, opts.batching, size()).forEach(function (url) {
+	  window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotCount;
+	
+	  batchURLs(url, opts.batching, plotCount).forEach(function (url) {
 	    forReportJSON(url, function (charts) {
 	      // improbable chance of race condition across de-dupe next 2 lines
 	      // but likelihood and impact thereof not a practical issue:
@@ -25251,6 +25272,7 @@
 	      var plotDiv = d3.select(this);
 	      chartLoader(plotDiv, d, opts)();
 	    });
+	    window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotDivs.size();
 	    // Enter selection to add remaining plot DIVs as needed:
 	    plotDivs.enter().append("div").classed("plotdiv", true).attr({
 	      id: function (chart) {
@@ -25288,6 +25310,115 @@
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	
+	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+	
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	var BaseRenderingPlugin = exports.BaseRenderingPlugin = (function () {
+	  function BaseRenderingPlugin(plotter) {
+	    this.plotter = plotter;
+	    this.data = plotter.data;
+	    this.plotDiv = plotter.plotDiv;
+	    this.plotCore = plotter.plotCore;
+	    // Note: plotter.svg, scales may be undefined on the plotter at the
+	    //        time of plugin construction; preRender() should re-bind always
+	    this.svg = plotter.svg;
+	    this.xScale = plotter.xScale;
+	    this.yScale = plotter.yScale;
+	    this.enabled = true; // default for all plugins
+	  }
+	
+	  _prototypeProperties(BaseRenderingPlugin, null, {
+	    preRender: {
+	      value: function preRender() {
+	        /** hook to be called after plotter.preRender, for things like plot
+	          * plot size or margin adjustment
+	          */
+	        this.plotCore = this.plotter.plotCore;
+	        this.svg = this.plotter.svg;
+	        this.plotGroup = this.plotter.plotGroup;
+	        this.abovePlotGroup = this.plotter.abovePlotGroup;
+	        this.xScale = this.plotter.xScale;
+	        this.yScale = this.plotter.yScale;
+	        this.margins = this.plotter.margins;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    clear: {
+	      value: function clear() {},
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    prepare: {
+	      value: function prepare() {},
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    render: {
+	      value: function render() {
+	        this.prepare();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    loadInteractiveFeatures: {
+	      value: function loadInteractiveFeatures() {},
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    postRender: {
+	      value: function postRender() {},
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    onComplete: {
+	      value: function onComplete() {},
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    update: {
+	      value: function update() {
+	        this.clear();
+	        this.render();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+	
+	  return BaseRenderingPlugin;
+	})();
+	exports.__esModule = true;
+	/** optionally called by render() of a plugin, for late-initialized
+	  * stuff that needs to be done before core rendering, but after the
+	  * core NVD3 chart is rendered (things that cannot be done in preRender).
+	  */
+	/** to be called only when relevant, called after rendering is complete;
+	  * plugins must unwind any event handling in their clear() method if
+	  * they create interactive features.  This will not be called when 
+	  * core plotter is not in an interactive mode.
+	  */
+	/** post-render hook for after-rendering adjustments */
+	/** hook for after completion, should be used sparingly for idemopotent
+	  * actions/notification: ideally should not modify state of plot.
+	  */
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
 	module.exports = function(module) {
 		if(!module.webpackPolyfill) {
 			module.deprecate = function() {};
@@ -25301,7 +25432,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*jshint esnext:true, eqnull:true, undef:true */
@@ -25465,7 +25596,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25477,7 +25608,7 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require */
 	
-	var _classvizEs6Js = __webpack_require__(10);
+	var _classvizEs6Js = __webpack_require__(11);
 	
 	var Schema = _classvizEs6Js.Schema;
 	var schematize = _classvizEs6Js.schematize;
@@ -25968,7 +26099,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25985,22 +26116,30 @@
 	
 	var styleSheet = _utils.styleSheet;
 	var d3textWrap = _utils.d3textWrap;
-	var debounce = __webpack_require__(13).debounce;
-	var TabularLegendRenderer = __webpack_require__(14).TabularLegendRenderer;
-	var PointLabelsRenderer = __webpack_require__(15).PointLabelsRenderer;
-	var TrendLineRenderer = __webpack_require__(16).TrendLineRenderer;
-	var GoalLineRenderer = __webpack_require__(17).GoalLineRenderer;
-	var ContinuityLinesPlugin = __webpack_require__(18).ContinuityLinesPlugin;
-	var AxisTitleRenderer = __webpack_require__(19).AxisTitleRenderer;
-	var XTickLabelsRenderer = __webpack_require__(20).XTickLabelsRenderer;
-	var BasicLegendRenderer = __webpack_require__(21).BasicLegendRenderer;
-	var PointHoverPlugin = __webpack_require__(22).PointHoverPlugin;
-	var PointClickPlugin = __webpack_require__(23).PointClickPlugin;
+	var range = _utils.range;
+	var debounce = __webpack_require__(14).debounce;
+	var TabularLegendRenderer = __webpack_require__(15).TabularLegendRenderer;
+	var PointLabelsRenderer = __webpack_require__(16).PointLabelsRenderer;
+	var TrendLineRenderer = __webpack_require__(17).TrendLineRenderer;
+	var GoalLineRenderer = __webpack_require__(18).GoalLineRenderer;
+	var ContinuityLinesPlugin = __webpack_require__(19).ContinuityLinesPlugin;
+	var AxisTitleRenderer = __webpack_require__(20).AxisTitleRenderer;
+	var XTickLabelsRenderer = __webpack_require__(21).XTickLabelsRenderer;
+	var BasicLegendRenderer = __webpack_require__(22).BasicLegendRenderer;
+	var PointHoverPlugin = __webpack_require__(23).PointHoverPlugin;
+	var PointClickPlugin = __webpack_require__(24).PointClickPlugin;
 	
 	
-	// Set up plugin namespace:
+	// Set up namespace:
 	window.plotqi = window.plotqi || {};
+	
+	// Global list of plotters, may be used by plugins or external:
 	window.plotqi.plotters = [];
+	
+	// Integration plugins, may be appended to core/stock plugins (late-binding):
+	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
+	
+	// Core plugins:
 	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [ContinuityLinesPlugin, GoalLineRenderer, XTickLabelsRenderer, AxisTitleRenderer, TabularLegendRenderer, TrendLineRenderer, PointLabelsRenderer, BasicLegendRenderer, PointHoverPlugin, PointClickPlugin];
 	
 	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
@@ -26052,6 +26191,10 @@
 	    this.svg = null; // will be svg inside the plot core div
 	    // Interactive mode?
 	    this._initPlugins();
+	    // Completion flag may be used by onComplete() of plugins or external:
+	    this.complete = false;
+	    // make global reference available in plotqi namespace for plotter(s):
+	    window.plotqi.plotters.push(this);
 	  }
 	
 	  _prototypeProperties(TimeSeriesPlotter, null, {
@@ -26121,11 +26264,21 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    _allPlugins: {
+	      value: function _allPlugins() {
+	        var core = window.plotqi.RENDERING_PLUGINS,
+	            additional = window.plotqi.ADDITIONAL_PLUGINS;
+	        return core.concat(additional);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    _initPlugins: {
 	      value: function _initPlugins() {
 	        // init plugins for later use by respective hookable methods
 	        this.plugins = [];
-	        window.plotqi.RENDERING_PLUGINS.forEach(function (klass) {
+	        this._allPlugins().forEach(function (klass) {
 	          var adapter = new klass(this); // plugin adapts this plotter core
 	          this.plugins.push(adapter);
 	        }, this);
@@ -26255,7 +26408,7 @@
 	        _transform = function (series, index) {
 	          var plotType = this.type,
 	              obj = {
-	            key: series.title,
+	            key: series.position,
 	            color: series.color,
 	            values: [],
 	            format: d3.format(series.display_format) };
@@ -26527,8 +26680,6 @@
 	        }
 	        // use adjusted domain, range
 	        this.timeScale.domain(sDomain).range(sRange);
-	        // make global reference available in plotqi namespace for plotter(s):
-	        window.plotqi.plotters.push(this);
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -26598,6 +26749,27 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    reorderSeries: {
+	      value: function reorderSeries() {
+	        /** DOM order is stacking/painting order; reversing puts the top-most
+	          * and front-most line in all series at the top of the drawing, with
+	          * subsequent (and assumed of lesser importance) lines are painted 
+	          * underneath.
+	          */
+	        var indexes = range(this.data.series.length);
+	        indexes.reverse();
+	        indexes.forEach(function (i) {
+	          var selector = ".nv-series-" + i,
+	              selection = this.plotGroup.selectAll(selector);
+	          selection[0].forEach(function (el) {
+	            el.parentNode.appendChild(el);
+	          });
+	        }, this);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    postRender: {
 	      value: function postRender() {
 	        var abovePlot = this.abovePlotGroup,
@@ -26606,6 +26778,10 @@
 	        },
 	            sizers,
 	            adjustHeight;
+	        // - Re-order series that NVD3 draws, if line chart:
+	        if (this.type === "line") {
+	          this.reorderSeries();
+	        }
 	        // - per-plugin adjustments
 	        this.plugins.forEach(function (plugin) {
 	          plugin.postRender();
@@ -26632,6 +26808,12 @@
 	            height: "" + this.plotHeight + "px"
 	          });
 	        }
+	        // - Mark as complete:
+	        this.complete = true;
+	        // - per-plugin on-complete notifiers:
+	        this.plugins.forEach(function (plugin) {
+	          plugin.onComplete();
+	        }, this);
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -26666,7 +26848,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26696,7 +26878,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26721,7 +26903,7 @@
 	var range = _utils.range;
 	var ColorTool = _utils.ColorTool;
 	var uuid4 = _utils.uuid4;
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	
 	
 	var LEGEND_CLASS = "upiq-legend";
@@ -26928,7 +27110,11 @@
 	         */
 	
 	        row.selectAll(selectCellGroup).attr({
-	          "clip-path": "url(#" + cellID + ")"
+	          "clip-path": function () {
+	            var cellGroup = d3.select(this),
+	                cPath = cellGroup.select("defs .groupClip");
+	            return "url(#" + cPath.attr("id") + ")";
+	          }
 	        });
 	
 	        // make bg rects in each group, with width
@@ -26957,7 +27143,8 @@
 	            x: 0,
 	            y: cellPadding.top,
 	            lengthAdjust: "spacingAndGlyphs",
-	            height: rowHeight }).style({
+	            height: rowHeight
+	          }).style({
 	            "text-anchor": "middle",
 	            "font-family": "Arial",
 	            "font-weight": textWeight,
@@ -27426,10 +27613,12 @@
 	/** called by this.clear(), should clear event handling before re-render */
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	
+	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
 	
 	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 	
@@ -27447,7 +27636,7 @@
 	
 	var ColorTool = _utils.ColorTool;
 	var uuid4 = _utils.uuid4;
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var PointLabelsRenderer = exports.PointLabelsRenderer = (function (BaseRenderingPlugin) {
 	  function PointLabelsRenderer(plotter) {
 	    _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), "constructor", this).call(this, plotter);
@@ -27522,13 +27711,21 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    tangentLineSlope: {
-	      value: function tangentLineSlope(point, prev, next) {
+	    pointAngles: {
+	      value: function pointAngles(point, prev, next) {
+	        /** 
+	          * return array of: tangent line angle, perpendiculat angle, and
+	          * inflection angle
+	          */
 	        var slope = this.lineSlope,
 	            slopeA = prev === null ? slope(point, next) : slope(prev, point),
 	            slopeB = next === null ? slope(prev, point) : slope(point, next),
-	            avgSlope = (slopeA + slopeB) / 2;
-	        return avgSlope;
+	            avgSlope = (slopeA + slopeB) / 2,
+	            perpendicularSlope = -1 / avgSlope,
+	            tanLnAngle = Math.atan(avgSlope),
+	            positioningAngle = Math.atan(perpendicularSlope),
+	            inflectionAngle = Math.PI - Math.abs(Math.atan(slopeB)) - Math.abs(Math.atan(slopeA));
+	        return [tanLnAngle, positioningAngle, inflectionAngle];
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -27537,7 +27734,9 @@
 	    scaledPoints: {
 	      value: function scaledPoints(series) {
 	        var points = [],
-	            scaledPoints = [];
+	            scaledPoints = [],
+	            gridZero = this.plotter.gridHeight() + this.margins.top,
+	            textSize = this.plotter.baseFontSize * 0.75;
 	        series.data.forEach(function (k, point) {
 	          if (point.value !== null) {
 	            points.push(point);
@@ -27551,33 +27750,44 @@
 	              * above a point marker (insofar as chances of text overlapping
 	              * line-drawing for same series are minimized).
 	              */
-	            var prev = idx === 0 ? null : arr[idx - 1],
-	                next = idx === arr.length - 1 ? null : arr[idx + 1],
-	                tanLnSlope = this.tangentLineSlope(point, prev, next),
-	                perpendicularSlope = -1 / tanLnSlope,
-	                positioningAngle = Math.atan(perpendicularSlope),
+	            var prev = idx === 0 ? null : arr[idx - 1];
+	            var next = idx === arr.length - 1 ? null : arr[idx + 1];var _pointAngles = this.pointAngles(point, prev, next);
 	
+	            var _pointAngles2 = _slicedToArray(_pointAngles, 3);
+	
+	            var tanAngle = _pointAngles2[0];
+	            var posAngle = _pointAngles2[1];
+	            //tanLnSlope = this.tangentLineSlope(point, prev, next),
+	            //perpendicularSlope = -1 / tanLnSlope,
+	            //positioningAngle = Math.atan(perpendicularSlope),
+	            var inflectionAngle = _pointAngles2[2];
+	            // angle multipler, *-1 if acute angle:
+	            var acute = inflectionAngle < Math.PI / 2;
+	            var downward = prev && next && prev.y < point.y && next.y < point.y;
+	            var mult = acute && downward ? -1 : 1;
 	            // text is wider than tall, so perceived hypotenuse difference
 	            // from marker to text should be shorter when tanLnSlope is
 	            // less than 1 (45°):
-	            distanceDenominator = Math.abs(tanLnSlope) > 1 ? 37 : 42,
-	
+	            var textAbove = !downward && Math.abs(tanAngle) < Math.PI / 4;
+	            var baseDistance = textAbove ? 60 : 52;
+	            var distanceDenominator = downward && acute ? 33 : baseDistance;
 	            // ideal hypotenuse distance:
-	            c = Math.floor(this.plotter.plotWidth / distanceDenominator),
-	
+	            var c = Math.floor(this.plotter.plotWidth / distanceDenominator);
 	            // opposite leg, delta for Y
-	            a = c * Math.sin(positioningAngle),
-	
+	            var a = mult * c * Math.sin(posAngle);
 	            // adjacent leg, delta for X
-	            b = c * Math.cos(positioningAngle);
+	            var b = mult * c * Math.cos(posAngle);
 	            // if tangent line has negative slope (going down left-to-right)
 	            // then we want to multiply a,b each by -1
-	            if (tanLnSlope < 0) {
+	            if (tanAngle < 0) {
 	              b *= -1;
 	              a *= -1;
 	            }
 	            point.x2 = point.x - b;
 	            point.y2 = point.y + a;
+	            if (point.y2 > gridZero - textSize) {
+	              point.y2 = point.y - a;
+	            }
 	          }, this);
 	        }
 	        return scaledPoints;
@@ -27667,7 +27877,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27684,7 +27894,7 @@
 	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(4);
 	
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var TrendLineRenderer = exports.TrendLineRenderer = (function (BaseRenderingPlugin) {
 	  function TrendLineRenderer(plotter) {
 	    _get(Object.getPrototypeOf(TrendLineRenderer.prototype), "constructor", this).call(this, plotter);
@@ -27809,7 +28019,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27830,7 +28040,7 @@
 	
 	var ColorTool = _utils.ColorTool;
 	var uuid4 = _utils.uuid4;
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	
 	
 	
@@ -27924,7 +28134,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27938,7 +28148,7 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var ColorTool = __webpack_require__(6).ColorTool;
 	var ContinuityLinesPlugin = exports.ContinuityLinesPlugin = (function (BaseRenderingPlugin) {
 	  function ContinuityLinesPlugin() {
@@ -28067,7 +28277,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28081,7 +28291,7 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var AxisTitleRenderer = exports.AxisTitleRenderer = (function (BaseRenderingPlugin) {
 	  function AxisTitleRenderer() {
 	    if (Object.getPrototypeOf(AxisTitleRenderer) !== null) {
@@ -28182,7 +28392,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28196,7 +28406,7 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var XTickLabelsRenderer = exports.XTickLabelsRenderer = (function (BaseRenderingPlugin) {
 	  function XTickLabelsRenderer(plotter) {
 	    _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), "constructor", this).call(this, plotter);
@@ -28305,7 +28515,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28322,7 +28532,7 @@
 	/*globals require, window */
 	
 	var d3 = __webpack_require__(3);
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var d3textWrap = __webpack_require__(6).d3textWrap;
 	var BasicLegendRenderer = exports.BasicLegendRenderer = (function (BaseRenderingPlugin) {
 	  function BasicLegendRenderer(plotter) {
@@ -28639,7 +28849,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28656,7 +28866,7 @@
 	/*globals require, window */
 	
 	var d3 = __webpack_require__(3);
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var ColorTool = __webpack_require__(6).ColorTool;
 	var PointHoverPlugin = exports.PointHoverPlugin = (function (BaseRenderingPlugin) {
 	  function PointHoverPlugin() {
@@ -28804,7 +29014,7 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28821,7 +29031,7 @@
 	/*globals require, window */
 	
 	var d3 = __webpack_require__(3);
-	var BaseRenderingPlugin = __webpack_require__(24).BaseRenderingPlugin;
+	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var ColorTool = __webpack_require__(6).ColorTool;
 	var Overlay = __webpack_require__(25).Overlay;
 	
@@ -28950,106 +29160,6 @@
 	  return PointClickPlugin;
 	})(BaseRenderingPlugin);
 	exports.__esModule = true;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	var BaseRenderingPlugin = exports.BaseRenderingPlugin = (function () {
-	  function BaseRenderingPlugin(plotter) {
-	    this.plotter = plotter;
-	    this.data = plotter.data;
-	    this.plotDiv = plotter.plotDiv;
-	    this.plotCore = plotter.plotCore;
-	    // Note: plotter.svg, scales may be undefined on the plotter at the
-	    //        time of plugin construction; preRender() should re-bind always
-	    this.svg = plotter.svg;
-	    this.xScale = plotter.xScale;
-	    this.yScale = plotter.yScale;
-	    this.enabled = true; // default for all plugins
-	  }
-	
-	  _prototypeProperties(BaseRenderingPlugin, null, {
-	    preRender: {
-	      value: function preRender() {
-	        /** hook to be called after plotter.preRender, for things like plot
-	          * plot size or margin adjustment
-	          */
-	        this.plotCore = this.plotter.plotCore;
-	        this.svg = this.plotter.svg;
-	        this.plotGroup = this.plotter.plotGroup;
-	        this.abovePlotGroup = this.plotter.abovePlotGroup;
-	        this.xScale = this.plotter.xScale;
-	        this.yScale = this.plotter.yScale;
-	        this.margins = this.plotter.margins;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clear: {
-	      value: function clear() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    prepare: {
-	      value: function prepare() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        this.prepare();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    loadInteractiveFeatures: {
-	      value: function loadInteractiveFeatures() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    postRender: {
-	      value: function postRender() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    update: {
-	      value: function update() {
-	        this.clear();
-	        this.render();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-	
-	  return BaseRenderingPlugin;
-	})();
-	exports.__esModule = true;
-	/** optionally called by render() of a plugin, for late-initialized
-	  * stuff that needs to be done before core rendering, but after the
-	  * core NVD3 chart is rendered (things that cannot be done in preRender).
-	  */
-	/** to be called only when relevant, called after rendering is complete;
-	  * plugins must unwind any event handling in their clear() method if
-	  * they create interactive features.  This will not be called when 
-	  * core plotter is not in an interactive mode.
-	  */
-	/** post-render hook for after-rendering adjustments */
 
 /***/ },
 /* 25 */
