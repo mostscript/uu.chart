@@ -26287,11 +26287,23 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    pluginName: {
+	      value: function pluginName(p) {
+	        /** plugin name: __name__ string stable post-minification, constructor name
+	          * not guranteed safe, so only used as fallback.
+	          */
+	        return p.__name__ || p.constructor.name;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    pluginEnabled: {
 	      value: function pluginEnabled(name) {
+	        var _this = this;
 	        /** return true if plugin singleton instance by name is enabled */
 	        var plugin = this.plugins.filter(function (p) {
-	          return p.constructor.name == name;
+	          return _this.pluginName(p) === name;
 	        })[0];
 	        return plugin && plugin.enabled;
 	      },
@@ -26301,9 +26313,10 @@
 	    },
 	    getPlugin: {
 	      value: function getPlugin(name) {
+	        var _this = this;
 	        /** get plugin by name */
 	        var plugin = this.plugins.filter(function (p) {
-	          return p.constructor.name == name;
+	          return _this.pluginName(p) === name;
 	        })[0];
 	        return plugin;
 	      },
@@ -26913,6 +26926,7 @@
 	var TabularLegendRenderer = exports.TabularLegendRenderer = (function (BaseRenderingPlugin) {
 	  function TabularLegendRenderer(plotter) {
 	    _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), "constructor", this).call(this, plotter);
+	    this.__name__ = "TabularLegendRenderer";
 	    this.legendGroup = null; // will be set by this.makeLegendGroup
 	    this.leftPad = 5;
 	    this.legPad = 10;
@@ -28869,10 +28883,9 @@
 	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
 	var ColorTool = __webpack_require__(6).ColorTool;
 	var PointHoverPlugin = exports.PointHoverPlugin = (function (BaseRenderingPlugin) {
-	  function PointHoverPlugin() {
-	    if (Object.getPrototypeOf(PointHoverPlugin) !== null) {
-	      Object.getPrototypeOf(PointHoverPlugin).apply(this, arguments);
-	    }
+	  function PointHoverPlugin(plotter) {
+	    _get(Object.getPrototypeOf(PointHoverPlugin.prototype), "constructor", this).call(this, plotter);
+	    this.__name__ = "PointHoverPlugin";
 	  }
 	
 	  _inherits(PointHoverPlugin, BaseRenderingPlugin);
@@ -29065,10 +29078,9 @@
 	
 	
 	var PointClickPlugin = exports.PointClickPlugin = (function (BaseRenderingPlugin) {
-	  function PointClickPlugin() {
-	    if (Object.getPrototypeOf(PointClickPlugin) !== null) {
-	      Object.getPrototypeOf(PointClickPlugin).apply(this, arguments);
-	    }
+	  function PointClickPlugin(plotter) {
+	    _get(Object.getPrototypeOf(PointClickPlugin.prototype), "constructor", this).call(this, plotter);
+	    this.__name__ = "PointClickPlugin";
 	  }
 	
 	  _inherits(PointClickPlugin, BaseRenderingPlugin);
