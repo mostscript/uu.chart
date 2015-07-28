@@ -118,31 +118,31 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window, document */
 	
-	var d3 = __webpack_require__(3);
-	var forReportJSON = __webpack_require__(6).forReportJSON;
-	var Chart = __webpack_require__(7).Chart;
+	'use strict';
+	
+	var _utils = __webpack_require__(6);
+	
+	var _chartviz = __webpack_require__(7);
+	
 	var _loader = __webpack_require__(8);
 	
-	var chartLoader = _loader.chartLoader;
-	var loadReports = _loader.loadReports;
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
+	var _plugin = __webpack_require__(9);
 	
+	var d3 = __webpack_require__(3);
 	
 	var nv = __webpack_require__(5);
 	
 	function readySetGo(callback) {
-	  document.addEventListener("DOMContentLoaded", callback);
+	  document.addEventListener('DOMContentLoaded', callback);
 	}
 	
 	window.plotqi = window.plotqi || {};
 	window.plotqi.ready = readySetGo;
-	window.plotqi.load = loadReports;
-	window.plotqi.BaseRenderingPlugin = BaseRenderingPlugin;
+	window.plotqi.load = _loader.loadReports;
+	window.plotqi.BaseRenderingPlugin = _plugin.BaseRenderingPlugin;
 	
 	// Calling semantics:
 	//  <script type="text/javascript">
@@ -9628,6 +9628,7 @@
 	  if (true) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (d3), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); else if (typeof module === "object" && module.exports) module.exports = d3;
 	  this.d3 = d3;
 	}();
+
 
 /***/ },
 /* 4 */
@@ -24050,49 +24051,53 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
 	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
+	'use strict';
 	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	exports.parseDate = parseDate;
 	exports.range = range;
 	exports.geometricBatch = geometricBatch;
 	exports.forReportJSON = forReportJSON;
-	
-	
-	// Taken from an upcoming version of d3, heavily altered to suit UPIQ:
 	exports.d3textWrap = d3textWrap;
-	
-	
-	/** simple linear regression as slope-intercept for trendline: */
-	
 	exports.trendlineSlopeIntercept = trendlineSlopeIntercept;
 	exports.fittedTrendline = fittedTrendline;
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var moment = __webpack_require__(4);
 	var d3 = __webpack_require__(3);
 	var document = window.document;
 	
 	// singleton app style element:
-	var styleEl = document.createElement("style");
+	var styleEl = document.createElement('style');
 	document.head.appendChild(styleEl);
-	var styleSheet = exports.styleSheet = styleEl.sheet;
+	var styleSheet = styleEl.sheet;
 	
-	var DEFAULT_COLORS = exports.DEFAULT_COLORS = ["#393960", "#8AA9C9", "#5F9EA0", "#9370DB", "#4682B4", "#2E8B57", "#FF7F50", "#FFD700", "#DA70D6", "#008080"];
+	exports.styleSheet = styleSheet;
+	var DEFAULT_COLORS = ['#393960', '#8AA9C9', '#5F9EA0', '#9370DB', '#4682B4', '#2E8B57', '#FF7F50', '#FFD700', '#DA70D6', '#008080'];
 	
 	// uuid function via http://stackoverflow.com/a/2117523/835961
-	var uuid4_tmpl = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
-	var uuid4 = exports.uuid4 = function () {
+	exports.DEFAULT_COLORS = DEFAULT_COLORS;
+	var uuid4_tmpl = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+	var uuid4 = function uuid4() {
 	  return uuid4_tmpl.replace(/[xy]/g, function (c) {
 	    var r = Math.random() * 16 | 0,
-	        v = c == "x" ? r : r & 3 | 8;
+	        v = c == 'x' ? r : r & 0x3 | 0x8;
 	    return v.toString(16);
 	  });
 	};
+	
+	exports.uuid4 = uuid4;
 	
 	function parseDate(spec, useMoment) {
 	  /** parse date specification/stamp, strictly ISO 8601 if string, and assume
@@ -24100,26 +24105,26 @@
 	   *  not useMoment, else returns moment object.
 	   */
 	  var m,
-	      getUTC = function (stamp) {
+	      getUTC = function getUTC(stamp) {
 	    return moment.utc(stamp, moment.ISO_8601);
 	  },
-	      getLocal = function (stamp) {
+	      getLocal = function getLocal(stamp) {
 	    return moment(stamp, moment.ISO_8601);
 	  },
-	      isNaive = function (datestamp) {
+	      isNaive = function isNaive(datestamp) {
 	    var timePart = datestamp.slice(11);
 	    if (datestamp.length === 10) {
 	      return true; // date only, no time
 	    }
-	    if (datestamp.slice(-1) === "Z") {
+	    if (datestamp.slice(-1) === 'Z') {
 	      return false; // not naive, explicit UTC
 	    }
-	    if (timePart.indexOf("+") !== -1 || timePart.indexOf("-") !== -1) {
+	    if (timePart.indexOf('+') !== -1 || timePart.indexOf('-') !== -1) {
 	      return false; // TZ offset
 	    }
 	    return true;
 	  };
-	  if (typeof spec === "string") {
+	  if (typeof spec === 'string') {
 	    m = isNaive(spec) ? getUTC(spec) : getLocal(spec);
 	  } else {
 	    m = moment.utc(spec);
@@ -24136,7 +24141,7 @@
 	      result = [],
 	      i;
 	  if (step === 0) {
-	    throw new RangeError("range() step argument must not be zero");
+	    throw new RangeError('range() step argument must not be zero');
 	  }
 	  for (i = start; step > 0 ? i < stop : i > stop; i += step) {
 	    result.push(i);
@@ -24161,7 +24166,7 @@
 	    /** given JSON where charts and data-points may be key/value pairs in 
 	      * JSON Arrays, normalize to simple Arrays of objects.
 	      */
-	    var kv2data = function (_ref) {
+	    var kv2data = function kv2data(_ref) {
 	      var _ref2 = _slicedToArray(_ref, 2);
 	
 	      var k = _ref2[0];
@@ -24170,7 +24175,7 @@
 	    },
 	        // key/value pair array to data/value object
 	    data = input instanceof Array ? input.map(kv2data) : [input],
-	        normalizeSeriesData = function (s) {
+	        normalizeSeriesData = function normalizeSeriesData(s) {
 	      return s.data = s.data.map(kv2data);
 	    };
 	    data.forEach(function (chart) {
@@ -24178,7 +24183,11 @@
 	    });
 	    callback(data);
 	  });
-	}function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, ignorePadding) {
+	}
+	
+	// Taken from an upcoming version of d3, heavily altered to suit UPIQ:
+	function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, ignorePadding) {
+	
 	  paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
 	  paddingTopBottom = (paddingTopBottom != null ? paddingTopBottom : 5) - 2; //Default padding (5px), remove 2 pixels because of the borders
 	  var maxWidth = width; //I store the tooltip max width
@@ -24187,7 +24196,7 @@
 	  var arrLineCreatedCount = [];
 	  text.each(function () {
 	    var text = d3.select(this),
-	        words = text.text().split(" ").reverse(),
+	        words = text.text().split(' ').reverse(),
 	        word,
 	        line = [],
 	        lineNumber = 0,
@@ -24197,7 +24206,7 @@
 	        dy = parseFloat(text.attr("dy")),
 	        createdLineCount = 1,
 	        //Total line created count
-	    textAlign = text.style("text-anchor") || "start"; //'start' by default (start, middle, end, inherit)
+	    textAlign = text.style('text-anchor') || 'start'; //'start' by default (start, middle, end, inherit)
 	
 	    //Clean the data in case <text> does not define those values
 	    if (isNaN(dy)) dy = 0; //Default padding (0em) : the 'dy' attribute on the first <tspan> _must_ be identical to the 'dy' specified on the <text> element, or start at '0em' if undefined
@@ -24222,326 +24231,268 @@
 	  return arrLineCreatedCount;
 	}
 	
+	var ColorTool = (function () {
+	  function ColorTool() {
+	    _classCallCheck(this, ColorTool);
+	  }
 	
-	var ColorTool = exports.ColorTool = (function () {
-	  function ColorTool() {}
-	
-	  _prototypeProperties(ColorTool, {
-	    upScale8: {
-	      value: function upScale8(v) {
-	        if (v < 0 || v > 1) {
-	          throw new RangeError("Color channel ratio value must be between 0-1.");
-	        }
-	        return Math.round(v * 255);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    downScale8: {
-	      value: function downScale8(v) {
-	        /** downscale 8-bit channel integer value to decimal number between 0-1. */
-	        if (v < 0 || v > 255) {
-	          throw new RangeError("Color channel value must be between 0-255.");
-	        }
-	        return Math.round(v) / 255;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    normalizeColor: {
-	      value: function normalizeColor(color) {
-	        /** normalizes vs potential 3-digit hex shorthand color, via rules
-	          * described in CSS speficication:
-	          * http://www.w3.org/TR/CSS21/syndata.html#color-units
-	          */
-	        var two = function (s, n) {
-	          return new Array(2 + 1).join(s);
-	        },
-	            expandHex = function (s) {
-	          return two(s[1]) + two(s[2]) + two(s[3]);
-	        },
-	            isHex = function (s) {
-	          return s[0] === "#";
-	        };
-	        if (!isHex(color)) {
-	          return color;
-	        }
-	        return color.length === 7 ? color : "#" + expandHex(color);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    rgb: {
-	      value: function rgb(color) {
-	        /** return array of R, G, B colors for hexidecimal color code */
-	        var _c = ColorTool.normalizeColor(color),
-	            r = parseInt(_c.slice(1, 3), 16),
-	            g = parseInt(_c.slice(3, 5), 16),
-	            b = parseInt(_c.slice(5, 7), 16);
-	        return [r, g, b];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    rgb2hex: {
-	      value: function rgb2hex(rgb) {
-	        /** take r, g, b as array of 8-bit values per channel, return hex */
-	        var pad2 = function (v) {
-	          return v.length < 2 ? "0" + v : v;
-	        },
-	            channelHex = function (v) {
-	          return pad2(v.toString(16));
-	        };
-	        return "#" + rgb.map(channelHex).join("");
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    rgb2hsv: {
-	      value: function rgb2hsv(color, useHSL) {
-	        /** 24-bit rgb to h, s, v color array, roughly based on algorithm
-	          * descriptions from:
-	          *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
-	          *   http://www.cs.rit.edu/~ncs/color/t_convert.html
-	          */
-	        var rescale = ColorTool.downScale8;
-	        var baseRGB = color instanceof Array ? color : ColorTool.rgb(color);
-	        var rgb = baseRGB.map(rescale); // [0-255]->[0-1]
-	        var min = Math.min.apply(null, rgb);
-	        var max = Math.max.apply(null, rgb);
-	        var chroma = max - min;
-	        var isBlack = max === 0;
-	        var isGray = chroma === 0;var _rgb = _slicedToArray(rgb, 3);
-	
-	        var r = _rgb[0];
-	        var g = _rgb[1];
-	        var b = _rgb[2];
-	        var v = max; // in HSV, largest component is value (unlike HSI/HSL)
-	        var h;var s;var l;
-	        // Black & grayscale are special cases:
-	        if (isBlack || isGray) {
-	          // HSV for gray can be any point on cube with value equal to max
-	          return [0, 0, v]; // saturation === 0 is sentinel for grayscale
-	        }
-	        s = chroma / v; // S_HSV
-	        if (r === max) {
-	          // red is brightest component, hue between yellow->magenta
-	          h = (g - b) / chroma;
-	        } else if (g === max) {
-	          // green is brightest component, hue between cyan->yellow
-	          h = 2 + (b - r) / chroma;
-	        } else {
-	          // blue is brightest component, hue between magenta->cyan
-	          h = 4 + (r - g) / chroma;
-	        }
-	        h *= 60; // convert by 60 degrees
-	        if (h < 0) {
-	          h += 360;
-	        }
-	        if (!useHSL) {
-	          // HSV:
-	          return [h, s, v];
-	        }
-	        // HSL:
-	        l = 0.5 * (max + min);
-	        s = chroma / (1 - Math.abs(2 * l - 1)); // S_HSL
-	        return [h, s, l];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    rgb2hsl: {
-	      value: function rgb2hsl(color) {
-	        return ColorTool.rgb2hsv(color, true); // force HSL
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    hsv2rgb: {
-	      value: function hsv2rgb(hsv, useHex, useHSL) {
-	        /** hsv Array to 24-bit RGB color, roughly based on algorithm descriptions
-	         * from:
-	         *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
-	         *   http://www.cs.rit.edu/~ncs/color/t_convert.html
-	         */
-	        var r;var g;var b;
-	        var rgb;var _hsv = _slicedToArray(hsv, 3);
-	
-	        var h = _hsv[0];
-	        var s = _hsv[1];
-	        var v = _hsv[2];
-	        var l = v; // IFF useHSL, third argument is actually lightness
-	        var isGray = v === 0 || s === 0; // zero-v is black, zero-s is gray
-	        var rescale = ColorTool.upScale8;
-	        var hPrime = h / 60; // determine
-	        var chroma = !!useHSL ? (1 - Math.abs(2 * l - 1)) * s : v * s;
-	        var r1;var g1;var b1;var x;var pos;var m;
-	        if (!(hsv instanceof Array)) {
-	          throw new TypeError("Invalid HSV value, must be Array.");
-	        }
-	        useHex = useHex === undefined ? true : false; // default returns hex
-	        if (isGray) {
-	          var _ref = [v, v, v];
-	
-	          // set all R,G,B channels to equal value
-	          var _ref2 = _slicedToArray(_ref, 3);
-	
-	          r = _ref2[0];
-	          g = _ref2[1];
-	          b = _ref2[2];
-	        } else {
-	          // color, working off "pizza slices" in the chromacity plane:
-	          x = chroma * (1 - Math.abs(hPrime % 2 - 1));
-	          pos = Math.floor(hPrime); // region on the chromaticity plane/hexagon
-	          switch (pos) {
-	            case 0:
-	              var _ref3 = [chroma, x, 0];
-	
-	              var _ref32 = _slicedToArray(_ref3, 3);
-	
-	              r1 = _ref32[0];
-	              g1 = _ref32[1];
-	              b1 = _ref32[2];
-	              break;
-	            case 1:
-	              var _ref4 = [x, chroma, 0];
-	
-	              var _ref42 = _slicedToArray(_ref4, 3);
-	
-	              r1 = _ref42[0];
-	              g1 = _ref42[1];
-	              b1 = _ref42[2];
-	              break;
-	            case 2:
-	              var _ref5 = [0, chroma, x];
-	
-	              var _ref52 = _slicedToArray(_ref5, 3);
-	
-	              r1 = _ref52[0];
-	              g1 = _ref52[1];
-	              b1 = _ref52[2];
-	              break;
-	            case 3:
-	              var _ref6 = [0, x, chroma];
-	
-	              var _ref62 = _slicedToArray(_ref6, 3);
-	
-	              r1 = _ref62[0];
-	              g1 = _ref62[1];
-	              b1 = _ref62[2];
-	              break;
-	            case 4:
-	              var _ref7 = [x, 0, chroma];
-	
-	              var _ref72 = _slicedToArray(_ref7, 3);
-	
-	              r1 = _ref72[0];
-	              g1 = _ref72[1];
-	              b1 = _ref72[2];
-	              break;
-	            default:
-	              var _ref8 = [chroma, 0, x];
-	
-	              var _ref82 = _slicedToArray(_ref8, 3);
-	
-	              r1 = _ref82[0];
-	              g1 = _ref82[1];
-	              b1 = _ref82[2];
-	              break;
-	          }
-	          m = !!useHSL ? l - 0.5 * chroma : v - chroma;
-	          var _ref9 = [r1 + m, g1 + m, b1 + m];
-	
-	          var _ref92 = _slicedToArray(_ref9, 3);
-	
-	          r = _ref92[0];
-	          g = _ref92[1];
-	          b = _ref92[2];
-	        }
-	        rgb = [r, g, b].map(rescale);
-	        return useHex ? ColorTool.rgb2hex(rgb) : rgb;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    hsl2rgb: {
-	      value: function hsl2rgb(hsl, useHex) {
-	        return ColorTool.hsv2rgb(hsl, useHex, true); // force HSL->RGB
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    colorShift: {
-	      value: function colorShift(color, multiplier, deltaFn) {
-	        /** shift lightness up or down by multiplier using delta function */
-	        var _ColorTool$rgb2hsl = ColorTool.rgb2hsl(color);
-	
-	        var _ColorTool$rgb2hsl2 = _slicedToArray(_ColorTool$rgb2hsl, 3);
-	
-	        var h = _ColorTool$rgb2hsl2[0];
-	        var s = _ColorTool$rgb2hsl2[1];
-	        var l = _ColorTool$rgb2hsl2[2];
-	        var delta = deltaFn(l);
-	        var rgb;
-	        multiplier = multiplier === undefined ? 0.2 : multiplier;
-	        if (multiplier < 0 || multiplier > 1) {
-	          throw new RangeError("multipler must be >= 0, <= 1");
-	        }
-	        return ColorTool.hsl2rgb([h, s, l + delta * multiplier]);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    lighten: {
-	      value: function lighten(color, multiplier) {
-	        return ColorTool.colorShift(color, multiplier, function (l) {
-	          return 1 - l;
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    darken: {
-	      value: function darken(color, multiplier) {
-	        return ColorTool.colorShift(color, multiplier, function (l) {
-	          return -1 * l;
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    isDark: {
-	      value: function isDark(color) {
-	        return ColorTool.rgb2hsl(color)[2] < 0.5; // lightness < 50%
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    isLight: {
-	      value: function isLight(color) {
-	        return ColorTool.rgb2hsl(color)[2] >= 0.5; // lightness >= 50%
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(ColorTool, null, [{
+	    key: 'upScale8',
+	    value: function upScale8(v) {
+	      if (v < 0 || v > 1) {
+	        throw new RangeError('Color channel ratio value must be between 0-1.');
+	      }
+	      return Math.round(v * 255);
 	    }
-	  });
+	  }, {
+	    key: 'downScale8',
+	    value: function downScale8(v) {
+	      /** downscale 8-bit channel integer value to decimal number between 0-1. */
+	      if (v < 0 || v > 255) {
+	        throw new RangeError('Color channel value must be between 0-255.');
+	      }
+	      return Math.round(v) / 255.0;
+	    }
+	  }, {
+	    key: 'normalizeColor',
+	    value: function normalizeColor(color) {
+	      /** normalizes vs potential 3-digit hex shorthand color, via rules
+	        * described in CSS speficication:
+	        * http://www.w3.org/TR/CSS21/syndata.html#color-units
+	        */
+	      var two = function two(s, n) {
+	        return new Array(2 + 1).join(s);
+	      },
+	          expandHex = function expandHex(s) {
+	        return two(s[1]) + two(s[2]) + two(s[3]);
+	      },
+	          isHex = function isHex(s) {
+	        return s[0] === '#';
+	      };
+	      if (!isHex(color)) {
+	        return color;
+	      }
+	      return color.length === 7 ? color : '#' + expandHex(color);
+	    }
+	  }, {
+	    key: 'rgb',
+	    value: function rgb(color) {
+	      /** return array of R, G, B colors for hexidecimal color code */
+	      var _c = ColorTool.normalizeColor(color),
+	          r = parseInt(_c.slice(1, 3), 16),
+	          g = parseInt(_c.slice(3, 5), 16),
+	          b = parseInt(_c.slice(5, 7), 16);
+	      return [r, g, b];
+	    }
+	  }, {
+	    key: 'rgb2hex',
+	    value: function rgb2hex(rgb) {
+	      /** take r, g, b as array of 8-bit values per channel, return hex */
+	      var pad2 = function pad2(v) {
+	        return v.length < 2 ? '0' + v : v;
+	      },
+	          channelHex = function channelHex(v) {
+	        return pad2(v.toString(16));
+	      };
+	      return '#' + rgb.map(channelHex).join('');
+	    }
+	  }, {
+	    key: 'rgb2hsv',
+	    value: function rgb2hsv(color, useHSL) {
+	      /** 24-bit rgb to h, s, v color array, roughly based on algorithm
+	        * descriptions from:
+	        *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
+	        *   http://www.cs.rit.edu/~ncs/color/t_convert.html
+	        */
+	      var rescale = ColorTool.downScale8;
+	
+	      // Black & grayscale are special cases:
+	      var baseRGB = color instanceof Array ? color : ColorTool.rgb(color);
+	      var rgb = baseRGB.map(rescale); // [0-255]->[0-1]
+	      var min = Math.min.apply(null, rgb);
+	      var max = Math.max.apply(null, rgb);
+	      var chroma = max - min;
+	      var isBlack = max === 0;
+	      var isGray = chroma === 0;
+	
+	      var _rgb = _slicedToArray(rgb, 3);
+	
+	      var r = _rgb[0];
+	      var g = _rgb[1];
+	      var b = _rgb[2];
+	      var v = max; // in HSV, largest component is value (unlike HSI/HSL)
+	      var h;var s;var l;if (isBlack || isGray) {
+	        // HSV for gray can be any point on cube with value equal to max
+	        return [0, 0, v]; // saturation === 0 is sentinel for grayscale
+	      }
+	      s = chroma / v; // S_HSV
+	      if (r === max) {
+	        // red is brightest component, hue between yellow->magenta
+	        h = (g - b) / chroma;
+	      } else if (g === max) {
+	        // green is brightest component, hue between cyan->yellow
+	        h = 2 + (b - r) / chroma;
+	      } else {
+	        // blue is brightest component, hue between magenta->cyan
+	        h = 4 + (r - g) / chroma;
+	      }
+	      h *= 60; // convert by 60 degrees
+	      if (h < 0) {
+	        h += 360;
+	      }
+	      if (!useHSL) {
+	        // HSV:
+	        return [h, s, v];
+	      }
+	      // HSL:
+	      l = 0.5 * (max + min);
+	      s = chroma / (1 - Math.abs(2 * l - 1)); // S_HSL
+	      return [h, s, l];
+	    }
+	  }, {
+	    key: 'rgb2hsl',
+	    value: function rgb2hsl(color) {
+	      return ColorTool.rgb2hsv(color, true); // force HSL
+	    }
+	  }, {
+	    key: 'hsv2rgb',
+	    value: function hsv2rgb(hsv, useHex, useHSL) {
+	      /** hsv Array to 24-bit RGB color, roughly based on algorithm descriptions
+	       * from:
+	       *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
+	       *   http://www.cs.rit.edu/~ncs/color/t_convert.html
+	       */
+	      var r;var g;var b;
+	      var rgb;
+	
+	      var _hsv = _slicedToArray(hsv, 3);
+	
+	      var h = _hsv[0];
+	      var s = _hsv[1];
+	      var v = _hsv[2];
+	      var l = v; // IFF useHSL, third argument is actually lightness
+	      var isGray = v === 0 || s === 0; // zero-v is black, zero-s is gray
+	      var rescale = ColorTool.upScale8;
+	      var hPrime = h / 60.0; // determine
+	      var chroma = !!useHSL ? (1 - Math.abs(2 * l - 1)) * s : v * s;
+	      var r1;var g1;var b1;var x;var pos;var m;
+	      if (!(hsv instanceof Array)) {
+	        throw new TypeError('Invalid HSV value, must be Array.');
+	      }
+	      useHex = useHex === undefined ? true : false; // default returns hex
+	      if (isGray) {
+	        // set all R,G,B channels to equal value
+	        r = v;
+	        g = v;
+	        b = v;
+	      } else {
+	        // color, working off "pizza slices" in the chromacity plane:
+	        x = chroma * (1 - Math.abs(hPrime % 2 - 1));
+	        pos = Math.floor(hPrime); // region on the chromaticity plane/hexagon
+	        switch (pos) {
+	          case 0:
+	            r1 = chroma;
+	            g1 = x;
+	            b1 = 0;
+	
+	            break;
+	          case 1:
+	            r1 = x;
+	            g1 = chroma;
+	            b1 = 0;
+	
+	            break;
+	          case 2:
+	            r1 = 0;
+	            g1 = chroma;
+	            b1 = x;
+	
+	            break;
+	          case 3:
+	            r1 = 0;
+	            g1 = x;
+	            b1 = chroma;
+	
+	            break;
+	          case 4:
+	            r1 = x;
+	            g1 = 0;
+	            b1 = chroma;
+	
+	            break;
+	          default:
+	            r1 = chroma;
+	            g1 = 0;
+	            b1 = x;
+	
+	            break;
+	        }
+	        m = !!useHSL ? l - 0.5 * chroma : v - chroma;
+	        r = r1 + m;
+	        g = g1 + m;
+	        b = b1 + m;
+	      }
+	      rgb = [r, g, b].map(rescale);
+	      return useHex ? ColorTool.rgb2hex(rgb) : rgb;
+	    }
+	  }, {
+	    key: 'hsl2rgb',
+	    value: function hsl2rgb(hsl, useHex) {
+	      return ColorTool.hsv2rgb(hsl, useHex, true); // force HSL->RGB
+	    }
+	  }, {
+	    key: 'colorShift',
+	    value: function colorShift(color, multiplier, deltaFn) {
+	      var _ColorTool$rgb2hsl = ColorTool.rgb2hsl(color);
+	
+	      var _ColorTool$rgb2hsl2 = _slicedToArray(_ColorTool$rgb2hsl, 3);
+	
+	      var h = _ColorTool$rgb2hsl2[0];
+	      var s = _ColorTool$rgb2hsl2[1];
+	      var l = _ColorTool$rgb2hsl2[2];
+	      var delta = deltaFn(l);
+	      var rgb;
+	      multiplier = multiplier === undefined ? 0.2 : multiplier;
+	      if (multiplier < 0 || multiplier > 1) {
+	        throw new RangeError('multipler must be >= 0, <= 1');
+	      }
+	      return ColorTool.hsl2rgb([h, s, l + delta * multiplier]);
+	    }
+	  }, {
+	    key: 'lighten',
+	    value: function lighten(color, multiplier) {
+	      return ColorTool.colorShift(color, multiplier, function (l) {
+	        return 1 - l;
+	      });
+	    }
+	  }, {
+	    key: 'darken',
+	    value: function darken(color, multiplier) {
+	      return ColorTool.colorShift(color, multiplier, function (l) {
+	        return -1 * l;
+	      });
+	    }
+	  }, {
+	    key: 'isDark',
+	    value: function isDark(color) {
+	      return ColorTool.rgb2hsl(color)[2] < 0.5; // lightness < 50%
+	    }
+	  }, {
+	    key: 'isLight',
+	    value: function isLight(color) {
+	      return ColorTool.rgb2hsl(color)[2] >= 0.5; // lightness >= 50%
+	    }
+	  }]);
 	
 	  return ColorTool;
-	})();
+	})()
+	
+	/** simple linear regression as slope-intercept for trendline: */
+	
+	;
+	
+	exports.ColorTool = ColorTool;
+	
 	function trendlineSlopeIntercept(points) {
 	  /**
 	    * Given an array of data point pairs (each an array of x,y values)
@@ -24553,15 +24504,15 @@
 	    *  * Does not return or calculate R-squared value.
 	    *  * Favors functional code readability at cost of repeated iteration.
 	    */
-	  var square = function (a) {
+	  var square = function square(a) {
 	    return a * a;
 	  },
-	      sum = function (sequence) {
+	      sum = function sum(sequence) {
 	    return sequence.reduce(function (a, b) {
 	      return a + b;
 	    }, 0);
 	  },
-	      pairProduct = function (pair) {
+	      pairProduct = function pairProduct(pair) {
 	    return pair[0] * pair[1];
 	  },
 	      n = points.length,
@@ -24591,25 +24542,25 @@
 	}
 	
 	function fittedTrendline(points, domain, range) {
-	  /** Given points, domain, and range, returns coordinates for a line in
-	    * object form (keys of x1, y1, x2, y2) for line to be drawn left-to-right
-	    */
 	  var _trendlineSlopeIntercept = trendlineSlopeIntercept(points);
 	
 	  var _trendlineSlopeIntercept2 = _slicedToArray(_trendlineSlopeIntercept, 2);
 	
 	  var slope = _trendlineSlopeIntercept2[0];
 	  var intercept = _trendlineSlopeIntercept2[1];
-	  var solveForY = function (x) {
+	  var solveForY = function solveForY(x) {
 	    return slope * x + intercept;
 	  }; // y = mx + b
-	  var solveForX = function (y) {
+	  var solveForX = function solveForX(y) {
 	    return (y - intercept) / slope;
-	  };var _range = _slicedToArray(range, 2);
+	  };
+	  var _range = _slicedToArray(range, 2);
 	
 	  var minY = _range[0];
-	  // x = (y - b) / m
-	  var maxY = _range[1];var _domain = _slicedToArray(domain, 2);
+	
+	  var maxY = _range[1];
+	
+	  var _domain = _slicedToArray(domain, 2);
 	
 	  var minX = _domain[0];
 	  var maxX = _domain[1];
@@ -24624,7 +24575,13 @@
 	  r.slope = slope;
 	  return r;
 	}
-	exports.__esModule = true;
+	
+	/** shift lightness up or down by multiplier using delta function */
+
+	/** Given points, domain, and range, returns coordinates for a line in
+	  * object form (keys of x1, y1, x2, y2) for line to be drawn left-to-right
+	  */
+	// x = (y - b) / m
 
 /***/ },
 /* 7 */
@@ -24633,546 +24590,522 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require */
 	
-	"use strict";var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
+	'use strict'; /*jshint -W097 */
 	
-	var _toArray = function (arr) { return Array.isArray(arr) ? arr : Array.from(arr); };
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
 	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	exports.Chart = Chart;
-	/*jshint -W097 */
 	
-	var Klass = __webpack_require__(11).Klass;
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _classvizEs6Js = __webpack_require__(11);
+	
 	var _utilsEs6Js = __webpack_require__(6);
 	
-	var DEFAULT_COLORS = _utilsEs6Js.DEFAULT_COLORS;
-	var dataSym = Symbol();
-	var d3 = __webpack_require__(3);
 	var _schemavizEs6Js = __webpack_require__(12);
 	
-	var dataPointSchema = _schemavizEs6Js.dataPointSchema;
-	var timeDataPointSchema = _schemavizEs6Js.timeDataPointSchema;
-	var dataSeriesSchema = _schemavizEs6Js.dataSeriesSchema;
-	var timeDataSeriesSchema = _schemavizEs6Js.timeDataSeriesSchema;
-	var multiSeriesChartSchema = _schemavizEs6Js.multiSeriesChartSchema;
-	var timeSeriesChartSchema = _schemavizEs6Js.timeSeriesChartSchema;
-	var parseDate = _utilsEs6Js.parseDate;
-	var fittedTrendline = _utilsEs6Js.fittedTrendline;
-	
+	var dataSym = Symbol();
+	var d3 = __webpack_require__(3);
 	
 	var moment = __webpack_require__(4);
 	
-	
 	// Map between uu.chart frequency and d3.time interval name, multiplier:
 	var INTERVALS = {
-	  daily: [1, "day"],
-	  weekly: [1, "week"],
-	  monthly: [1, "month"],
-	  yearly: [1, "year"],
-	  quarterly: [3, "month"] };
+	  daily: [1, 'day'],
+	  weekly: [1, 'week'],
+	  monthly: [1, 'month'],
+	  yearly: [1, 'year'],
+	  quarterly: [3, 'month']
+	};
 	
-	var DataPoint = exports.DataPoint = (function (Klass) {
+	var DataPoint = (function (_Klass) {
+	  _inherits(DataPoint, _Klass);
+	
 	  function DataPoint(obj) {
-	    obj = obj || { key: "[none]" };
-	    obj.schema = obj.schema || dataPointSchema;
-	    _get(Object.getPrototypeOf(DataPoint.prototype), "constructor", this).call(this, obj);
-	  }
+	    _classCallCheck(this, DataPoint);
 	
-	  _inherits(DataPoint, Klass);
+	    obj = obj || { key: '[none]' };
+	    obj.schema = obj.schema || _schemavizEs6Js.dataPointSchema;
+	    _get(Object.getPrototypeOf(DataPoint.prototype), 'constructor', this).call(this, obj);
+	  }
 	
 	  return DataPoint;
-	})(Klass);
-	var TimeDataPoint = exports.TimeDataPoint = (function (DataPoint) {
-	  function TimeDataPoint(obj) {
-	    obj = obj || { key: new Date() };
-	    obj.schema = obj.schema || timeDataPointSchema;
-	    _get(Object.getPrototypeOf(TimeDataPoint.prototype), "constructor", this).call(this, obj);
-	  }
+	})(_classvizEs6Js.Klass);
 	
-	  _inherits(TimeDataPoint, DataPoint);
+	exports.DataPoint = DataPoint;
+	
+	var TimeDataPoint = (function (_DataPoint) {
+	  _inherits(TimeDataPoint, _DataPoint);
+	
+	  function TimeDataPoint(obj) {
+	    _classCallCheck(this, TimeDataPoint);
+	
+	    obj = obj || { key: new Date() };
+	    obj.schema = obj.schema || _schemavizEs6Js.timeDataPointSchema;
+	    _get(Object.getPrototypeOf(TimeDataPoint.prototype), 'constructor', this).call(this, obj);
+	  }
 	
 	  return TimeDataPoint;
 	})(DataPoint);
-	var DataSeries = exports.DataSeries = (function (Klass) {
+	
+	exports.TimeDataPoint = TimeDataPoint;
+	
+	var DataSeries = (function (_Klass2) {
+	  _inherits(DataSeries, _Klass2);
+	
 	  function DataSeries(obj) {
+	    _classCallCheck(this, DataSeries);
+	
+	    var localprops = ['color'];
 	    obj = obj || {};
-	    this.localprops = ["color"];
-	    obj.schema = obj.schema || dataSeriesSchema;
-	    _get(Object.getPrototypeOf(DataSeries.prototype), "constructor", this).call(this, obj);
+	    obj.schema = obj.schema || _schemavizEs6Js.dataSeriesSchema;
+	    _get(Object.getPrototypeOf(DataSeries.prototype), 'constructor', this).call(this, obj, localprops);
 	    this.data = obj.data || [];
 	    this._color = obj.color || null;
 	    this.position = 0; // default, may be overwritten by chart managing this
 	  }
 	
-	  _inherits(DataSeries, Klass);
-	
-	  _prototypeProperties(DataSeries, null, {
-	    data: {
-	      get: function () {
-	        return this[dataSym];
-	      },
-	      set: function (d) {
-	        var data = d3.map();
-	        d.sort(function (a, b) {
-	          return a.key > b.key ? 1 : -1;
-	        }).filter(function (v, i) {
-	          return i === 0 || v.key != d[i - 1].key;
-	        }).map(function (datum) {
-	          return new DataPoint(datum);
-	        }).forEach(function (datum) {
-	          return data.set(datum.key, datum);
-	        });
-	        this[dataSym] = data;
-	      },
-	      enumerable: true,
-	      configurable: true
+	  _createClass(DataSeries, [{
+	    key: 'data',
+	    get: function get() {
+	      return this[dataSym];
 	    },
-	    color: {
-	      get: function () {
-	        var explicitColor = this._color,
-	            pos = !explicitColor ? this.position : null,
-	            color = explicitColor !== "auto" ? explicitColor : DEFAULT_COLORS[pos];
-	        return color;
-	      },
-	      set: function (v) {
-	        this._color = v;
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    range: {
-	      get: function () {
-	        return d3.extent(this.data.values(), function (d) {
-	          return d.value;
-	        }) || [-Infinity, Infinity];
-	      },
-	      enumerable: true,
-	      configurable: true
+	    set: function set(d) {
+	      var data = d3.map();
+	      d.sort(function (a, b) {
+	        return a.key > b.key ? 1 : -1;
+	      }).filter(function (v, i) {
+	        return i === 0 || v.key != d[i - 1].key;
+	      }).map(function (datum) {
+	        return new DataPoint(datum);
+	      }).forEach(function (datum) {
+	        return data.set(datum.key, datum);
+	      });
+	      this[dataSym] = data;
 	    }
-	  });
+	  }, {
+	    key: 'color',
+	    get: function get() {
+	      var explicitColor = this._color,
+	          pos = !explicitColor ? this.position : null,
+	          color = explicitColor !== 'auto' ? explicitColor : _utilsEs6Js.DEFAULT_COLORS[pos];
+	      return color;
+	    },
+	    set: function set(v) {
+	      this._color = v;
+	    }
+	  }, {
+	    key: 'range',
+	    get: function get() {
+	      return d3.extent(this.data.values(), function (d) {
+	        return d.value;
+	      }) || [-Infinity, Infinity];
+	    }
+	  }]);
 	
 	  return DataSeries;
-	})(Klass);
-	var TimeDataSeries = exports.TimeDataSeries = (function (DataSeries) {
+	})(_classvizEs6Js.Klass);
+	
+	exports.DataSeries = DataSeries;
+	
+	var TimeDataSeries = (function (_DataSeries) {
+	  _inherits(TimeDataSeries, _DataSeries);
+	
 	  function TimeDataSeries(obj) {
+	    _classCallCheck(this, TimeDataSeries);
+	
 	    obj = obj || {};
-	    obj.schema = obj.schema || timeDataSeriesSchema;
-	    _get(Object.getPrototypeOf(TimeDataSeries.prototype), "constructor", this).call(this, obj);
+	    obj.schema = obj.schema || _schemavizEs6Js.timeDataSeriesSchema;
+	    _get(Object.getPrototypeOf(TimeDataSeries.prototype), 'constructor', this).call(this, obj);
 	    this.data = obj.data || [];
 	  }
 	
-	  _inherits(TimeDataSeries, DataSeries);
-	
-	  _prototypeProperties(TimeDataSeries, null, {
-	    color: {
-	      get: function () {
-	        var explicitColor = this._color,
-	            pos = !explicitColor ? this.position : null,
-	            color = explicitColor ? explicitColor : DEFAULT_COLORS[pos];
-	        return color;
-	      },
-	      set: function (v) {
-	        this._color = v;
-	      },
-	      enumerable: true,
-	      configurable: true
+	  _createClass(TimeDataSeries, [{
+	    key: 'color',
+	    get: function get() {
+	      var explicitColor = this._color,
+	          pos = !explicitColor ? this.position : null,
+	          color = explicitColor ? explicitColor : _utilsEs6Js.DEFAULT_COLORS[pos];
+	      return color;
 	    },
-	    data: {
-	      get: function () {
-	        return this[dataSym];
-	      },
-	      set: function (d) {
-	        var data = d3.map();
-	        d.sort(function (a, b) {
-	          return a.key > b.key ? 1 : -1;
-	        }).filter(function (v, i) {
-	          return i === 0 || v.key.toString() != d[i - 1].key.toString();
-	        }).map(function (datum) {
-	          return new TimeDataPoint(datum);
-	        }).forEach(function (datum) {
-	          return data.set(datum.key.valueOf(), datum);
-	        });
-	        this[dataSym] = data;
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    domain: {
-	      get: function () {
-	        var min = moment.min.apply(moment, _toArray(this.data.values().map(function (d) {
-	          return parseDate(d.key, true);
-	        }))).toDate();
-	        var max = moment.max.apply(moment, _toArray(this.data.values().map(function (d) {
-	          return parseDate(d.key, true);
-	        }))).toDate();
-	        return [min, max];
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    croppedDomain: {
-	      get: function () {
-	        var data = this.data.values().filter(function (datum) {
-	          return datum.value != null;
-	        });
-	        var min = moment.min.apply(moment, _toArray(data.map(function (d) {
-	          return parseDate(d.key, true);
-	        }))).toDate();
-	        var max = moment.max.apply(moment, _toArray(data.map(function (d) {
-	          return parseDate(d.key, true);
-	        }))).toDate();
-	        return [min, max];
-	      },
-	      enumerable: true,
-	      configurable: true
+	    set: function set(v) {
+	      this._color = v;
 	    }
-	  });
+	  }, {
+	    key: 'data',
+	    get: function get() {
+	      return this[dataSym];
+	    },
+	    set: function set(d) {
+	      var data = d3.map();
+	      d.sort(function (a, b) {
+	        return a.key > b.key ? 1 : -1;
+	      }).filter(function (v, i) {
+	        return i === 0 || v.key.toString() != d[i - 1].key.toString();
+	      }).map(function (datum) {
+	        return new TimeDataPoint(datum);
+	      }).forEach(function (datum) {
+	        return data.set(datum.key.valueOf(), datum);
+	      });
+	      this[dataSym] = data;
+	    }
+	  }, {
+	    key: 'domain',
+	    get: function get() {
+	      var min = moment.min.apply(moment, _toConsumableArray(this.data.values().map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      var max = moment.max.apply(moment, _toConsumableArray(this.data.values().map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      return [min, max];
+	    }
+	  }, {
+	    key: 'croppedDomain',
+	    get: function get() {
+	      var data = this.data.values().filter(function (datum) {
+	        return datum.value != null;
+	      });
+	      var min = moment.min.apply(moment, _toConsumableArray(data.map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      var max = moment.max.apply(moment, _toConsumableArray(data.map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      return [min, max];
+	    }
+	  }]);
 	
 	  return TimeDataSeries;
 	})(DataSeries);
-	var MultiSeriesChart = exports.MultiSeriesChart = (function (Klass) {
+	
+	exports.TimeDataSeries = TimeDataSeries;
+	
+	var MultiSeriesChart = (function (_Klass3) {
+	  _inherits(MultiSeriesChart, _Klass3);
+	
 	  function MultiSeriesChart(obj) {
+	    _classCallCheck(this, MultiSeriesChart);
+	
 	    obj = obj || {};
-	    obj.schema = obj.schema || multiSeriesChartSchema;
-	    _get(Object.getPrototypeOf(MultiSeriesChart.prototype), "constructor", this).call(this, obj);
+	    obj.schema = obj.schema || _schemavizEs6Js.multiSeriesChartSchema;
+	    _get(Object.getPrototypeOf(MultiSeriesChart.prototype), 'constructor', this).call(this, obj);
 	    this.series = obj.series || [];
 	  }
 	
-	  _inherits(MultiSeriesChart, Klass);
-	
-	  _prototypeProperties(MultiSeriesChart, null, {
-	    series: {
-	      get: function () {
-	        return this[dataSym];
-	      },
-	      set: function (s) {
-	        this[dataSym] = s.map(function (serum) {
-	          return new DataSeries(serum);
-	        });
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    range: {
-	      get: function () {
-	        var rMin = this.range_min,
-	            rMax = this.range_max,
-	            fMin = function (_ref) {
-	          var _ref2 = _slicedToArray(_ref, 2);
-	
-	          var min = _ref2[0];
-	          var max = _ref2[1];
-	          return min;
-	        },
-	            fMax = function (_ref) {
-	          var _ref2 = _slicedToArray(_ref, 2);
-	
-	          var min = _ref2[0];
-	          var max = _ref2[1];
-	          return max;
-	        };
-	        if (rMin != null && rMax != null) {
-	          // both specified explicitly:
-	          return [rMin, rMax];
-	        }
-	        var ranges = this.series.map(function (serum) {
-	          return serum.range;
-	        });
-	        return [rMin != null ? rMin : d3.min(ranges, fMin), rMax != null ? rMax : d3.max(ranges, fMax)];
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    keys: {
-	      get: function () {
-	        var data = this.series.map(function (serum) {
-	          return serum.data;
-	        }).map(function (datum) {
-	          return datum.values();
-	        });
-	        data = d3.merge(data);
-	        return data.map(function (datum) {
-	          return datum.key;
-	        });
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    fittedTrendline: {
-	      value: (function (_fittedTrendline) {
-	        var _fittedTrendlineWrapper = function fittedTrendline() {
-	          return _fittedTrendline.apply(this, arguments);
-	        };
-	
-	        _fittedTrendlineWrapper.toString = function () {
-	          return _fittedTrendline.toString();
-	        };
-	
-	        return _fittedTrendlineWrapper;
-	      })(function (series) {
-	        /** fitted trendline for series in context of this chart's domain/range */
-	        var allData = series.data.values(),
-	            data = allData.filter(function (d) {
-	          return d.value !== null;
-	        }).map(function (d) {
-	          return [d.key.valueOf(), d.value];
-	        }),
-	            domain = this.domain.map(function (d) {
-	          return d.valueOf();
-	        }),
-	            line = fittedTrendline(data, domain, this.range);
-	        line.trend_width = series.trend_width || 2;
-	        line.trend_color = series.trend_color || series.color || "#999";
-	        line.point_count = series.data.size();
-	        return line;
+	  _createClass(MultiSeriesChart, [{
+	    key: 'fittedTrendline',
+	    value: function fittedTrendline(series) {
+	      /** fitted trendline for series in context of this chart's domain/range */
+	      var allData = series.data.values(),
+	          data = allData.filter(function (d) {
+	        return d.value !== null;
+	      }).map(function (d) {
+	        return [d.key.valueOf(), d.value];
 	      }),
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    showLabels: {
-	      value: function showLabels(series) {
-	        var showDefault = this.point_labels === "show" ? "show" : "omit",
-	            behavior = series.point_labels || "defer",
-	            visible = behavior === "defer" ? showDefault : behavior;
-	        return visible === "show";
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	          domain = this.domain.map(function (d) {
+	        return d.valueOf();
+	      }),
+	          line = (0, _utilsEs6Js.fittedTrendline)(data, domain, this.range);
+	      line.trend_width = series.trend_width || 2;
+	      line.trend_color = series.trend_color || series.color || '#999';
+	      line.point_count = series.data.size();
+	      return line;
 	    }
-	  });
+	  }, {
+	    key: 'showLabels',
+	    value: function showLabels(series) {
+	      var showDefault = this.point_labels === 'show' ? 'show' : 'omit',
+	          behavior = series.point_labels || 'defer',
+	          visible = behavior === 'defer' ? showDefault : behavior;
+	      return visible === 'show';
+	    }
+	  }, {
+	    key: 'series',
+	    get: function get() {
+	      return this[dataSym];
+	    },
+	    set: function set(s) {
+	      this[dataSym] = s.map(function (serum) {
+	        return new DataSeries(serum);
+	      });
+	    }
+	  }, {
+	    key: 'range',
+	    get: function get() {
+	      var rMin = this.range_min,
+	          rMax = this.range_max,
+	          fMin = function fMin(_ref) {
+	        var _ref2 = _slicedToArray(_ref, 2);
+	
+	        var min = _ref2[0];
+	        var max = _ref2[1];
+	        return min;
+	      },
+	          fMax = function fMax(_ref3) {
+	        var _ref32 = _slicedToArray(_ref3, 2);
+	
+	        var min = _ref32[0];
+	        var max = _ref32[1];
+	        return max;
+	      };
+	      if (rMin != null && rMax != null) {
+	        // both specified explicitly:
+	        return [rMin, rMax];
+	      }
+	      var ranges = this.series.map(function (serum) {
+	        return serum.range;
+	      });
+	      return [rMin != null ? rMin : d3.min(ranges, fMin), rMax != null ? rMax : d3.max(ranges, fMax)];
+	    }
+	  }, {
+	    key: 'keys',
+	    get: function get() {
+	      var data = this.series.map(function (serum) {
+	        return serum.data;
+	      }).map(function (datum) {
+	        return datum.values();
+	      });
+	      data = d3.merge(data);
+	      return data.map(function (datum) {
+	        return datum.key;
+	      });
+	    }
+	  }]);
 	
 	  return MultiSeriesChart;
-	})(Klass);
-	var TimeSeriesChart = exports.TimeSeriesChart = (function (MultiSeriesChart) {
+	})(_classvizEs6Js.Klass);
+	
+	exports.MultiSeriesChart = MultiSeriesChart;
+	
+	var TimeSeriesChart = (function (_MultiSeriesChart) {
+	  _inherits(TimeSeriesChart, _MultiSeriesChart);
+	
 	  function TimeSeriesChart(obj) {
+	    _classCallCheck(this, TimeSeriesChart);
+	
 	    obj = obj || {};
-	    obj.schema = obj.schema || timeSeriesChartSchema;
-	    _get(Object.getPrototypeOf(TimeSeriesChart.prototype), "constructor", this).call(this, obj);
+	    obj.schema = obj.schema || _schemavizEs6Js.timeSeriesChartSchema;
+	    _get(Object.getPrototypeOf(TimeSeriesChart.prototype), 'constructor', this).call(this, obj);
 	    this.series = obj.series || [];
 	  }
 	
-	  _inherits(TimeSeriesChart, MultiSeriesChart);
-	
-	  _prototypeProperties(TimeSeriesChart, null, {
-	    series: {
-	      get: function () {
-	        return this[dataSym];
-	      },
-	      set: function (s) {
-	        var _this = this;
-	        this[dataSym] = s.map(function (serum) {
-	          return new TimeDataSeries(serum, _this);
-	        });
-	        this[dataSym].map(function (series, index) {
-	          series.position = index;
-	        }, this);
-	      },
-	      enumerable: true,
-	      configurable: true
-	    },
-	    allDates: {
-	      value: function allDates() {
-	        var result = [],
-	            found = [],
-	            series = this.series,
-	            autoCrop = this.auto_crop,
-	            domain = this.domain,
-	            rightSide = domain[1].valueOf(),
-	            sortfn = function (a, b) {
-	          return a.toISOString() > b.toISOString() ? 1 : -1;
-	        };
-	        if (!this._uniqueDates) {
-	          series.forEach(function (s) {
-	            var points = s.data.values();
-	            points.map(function (datapoint) {
-	              return datapoint.key;
-	            }).forEach(function (key) {
-	              var ms = key.valueOf();
-	              if (!isNaN(key) && found.indexOf(ms) === -1) {
-	                if (autoCrop && key.valueOf() <= rightSide) {
-	                  result.push(key);
-	                  found.push(ms);
-	                }
+	  _createClass(TimeSeriesChart, [{
+	    key: 'allDates',
+	    value: function allDates() {
+	      var result = [],
+	          found = [],
+	          series = this.series,
+	          autoCrop = this.auto_crop,
+	          domain = this.domain,
+	          rightSide = domain[1].valueOf(),
+	          sortfn = function sortfn(a, b) {
+	        return a.toISOString() > b.toISOString() ? 1 : -1;
+	      };
+	      if (!this._uniqueDates) {
+	        series.forEach(function (s) {
+	          var points = s.data.values();
+	          points.map(function (datapoint) {
+	            return datapoint.key;
+	          }).forEach(function (key) {
+	            var ms = key.valueOf();
+	            if (!isNaN(key) && found.indexOf(ms) === -1) {
+	              if (autoCrop && key.valueOf() <= rightSide) {
+	                result.push(key);
+	                found.push(ms);
 	              }
-	            });
-	          }, this);
-	          result.sort(sortfn); // lexical sort by ISO8601===chronological
-	          this._uniqueDates = result;
-	        }
-	        return this._uniqueDates; // may be cached after 1st call
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    axisLabels: {
-	
-	      /**
-	       * axisLabels(): returns array of key/value objects for date, x-axis label,
-	       * prefering explicitly specified label for date if provided, otherwise
-	       * falling back to generated date label.
-	       */
-	      value: function axisLabels() {
-	        var dataKeys = this.allDates(),
-	            labels = [];
-	        return dataKeys.map(this.axisLabel, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    dateFormat: {
-	      value: function dateFormat(key) {
-	        var interval = INTERVALS[this.frequency][1],
-	            defaultFn = function (d) {
-	          return parseDate(d, true).format("M/D/YYYY");
-	        },
-	            fn = interval === "month" ? d3.time.format.utc("%b %Y") : defaultFn;
-	        return fn(parseDate(key));
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    axisLabel: {
-	
-	      // Given date key, return object with key, associated x-axis Label
-	      // should return empty string for any date not in data.
-	      value: function axisLabel(key) {
-	        var _this = this;
-	        var dateKey = parseDate(key),
-	            // as Date
-	        dateValue = dateKey.valueOf(),
-	            // ms
-	        stamp = function (d) {
-	          return parseDate(d).toISOString().split("T")[0];
-	        },
-	            generated = function (d) {
-	          return { key: d, label: _this.dateFormat(dateKey) };
-	        },
-	            configured = function (d, ds) {
-	          return { key: d, label: _this.labels[ds] };
-	        },
-	            dateStamp = stamp(dateKey),
-	            considered = this.allDates().map(function (d) {
-	          return d.valueOf();
-	        });
-	        if (this.labels.hasOwnProperty(dateStamp)) {
-	          return configured(dateKey, dateStamp);
-	        }
-	        if (considered.indexOf(dateValue) !== -1) {
-	          return generated(dateKey);
-	        }
-	        return { key: dateKey, label: "" };
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    domain: {
-	      get: function () {
-	        var _this = this;
-	        var domainGetter = function (s) {
-	          return _this.auto_crop ? s.croppedDomain : s.domain;
-	        },
-	            seriesDomains,
-	            explicitStart = this.start,
-	            explicitEnd = this.end,
-	            timeStep = INTERVALS[this.frequency][0],
-	            interval = INTERVALS[this.frequency][1],
-	            quarterly = interval === "month" && timeStep === 3,
-	            intervalName = quarterly ? "quarter" : interval,
-	            ceiling = function (d) {
-	          return moment.utc(d).endOf(intervalName).toDate();
-	        },
-	            floor = function (d) {
-	          return moment.utc(d).startOf(intervalName).toDate();
-	        };
-	        if (explicitStart && explicitEnd) {
-	          return [d3.time.day.floor(explicitStart), d3.time.day.ceil(explicitEnd)];
-	        }
-	        seriesDomains = this.series.map(domainGetter);
-	        // normalizing (floor/ceil) getters: start, end; favor explicit to computed
-	        function getStart() {
-	          return d3.time.day.utc.floor(explicitStart || moment.min.apply(moment, _toArray(seriesDomains.map(function (_ref) {
-	            var _ref2 = _slicedToArray(_ref, 2);
-	
-	            var min = _ref2[0];
-	            var max = _ref2[1];
-	            return moment.utc(min);
-	          }))).toDate());
-	        }
-	        function getEnd() {
-	          return ceiling(explicitEnd ? moment.utc(explicitEnd).endOf("day").toDate() : null || moment.max.apply(moment, _toArray(seriesDomains.map(function (_ref) {
-	            var _ref2 = _slicedToArray(_ref, 2);
-	
-	            var min = _ref2[0];
-	            var max = _ref2[1];
-	            return moment.utc(max);
-	          }))).toDate());
-	        }
-	        return [getStart(), getEnd()];
-	      },
-	      enumerable: true,
-	      configurable: true
+	            }
+	          });
+	        }, this);
+	        result.sort(sortfn); // lexical sort by ISO8601===chronological
+	        this._uniqueDates = result;
+	      }
+	      return this._uniqueDates; // may be cached after 1st call
 	    }
-	  });
+	
+	    /**
+	     * axisLabels(): returns array of key/value objects for date, x-axis label,
+	     * prefering explicitly specified label for date if provided, otherwise
+	     * falling back to generated date label.
+	     */
+	  }, {
+	    key: 'axisLabels',
+	    value: function axisLabels() {
+	      var dataKeys = this.allDates(),
+	          labels = [];
+	      return dataKeys.map(this.axisLabel, this);
+	    }
+	  }, {
+	    key: 'dateFormat',
+	    value: function dateFormat(key) {
+	      var interval = INTERVALS[this.frequency][1],
+	          defaultFn = function defaultFn(d) {
+	        return (0, _utilsEs6Js.parseDate)(d, true).format('M/D/YYYY');
+	      },
+	          fn = interval === 'month' ? d3.time.format.utc('%b %Y') : defaultFn;
+	      return fn((0, _utilsEs6Js.parseDate)(key));
+	    }
+	
+	    // Given date key, return object with key, associated x-axis Label
+	    // should return empty string for any date not in data.
+	  }, {
+	    key: 'axisLabel',
+	    value: function axisLabel(key) {
+	      var _this = this;
+	
+	      var dateKey = (0, _utilsEs6Js.parseDate)(key),
+	          // as Date
+	      dateValue = dateKey.valueOf(),
+	          // ms
+	      stamp = function stamp(d) {
+	        return (0, _utilsEs6Js.parseDate)(d).toISOString().split('T')[0];
+	      },
+	          generated = function generated(d) {
+	        return { key: d, label: _this.dateFormat(dateKey) };
+	      },
+	          configured = function configured(d, ds) {
+	        return { key: d, label: _this.labels[ds] };
+	      },
+	          dateStamp = stamp(dateKey),
+	          considered = this.allDates().map(function (d) {
+	        return d.valueOf();
+	      });
+	      if (this.labels.hasOwnProperty(dateStamp)) {
+	        return configured(dateKey, dateStamp);
+	      }
+	      if (considered.indexOf(dateValue) !== -1) {
+	        return generated(dateKey);
+	      }
+	      return { key: dateKey, label: '' };
+	    }
+	  }, {
+	    key: 'series',
+	    get: function get() {
+	      return this[dataSym];
+	    },
+	    set: function set(s) {
+	      var _this2 = this;
+	
+	      this[dataSym] = s.map(function (serum) {
+	        return new TimeDataSeries(serum, _this2);
+	      });
+	      this[dataSym].map(function (series, index) {
+	        series.position = index;
+	      }, this);
+	    }
+	  }, {
+	    key: 'domain',
+	    get: function get() {
+	      var _this3 = this;
+	
+	      var domainGetter = function domainGetter(s) {
+	        return _this3.auto_crop ? s.croppedDomain : s.domain;
+	      },
+	          seriesDomains,
+	          explicitStart = this.start,
+	          explicitEnd = this.end,
+	          timeStep = INTERVALS[this.frequency][0],
+	          interval = INTERVALS[this.frequency][1],
+	          quarterly = interval === 'month' && timeStep === 3,
+	          intervalName = quarterly ? 'quarter' : interval,
+	          ceiling = function ceiling(d) {
+	        return moment.utc(d).endOf(intervalName).toDate();
+	      },
+	          floor = function floor(d) {
+	        return moment.utc(d).startOf(intervalName).toDate();
+	      };
+	      if (explicitStart && explicitEnd) {
+	        return [d3.time.day.floor(explicitStart), d3.time.day.ceil(explicitEnd)];
+	      }
+	      seriesDomains = this.series.map(domainGetter);
+	      // normalizing (floor/ceil) getters: start, end; favor explicit to computed
+	      function getStart() {
+	        return d3.time.day.utc.floor(explicitStart || moment.min.apply(moment, _toConsumableArray(seriesDomains.map(function (_ref4) {
+	          var _ref42 = _slicedToArray(_ref4, 2);
+	
+	          var min = _ref42[0];
+	          var max = _ref42[1];
+	          return moment.utc(min);
+	        }))).toDate());
+	      }
+	      function getEnd() {
+	        return ceiling(explicitEnd ? moment.utc(explicitEnd).endOf('day').toDate() : null || moment.max.apply(moment, _toConsumableArray(seriesDomains.map(function (_ref5) {
+	          var _ref52 = _slicedToArray(_ref5, 2);
+	
+	          var min = _ref52[0];
+	          var max = _ref52[1];
+	          return moment.utc(max);
+	        }))).toDate());
+	      }
+	      return [getStart(), getEnd()];
+	    }
+	  }]);
 	
 	  return TimeSeriesChart;
 	})(MultiSeriesChart);
+	
+	exports.TimeSeriesChart = TimeSeriesChart;
+	
 	function Chart(data) {
-	  return data.x_axis_type === "date" ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
+	  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
 	}
-	exports.__esModule = true;
 
 /***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _toArray = function (arr) { return Array.isArray(arr) ? arr : Array.from(arr); };
-	
-	exports.chartLoader = chartLoader;
-	exports.loadReport = loadReport;
-	exports.loadReports = loadReports;
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var d3 = __webpack_require__(3);
-	var TimeSeriesPlotter = __webpack_require__(13).TimeSeriesPlotter;
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.chartLoader = chartLoader;
+	exports.loadReport = loadReport;
+	exports.loadReports = loadReports;
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	var _timeSeriesPlot = __webpack_require__(13);
+	
 	var _utils = __webpack_require__(6);
 	
-	var forReportJSON = _utils.forReportJSON;
-	var geometricBatch = _utils.geometricBatch;
-	var Chart = __webpack_require__(7).Chart;
+	var _chartviz = __webpack_require__(7);
 	
+	var d3 = __webpack_require__(3);
 	
 	var INTERACT = true; // default
 	
 	function batchURLs(base, spec, total) {
-	  var cacheBust = "cache_bust=" + Math.floor(Math.random() * Math.pow(10, 8)),
-	      _bSpec = function (pair) {
-	    return "b_size=" + pair[1] + "&b_start=" + pair[0];
+	  var cacheBust = 'cache_bust=' + Math.floor(Math.random() * Math.pow(10, 8)),
+	      _bSpec = function _bSpec(pair) {
+	    return 'b_size=' + pair[1] + '&b_start=' + pair[0];
 	  },
-	      _qs = function (pair) {
-	    return _bSpec(pair) + "&" + cacheBust;
+	      _qs = function _qs(pair) {
+	    return _bSpec(pair) + '&' + cacheBust;
 	  },
-	      _url = function (pair) {
-	    return base + "?" + _qs(pair);
+	      _url = function _url(pair) {
+	    return base + '?' + _qs(pair);
 	  };
-	  if (spec === "geometric") {
-	    return geometricBatch(total).map(_url);
+	  if (spec === 'geometric') {
+	    return (0, _utils.geometricBatch)(total).map(_url);
 	  }
-	  return [base + "?" + cacheBust]; // default is all reports in one url fetch
+	  return [base + '?' + cacheBust]; // default is all reports in one url fetch
 	}
-	
 	
 	function chartLoader(node, data, opts) {
 	  var interactive, plotter;
@@ -25183,7 +25116,7 @@
 	    opts.interactive = INTERACT;
 	  }
 	  // construct adapter
-	  plotter = new TimeSeriesPlotter(node, data, opts);
+	  plotter = new _timeSeriesPlot.TimeSeriesPlotter(node, data, opts);
 	  // return bound callback
 	  return plotter.update.bind(plotter);
 	}
@@ -25194,27 +25127,27 @@
 	    */
 	
 	  function size() {
-	    if (typeof opts.size === "number") {
+	    if (typeof opts.size === 'number') {
 	      return opts.size;
 	    }
-	    return container.selectAll("div.plotdiv").size();
+	    return container.selectAll('div.plotdiv').size();
 	  }
 	
 	  function divFor(uid) {
-	    var _prefix = (opts.prefix || "plot") + "-",
+	    var _prefix = (opts.prefix || 'plot') + '-',
 	        divId = _prefix + uid,
-	        plotDiv = container.select("#" + divId);
+	        plotDiv = container.select('#' + divId);
 	    if (!plotDiv.size()) {
-	      plotDiv = container.append("div").classed("plotdiv", true).attr("id", divId);
+	      plotDiv = container.append('div').classed('plotdiv', true).attr('id', divId);
 	    }
 	    return plotDiv;
 	  }
 	
 	  var chartIds = [],
-	      uniqueChart = function (c) {
+	      uniqueChart = function uniqueChart(c) {
 	    return chartIds.indexOf(c.uid) === -1;
 	  },
-	      processChart = function (chart) {
+	      processChart = function processChart(chart) {
 	    divFor(chart.uid).call(function (plotDiv) {
 	      return chartLoader(plotDiv, chart, opts)();
 	    });
@@ -25224,13 +25157,13 @@
 	  window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotCount;
 	
 	  batchURLs(url, opts.batching, plotCount).forEach(function (url) {
-	    forReportJSON(url, function (charts) {
+	    (0, _utils.forReportJSON)(url, function (charts) {
 	      // improbable chance of race condition across de-dupe next 2 lines
 	      // but likelihood and impact thereof not a practical issue:
 	      charts = charts.filter(uniqueChart).map(function (graph) {
-	        return new Chart(graph);
+	        return new _chartviz.Chart(graph);
 	      });
-	      chartIds.push.apply(chartIds, _toArray(charts.map(function (c) {
+	      chartIds.push.apply(chartIds, _toConsumableArray(charts.map(function (c) {
 	        return c.uid;
 	      })));
 	      charts.forEach(processChart);
@@ -25246,26 +25179,26 @@
 	      * HTML by external system (e.g. server-side template) in update selection.
 	      */
 	    var exists = this instanceof window.HTMLElement,
-	        _prefix = (opts.prefix || "plot") + "-",
-	        uid = exists ? this.getAttribute("id").replace(_prefix, "") : null;
+	        _prefix = (opts.prefix || 'plot') + '-',
+	        uid = exists ? this.getAttribute('id').replace(_prefix, '') : null;
 	    return uid || (d ? d.uid : null);
 	  }
 	
 	  // If batched, as we cannot stream and do d3 data-join - process one-by-one:
-	  if (opts.batching === "geometric") {
+	  if (opts.batching === 'geometric') {
 	    loadReportBatched(container, url, opts, divKey);
 	    return;
 	  }
 	
 	  // non-batched, still use batchURLs just to get single cache-busting URL:
-	  url = batchURLs(url, "all", opts)[0];
+	  url = batchURLs(url, 'all', opts)[0];
 	
-	  forReportJSON(url, function (charts) {
+	  (0, _utils.forReportJSON)(url, function (charts) {
 	    var plotDivs;
 	    charts = charts.map(function (graph) {
-	      return new Chart(graph);
+	      return new _chartviz.Chart(graph);
 	    });
-	    plotDivs = container.selectAll("div.plotdiv").data(charts, divKey);
+	    plotDivs = container.selectAll('div.plotdiv').data(charts, divKey);
 	    // Update selection for any (if applicable) existing plot DIVs,
 	    //  -- this favors order set in HTML source over JSON:
 	    plotDivs.each(function (d, i) {
@@ -25274,9 +25207,9 @@
 	    });
 	    window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotDivs.size();
 	    // Enter selection to add remaining plot DIVs as needed:
-	    plotDivs.enter().append("div").classed("plotdiv", true).attr({
-	      id: function (chart) {
-	        return "" + opts.prefix + "-" + chart.uid;
+	    plotDivs.enter().append('div').classed('plotdiv', true).attr({
+	      id: function id(chart) {
+	        return opts.prefix + '-' + chart.uid;
 	      }
 	    }).each(function (d, i) {
 	      var plotDiv = d3.select(this);
@@ -25288,37 +25221,44 @@
 	function loadReports(opts) {
 	  // default options
 	  opts = opts || {};
-	  opts.interactive = opts.interactive || "true";
-	  opts.prefix = opts.prefix || "plot";
+	  opts.interactive = opts.interactive || 'true';
+	  opts.prefix = opts.prefix || 'plot';
 	  // Let the HTML drive what gets loaded: any element that contains
 	  // class of 'report-core' and 'data-report-json' should get
 	  // loaded with the URL listed in data-report-json.
-	  d3.select(".report-core").each(function (d, i) {
+	  d3.select('.report-core').each(function (d, i) {
 	    var container = d3.select(this),
-	        url = container.attr("data-report-json"),
-	        size = parseInt(container.attr("data-report-size"), 10),
+	        url = container.attr('data-report-json'),
+	        size = parseInt(container.attr('data-report-size'), 10),
 	        reportOptions = Object.create(opts);
-	    reportOptions.prefix = container.attr("data-report-prefix") || opts.prefix;
-	    reportOptions.batching = container.attr("data-report-batch-step") || "all";
+	    reportOptions.prefix = container.attr('data-report-prefix') || opts.prefix;
+	    reportOptions.batching = container.attr('data-report-batch-step') || 'all';
 	    reportOptions.size = isNaN(size) ? null : size;
 	    loadReport(container, url, reportOptions);
 	  });
 	}
-	exports.__esModule = true;
 
 /***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = exports.BaseRenderingPlugin = (function () {
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var BaseRenderingPlugin = (function () {
 	  function BaseRenderingPlugin(plotter) {
+	    _classCallCheck(this, BaseRenderingPlugin);
+	
 	    this.plotter = plotter;
 	    this.data = plotter.data;
 	    this.plotDiv = plotter.plotDiv;
@@ -25331,89 +25271,69 @@
 	    this.enabled = true; // default for all plugins
 	  }
 	
-	  _prototypeProperties(BaseRenderingPlugin, null, {
-	    preRender: {
-	      value: function preRender() {
-	        /** hook to be called after plotter.preRender, for things like plot
-	          * plot size or margin adjustment
-	          */
-	        this.plotCore = this.plotter.plotCore;
-	        this.svg = this.plotter.svg;
-	        this.plotGroup = this.plotter.plotGroup;
-	        this.abovePlotGroup = this.plotter.abovePlotGroup;
-	        this.xScale = this.plotter.xScale;
-	        this.yScale = this.plotter.yScale;
-	        this.margins = this.plotter.margins;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clear: {
-	      value: function clear() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    prepare: {
-	      value: function prepare() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        this.prepare();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    loadInteractiveFeatures: {
-	      value: function loadInteractiveFeatures() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    postRender: {
-	      value: function postRender() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    onComplete: {
-	      value: function onComplete() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    update: {
-	      value: function update() {
-	        this.clear();
-	        this.render();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(BaseRenderingPlugin, [{
+	    key: "preRender",
+	    value: function preRender() {
+	      /** hook to be called after plotter.preRender, for things like plot
+	        * plot size or margin adjustment
+	        */
+	      this.plotCore = this.plotter.plotCore;
+	      this.svg = this.plotter.svg;
+	      this.plotGroup = this.plotter.plotGroup;
+	      this.abovePlotGroup = this.plotter.abovePlotGroup;
+	      this.xScale = this.plotter.xScale;
+	      this.yScale = this.plotter.yScale;
+	      this.margins = this.plotter.margins;
 	    }
-	  });
+	  }, {
+	    key: "clear",
+	    value: function clear() {}
+	  }, {
+	    key: "prepare",
+	    value: function prepare() {
+	      /** optionally called by render() of a plugin, for late-initialized
+	        * stuff that needs to be done before core rendering, but after the
+	        * core NVD3 chart is rendered (things that cannot be done in preRender).
+	        */
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      this.prepare();
+	    }
+	  }, {
+	    key: "loadInteractiveFeatures",
+	    value: function loadInteractiveFeatures() {
+	      /** to be called only when relevant, called after rendering is complete;
+	        * plugins must unwind any event handling in their clear() method if
+	        * they create interactive features.  This will not be called when 
+	        * core plotter is not in an interactive mode.
+	        */
+	    }
+	  }, {
+	    key: "postRender",
+	    value: function postRender() {
+	      /** post-render hook for after-rendering adjustments */
+	    }
+	  }, {
+	    key: "onComplete",
+	    value: function onComplete() {
+	      /** hook for after completion, should be used sparingly for idemopotent
+	        * actions/notification: ideally should not modify state of plot.
+	        */
+	    }
+	  }, {
+	    key: "update",
+	    value: function update() {
+	      this.clear();
+	      this.render();
+	    }
+	  }]);
 	
 	  return BaseRenderingPlugin;
 	})();
-	exports.__esModule = true;
-	/** optionally called by render() of a plugin, for late-initialized
-	  * stuff that needs to be done before core rendering, but after the
-	  * core NVD3 chart is rendered (things that cannot be done in preRender).
-	  */
-	/** to be called only when relevant, called after rendering is complete;
-	  * plugins must unwind any event handling in their clear() method if
-	  * they create interactive features.  This will not be called when 
-	  * core plotter is not in an interactive mode.
-	  */
-	/** post-render hook for after-rendering adjustments */
-	/** hook for after completion, should be used sparingly for idemopotent
-	  * actions/notification: ideally should not modify state of plot.
-	  */
+	
+	exports.BaseRenderingPlugin = BaseRenderingPlugin;
 
 /***/ },
 /* 10 */
@@ -25438,17 +25358,29 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require */
 	
-	"use strict";var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	'use strict'; /*jshint -W097 */
 	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	exports.schematize = schematize;
-	/*jshint -W097 */
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var moment = __webpack_require__(4);
-	var Schema = exports.Schema = function Schema() {};
+	
+	var Schema = function Schema() {
+	  _classCallCheck(this, Schema);
+	};
+	
+	exports.Schema = Schema;
 	
 	function schematize(fields, schema) {
 	  var fieldset = [];
@@ -25465,9 +25397,11 @@
 	  return schema;
 	}
 	
-	var Field = exports.Field = (function () {
+	var Field = (function () {
 	  function Field(name, descriptor) {
-	    if (name == null) throw new Error("Field must be named");
+	    _classCallCheck(this, Field);
+	
+	    if (name == null) throw new Error('Field must be named');
 	    descriptor = descriptor || {};
 	    // field name, REQUIRED:
 	    this.name = name;
@@ -25488,79 +25422,90 @@
 	    this.defaultValue = descriptor.defaultValue;
 	  }
 	
-	  _prototypeProperties(Field, null, {
-	    validate: {
-	      value: function validate(value, obj) {
-	        var normalized = value,
-	            constraint = this.constraint;
-	        obj = obj || {};
+	  _createClass(Field, [{
+	    key: 'validate',
+	    value: function validate(value, obj) {
+	      var normalized = value,
+	          constraint = this.constraint;
+	      obj = obj || {};
 	
-	        if (value != null) {
-	          normalized = value;
-	          if (constraint) {
-	            normalized = constraint.call(this, value, obj) || value;
+	      if (value != null) {
+	        normalized = value;
+	        if (constraint) {
+	          normalized = constraint.call(this, value, obj) || value;
+	        }
+	      }
+	
+	      if (this.type && normalized != null) {
+	        if (typeof this.type === 'string') {
+	          if (typeof normalized !== this.type) {
+	            throw new ValidationTypeError(this, typeof normalized, 'Expected type: [' + this.type + ']');
+	          }
+	        } else if (typeof this.type === 'function') {
+	          if (!(normalized instanceof this.type)) {
+	            throw new ValidationTypeError(this, typeof normalized, 'Expected type: [' + this.type + ']');
 	          }
 	        }
+	      }
 	
-	        if (this.type && normalized != null) {
-	          if (typeof this.type === "string") {
-	            if (typeof normalized !== this.type) {
-	              throw new ValidationTypeError(this, typeof normalized, "Expected type: [" + this.type + "]");
-	            }
-	          } else if (typeof this.type === "function") {
-	            if (!(normalized instanceof this.type)) {
-	              throw new ValidationTypeError(this, typeof normalized, "Expected type: [" + this.type + "]");
-	            }
-	          }
+	      if (this.required && normalized == null) {
+	        if (this.defaultValue != null) {
+	          normalized = this.defaultValue;
+	        } else {
+	          throw new ValidationError(this, normalized, 'Required fields cannot be null');
 	        }
+	      }
 	
-	        if (this.required && normalized == null) {
-	          if (this.defaultValue != null) {
-	            normalized = this.defaultValue;
-	          } else {
-	            throw new ValidationError(this, normalized, "Required fields cannot be null");
-	          }
+	      if (this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
+	        if (this.required || normalized !== null) {
+	          throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
 	        }
+	      }
 	
-	        if (this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
-	          if (this.required || normalized !== null) {
-	            throw new ValidationError(this, normalized, "Allowed values: " + this.vocabulary);
-	          }
-	        }
-	
-	        return normalized;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	      return normalized;
 	    }
-	  });
+	  }]);
 	
 	  return Field;
 	})();
-	var ValidationError = exports.ValidationError = (function (Error) {
-	  function ValidationError(field, value, msg) {
-	    _get(Object.getPrototypeOf(ValidationError.prototype), "constructor", this).call(this);
-	    this.message = "Invalid value: " + value + " on field: " + field.name + (msg ? "! (" + msg + ")" : "!");
-	    this.name = "ValidationError";
-	  }
 	
-	  _inherits(ValidationError, Error);
+	exports.Field = Field;
+	
+	var ValidationError = (function (_Error) {
+	  _inherits(ValidationError, _Error);
+	
+	  function ValidationError(field, value, msg) {
+	    _classCallCheck(this, ValidationError);
+	
+	    _get(Object.getPrototypeOf(ValidationError.prototype), 'constructor', this).call(this);
+	    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationError';
+	  }
 	
 	  return ValidationError;
 	})(Error);
-	var ValidationTypeError = exports.ValidationTypeError = (function (TypeError) {
-	  function ValidationTypeError(field, type, msg) {
-	    _get(Object.getPrototypeOf(ValidationTypeError.prototype), "constructor", this).call(this);
-	    this.message = "Invalid type: [" + type + "] on field: " + field.name + (msg ? "! (" + msg + ")" : "!");
-	    this.name = "ValidationTypeError";
-	  }
 	
-	  _inherits(ValidationTypeError, TypeError);
+	exports.ValidationError = ValidationError;
+	
+	var ValidationTypeError = (function (_TypeError) {
+	  _inherits(ValidationTypeError, _TypeError);
+	
+	  function ValidationTypeError(field, type, msg) {
+	    _classCallCheck(this, ValidationTypeError);
+	
+	    _get(Object.getPrototypeOf(ValidationTypeError.prototype), 'constructor', this).call(this);
+	    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationTypeError';
+	  }
 	
 	  return ValidationTypeError;
 	})(TypeError);
-	var Klass = exports.Klass = function Klass(obj) {
+	
+	exports.ValidationTypeError = ValidationTypeError;
+	
+	var Klass = function Klass(obj, localprops) {
+	  _classCallCheck(this, Klass);
+	
 	  obj = obj || {};
 	  var schema = obj.schema || schematize(obj, {});
 	  this.schema = schema;
@@ -25569,20 +25514,20 @@
 	    return {
 	      enumerable: true,
 	      configurable: true,
-	      get: function () {
+	      get: function get() {
 	        if (field.required && value == null) {
 	          return field.defaultValue; // stored value is null or undef
 	        }
 	        return value;
 	      },
-	      set: function (v) {
+	      set: function set(v) {
 	        value = field.validate(v, o);
 	      }
 	    };
 	  }
 	  Object.keys(schema).forEach(function (field) {
 	    var fieldname = schema[field].name;
-	    if ((this.localprops || []).indexOf(fieldname) !== -1) {
+	    if ((localprops || []).indexOf(fieldname) !== -1) {
 	      return; // do not use schema property descriptor for this field
 	    }
 	    Object.defineProperty(this, fieldname, descriptor(schema[field], this));
@@ -25593,88 +25538,100 @@
 	  }, this);
 	};
 	
-	exports.__esModule = true;
+	exports.Klass = Klass;
 
 /***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require */
 	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
 	var _classvizEs6Js = __webpack_require__(11);
 	
-	var Schema = _classvizEs6Js.Schema;
-	var schematize = _classvizEs6Js.schematize;
-	var ValidationError = _classvizEs6Js.ValidationError;
-	var ValidationTypeError = _classvizEs6Js.ValidationTypeError;
-	var parseDate = __webpack_require__(6).parseDate;
-	
+	var _utilsEs6Js = __webpack_require__(6);
 	
 	function dateTypeConstraint(value) {
-	  var m = parseDate(value, true);
+	  var m = (0, _utilsEs6Js.parseDate)(value, true);
 	  if (!m.isValid()) return null;
 	  return m.toDate();
 	}
 	
-	var DataPointSchema = exports.DataPointSchema = (function (Schema) {
+	var DataPointSchema = (function (_Schema) {
+	  _inherits(DataPointSchema, _Schema);
+	
 	  function DataPointSchema() {
-	    _get(Object.getPrototypeOf(DataPointSchema.prototype), "constructor", this).call(this);
-	    schematize({
+	    _classCallCheck(this, DataPointSchema);
+	
+	    _get(Object.getPrototypeOf(DataPointSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
 	      key: {
-	        title: "Data point key",
-	        type: "string",
+	        title: 'Data point key',
+	        type: 'string',
 	        required: true
 	      },
 	      value: {
-	        title: "Data point value",
-	        type: "number",
+	        title: 'Data point value',
+	        type: 'number',
 	        required: false // null value means explicitly N/A for key
 	      },
 	      title: {
-	        title: "Descriptive label (for key)",
-	        type: "string",
-	        required: false },
+	        title: 'Descriptive label (for key)',
+	        type: 'string',
+	        required: false
+	      },
 	      valueLabel: {
-	        title: "Value label",
-	        description: "May be used for N= labels for denominator value",
-	        type: "string",
+	        title: 'Value label',
+	        description: 'May be used for N= labels for denominator value',
+	        type: 'string',
 	        required: false
 	      },
 	      note: {
-	        title: "Data point note",
-	        description: "Descriptive note, used in interactive features",
-	        type: "string",
-	        defaultValue: ""
+	        title: 'Data point note',
+	        description: 'Descriptive note, used in interactive features',
+	        type: 'string',
+	        defaultValue: ''
 	      },
 	      uri: {
-	        title: "Data point URI",
-	        description: "Link to data source for point",
-	        type: "string",
+	        title: 'Data point URI',
+	        description: 'Link to data source for point',
+	        type: 'string',
 	        required: false
 	      }
 	    }, this);
 	  }
 	
-	  _inherits(DataPointSchema, Schema);
-	
 	  return DataPointSchema;
-	})(Schema);
-	var dataPointSchema = exports.dataPointSchema = new DataPointSchema();
+	})(_classvizEs6Js.Schema);
 	
-	var TimeDataPointSchema = exports.TimeDataPointSchema = (function (DataPointSchema) {
+	exports.DataPointSchema = DataPointSchema;
+	var dataPointSchema = new DataPointSchema();
+	
+	exports.dataPointSchema = dataPointSchema;
+	
+	var TimeDataPointSchema = (function (_DataPointSchema) {
+	  _inherits(TimeDataPointSchema, _DataPointSchema);
+	
 	  function TimeDataPointSchema() {
-	    _get(Object.getPrototypeOf(TimeDataPointSchema.prototype), "constructor", this).call(this);
-	    schematize({
+	    _classCallCheck(this, TimeDataPointSchema);
+	
+	    _get(Object.getPrototypeOf(TimeDataPointSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
 	      key: {
-	        title: "Date key",
-	        description: "Time series data point key (Date value); " + "should be naive dates stored as localtime.",
+	        title: 'Date key',
+	        description: 'Time series data point key (Date value); ' + 'should be naive dates stored as localtime.',
 	        type: Date,
 	        required: true,
 	        constraint: dateTypeConstraint
@@ -25682,168 +25639,186 @@
 	    }, this);
 	  }
 	
-	  _inherits(TimeDataPointSchema, DataPointSchema);
-	
 	  return TimeDataPointSchema;
 	})(DataPointSchema);
-	var timeDataPointSchema = exports.timeDataPointSchema = new TimeDataPointSchema();
 	
-	var DataSeriesSchema = exports.DataSeriesSchema = (function (Schema) {
+	exports.TimeDataPointSchema = TimeDataPointSchema;
+	var timeDataPointSchema = new TimeDataPointSchema();
+	
+	exports.timeDataPointSchema = timeDataPointSchema;
+	
+	var DataSeriesSchema = (function (_Schema2) {
+	  _inherits(DataSeriesSchema, _Schema2);
+	
 	  function DataSeriesSchema() {
-	    _get(Object.getPrototypeOf(DataSeriesSchema.prototype), "constructor", this).call(this);
-	    schematize({
+	    _classCallCheck(this, DataSeriesSchema);
+	
+	    _get(Object.getPrototypeOf(DataSeriesSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
 	      title: {
-	        title: "Series title",
-	        description: "Series/line name or title",
-	        type: "string",
+	        title: 'Series title',
+	        description: 'Series/line name or title',
+	        type: 'string',
 	        required: false
 	      },
 	      description: {
-	        title: "Series description",
-	        description: "Descriptive text metadata about series, often" + "is empty or unused",
-	        type: "string",
+	        title: 'Series description',
+	        description: 'Descriptive text metadata about series, often' + 'is empty or unused',
+	        type: 'string',
 	        required: false
 	      },
 	      line_width: {
-	        title: "Line width",
-	        description: "Line width (in relative px units) Considered " + "in line plots only, ignored otherwise.",
-	        type: "number",
+	        title: 'Line width',
+	        description: 'Line width (in relative px units) Considered ' + 'in line plots only, ignored otherwise.',
+	        type: 'number',
 	        required: false,
-	        defaultValue: 2
+	        defaultValue: 2.0
 	      },
 	      color: {
-	        title: "Line/bar color",
-	        description: "Primary series color name or HTML color code; " + "if unspecified (\"Auto\" default), defer to " + "automatic default color palette choices.",
-	        type: "string",
-	        defaultValue: "auto",
+	        title: 'Line/bar color',
+	        description: 'Primary series color name or HTML color code; ' + 'if unspecified ("Auto" default), defer to ' + 'automatic default color palette choices.',
+	        type: 'string',
+	        defaultValue: 'auto',
 	        required: false
 	      },
 	      marker_color: {
-	        title: "Point marker fill color",
-	        description: "Data point marker color name or code; " + "if unspecified (\"Auto\" default), defer to " + "match the line/bar color.",
-	        type: "string",
+	        title: 'Point marker fill color',
+	        description: 'Data point marker color name or code; ' + 'if unspecified ("Auto" default), defer to ' + 'match the line/bar color.',
+	        type: 'string',
 	        defaultValue: "Auto",
 	        required: false
 	      },
 	      marker_size: {
-	        title: "Marker size",
-	        description: "Marker size (in relative px units) Considered " + "in line plots only, ignored otherwise.",
-	        type: "number",
+	        title: 'Marker size',
+	        description: 'Marker size (in relative px units) Considered ' + 'in line plots only, ignored otherwise.',
+	        type: 'number',
 	        required: false,
-	        defaultValue: 9
+	        defaultValue: 9.0
 	      },
 	      marker_width: {
-	        title: "Marker stroke width",
-	        description: "Marker stroke width (in relative px units) " + "Considered in line plots only, ignored " + "otherwise.  Currently only used for marker " + "style/shape that is not filled.",
-	        type: "number",
+	        title: 'Marker stroke width',
+	        description: 'Marker stroke width (in relative px units) ' + 'Considered in line plots only, ignored ' + 'otherwise.  Currently only used for marker ' + 'style/shape that is not filled.',
+	        type: 'number',
 	        required: false,
-	        defaultValue: 2
+	        defaultValue: 2.0
 	      },
 	      marker_style: {
-	        title: "Marker shape style",
-	        description: "Marker shape, selected from enumerated " + "vocabulary of allowable choices.",
-	        type: "string",
-	        constraint: function (value, obj) {
+	        title: 'Marker shape style',
+	        description: 'Marker shape, selected from enumerated ' + 'vocabulary of allowable choices.',
+	        type: 'string',
+	        constraint: function constraint(value, obj) {
 	          //if(value === 'x') return 'cross';
-	          if (value === "filledCircle") {
+	          if (value === 'filledCircle') {
 	            obj.filled = true;
-	            return "circle";
+	            return 'circle';
 	          }
-	          if (value === "filledSquare") {
+	          if (value === 'filledSquare') {
 	            obj.filled = true;
-	            return "square";
+	            return 'square';
 	          }
-	          if (value === "filledDiamond") {
+	          if (value === 'filledDiamond') {
 	            obj.filled = true;
-	            return "diamond";
+	            return 'diamond';
 	          }
 	        },
-	        vocabulary: ["x", "diamond", "circle", "square", "cross", "plus", "dash", "triangle-up", "triangle-down"],
+	        vocabulary: ['x', 'diamond', 'circle', 'square', 'cross', 'plus', 'dash', 'triangle-up', 'triangle-down'],
 	        required: false,
-	        defaultValue: "square"
+	        defaultValue: 'square'
 	      },
 	      show_trend: {
-	        title: "Show trend line?",
-	        type: "boolean",
+	        title: 'Show trend line?',
+	        type: 'boolean',
 	        defaultValue: false
 	      },
 	      trend_width: {
-	        title: "Trend line width, if applicable",
-	        type: "number",
-	        defaultValue: 2
+	        title: 'Trend line width, if applicable',
+	        type: 'number',
+	        defaultValue: 2.0
 	      },
 	      trend_color: {
-	        title: "Trend line color, if applicable",
-	        description: "Trend line color name or code; " + "if unspecified (\"Auto\" default), defer to " + "match the line/bar color.",
-	        type: "string",
+	        title: 'Trend line color, if applicable',
+	        description: 'Trend line color name or code; ' + 'if unspecified ("Auto" default), defer to ' + 'match the line/bar color.',
+	        type: 'string',
 	        defaultValue: "Auto"
 	      },
 	      point_labels: {
-	        title: "Show point labels?",
-	        description: "Show labels above each marker for data value? " + "The default value of defer obeys plot-wide " + "setting, where show/omit explicitly do as " + "described.",
-	        type: "string",
-	        vocabulary: ["defer", "omit", "show"],
-	        defaultValue: "defer"
+	        title: 'Show point labels?',
+	        description: 'Show labels above each marker for data value? ' + 'The default value of defer obeys plot-wide ' + 'setting, where show/omit explicitly do as ' + 'described.',
+	        type: 'string',
+	        vocabulary: ['defer', 'omit', 'show'],
+	        defaultValue: 'defer'
 	      },
 	      display_format: {
-	        title: "Display format for y values",
-	        description: "Standard formatting string",
-	        type: "string",
-	        defaultValue: "%%.%if"
+	        title: 'Display format for y values',
+	        description: 'Standard formatting string',
+	        type: 'string',
+	        defaultValue: '%%.%if'
 	      }
 	    }, this);
 	  }
-	
-	  _inherits(DataSeriesSchema, Schema);
 	
 	  return DataSeriesSchema;
-	})(Schema);
-	var dataSeriesSchema = exports.dataSeriesSchema = new DataSeriesSchema();
+	})(_classvizEs6Js.Schema);
 	
-	var TimeDataSeriesSchema = exports.TimeDataSeriesSchema = (function (DataSeriesSchema) {
+	exports.DataSeriesSchema = DataSeriesSchema;
+	var dataSeriesSchema = new DataSeriesSchema();
+	
+	exports.dataSeriesSchema = dataSeriesSchema;
+	
+	var TimeDataSeriesSchema = (function (_DataSeriesSchema) {
+	  _inherits(TimeDataSeriesSchema, _DataSeriesSchema);
+	
 	  function TimeDataSeriesSchema() {
-	    _get(Object.getPrototypeOf(TimeDataSeriesSchema.prototype), "constructor", this).call(this);
-	    schematize({
+	    _classCallCheck(this, TimeDataSeriesSchema);
+	
+	    _get(Object.getPrototypeOf(TimeDataSeriesSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
 	      break_lines: {
-	        title: "Break lines?",
-	        description: "When a value is missing for name or date on the " + "X axis, should the line be broken/discontinuous " + "such that no line runs through the empty/null " + "value?  This defaults to true, which means that " + "no line will run from adjacent values through the " + "missing value.  For purposes of tabular legend, " + "any value without a data-source should render \"--\" " + "and any null value (specifying N/A or NaN value) " + "should display as N/A.  At future date, we may " + "wish to add other options for this case, such as " + "drawing a dotted-line through the N/A period that " + "breaks continuity of contiguous points.  Ideally, " + "any such rendering behavior avoids depending on a " + "fixed frequency for a time-series plot.",
-	        type: "string",
-	        constraint: function (value) {
-	          if (typeof value === "boolean") return value ? "dashed" : "solid";
+	        title: 'Break lines?',
+	        description: 'When a value is missing for name or date on the ' + 'X axis, should the line be broken/discontinuous ' + 'such that no line runs through the empty/null ' + 'value?  This defaults to true, which means that ' + 'no line will run from adjacent values through the ' + 'missing value.  For purposes of tabular legend, ' + 'any value without a data-source should render "--" ' + 'and any null value (specifying N/A or NaN value) ' + 'should display as N/A.  At future date, we may ' + 'wish to add other options for this case, such as ' + 'drawing a dotted-line through the N/A period that ' + 'breaks continuity of contiguous points.  Ideally, ' + 'any such rendering behavior avoids depending on a ' + 'fixed frequency for a time-series plot.',
+	        type: 'string',
+	        constraint: function constraint(value) {
+	          if (typeof value === 'boolean') return value ? 'dashed' : 'solid';
 	        },
-	        vocabulary: ["hidden", "solid", "dashed"],
-	        defaultValue: "dashed"
+	        vocabulary: ['hidden', 'solid', 'dashed'],
+	        defaultValue: 'dashed'
 	      }
 	    }, this);
 	  }
-	
-	  _inherits(TimeDataSeriesSchema, DataSeriesSchema);
 	
 	  return TimeDataSeriesSchema;
 	})(DataSeriesSchema);
-	var timeDataSeriesSchema = exports.timeDataSeriesSchema = new TimeDataSeriesSchema();
 	
-	var MultiSeriesChartSchema = exports.MultiSeriesChartSchema = (function (Schema) {
+	exports.TimeDataSeriesSchema = TimeDataSeriesSchema;
+	var timeDataSeriesSchema = new TimeDataSeriesSchema();
+	
+	exports.timeDataSeriesSchema = timeDataSeriesSchema;
+	
+	var MultiSeriesChartSchema = (function (_Schema3) {
+	  _inherits(MultiSeriesChartSchema, _Schema3);
+	
 	  function MultiSeriesChartSchema() {
-	    _get(Object.getPrototypeOf(MultiSeriesChartSchema.prototype), "constructor", this).call(this);
-	    schematize({
+	    _classCallCheck(this, MultiSeriesChartSchema);
+	
+	    _get(Object.getPrototypeOf(MultiSeriesChartSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
 	      // Identifiction: shortname and uid
 	      name: {
-	        title: "Short name",
-	        description: "Short name of plot, unique only to report it " + "is contained within, usually descriptive, " + "like a filename; often transformed from " + "title.  May be present in JSON, but usually " + "is not preferred for identification or " + "data binding vs. UID; may be used in URL " + "construction, but in itself does not contain " + "full context or URI.",
-	        type: "string",
+	        title: 'Short name',
+	        description: 'Short name of plot, unique only to report it ' + 'is contained within, usually descriptive, ' + 'like a filename; often transformed from ' + 'title.  May be present in JSON, but usually ' + 'is not preferred for identification or ' + 'data binding vs. UID; may be used in URL ' + 'construction, but in itself does not contain ' + 'full context or URI.',
+	        type: 'string',
 	        required: false
 	      },
 	      uid: {
-	        title: "UID",
-	        description: "UUID (hexidecimal representation) of chart, " + "based on UUID of chart content in Teamspace " + "CMS system.  May or may not be in canonical " + "RFC 4122 format (with dashes) or unfieled " + "hexidecimal format (usually, no dashes).",
-	        type: "string",
+	        title: 'UID',
+	        description: 'UUID (hexidecimal representation) of chart, ' + 'based on UUID of chart content in Teamspace ' + 'CMS system.  May or may not be in canonical ' + 'RFC 4122 format (with dashes) or unfieled ' + 'hexidecimal format (usually, no dashes).',
+	        type: 'string',
 	        required: false
 	      },
 	      url: {
-	        title: "Chart URL",
-	        description: "Base URL to chart content",
-	        type: "string",
+	        title: 'Chart URL',
+	        description: 'Base URL to chart content',
+	        type: 'string',
 	        required: false
 	      },
 	      // Basic metadata -- may be rendered in template in HTML source
@@ -25854,283 +25829,301 @@
 	      //                   *ignoring* title, description even though
 	      //                   they are provided in JSON.
 	      title: {
-	        title: "Title",
-	        description: "Data collection name or title; may be " + "displayed in legend.",
-	        type: "string",
+	        title: 'Title',
+	        description: 'Data collection name or title; may be ' + 'displayed in legend.',
+	        type: 'string',
 	        required: false
 	      },
 	      description: {
-	        title: "Description",
-	        description: "Textual description of the data collection.",
-	        type: "string",
+	        title: 'Description',
+	        description: 'Textual description of the data collection.',
+	        type: 'string',
 	        required: false
 	      },
 	      info: {
-	        title: "Informative notes / caption",
-	        description: "This allows any rich text and may contain " + "free-form notes about this chart; displayed " + "in report output.  NOTE: this is NOT included " + "in JSON as of September 2014, and is instead " + "rendered server-side in template -- it may be " + "included in future JSON feeds.",
-	        type: "string",
+	        title: 'Informative notes / caption',
+	        description: 'This allows any rich text and may contain ' + 'free-form notes about this chart; displayed ' + 'in report output.  NOTE: this is NOT included ' + 'in JSON as of September 2014, and is instead ' + 'rendered server-side in template -- it may be ' + 'included in future JSON feeds.',
+	        type: 'string',
 	        required: false
 	      },
 	      // Type of plot:
 	      chart_type: {
-	        title: "Chart type",
-	        description: "Type of chart to display (line or bar).",
-	        type: "string",
-	        vocabulary: ["line", "bar"],
-	        defaultValue: "line",
+	        title: 'Chart type',
+	        description: 'Type of chart to display (line or bar).',
+	        type: 'string',
+	        vocabulary: ['line', 'bar'],
+	        defaultValue: 'line',
 	        required: true
 	      },
 	      // Plot sizing: favor aspect_ratio over height, if provided
 	      width: {
-	        title: "Width",
-	        description: "Display width of chart, including Y-axis " + "labels, grid, and legend (if applicable) in " + "units configured.",
-	        type: "number",
-	        defaultValue: "100",
+	        title: 'Width',
+	        description: 'Display width of chart, including Y-axis ' + 'labels, grid, and legend (if applicable) in ' + 'units configured.',
+	        type: 'number',
+	        defaultValue: '100',
 	        required: true
 	      },
 	      width_units: {
-	        title: "Units of width",
-	        description: "",
-	        type: "string",
-	        defaultValue: "%",
+	        title: 'Units of width',
+	        description: '',
+	        type: 'string',
+	        defaultValue: '%',
 	        required: true
 	      },
 	      height: {
-	        title: "Height",
-	        description: "Display height of chart in units configured " + "(either as percentage of width, or in pixels) " + " -- used when aspect_ratio not specified.",
-	        type: "number",
-	        defaultValue: "50",
+	        title: 'Height',
+	        description: 'Display height of chart in units configured ' + '(either as percentage of width, or in pixels) ' + ' -- used when aspect_ratio not specified.',
+	        type: 'number',
+	        defaultValue: '50',
 	        required: true
 	      },
 	      height_units: {
-	        title: "Units of height",
-	        description: "Ignore unless aspect ratio not provided or " + "value of height_units is % or px.",
-	        type: "string",
-	        defaultValue: "2:1", // prefer aspect_ratio field to this
+	        title: 'Units of height',
+	        description: 'Ignore unless aspect ratio not provided or ' + 'value of height_units is % or px.',
+	        type: 'string',
+	        defaultValue: '2:1', // prefer aspect_ratio field to this
 	        required: true
 	      },
 	      aspect_ratio: {
-	        title: "Aspect ratio",
-	        description: "Preferred ratio of width to height, should " + "control height of containing div, if present.",
+	        title: 'Aspect ratio',
+	        description: 'Preferred ratio of width to height, should ' + 'control height of containing div, if present.',
 	        type: Array,
 	        required: false,
-	        constraint: function (value) {
+	        constraint: function constraint(value) {
 	          // validate that value is indeed a two-item Array of num.
-	          if (value.length !== 2) throw new ValidationError(this, value, "Aspect ratio must be a two element Array");
-	          if (typeof value[0] !== "number" || typeof value[1] !== "number") throw new ValidationTypeError(this, typeof value[0] + " " + typeof value[1], "Both elements of aspect ratio must be numbers");
+	          if (value.length !== 2) throw new _classvizEs6Js.ValidationError(this, value, 'Aspect ratio must be a two element Array');
+	          if (typeof value[0] !== 'number' || typeof value[1] !== 'number') throw new _classvizEs6Js.ValidationTypeError(this, typeof value[0] + ' ' + typeof value[1], 'Both elements of aspect ratio must be numbers');
 	        }
 	      },
 	      range_min: {
-	        title: "Range minimum",
-	        description: "Minimum anticipated value of any data point " + "(optional; if not specified, calculate from " + "available data on all contained series).",
-	        type: "number",
-	        constraint: function (value, obj) {
+	        title: 'Range minimum',
+	        description: 'Minimum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
+	        type: 'number',
+	        constraint: function constraint(value, obj) {
 	          var max = obj.range_max != null ? obj.range_max : null;
-	          if (value > max) throw new ValidationError(this, value, "range_min must be less than or equal to range_max");
+	          if (value > max) throw new _classvizEs6Js.ValidationError(this, value, 'range_min must be less than or equal to range_max');
 	          return value;
 	        },
 	        required: false
 	      },
 	      range_max: {
-	        title: "Range maximum",
-	        description: "Maximum anticipated value of any data point " + "(optional; if not specified, calculate from " + "available data on all contained series).",
-	        type: "number",
-	        constraint: function (value, obj) {
+	        title: 'Range maximum',
+	        description: 'Maximum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
+	        type: 'number',
+	        constraint: function constraint(value, obj) {
 	          var min = obj.range_min != null ? obj.range_min : null;
-	          if (value < min) throw new ValidationError(this, value, "range_max must be greater than or equal to range_min");
+	          if (value < min) throw new _classvizEs6Js.ValidationError(this, value, 'range_max must be greater than or equal to range_min');
 	          return value;
 	        },
 	        required: false
 	      },
 	      units: {
-	        title: "Units",
-	        description: "Common set of units of measure for the data " + "series in this collection.  If the units for " + "series are not shared, then define respective " + "units on the series themselves. May be " + "displayed as part of Y-axis label using a " + "parenthetical notation of both units and " + "y_label are provided.",
-	        type: "string",
+	        title: 'Units',
+	        description: 'Common set of units of measure for the data ' + 'series in this collection.  If the units for ' + 'series are not shared, then define respective ' + 'units on the series themselves. May be ' + 'displayed as part of Y-axis label using a ' + 'parenthetical notation of both units and ' + 'y_label are provided.',
+	        type: 'string',
 	        required: false
 	      },
 	      y_label: {
-	        title: "Y axis label",
-	        description: "Primary Y-Axis label/title (descriptive); " + "this is often omitted since axis is often " + "self-describing (especially when units are " + "percentages).  If omitted, do not allocate " + "space in plot for label. If included, " + "render text at 90-degree rotation " + "(counter-clockwise, with text bottom-to-top).",
-	        type: "string",
-	        defaultValue: "",
+	        title: 'Y axis label',
+	        description: 'Primary Y-Axis label/title (descriptive); ' + 'this is often omitted since axis is often ' + 'self-describing (especially when units are ' + 'percentages).  If omitted, do not allocate ' + 'space in plot for label. If included, ' + 'render text at 90-degree rotation ' + '(counter-clockwise, with text bottom-to-top).',
+	        type: 'string',
+	        defaultValue: '',
 	        required: false
 	      },
 	      // Goal line: value (if defined), color:
 	      goal: {
-	        title: "Goal",
-	        description: "Common goal value as decimal number.  If each " + "series has different respective goals, edit " + "those goals on each series.  If goal is " + "undefined or null, omit display of goal line.",
-	        type: "number",
+	        title: 'Goal',
+	        description: 'Common goal value as decimal number.  If each ' + 'series has different respective goals, edit ' + 'those goals on each series.  If goal is ' + 'undefined or null, omit display of goal line.',
+	        type: 'number',
 	        required: false
 	      },
 	      goal_color: {
-	        title: "Goal-line color",
-	        description: "If omitted, color will be selected from " + "defaults.",
-	        type: "string",
+	        title: 'Goal-line color',
+	        description: 'If omitted, color will be selected from ' + 'defaults.',
+	        type: 'string',
 	        defaultValue: "Auto",
 	        required: false
 	      },
 	      // Legend configuration:
 	      legend_placement: {
-	        title: "Legend placement",
-	        description: "Where to place legend in relationship to the " + "grid. Note: the legend is disabled for less " + "than two series/line unless the tabular " + "legend is selected.",
-	        type: "string",
-	        vocabulary: ["tabular", // (def) aligned value table below grid
-	        "outside", // outside grid, next most common
-	        "inside" // inside grid, rarely used
+	        title: 'Legend placement',
+	        description: 'Where to place legend in relationship to the ' + 'grid. Note: the legend is disabled for less ' + 'than two series/line unless the tabular ' + 'legend is selected.',
+	        type: 'string',
+	        vocabulary: ['tabular', // (def) aligned value table below grid
+	        'outside', // outside grid, next most common
+	        'inside' // inside grid, rarely used
 	        ],
-	        defaultValue: "outside",
+	        defaultValue: 'outside',
 	        required: false
 	      },
 	      legend_location: {
-	        title: "Legend location",
-	        description: "Select a directional position for legend. " + "This setting is ignored if either the tabular " + "legend placement is selected or if the legend " + "is hidden (for less than two series). " + "Available choices are cardinal directions, " + "which is a hold-over from how jqPlot idioms.",
-	        type: "string",
-	        vocabulary: ["n", // top
-	        "e", // right of grid, vertical align at middle
-	        "w", // left of grid, vertical align at middle //DEPRECATED
-	        "s", // bottom, below plot //DEPRECATED
-	        "nw", // left of grid, top-aligned //DEPRECATED
-	        "ne", // right of grid, top-aligned
-	        "sw", // left of grid, bottom-aligned //DEPRECATED
-	        "se" // right of grid, bottom-aligned
+	        title: 'Legend location',
+	        description: 'Select a directional position for legend. ' + 'This setting is ignored if either the tabular ' + 'legend placement is selected or if the legend ' + 'is hidden (for less than two series). ' + 'Available choices are cardinal directions, ' + 'which is a hold-over from how jqPlot idioms.',
+	        type: 'string',
+	        vocabulary: ['n', // top
+	        'e', // right of grid, vertical align at middle
+	        'w', // left of grid, vertical align at middle //DEPRECATED
+	        's', // bottom, below plot //DEPRECATED
+	        'nw', // left of grid, top-aligned //DEPRECATED
+	        'ne', // right of grid, top-aligned
+	        'sw', // left of grid, bottom-aligned //DEPRECATED
+	        'se' // right of grid, bottom-aligned
 	        ],
-	        defaultValue: "e",
+	        defaultValue: 'e',
 	        required: false
 	      },
 	      // X-axis (title label):
 	      x_label: {
-	        title: "X axis label",
-	        description: "Label for X-axis, optional.",
-	        type: "string",
-	        defaultValue: "",
+	        title: 'X axis label',
+	        description: 'Label for X-axis, optional.',
+	        type: 'string',
+	        defaultValue: '',
 	        required: false
 	      },
 	      // misc:
 	      css: {
-	        title: "Chart styles",
-	        description: "CSS stylesheet rules for chart (optional).",
-	        type: "string",
+	        title: 'Chart styles',
+	        description: 'CSS stylesheet rules for chart (optional).',
+	        type: 'string',
 	        required: false
 	      },
 	      point_labels: {
-	        title: "Show point labels?",
-	        description: "Show labels above data-point markers?  This " + "may be overridden on individual lines/series. " + "If omitted, the usual assumption is that " + "a viewer in a browser must hover over a " + "point to see its value, and click for detail. " + "The primary usability question with this is " + "what to do with overlapping values from two " + "lines, which is why we omit usually (or have " + "an idiom of displaying just labels for the " + "first/primary line on the plot, not plot-wide.",
-	        type: "string",
-	        vocabulary: ["show", "omit"],
-	        defaultValue: "omit",
+	        title: 'Show point labels?',
+	        description: 'Show labels above data-point markers?  This ' + 'may be overridden on individual lines/series. ' + 'If omitted, the usual assumption is that ' + 'a viewer in a browser must hover over a ' + 'point to see its value, and click for detail. ' + 'The primary usability question with this is ' + 'what to do with overlapping values from two ' + 'lines, which is why we omit usually (or have ' + 'an idiom of displaying just labels for the ' + 'first/primary line on the plot, not plot-wide.',
+	        type: 'string',
+	        vocabulary: ['show', 'omit'],
+	        defaultValue: 'omit',
 	        required: true
 	      }
 	    }, this);
 	  }
 	
-	  _inherits(MultiSeriesChartSchema, Schema);
-	
 	  return MultiSeriesChartSchema;
-	})(Schema);
-	var multiSeriesChartSchema = exports.multiSeriesChartSchema = new MultiSeriesChartSchema();
+	})(_classvizEs6Js.Schema);
 	
-	var TimeSeriesChartSchema = exports.TimeSeriesChartSchema = (function (MultiSeriesChartSchema) {
+	exports.MultiSeriesChartSchema = MultiSeriesChartSchema;
+	var multiSeriesChartSchema = new MultiSeriesChartSchema();
+	
+	exports.multiSeriesChartSchema = multiSeriesChartSchema;
+	
+	var TimeSeriesChartSchema = (function (_MultiSeriesChartSchema) {
+	  _inherits(TimeSeriesChartSchema, _MultiSeriesChartSchema);
+	
 	  function TimeSeriesChartSchema() {
-	    _get(Object.getPrototypeOf(TimeSeriesChartSchema.prototype), "constructor", this).call(this);
-	    schematize({
+	    _classCallCheck(this, TimeSeriesChartSchema);
+	
+	    _get(Object.getPrototypeOf(TimeSeriesChartSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
 	      frequency: {
-	        title: "Frequency",
-	        description: "Frequncy between periods of reporting that " + "the plot visualizes.  May be used as cue for " + "handling the default date-label choices, " + "where month names are often stand-ins for " + "an exemplar date value for the month, e.g. " + "2014-06-01 may be represented as \"Jun 2014\". ",
-	        type: "string",
-	        vocabulary: ["monthly", "weekly", "yearly", "quarterly", "daily"],
-	        defaultValue: "monthly",
+	        title: 'Frequency',
+	        description: 'Frequncy between periods of reporting that ' + 'the plot visualizes.  May be used as cue for ' + 'handling the default date-label choices, ' + 'where month names are often stand-ins for ' + 'an exemplar date value for the month, e.g. ' + '2014-06-01 may be represented as "Jun 2014". ',
+	        type: 'string',
+	        vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly', 'daily'],
+	        defaultValue: 'monthly',
 	        required: false
 	      },
 	      start: {
-	        title: "Start date",
-	        description: "Explicit start date; optional.  If an " + "explicit start date is not provided, one " + "should be computed from earliest value in " + "provided data.",
+	        title: 'Start date',
+	        description: 'Explicit start date; optional.  If an ' + 'explicit start date is not provided, one ' + 'should be computed from earliest value in ' + 'provided data.',
 	        type: Date,
-	        constraint: function (value, obj) {
+	        constraint: function constraint(value, obj) {
 	          value = dateTypeConstraint(value);
 	          var end = obj.end;
 	          if (end == null) return value;
-	          if (value > end) throw new ValidationError(this, value, "Start date cannot be after end date");
+	          if (value > end) throw new _classvizEs6Js.ValidationError(this, value, 'Start date cannot be after end date');
 	          return value;
 	        },
 	        required: false
 	      },
 	      end: {
-	        title: "End date",
-	        description: "Explicit end date; optional.  If an " + "explicit end date is not provided, one " + "should be computed from latest value in " + "provided data.",
+	        title: 'End date',
+	        description: 'Explicit end date; optional.  If an ' + 'explicit end date is not provided, one ' + 'should be computed from latest value in ' + 'provided data.',
 	        type: Date,
-	        constraint: function (value, obj) {
+	        constraint: function constraint(value, obj) {
 	          value = dateTypeConstraint(value);
 	          var start = obj.start;
 	          if (start == null) return value;
-	          if (value < start) throw new ValidationError(this, value, "End date cannot be before start date");
+	          if (value < start) throw new _classvizEs6Js.ValidationError(this, value, 'End date cannot be before start date');
 	          return value;
 	        },
 	        required: false
 	      },
 	      labels: {
-	        title: "Date labels",
-	        description: "Date label overrides, used for X-axis labels. " + "if ommitted in whole or in part, use a " + "default MM/DD/YYYY format for dates. Is an " + "untyped object value used as key/vaule pair; " + "keys are ISO 8601 date stamps, values labels; " + "example: http://snag.gy/D1zjx.jpg",
+	        title: 'Date labels',
+	        description: 'Date label overrides, used for X-axis labels. ' + 'if ommitted in whole or in part, use a ' + 'default MM/DD/YYYY format for dates. Is an ' + 'untyped object value used as key/vaule pair; ' + 'keys are ISO 8601 date stamps, values labels; ' + 'example: http://snag.gy/D1zjx.jpg',
 	        type: Object,
-	        constraint: function (value) {
+	        constraint: function constraint(value) {
 	          // validate the object key/value pairs:
 	          Object.keys(value).forEach(function (k) {
 	            var v = value[k];
-	            if (!parseDate(k, true).isValid()) throw new ValidationError(this, value, "Key is not a valid Datestamp: " + k);
-	            if (typeof v !== "string") throw new ValidationTypeError(this, typeof v, "Labels must be strings");
+	            if (!(0, _utilsEs6Js.parseDate)(k, true).isValid()) throw new _classvizEs6Js.ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
+	            if (typeof v !== 'string') throw new _classvizEs6Js.ValidationTypeError(this, typeof v, 'Labels must be strings');
 	          }, this);
 	        },
 	        required: false
 	      },
 	      auto_crop: {
-	        title: "Auto-crop data?",
-	        description: "If data contains sequential null values (incomplete " + "or no data calculable) on the right-hand of a " + "time-series plot, should that right-hand side " + "be cropped to only show the latest meaningful " + "data?  The default is to crop automatically.",
-	        type: "boolean",
+	        title: 'Auto-crop data?',
+	        description: 'If data contains sequential null values (incomplete ' + 'or no data calculable) on the right-hand of a ' + 'time-series plot, should that right-hand side ' + 'be cropped to only show the latest meaningful ' + 'data?  The default is to crop automatically.',
+	        type: 'boolean',
 	        defaultValue: true,
 	        required: false
 	      }
 	    }, this);
 	  }
 	
-	  _inherits(TimeSeriesChartSchema, MultiSeriesChartSchema);
-	
 	  return TimeSeriesChartSchema;
 	})(MultiSeriesChartSchema);
-	var timeSeriesChartSchema = exports.timeSeriesChartSchema = new TimeSeriesChartSchema();
-	exports.__esModule = true;
+	
+	exports.TimeSeriesChartSchema = TimeSeriesChartSchema;
+	var timeSeriesChartSchema = new TimeSeriesChartSchema();
+	exports.timeSeriesChartSchema = timeSeriesChartSchema;
 
 /***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _vendorDebounce = __webpack_require__(14);
+	
+	var _tabularLegendRenderer = __webpack_require__(15);
+	
+	var _pointLabelsRenderer = __webpack_require__(16);
+	
+	var _trendLineRenderer = __webpack_require__(17);
+	
+	var _goalLineRenderer = __webpack_require__(18);
+	
+	var _breakLines = __webpack_require__(19);
+	
+	var _axisTitles = __webpack_require__(20);
+	
+	var _xTickLabels = __webpack_require__(21);
+	
+	var _basicLegend = __webpack_require__(22);
+	
+	var _hover = __webpack_require__(23);
+	
+	var _click = __webpack_require__(24);
+	
+	// Set up namespace:
 	var moment = __webpack_require__(4);
 	var d3 = __webpack_require__(3);
 	var nv = __webpack_require__(5);
-	var _utils = __webpack_require__(6);
-	
-	var styleSheet = _utils.styleSheet;
-	var d3textWrap = _utils.d3textWrap;
-	var range = _utils.range;
-	var debounce = __webpack_require__(14).debounce;
-	var TabularLegendRenderer = __webpack_require__(15).TabularLegendRenderer;
-	var PointLabelsRenderer = __webpack_require__(16).PointLabelsRenderer;
-	var TrendLineRenderer = __webpack_require__(17).TrendLineRenderer;
-	var GoalLineRenderer = __webpack_require__(18).GoalLineRenderer;
-	var ContinuityLinesPlugin = __webpack_require__(19).ContinuityLinesPlugin;
-	var AxisTitleRenderer = __webpack_require__(20).AxisTitleRenderer;
-	var XTickLabelsRenderer = __webpack_require__(21).XTickLabelsRenderer;
-	var BasicLegendRenderer = __webpack_require__(22).BasicLegendRenderer;
-	var PointHoverPlugin = __webpack_require__(23).PointHoverPlugin;
-	var PointClickPlugin = __webpack_require__(24).PointClickPlugin;
-	
-	
-	// Set up namespace:
 	window.plotqi = window.plotqi || {};
 	
 	// Global list of plotters, may be used by plugins or external:
@@ -26140,47 +26133,48 @@
 	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
 	
 	// Core plugins:
-	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [ContinuityLinesPlugin, GoalLineRenderer, XTickLabelsRenderer, AxisTitleRenderer, TabularLegendRenderer, TrendLineRenderer, PointLabelsRenderer, BasicLegendRenderer, PointHoverPlugin, PointClickPlugin];
+	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
 	
 	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
 	var INTERVALS = {
-	  daily: [1, "day"],
-	  weekly: [1, "week"],
-	  monthly: [1, "month"],
-	  yearly: [1, "year"],
-	  quarterly: [3, "month"] };
+	  daily: [1, 'day'],
+	  weekly: [1, 'week'],
+	  monthly: [1, 'month'],
+	  yearly: [1, 'year'],
+	  quarterly: [3, 'month']
+	};
 	
 	// Class names:
-	var SVG_CLASSNAME = "upiq-chart chart-svg";
+	var SVG_CLASSNAME = 'upiq-chart chart-svg';
 	
 	// Line chart selectors:
-	var SEL_LINECHART = ".nv-wrap.nv-lineChart";
-	var SEL_LINESWRAP = " .nv-linesWrap";
-	var LINESWRAP_CLASSNAME = "nv-linesWrap";
-	var SEL_SCATTERWRAP = ".nv-wrap.nv-line .nv-scatterWrap";
-	var SEL_LINEGROUPS = SEL_SCATTERWRAP + " .nv-wrap.nv-scatter .nv-groups";
-	var SEL_LINEGROUP = SEL_LINEGROUPS + " .nv-group";
-	var SEL_MARKER = SEL_LINEGROUPS + " path.nv-point";
+	var SEL_LINECHART = '.nv-wrap.nv-lineChart';
+	var SEL_LINESWRAP = ' .nv-linesWrap';
+	var LINESWRAP_CLASSNAME = 'nv-linesWrap';
+	var SEL_SCATTERWRAP = '.nv-wrap.nv-line .nv-scatterWrap';
+	var SEL_LINEGROUPS = SEL_SCATTERWRAP + ' .nv-wrap.nv-scatter .nv-groups';
+	var SEL_LINEGROUP = SEL_LINEGROUPS + ' .nv-group';
+	var SEL_MARKER = SEL_LINEGROUPS + ' path.nv-point';
 	// Bar chart selectors:
-	var SEL_BARCHART = ".nv-wrap.nv-multiBarWithLegend";
-	var SEL_BARWRAP = " .nv-barsWrap";
-	var BARWRAP_CLASSNAME = "nv-barsWrap";
-	var SEL_BAR = SEL_BARWRAP + " .nv-wrap.nv-multibar .nv-groups rect.nv-bar";
+	var SEL_BARCHART = '.nv-wrap.nv-multiBarWithLegend';
+	var SEL_BARWRAP = ' .nv-barsWrap';
+	var BARWRAP_CLASSNAME = 'nv-barsWrap';
+	var SEL_BAR = SEL_BARWRAP + ' .nv-wrap.nv-multibar .nv-groups rect.nv-bar';
 	// Generic selectors:
-	var SEL_CHARTSVG = ".chart-svg";
-	
+	var SEL_CHARTSVG = '.chart-svg';
 	
 	// registration of custom marker symbols for NVD3 1.7.x+
-	nv.utils.symbolMap.set("x", function (size) {
+	nv.utils.symbolMap.set('x', function (size) {
 	  size = Math.sqrt(size) * 1.8;
-	  return "M" + -size / 2 + "," + -size / 2 + "l" + size + "," + size + "m0," + -size + "l" + -size + "," + size;
+	  return 'M' + -size / 2 + ',' + -size / 2 + 'l' + size + ',' + size + 'm0,' + -size + 'l' + -size + ',' + size;
 	});
 	
-	
-	var TimeSeriesPlotter = exports.TimeSeriesPlotter = (function () {
+	var TimeSeriesPlotter = (function () {
 	  // multi-adapter of D3-wrapped dom element (chart div) context and plot data
 	
 	  function TimeSeriesPlotter(plotDiv, data, opts) {
+	    _classCallCheck(this, TimeSeriesPlotter);
+	
 	    this.options = this.getOptions(opts);
 	    this.plotDiv = plotDiv; // DOM (d3) node (outer plot div)
 	    this.data = data; // TimeSeriesChart object
@@ -26197,688 +26191,606 @@
 	    window.plotqi.plotters.push(this);
 	  }
 	
-	  _prototypeProperties(TimeSeriesPlotter, null, {
-	    getOptions: {
-	      value: function getOptions(o) {
-	        /** get options and/or load initial defaults */
-	        o = o || {};
-	        // interactive mode:
-	        o.interactive = o.interactive === undefined ? true : o.interactive;
-	        // tiny mode (may be overridden by sizePlot during preRender (<165px),
-	        // may be true/false, undefined, or 'disabled':
-	        o.tiny = o.tiny === undefined ? false : o.tiny;
-	        // small mode usually auto-configured in preRender (<400px):
-	        o.small = o.small === undefined ? false : o.small;
-	        // prefix:
-	        o.prefix = o.prefix || "plot";
-	        return o;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _loadConfig: {
-	      value: function _loadConfig() {
-	        var _this = this;
-	        var interval = INTERVALS[this.data.frequency || "monthly"],
-	            domain = this.data.domain,
-	            dValue = function (x) {
-	          return x.valueOf();
-	        },
-	            type = this.data.chart_type || "line",
-	            isLine = type === "line",
-	
-	        // right-side padding typically zero because last datapoint is
-	        // beginning of period, and domain bounds are to end of period;
-	        // in such case zero padded intervals is still effectively one.
-	        rightSidePadding = 0,
-	            leftSidePadding = isLine ? -1 : 0;
-	        // initial values:
-	        this.baseFontSize = 14; // px
-	        // chart type:
-	        this.type = type;
-	        // whether plot is relative (not fixed-px) width:
-	        this.relativeWidth = this.data.width_units == "%";
-	        // intverval bits:
-	        this.timeStep = interval[0];
-	        this.interval = interval[1];
-	        this.d3Interval = d3.time[this.interval].utc;
-	        // pad left/right with 0-1 periods of space:
-	        domain = [this.timeOffset(domain[0], leftSidePadding), this.timeOffset(domain[1], rightSidePadding)];
-	        this.domain = domain;
-	        // time range function:
-	        this.timeRange = function (start, end) {
-	          return _this.d3Interval.range(start, end, _this.timeStep);
-	        };
-	        // tick values:
-	        this.tickVals = this.timeRange(domain[0], this.timeOffset(domain[1], +1)).map(dValue);
-	        // plot domain for bar chart is continouous, but not for bar chart, which
-	        // is merely sorted/discrete; therefore bar chart xDomain needs to
-	        // include all values:
-	        this.xDomain = isLine ? domain.map(dValue) : this.tickVals;
-	        // NVD3 selectors contingent on plot type:
-	        this.nvType = isLine ? SEL_LINECHART : SEL_BARCHART;
-	        this.wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _allPlugins: {
-	      value: function _allPlugins() {
-	        var core = window.plotqi.RENDERING_PLUGINS,
-	            additional = window.plotqi.ADDITIONAL_PLUGINS;
-	        return core.concat(additional);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _initPlugins: {
-	      value: function _initPlugins() {
-	        // init plugins for later use by respective hookable methods
-	        this.plugins = [];
-	        this._allPlugins().forEach(function (klass) {
-	          var adapter = new klass(this); // plugin adapts this plotter core
-	          this.plugins.push(adapter);
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    pluginName: {
-	      value: function pluginName(p) {
-	        /** plugin name: __name__ string stable post-minification, constructor name
-	          * not guranteed safe, so only used as fallback.
-	          */
-	        return p.__name__ || p.constructor.name;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    pluginEnabled: {
-	      value: function pluginEnabled(name) {
-	        var _this = this;
-	        /** return true if plugin singleton instance by name is enabled */
-	        var plugin = this.plugins.filter(function (p) {
-	          return _this.pluginName(p) === name;
-	        })[0];
-	        return plugin && plugin.enabled;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    getPlugin: {
-	      value: function getPlugin(name) {
-	        var _this = this;
-	        /** get plugin by name */
-	        var plugin = this.plugins.filter(function (p) {
-	          return _this.pluginName(p) === name;
-	        })[0];
-	        return plugin;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _configAxes: {
-	      value: function _configAxes() {
-	        var _this = this;
-	        var range = this.data.range,
-	            chart = this.chart,
-	            labelFn = function (d) {
-	          return _this.data.axisLabel(d).label;
-	        },
-	            tabular = this.data.legend_placement === "tabular",
-	            dFormat = function (d) {
-	          return moment.utc(d).format("YYYY-MM-DD");
-	        },
-	            yTickVals = function (n) {
-	          var out = [],
-	              interval = (range[1] - range[0]) / n,
-	              i;
-	          for (i = range[0]; i <= range[1]; i += interval) {
-	            out.push(i);
-	          }
-	          return out;
-	        };
-	        // x-axis tick lines should be rendered, even if default CSS makes them
-	        // invisible, but labels should not be rendered by nvd3, so we have
-	        // function yeilding empty string always.
-	        chart.xAxis.tickFormat(function () {
-	          return "";
-	        });
-	        chart.xAxis.tickValues(this.tickVals);
-	        // y-axis:
-	        chart.yAxis.tickFormat(d3.format(",")).tickValues(yTickVals(5)).showMaxMin(false).tickPadding(6);
-	        chart.xDomain(this.xDomain).yDomain(this.data.range);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    timeOffset: {
-	      value: function timeOffset(date, n) {
-	        /** n can be +/- integer for direction, number of intervals to offset */
-	        return moment.utc(date).add(n * this.timeStep, this.interval).toDate();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _margins: {
-	      value: function _margins() {
-	        /** make default margins for plot */
-	        return { top: 10, bottom: 5, left: 40, right: 10 };
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    nvChartFactory: {
-	      value: function nvChartFactory() {
-	        var _this = this;
-	        // factory for appropriate chart function to be used by
-	        // d3 selection.call() or transition.call()
-	        var m = nv.models,
-	            type = this.data.chart_type || "line",
-	            factory = type === "line" ? m.lineChart : m.multiBarChart,
-	            chart = factory(),
-	            markerSize = function (d) {
-	          return (d.size || 8) * Math.pow(_this.plotWidth / 320, 2);
-	        };
-	        chart.id(this.data.uid).showLegend(false) // do not use nvd3 for legends
-	        .tooltips(false);
-	        if (type === "line") {
-	          chart.useInteractiveGuideline(false).pointSize(markerSize).interactive(false);
-	        }
-	        if (type === "bar") {
-	          chart.showControls(false).groupSpacing(0.3).reduceXTicks(false);
-	        }
-	        return chart;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    yformat: {
-	      value: function yformat(y) {
-	        return typeof y === "number" ? d3.format(",.1f")(y) : "N/A";
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    allSeries: {
-	      value: function allSeries() {
-	        var input = this.data,
-	            keys = this.timeRange(input.domain[0], this.timeOffset(input.domain[1], +2)),
-	
-	        // transform fn for series model to plot semantics:
-	        _transform = function (series, index) {
-	          var plotType = this.type,
-	              obj = {
-	            key: series.position,
-	            color: series.color,
-	            values: [],
-	            format: d3.format(series.display_format) };
-	          if (plotType === "line") {
-	            obj.incomplete = series.break_lines;
-	            obj.thickness = series.line_width || 2;
-	            obj.markerThickness = series.marker_width || 2;
-	          }
-	          keys.map(function (k) {
-	            return k.valueOf();
-	          }).forEach(function (key) {
-	            var datapoint = series.data.get(key),
-	                value,
-	                info;
-	            if (series.data.has(key)) {
-	              value = datapoint.value;
-	              info = {
-	                x: moment.utc(datapoint.key).valueOf(),
-	                y: !!value || value === 0 ? value : NaN,
-	                note: datapoint.note,
-	                title: datapoint.title,
-	                uri: datapoint.uri,
-	                seriesIndex: index };
-	              if (plotType === "line") {
-	                info.size = series.marker_size;
-	                info.shape = series.marker_style;
-	              }
-	              obj.values.push(info);
-	            } else if (plotType === "line") {
-	              obj.values.push({
-	                x: moment.utc(key).valueOf()
-	              });
-	            }
-	          });
-	          return obj;
-	        };
-	        return input.series.map(_transform, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _updateLineDetail: {
-	      value: function _updateLineDetail() {
-	        var lineGroups = this.svg.selectAll(".nv-wrap.nv-line > g > g.nv-groups .nv-group"),
-	            relStrokeWidthFactor = 0.25 + this.gridWidth() / 600;
-	        lineGroups.style("stroke-dasharray", function (d) {
-	          return d.dashed ? "5 5" : "none";
-	        }).style("stroke-width", function (d) {
-	          return (d.thickness || 2) * relStrokeWidthFactor;
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _updateMarkerDetail: {
-	      value: function _updateMarkerDetail() {
-	        /** resize markers: d3 pointSize will draw paths of appropriate size,
-	          *      but will not scale stroke accordingly, we do this after
-	          *      initial rendering.
-	          */
-	        var relStrokeWidthFactor = 1 + this.plotWidth / 640,
-	            thickness = function (d) {
-	          return (d.markerThickness || 2) * relStrokeWidthFactor;
-	        };
-	        this.svg.selectAll(".nv-point").style({
-	          "stroke-width": function (d) {
-	            return "" + thickness(d) + "px";
-	          }
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    sizePlot: {
-	      value: function sizePlot() {
-	        var data = this.data,
-	            width = +data.width || 100,
-	            units = data.width_units || "%",
-	            aspect = data.aspect_ratio,
-	            // [w,h]
-	        hasRatio = aspect && aspect.length === 2,
-	            ratio = hasRatio ? aspect[1] / aspect[0] : undefined,
-	            // h / w
-	        relHeight = !hasRatio && data.height_units === "%",
-	            widthSpec = "" + width + units,
-	            clientWidth,
-	            minHeight = 160,
-	            minFontSize = 9,
-	            // px
-	        computedHeight;
-	        // plot core div is 100% width of outer:
-	        this.plotCore.style("width", "100%");
-	        // and outer is as wide as specified:
-	        this.plotDiv.style("width", widthSpec);
-	        if (!data.series.length) {
-	          // minimal height, placeholder text:
-	          this.plotCore.style("height", "15px");
-	          this.plotCore.html("<em>No series data yet provided for plot.</em>");
-	          return;
-	        }
-	        clientWidth = this.plotCore[0][0].clientWidth;
-	        if (!hasRatio && data.height_units === "px") {
-	          // fixed pixel (absolute) height is specified:
-	          computedHeight = data.height;
-	        } else {
-	          if (relHeight && data.height) {
-	            // height relative to width, but no specified aspect ratio
-	            ratio = data.height / 100; // pct to ratio
-	          }
-	          // use explicitly provided or just-computed aspect ratio:
-	          computedHeight = Math.round(ratio * clientWidth);
-	        }
-	        // check computed vs. min:
-	        computedHeight = Math.max(minHeight, computedHeight);
-	        this.plotCore.style("height", "" + computedHeight + "px");
-	        // save width, height of plotCore for reference by rendering:
-	        this.plotWidth = clientWidth;
-	        this.plotHeight = computedHeight;
-	        // set base font size on svg element:
-	        this.baseFontSize = Math.max(minFontSize, Math.floor(clientWidth / 45 * 2) / 2 // rounded to 0.5px
-	        );
-	        // plot width flags: if sufficiently small, auto-set the 'tiny' flag:
-	        if (this.options.tiny !== "disabled" && this.plotWidth < 165) {
-	          this.options.tiny = true;
-	        }
-	        // plot width flags: if sufficiently small, auto-set the 'small' flag:
-	        this.options.small = this.plotWidth < 400;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clear: {
-	      value: function clear() {
-	        /** stable clear: respect existing non-plotCore content */
-	        if (this.plotCore && this.plotCore.size()) {
-	          this.plotCore.remove();
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    displayMetadata: {
-	      value: function displayMetadata() {
-	        var plotTitle = this.plotDiv.selectAll(".plot-title").data([null]),
-	            plotDesc = this.plotDiv.selectAll(".plot-description").data([null]),
-	            plotInfo = this.plotDiv.selectAll(".plot-info").data([null]);
-	        plotTitle.enter().append("h3").classed("plot-title", true);
-	        plotTitle.text(this.data.title || "");
-	        plotDesc.enter().append("p").classed("plot-description", true);
-	        plotDesc.text(this.data.description || "");
-	        plotInfo.enter().append("div").classed("plot-info", true);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    preRender: {
-	      value: function preRender() {
-	        /** prepare the chart div context for rendering */
-	        var chart;
-	        // - Set margins:
-	        this.margins = this._margins();
-	        // - Set metadata:
-	        this.displayMetadata();
-	        // - Clear existing (core plot) content:
-	        this.clear();
-	        // - Create inner (core) div, insert before any end-matter/plot-info:
-	        this.plotCore = this.plotDiv.insert("div", ".plot-info").classed("chart-div", true).style({
-	          postion: "relative"
-	        });
-	        // - Size div elements according to specifications:
-	        this.sizePlot();
-	        // - Add empty svg
-	        this.svg = this.plotCore.append("svg").attr("class", SVG_CLASSNAME);
-	        this.svg.outerNode = this.plotDiv;
-	        // - set core groups in this.svg:
-	        this.abovePlotGroup = this.svg.append("g").classed("upiq-above-plot", true);
-	        this.plotGroup = this.svg.append("g").classed("upiq-plot", true);
-	        // - set initial base styles on plotCore element that will be inherited:
-	        this.plotCore.style({
-	          "font-size": "" + this.baseFontSize + "px" });
-	        // - Add singleton 'defs' to svg:
-	        this.svg.append("defs");
-	        // - create an NVD3 chart object that will be returned:
-	        chart = this.nvChartFactory();
-	        // - get scales from chart, set for use by plotter, plugins:
-	        // -- xScale may be oridinal or linear:
-	        this.xScale = chart.xScale();
-	        // -- yScale:
-	        this.yScale = chart.yScale();
-	        // - Bind plugin svg, scales for plugins, call any plugins pre-render
-	        this.plugins.forEach(function (plugin) {
-	          if (typeof plugin.preRender === "function") {
-	            plugin.preRender();
-	          }
-	        }, this);
-	        // - Set chart positioning: width, height, margins:
-	        chart.width(this.plotWidth); // width before margins
-	        chart.height(this.plotHeight); // height before margins
-	        chart.margin(this.margins); // margins around exterior of grid
-	        return chart;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _grid: {
-	      value: function _grid() {
-	        var barSel = ".nv-multiBarWithLegend .nv-x",
-	            lineSel = ".nv-lineChart g rect",
-	            sGrid = this.type === "bar" ? barSel : lineSel;
-	        return this.svg.select(sGrid).node();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    gridWidth: {
-	      value: function gridWidth() {
-	        var grid = this._grid();
-	        return !!grid ? grid.getBoundingClientRect().width : 0;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    gridHeight: {
-	      value: function gridHeight() {
-	        var grid = this._grid();
-	        return !!grid ? grid.getBoundingClientRect().height : 0;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    updateRenderingPlugins: {
-	      value: function updateRenderingPlugins() {
-	        /** update rendering plugins, in order */
-	        this.plugins.forEach(function (plugin) {
-	          plugin.update();
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    setTimeScale: {
-	      value: function setTimeScale() {
-	        // if xScale is ordinal, we need a (continuous) time-scale equivalent for
-	        // use by plugins:
-	        var _ref = [this.xScale.domain(), this.xScale.range()];
-	
-	        var sDomain = _ref[0];
-	        var sRange = _ref[1];
-	        sRange = [sRange[0], sRange.slice(-1)[0]];
-	        sDomain = [sDomain[0], sDomain.slice(-1)[0]];
-	        // get an initial scale for proportions
-	        this.timeScale = d3.time.scale().domain(sDomain).range(sRange);
-	        // if plot type is bar, we need to extend the scale domain/range so that
-	        // we accommodate about 1 total period of left/right padding used by nvd3:
-	        if (this.type === "bar") {
-	          sDomain[1] = this.timeOffset(sDomain[1], +1);
-	          sRange[1] = this.timeScale(sDomain[1]);
-	        }
-	        // use adjusted domain, range
-	        this.timeScale.domain(sDomain).range(sRange);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        var data = this.allSeries(),
-	            sDomain,
-	            sRange;
-	        this.chart = this.preRender();
-	        // now that we have chart, configure axes:
-	        this._configAxes();
-	        // Bind data to selection, call this.chart function in context
-	        // data-aware selection:
-	        this.plotGroup.datum(data).call(this.chart);
-	        // after this binding, we have x scales with concrete domain/range, but
-	        // for bar charts, we may need carefully constructed time-scale:
-	        this.setTimeScale();
-	        if (this.type === "line") {
-	          // update line detail (e.g. dashes, thickness):
-	          this._updateLineDetail();
-	          this._updateMarkerDetail();
-	        }
-	        // Rendering plugins, in order:
-	        this.updateRenderingPlugins();
-	        return this.chart;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    loadInteractiveFeatures: {
-	      value: function loadInteractiveFeatures() {
-	        /** load interactive features from plugins, as applicable, if this
-	          * is enabled (this.options.interactive === true).
-	          */
-	        if (!this.options.interactive) return;
-	        this.plugins.forEach(function (plugin) {
-	          plugin.loadInteractiveFeatures();
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    highlightX: {
-	      value: function highlightX(key) {
-	        /** given date key, highlight any tick line associated with that key */
-	        var value = key ? key.valueOf() : null,
-	            tickLines = this.svg.select("g.nv-x").selectAll("g.tick"),
-	            tick = tickLines[0].filter(function (l) {
-	          return d3.select(l).data() == value;
-	        });
-	        d3.select(tick[0]).classed("selected", true);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clearHighlights: {
-	      value: function clearHighlights() {
-	        var tickLines = this.svg.select("g.nv-x").selectAll("g.tick");
-	        tickLines.classed("selected", false);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    reorderSeries: {
-	      value: function reorderSeries() {
-	        /** DOM order is stacking/painting order; reversing puts the top-most
-	          * and front-most line in all series at the top of the drawing, with
-	          * subsequent (and assumed of lesser importance) lines are painted 
-	          * underneath.
-	          */
-	        var indexes = range(this.data.series.length);
-	        indexes.reverse();
-	        indexes.forEach(function (i) {
-	          var selector = ".nv-series-" + i,
-	              selection = this.plotGroup.selectAll(selector);
-	          selection[0].forEach(function (el) {
-	            el.parentNode.appendChild(el);
-	          });
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    postRender: {
-	      value: function postRender() {
-	        var abovePlot = this.abovePlotGroup,
-	            _size = function (el) {
-	          return el.getBoundingClientRect().height;
-	        },
-	            sizers,
-	            adjustHeight;
-	        // - Re-order series that NVD3 draws, if line chart:
-	        if (this.type === "line") {
-	          this.reorderSeries();
-	        }
-	        // - per-plugin adjustments
-	        this.plugins.forEach(function (plugin) {
-	          plugin.postRender();
-	        }, this);
-	        // - general adjustments
-	        // -- positioning adjustment to accommodate height of this.abovePlotGroup
-	        //    which may be adjusted by plugins (e.g. a top legend); note this
-	        //    adjusts the total plotCore height irrespective of aspect-ratio set
-	        //    in this.sizePlot() -- note: plugins must have a rect.sizing element,
-	        //    within their output, as introspection of box model for group
-	        //    elements is unreliable.
-	        sizers = abovePlot.selectAll(".sizing");
-	        if (sizers.size()) {
-	          adjustHeight = sizers[0].map(_size).reduce(function (a, b) {
-	            return a + b;
-	          }, 0);
-	        }
-	        if (adjustHeight) {
-	          this.plotGroup.attr({
-	            transform: "translate(0, " + adjustHeight + ")"
-	          });
-	          this.plotHeight += adjustHeight;
-	          this.plotCore.style({
-	            height: "" + this.plotHeight + "px"
-	          });
-	        }
-	        // - Mark as complete:
-	        this.complete = true;
-	        // - per-plugin on-complete notifiers:
-	        this.plugins.forEach(function (plugin) {
-	          plugin.onComplete();
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    refresh: {
-	      value: function refresh() {
-	        this.render();
-	        this.loadInteractiveFeatures();
-	        this.postRender();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    update: {
-	      value: function update() {
-	        // rendering stuff:
-	        this.refresh();
-	        if (this.relativeWidth) {
-	          window.addEventListener("resize", debounce(this.refresh.bind(this), 500, false));
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(TimeSeriesPlotter, [{
+	    key: 'getOptions',
+	    value: function getOptions(o) {
+	      /** get options and/or load initial defaults */
+	      o = o || {};
+	      // interactive mode:
+	      o.interactive = o.interactive === undefined ? true : o.interactive;
+	      // tiny mode (may be overridden by sizePlot during preRender (<165px),
+	      // may be true/false, undefined, or 'disabled':
+	      o.tiny = o.tiny === undefined ? false : o.tiny;
+	      // small mode usually auto-configured in preRender (<400px):
+	      o.small = o.small === undefined ? false : o.small;
+	      // prefix:
+	      o.prefix = o.prefix || 'plot';
+	      return o;
 	    }
-	  });
+	  }, {
+	    key: '_loadConfig',
+	    value: function _loadConfig() {
+	      var _this = this;
+	
+	      var interval = INTERVALS[this.data.frequency || 'monthly'],
+	          domain = this.data.domain,
+	          dValue = function dValue(x) {
+	        return x.valueOf();
+	      },
+	          type = this.data.chart_type || 'line',
+	          isLine = type === 'line',
+	
+	      // right-side padding typically zero because last datapoint is
+	      // beginning of period, and domain bounds are to end of period;
+	      // in such case zero padded intervals is still effectively one.
+	      rightSidePadding = 0,
+	          leftSidePadding = isLine ? -1 : 0;
+	      // initial values:
+	      this.baseFontSize = 14; // px
+	      // chart type:
+	      this.type = type;
+	      // whether plot is relative (not fixed-px) width:
+	      this.relativeWidth = this.data.width_units == '%';
+	      // intverval bits:
+	      this.timeStep = interval[0];
+	      this.interval = interval[1];
+	      this.d3Interval = d3.time[this.interval].utc;
+	      // pad left/right with 0-1 periods of space:
+	      domain = [this.timeOffset(domain[0], leftSidePadding), this.timeOffset(domain[1], rightSidePadding)];
+	      this.domain = domain;
+	      // time range function:
+	      this.timeRange = function (start, end) {
+	        return _this.d3Interval.range(start, end, _this.timeStep);
+	      };
+	      // tick values:
+	      this.tickVals = this.timeRange(domain[0], this.timeOffset(domain[1], +1)).map(dValue);
+	      // plot domain for bar chart is continouous, but not for bar chart, which
+	      // is merely sorted/discrete; therefore bar chart xDomain needs to
+	      // include all values:
+	      this.xDomain = isLine ? domain.map(dValue) : this.tickVals;
+	      // NVD3 selectors contingent on plot type:
+	      this.nvType = isLine ? SEL_LINECHART : SEL_BARCHART;
+	      this.wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
+	    }
+	  }, {
+	    key: '_allPlugins',
+	    value: function _allPlugins() {
+	      var core = window.plotqi.RENDERING_PLUGINS,
+	          additional = window.plotqi.ADDITIONAL_PLUGINS;
+	      return core.concat(additional);
+	    }
+	  }, {
+	    key: '_initPlugins',
+	    value: function _initPlugins() {
+	      // init plugins for later use by respective hookable methods
+	      this.plugins = [];
+	      this._allPlugins().forEach(function (klass) {
+	        var adapter = new klass(this); // plugin adapts this plotter core
+	        this.plugins.push(adapter);
+	      }, this);
+	    }
+	  }, {
+	    key: 'pluginName',
+	    value: function pluginName(p) {
+	      /** plugin name: __name__ string stable post-minification, constructor name
+	        * not guranteed safe, so only used as fallback.
+	        */
+	      return p.__name__ || p.constructor.name;
+	    }
+	  }, {
+	    key: 'pluginEnabled',
+	    value: function pluginEnabled(name) {
+	      var _this2 = this;
+	
+	      /** return true if plugin singleton instance by name is enabled */
+	      var plugin = this.plugins.filter(function (p) {
+	        return _this2.pluginName(p) === name;
+	      })[0];
+	      return plugin && plugin.enabled;
+	    }
+	  }, {
+	    key: 'getPlugin',
+	    value: function getPlugin(name) {
+	      var _this3 = this;
+	
+	      /** get plugin by name */
+	      var plugin = this.plugins.filter(function (p) {
+	        return _this3.pluginName(p) === name;
+	      })[0];
+	      return plugin;
+	    }
+	  }, {
+	    key: '_configAxes',
+	    value: function _configAxes() {
+	      var _this4 = this;
+	
+	      var range = this.data.range,
+	          chart = this.chart,
+	          labelFn = function labelFn(d) {
+	        return _this4.data.axisLabel(d).label;
+	      },
+	          tabular = this.data.legend_placement === 'tabular',
+	          dFormat = function dFormat(d) {
+	        return moment.utc(d).format('YYYY-MM-DD');
+	      },
+	          yTickVals = function yTickVals(n) {
+	        var out = [],
+	            interval = (range[1] - range[0]) / n,
+	            i;
+	        for (i = range[0]; i <= range[1]; i += interval) {
+	          out.push(i);
+	        }
+	        return out;
+	      };
+	      // x-axis tick lines should be rendered, even if default CSS makes them
+	      // invisible, but labels should not be rendered by nvd3, so we have
+	      // function yeilding empty string always.
+	      chart.xAxis.tickFormat(function () {
+	        return '';
+	      });
+	      chart.xAxis.tickValues(this.tickVals);
+	      // y-axis:
+	      chart.yAxis.tickFormat(d3.format(',')).tickValues(yTickVals(5)).showMaxMin(false).tickPadding(6);
+	      chart.xDomain(this.xDomain).yDomain(this.data.range);
+	    }
+	  }, {
+	    key: 'timeOffset',
+	    value: function timeOffset(date, n) {
+	      /** n can be +/- integer for direction, number of intervals to offset */
+	      return moment.utc(date).add(n * this.timeStep, this.interval).toDate();
+	    }
+	  }, {
+	    key: '_margins',
+	    value: function _margins() {
+	      /** make default margins for plot */
+	      return { top: 10, bottom: 5, left: 40, right: 10 };
+	    }
+	  }, {
+	    key: 'nvChartFactory',
+	    value: function nvChartFactory() {
+	      var _this5 = this;
+	
+	      // factory for appropriate chart function to be used by
+	      // d3 selection.call() or transition.call()
+	      var m = nv.models,
+	          type = this.data.chart_type || 'line',
+	          factory = type === 'line' ? m.lineChart : m.multiBarChart,
+	          chart = factory(),
+	          markerSize = function markerSize(d) {
+	        return (d.size || 8) * Math.pow(_this5.plotWidth / 320, 2);
+	      };
+	      chart.id(this.data.uid).showLegend(false) // do not use nvd3 for legends
+	      .tooltips(false);
+	      if (type === 'line') {
+	        chart.useInteractiveGuideline(false).pointSize(markerSize).interactive(false);
+	      }
+	      if (type === 'bar') {
+	        chart.showControls(false).groupSpacing(0.3).reduceXTicks(false);
+	      }
+	      return chart;
+	    }
+	  }, {
+	    key: 'yformat',
+	    value: function yformat(y) {
+	      return typeof y === 'number' ? d3.format(',.1f')(y) : 'N/A';
+	    }
+	  }, {
+	    key: 'allSeries',
+	    value: function allSeries() {
+	      var input = this.data,
+	          keys = this.timeRange(input.domain[0], this.timeOffset(input.domain[1], +2)),
+	
+	      // transform fn for series model to plot semantics:
+	      _transform = function _transform(series, index) {
+	        var plotType = this.type,
+	            obj = {
+	          key: series.position,
+	          color: series.color,
+	          values: [],
+	          format: d3.format(series.display_format)
+	        };
+	        if (plotType === 'line') {
+	          obj.incomplete = series.break_lines;
+	          obj.thickness = series.line_width || 2.0;
+	          obj.markerThickness = series.marker_width || 2.0;
+	        }
+	        keys.map(function (k) {
+	          return k.valueOf();
+	        }).forEach(function (key) {
+	          var datapoint = series.data.get(key),
+	              value,
+	              info;
+	          if (series.data.has(key)) {
+	            value = datapoint.value;
+	            info = {
+	              x: moment.utc(datapoint.key).valueOf(),
+	              y: !!value || value === 0 ? value : NaN,
+	              note: datapoint.note,
+	              title: datapoint.title,
+	              uri: datapoint.uri,
+	              seriesIndex: index
+	            };
+	            if (plotType === 'line') {
+	              info.size = series.marker_size;
+	              info.shape = series.marker_style;
+	            }
+	            obj.values.push(info);
+	          } else if (plotType === 'line') {
+	            obj.values.push({
+	              x: moment.utc(key).valueOf()
+	            });
+	          }
+	        });
+	        return obj;
+	      };
+	      return input.series.map(_transform, this);
+	    }
+	  }, {
+	    key: '_updateLineDetail',
+	    value: function _updateLineDetail() {
+	      var lineGroups = this.svg.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group'),
+	          relStrokeWidthFactor = 0.25 + this.gridWidth() / 600;
+	      lineGroups.style('stroke-dasharray', function (d) {
+	        return d.dashed ? '5 5' : 'none';
+	      }).style('stroke-width', function (d) {
+	        return (d.thickness || 2) * relStrokeWidthFactor;
+	      });
+	    }
+	  }, {
+	    key: '_updateMarkerDetail',
+	    value: function _updateMarkerDetail() {
+	      /** resize markers: d3 pointSize will draw paths of appropriate size,
+	        *      but will not scale stroke accordingly, we do this after
+	        *      initial rendering.
+	        */
+	      var relStrokeWidthFactor = 1 + this.plotWidth / 640,
+	          thickness = function thickness(d) {
+	        return (d.markerThickness || 2) * relStrokeWidthFactor;
+	      };
+	      this.svg.selectAll('.nv-point').style({
+	        'stroke-width': function strokeWidth(d) {
+	          return '' + thickness(d) + 'px';
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'sizePlot',
+	    value: function sizePlot() {
+	      var data = this.data,
+	          width = +data.width || 100,
+	          units = data.width_units || '%',
+	          aspect = data.aspect_ratio,
+	          // [w,h]
+	      hasRatio = aspect && aspect.length === 2,
+	          ratio = hasRatio ? aspect[1] / aspect[0] : undefined,
+	          // h / w
+	      relHeight = !hasRatio && data.height_units === '%',
+	          widthSpec = '' + width + units,
+	          clientWidth,
+	          minHeight = 160,
+	          minFontSize = 9,
+	          // px
+	      computedHeight;
+	      // plot core div is 100% width of outer:
+	      this.plotCore.style('width', '100%');
+	      // and outer is as wide as specified:
+	      this.plotDiv.style('width', widthSpec);
+	      if (!data.series.length) {
+	        // minimal height, placeholder text:
+	        this.plotCore.style('height', '15px');
+	        this.plotCore.html('<em>No series data yet provided for plot.</em>');
+	        return;
+	      }
+	      clientWidth = this.plotCore[0][0].clientWidth;
+	      if (!hasRatio && data.height_units === 'px') {
+	        // fixed pixel (absolute) height is specified:
+	        computedHeight = data.height;
+	      } else {
+	        if (relHeight && data.height) {
+	          // height relative to width, but no specified aspect ratio
+	          ratio = data.height / 100.0; // pct to ratio
+	        }
+	        // use explicitly provided or just-computed aspect ratio:
+	        computedHeight = Math.round(ratio * clientWidth);
+	      }
+	      // check computed vs. min:
+	      computedHeight = Math.max(minHeight, computedHeight);
+	      this.plotCore.style('height', '' + computedHeight + 'px');
+	      // save width, height of plotCore for reference by rendering:
+	      this.plotWidth = clientWidth;
+	      this.plotHeight = computedHeight;
+	      // set base font size on svg element:
+	      this.baseFontSize = Math.max(minFontSize, Math.floor(clientWidth / 45 * 2) / 2.0 // rounded to 0.5px
+	      );
+	      // plot width flags: if sufficiently small, auto-set the 'tiny' flag:
+	      if (this.options.tiny !== 'disabled' && this.plotWidth < 165) {
+	        this.options.tiny = true;
+	      } else if (this.plotWidth >= 165) {
+	        this.options.tiny = false;
+	      }
+	      // plot width flags: if sufficiently small, auto-set the 'small' flag:
+	      this.options.small = this.plotWidth < 400;
+	    }
+	  }, {
+	    key: 'clear',
+	    value: function clear() {
+	      /** stable clear: respect existing non-plotCore content */
+	      if (this.plotCore && this.plotCore.size()) {
+	        this.plotCore.remove();
+	      }
+	    }
+	  }, {
+	    key: 'displayMetadata',
+	    value: function displayMetadata() {
+	      var plotTitle = this.plotDiv.selectAll('.plot-title').data([null]),
+	          plotDesc = this.plotDiv.selectAll('.plot-description').data([null]),
+	          plotInfo = this.plotDiv.selectAll('.plot-info').data([null]);
+	      plotTitle.enter().append('h3').classed('plot-title', true);
+	      plotTitle.text(this.data.title || '');
+	      plotDesc.enter().append('p').classed('plot-description', true);
+	      plotDesc.text(this.data.description || '');
+	      plotInfo.enter().append('div').classed('plot-info', true);
+	    }
+	  }, {
+	    key: 'preRender',
+	    value: function preRender() {
+	      /** prepare the chart div context for rendering */
+	      var chart;
+	      // - Set margins:
+	      this.margins = this._margins();
+	      // - Set metadata:
+	      this.displayMetadata();
+	      // - Clear existing (core plot) content:
+	      this.clear();
+	      // - Create inner (core) div, insert before any end-matter/plot-info:
+	      this.plotCore = this.plotDiv.insert('div', '.plot-info').classed('chart-div', true).style({
+	        'postion': 'relative'
+	      });
+	      // - Size div elements according to specifications:
+	      this.sizePlot();
+	      // - Add empty svg
+	      this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
+	      this.svg.outerNode = this.plotDiv;
+	      // - set core groups in this.svg:
+	      this.abovePlotGroup = this.svg.append('g').classed('upiq-above-plot', true);
+	      this.plotGroup = this.svg.append('g').classed('upiq-plot', true);
+	      // - set initial base styles on plotCore element that will be inherited:
+	      this.plotCore.style({
+	        'font-size': '' + this.baseFontSize + 'px'
+	      });
+	      // - Add singleton 'defs' to svg:
+	      this.svg.append('defs');
+	      // - create an NVD3 chart object that will be returned:
+	      chart = this.nvChartFactory();
+	      // - get scales from chart, set for use by plotter, plugins:
+	      // -- xScale may be oridinal or linear:
+	      this.xScale = chart.xScale();
+	      // -- yScale:
+	      this.yScale = chart.yScale();
+	      // - Bind plugin svg, scales for plugins, call any plugins pre-render
+	      this.plugins.forEach(function (plugin) {
+	        if (typeof plugin.preRender === 'function') {
+	          plugin.preRender();
+	        }
+	      }, this);
+	      // - Set chart positioning: width, height, margins:
+	      chart.width(this.plotWidth); // width before margins
+	      chart.height(this.plotHeight); // height before margins
+	      chart.margin(this.margins); // margins around exterior of grid
+	      return chart;
+	    }
+	  }, {
+	    key: '_grid',
+	    value: function _grid() {
+	      var barSel = '.nv-multiBarWithLegend .nv-x',
+	          lineSel = '.nv-lineChart g rect',
+	          sGrid = this.type === 'bar' ? barSel : lineSel;
+	      return this.svg.select(sGrid).node();
+	    }
+	  }, {
+	    key: 'gridWidth',
+	    value: function gridWidth() {
+	      var grid = this._grid();
+	      return !!grid ? grid.getBoundingClientRect().width : 0;
+	    }
+	  }, {
+	    key: 'gridHeight',
+	    value: function gridHeight() {
+	      var grid = this._grid();
+	      return !!grid ? grid.getBoundingClientRect().height : 0;
+	    }
+	  }, {
+	    key: 'updateRenderingPlugins',
+	    value: function updateRenderingPlugins() {
+	      /** update rendering plugins, in order */
+	      this.plugins.forEach(function (plugin) {
+	        plugin.update();
+	      }, this);
+	    }
+	  }, {
+	    key: 'setTimeScale',
+	    value: function setTimeScale() {
+	      var sDomain = this.xScale.domain();
+	      var sRange = this.xScale.range();
+	
+	      sRange = [sRange[0], sRange.slice(-1)[0]];
+	      sDomain = [sDomain[0], sDomain.slice(-1)[0]];
+	      // get an initial scale for proportions
+	      this.timeScale = d3.time.scale().domain(sDomain).range(sRange);
+	      // if plot type is bar, we need to extend the scale domain/range so that
+	      // we accommodate about 1 total period of left/right padding used by nvd3:
+	      if (this.type === 'bar') {
+	        sDomain[1] = this.timeOffset(sDomain[1], +1);
+	        sRange[1] = this.timeScale(sDomain[1]);
+	      }
+	      // use adjusted domain, range
+	      this.timeScale.domain(sDomain).range(sRange);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var data = this.allSeries(),
+	          sDomain,
+	          sRange;
+	      this.chart = this.preRender();
+	      // now that we have chart, configure axes:
+	      this._configAxes();
+	      // Bind data to selection, call this.chart function in context
+	      // data-aware selection:
+	      this.plotGroup.datum(data).call(this.chart);
+	      // after this binding, we have x scales with concrete domain/range, but
+	      // for bar charts, we may need carefully constructed time-scale:
+	      this.setTimeScale();
+	      if (this.type === 'line') {
+	        // update line detail (e.g. dashes, thickness):
+	        this._updateLineDetail();
+	        this._updateMarkerDetail();
+	      }
+	      // Rendering plugins, in order:
+	      this.updateRenderingPlugins();
+	      return this.chart;
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      /** load interactive features from plugins, as applicable, if this
+	        * is enabled (this.options.interactive === true).
+	        */
+	      if (!this.options.interactive) return;
+	      this.plugins.forEach(function (plugin) {
+	        plugin.loadInteractiveFeatures();
+	      }, this);
+	    }
+	  }, {
+	    key: 'highlightX',
+	    value: function highlightX(key) {
+	      /** given date key, highlight any tick line associated with that key */
+	      var value = key ? key.valueOf() : null,
+	          tickLines = this.svg.select('g.nv-x').selectAll('g.tick'),
+	          tick = tickLines[0].filter(function (l) {
+	        return d3.select(l).data() == value;
+	      });
+	      d3.select(tick[0]).classed('selected', true);
+	    }
+	  }, {
+	    key: 'clearHighlights',
+	    value: function clearHighlights() {
+	      var tickLines = this.svg.select('g.nv-x').selectAll('g.tick');
+	      tickLines.classed('selected', false);
+	    }
+	  }, {
+	    key: 'reorderSeries',
+	    value: function reorderSeries() {
+	      /** DOM order is stacking/painting order; reversing puts the top-most
+	        * and front-most line in all series at the top of the drawing, with
+	        * subsequent (and assumed of lesser importance) lines are painted 
+	        * underneath.
+	        */
+	      var indexes = (0, _utils.range)(this.data.series.length);
+	      indexes.reverse();
+	      indexes.forEach(function (i) {
+	        var selector = '.nv-series-' + i,
+	            selection = this.plotGroup.selectAll(selector);
+	        selection[0].forEach(function (el) {
+	          el.parentNode.appendChild(el);
+	        });
+	      }, this);
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      var abovePlot = this.abovePlotGroup,
+	          _size = function _size(el) {
+	        return el.getBoundingClientRect().height;
+	      },
+	          sizers,
+	          adjustHeight;
+	      // - Re-order series that NVD3 draws, if line chart:
+	      if (this.type === 'line') {
+	        this.reorderSeries();
+	      }
+	      // - per-plugin adjustments
+	      this.plugins.forEach(function (plugin) {
+	        plugin.postRender();
+	      }, this);
+	      // - general adjustments
+	      // -- positioning adjustment to accommodate height of this.abovePlotGroup
+	      //    which may be adjusted by plugins (e.g. a top legend); note this
+	      //    adjusts the total plotCore height irrespective of aspect-ratio set
+	      //    in this.sizePlot() -- note: plugins must have a rect.sizing element,
+	      //    within their output, as introspection of box model for group
+	      //    elements is unreliable.
+	      sizers = abovePlot.selectAll('.sizing');
+	      if (sizers.size()) {
+	        adjustHeight = sizers[0].map(_size).reduce(function (a, b) {
+	          return a + b;
+	        }, 0);
+	      }
+	      if (adjustHeight) {
+	        this.plotGroup.attr({
+	          transform: 'translate(0, ' + adjustHeight + ')'
+	        });
+	        this.plotHeight += adjustHeight;
+	        this.plotCore.style({
+	          height: this.plotHeight + 'px'
+	        });
+	      }
+	      // - Mark as complete:
+	      this.complete = true;
+	      // - per-plugin on-complete notifiers:
+	      this.plugins.forEach(function (plugin) {
+	        plugin.onComplete();
+	      }, this);
+	    }
+	  }, {
+	    key: 'refresh',
+	    value: function refresh() {
+	      this.render();
+	      this.loadInteractiveFeatures();
+	      this.postRender();
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      // rendering stuff:
+	      this.refresh();
+	      if (this.relativeWidth) {
+	        window.addEventListener('resize', (0, _vendorDebounce.debounce)(this.refresh.bind(this), 500, false));
+	      }
+	    }
+	  }]);
 	
 	  return TimeSeriesPlotter;
 	})();
-	exports.__esModule = true;
+	
+	exports.TimeSeriesPlotter = TimeSeriesPlotter;
+	
+	// if xScale is ordinal, we need a (continuous) time-scale equivalent for
+	// use by plugins:
 
 /***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
 	//Taken from Underscore, licensed under the MIT license
 	//Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	//Full MIT copyright notice can be found in the project root
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.debounce = debounce;
+	
 	function debounce(func, wait, immediate) {
 	  var timeout;
 	  return function () {
 	    var context = this,
 	        args = arguments;
-	    var later = function () {
+	    var later = function later() {
 	      timeout = null;
 	      if (!immediate) func.apply(context, args);
 	    };
@@ -26888,45 +26800,48 @@
 	    if (callNow) func.apply(context, args);
 	  };
 	}
-	exports.__esModule = true;
 
 /***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _plugin = __webpack_require__(9);
 	
 	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(4);
 	
-	var _utils = __webpack_require__(6);
+	var LEGEND_CLASS = 'upiq-legend';
+	var SEL_LEGEND = 'g.' + LEGEND_CLASS;
 	
-	var d3textWrap = _utils.d3textWrap;
-	var range = _utils.range;
-	var ColorTool = _utils.ColorTool;
-	var uuid4 = _utils.uuid4;
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
+	var TabularLegendRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(TabularLegendRenderer, _BaseRenderingPlugin);
 	
-	
-	var LEGEND_CLASS = "upiq-legend";
-	var SEL_LEGEND = "g." + LEGEND_CLASS;
-	
-	
-	var TabularLegendRenderer = exports.TabularLegendRenderer = (function (BaseRenderingPlugin) {
 	  function TabularLegendRenderer(plotter) {
-	    _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), "constructor", this).call(this, plotter);
-	    this.__name__ = "TabularLegendRenderer";
+	    _classCallCheck(this, TabularLegendRenderer);
+	
+	    _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), 'constructor', this).call(this, plotter);
+	    this.__name__ = 'TabularLegendRenderer';
 	    this.legendGroup = null; // will be set by this.makeLegendGroup
 	    this.leftPad = 5;
 	    this.legPad = 10;
@@ -26946,2243 +26861,2121 @@
 	    };
 	  }
 	
-	  _inherits(TabularLegendRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(TabularLegendRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), "preRender", this).call(this);
-	        this.enabled = this.useTabularLegend();
-	        // If rel-width & tabular legend: dynamic size for left margin, min 80px
-	        if (this.enabled) {
-	          this.margins.bottom = 100; // default
-	          this.margins.left = Math.max(80, Math.floor(this.plotter.plotWidth * 0.2));
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    prepare: {
-	      value: function prepare() {
-	        /** prepare must be called after nvd3 render because we create a 
-	          * time scale from scale domain/range, which are not set initially
-	          * during preRender.
-	          */
-	        var xScale = this.plotter.xScale,
-	
-	        /*
-	        timeScale = d3.time.scale()
-	          .domain(xScale.domain())
-	          .range(xScale.range()),
+	  _createClass(TabularLegendRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      var smallFormat;
+	      _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), 'preRender', this).call(this);
+	      smallFormat = this.plotter.plotWidth < 320 || this.plotter.options.tiny;
+	      this.enabled = this.useTabularLegend() && !smallFormat;
+	      // If rel-width & tabular legend: dynamic size for left margin, min 80px
+	      if (this.enabled) {
+	        this.margins.bottom = 100; // default
+	        this.margins.left = Math.max(80, Math.floor(this.plotter.plotWidth * 0.2));
+	      }
+	    }
+	  }, {
+	    key: 'prepare',
+	    value: function prepare() {
+	      /** prepare must be called after nvd3 render because we create a 
+	        * time scale from scale domain/range, which are not set initially
+	        * during preRender.
 	        */
-	        tickVals = this.plotter.tickVals;
-	        // force continuous scale in case of oridinal scale via bar chart:
-	        this.xScale = this.plotter.timeScale;
-	        this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
-	        // column width interval based on sample of first data column, scaled:
-	        this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
-	        this.yMin = this.plotter.yScale(this.data.range[0]);
+	      var xScale = this.plotter.xScale,
+	
+	      /*
+	      timeScale = d3.time.scale()
+	        .domain(xScale.domain())
+	        .range(xScale.range()),
+	      */
+	      tickVals = this.plotter.tickVals;
+	      // force continuous scale in case of oridinal scale via bar chart:
+	      this.xScale = this.plotter.timeScale;
+	      this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
+	      // column width interval based on sample of first data column, scaled:
+	      this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
+	      this.yMin = this.plotter.yScale(this.data.range[0]);
+	    }
+	  }, {
+	    key: 'clear',
+	    value: function clear() {
+	      // since we cannot use selection.html('') in SVG DOM (no innerHTML), we
+	      // cannot empty, and must remove the legend group, which will be re-added
+	      // in this.render().
+	      this.unloadInteractiveFeatures();
+	      this.plotGroup.selectAll(SEL_LEGEND).remove();
+	    }
+	  }, {
+	    key: 'makeLegendGroup',
+	    value: function makeLegendGroup() {
+	      var legendGroup = this.plotGroup.selectAll(SEL_LEGEND).data([this.data.series]),
+	          legendEnterSelection = legendGroup.enter().append('g').classed(LEGEND_CLASS, true);
+	      this.legendGroup = this.plotGroup.select(SEL_LEGEND);
+	    }
+	  }, {
+	    key: 'setLegendMargins',
+	    value: function setLegendMargins() {
+	      var margins = this.margins,
+	          yTop = this.yMin + margins.top + this.legPad;
+	      this.legendGroup.attr({
+	        transform: 'translate(' + this.leftPad + ', ' + yTop + ')'
+	      });
+	    }
+	  }, {
+	    key: 'makeRow',
+	    value: function makeRow(rowStyle) {
+	      /** make row group and bagkground rect */
+	      var row = this.legendGroup.append('g').classed('upiq-legend-row', true),
+	          rowBgRect = row.selectAll('rect').data([null]).enter().append('rect').classed('upiq-legend-table-row-bg', true);
+	      if (rowStyle.className) {
+	        row.classed(rowStyle.className, true);
+	      }
+	      rowBgRect.attr({
+	        height: 15, // initial height
+	        width: this.xMax + (this.margins.left - this.leftPad),
+	        'fill-opacity': rowStyle['fill-opacity'] || '1.0',
+	        fill: rowStyle.fill || '#999'
+	      });
+	      return row;
+	    }
+	  }, {
+	    key: 'fitRow',
+	    value: function fitRow(row) {
+	      var textHeight = d3.max(row.selectAll('text.upiq-legend-cell-text')[0].map(function (element) {
+	        return element.getBoundingClientRect().height;
+	      })),
+	          cellPadding = this.cellPadding,
+	          rowPadding = this.rowPadding,
+	          cellHeight = textHeight + cellPadding.top + cellPadding.bottom,
+	          rowHeight = cellHeight + rowPadding.top + rowPadding.bottom,
+	          rowBgRect = row.select('rect.upiq-legend-table-row-bg');
+	      // TODO GET MAX HEIGHT
+	      rowBgRect.attr({
+	        height: rowHeight,
+	        width: this.xMax + (this.margins.left - this.leftPad)
+	      });
+	      return rowHeight;
+	    }
+	  }, {
+	    key: 'drawCells',
+	    value: function drawCells(row, cellData, cellStyle) {
+	      var xOffset = this.margins.left,
+	          cellGroupClass = 'upiq-legend-table-cell',
+	          selectCellGroup = 'g.' + cellGroupClass,
+	          rowHeight = 30,
+	          textHeight,
+	          cellHeight,
+	          cellPadding = this.cellPadding,
+	          cellID = function cellID(d) {
+	        return 'cell-' + (0, _utils.uuid4)();
 	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clear: {
-	      value: function clear() {
-	        // since we cannot use selection.html('') in SVG DOM (no innerHTML), we
-	        // cannot empty, and must remove the legend group, which will be re-added
-	        // in this.render().
-	        this.unloadInteractiveFeatures();
-	        this.plotGroup.selectAll(SEL_LEGEND).remove();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    makeLegendGroup: {
-	      value: function makeLegendGroup() {
-	        var legendGroup = this.plotGroup.selectAll(SEL_LEGEND).data([this.data.series]),
-	            legendEnterSelection = legendGroup.enter().append("g").classed(LEGEND_CLASS, true);
-	        this.legendGroup = this.plotGroup.select(SEL_LEGEND);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    setLegendMargins: {
-	      value: function setLegendMargins() {
-	        var margins = this.margins,
-	            yTop = this.yMin + margins.top + this.legPad;
-	        this.legendGroup.attr({
-	          transform: "translate(" + this.leftPad + ", " + yTop + ")"
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    makeRow: {
-	      value: function makeRow(rowStyle) {
-	        /** make row group and bagkground rect */
-	        var row = this.legendGroup.append("g").classed("upiq-legend-row", true),
-	            rowBgRect = row.selectAll("rect").data([null]).enter().append("rect").classed("upiq-legend-table-row-bg", true);
-	        if (rowStyle.className) {
-	          row.classed(rowStyle.className, true);
+	          minTextSize = 4,
+	          computedTextSize = this.plotter.baseFontSize * 0.65,
+	          defaultTextSize = Math.max(computedTextSize, minTextSize),
+	          // px
+	      textWeight = defaultTextSize > 8 ? 'bold' : 'normal';
+	
+	      // adjust text size for bold/non-bold:
+	      defaultTextSize *= textWeight === 'bold' ? 1.0 : 1.1;
+	
+	      row.selectAll(selectCellGroup).data(cellData).enter().append('g').classed(cellGroupClass, true).attr({
+	        'data-timestamp': function dataTimestamp(d) {
+	          return d.stamp;
+	        },
+	        transform: function transform(cellPosition) {
+	          return 'translate(' + cellPosition.x + ', ' + cellPosition.y + ')';
 	        }
-	        rowBgRect.attr({
-	          height: 15, // initial height
-	          width: this.xMax + (this.margins.left - this.leftPad),
-	          "fill-opacity": rowStyle["fill-opacity"] || "1.0",
-	          fill: rowStyle.fill || "#999"
-	        });
-	        return row;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    fitRow: {
-	      value: function fitRow(row) {
-	        var textHeight = d3.max(row.selectAll("text.upiq-legend-cell-text")[0].map(function (element) {
-	          return element.getBoundingClientRect().height;
-	        })),
-	            cellPadding = this.cellPadding,
-	            rowPadding = this.rowPadding,
-	            cellHeight = textHeight + cellPadding.top + cellPadding.bottom,
-	            rowHeight = cellHeight + rowPadding.top + rowPadding.bottom,
-	            rowBgRect = row.select("rect.upiq-legend-table-row-bg");
-	        // TODO GET MAX HEIGHT
-	        rowBgRect.attr({
-	          height: rowHeight,
-	          width: this.xMax + (this.margins.left - this.leftPad)
-	        });
-	        return rowHeight;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    drawCells: {
-	      value: function drawCells(row, cellData, cellStyle) {
-	        var xOffset = this.margins.left,
-	            cellGroupClass = "upiq-legend-table-cell",
-	            selectCellGroup = "g." + cellGroupClass,
-	            rowHeight = 30,
-	            textHeight,
-	            cellHeight,
-	            cellPadding = this.cellPadding,
-	            cellID = function (d) {
-	          return "cell-" + uuid4();
-	        },
-	            minTextSize = 4,
-	            computedTextSize = this.plotter.baseFontSize * 0.65,
-	            defaultTextSize = Math.max(computedTextSize, minTextSize),
-	            // px
-	        textWeight = defaultTextSize > 8 ? "bold" : "normal";
-	
-	        // adjust text size for bold/non-bold:
-	        defaultTextSize *= textWeight === "bold" ? 1 : 1.1;
-	
-	        row.selectAll(selectCellGroup).data(cellData).enter().append("g").classed(cellGroupClass, true).attr({
-	          "data-timestamp": function (d) {
-	            return d.stamp;
-	          },
-	          transform: function (cellPosition) {
-	            return "translate(" + cellPosition.x + ", " + cellPosition.y + ")";
-	          }
-	        }).each(function (d, i) {
-	          var cellGroup = d3.select(this);
-	          if (d.className) {
-	            cellGroup.classed(d.className, true);
-	          }
-	        });
-	
-	        // make defs for group, then add a clip path with rect same as cell bg
-	        row.selectAll(selectCellGroup).append("defs").append("clipPath").classed("groupClip", true) // see note [1] below
-	        .attr({
-	          id: cellID
-	        }).append("rect").attr({
-	          x: 0,
-	          y: 0,
-	          width: function (cellPosition) {
-	            return cellPosition.width + 2;
-	          },
-	          height: rowHeight });
-	
-	        /* NOTE [1]: webkit/blink selector bug makes it impossible to select
-	         *            clipPath element or any other camelCase element by tagName;
-	         *            thus we must use a class attribute.
-	         *
-	         *  Appears to be long-standing bug with no resolution for clients we
-	         *  must support, so this workaround is here for a good long while...
-	         *
-	         *  Ref: 
-	         *  https://code.google.com/p/chromium/issues/detail?id=237435
-	         *  https://bugs.webkit.org/show_bug.cgi?id=83438
-	         *
-	         */
-	
-	        row.selectAll(selectCellGroup).attr({
-	          "clip-path": function () {
-	            var cellGroup = d3.select(this),
-	                cPath = cellGroup.select("defs .groupClip");
-	            return "url(#" + cPath.attr("id") + ")";
-	          }
-	        });
-	
-	        // make bg rects in each group, with width
-	        row.selectAll(selectCellGroup).append("rect").classed("upiq-legend-table-cell-bg", true).attr({
-	          x: 0,
-	          y: 0,
-	          width: function (cellPosition) {
-	            return cellPosition.width;
-	          },
-	          height: rowHeight, // initial, will be sized to fit...
-	          fill: cellStyle.fill || "#d0e9d9",
-	          "fill-opacity": cellStyle["fill-opacity"] || "1.0",
-	          stroke: cellStyle.stroke
-	        });
-	
-	        // make text elements, centered:
-	        row.selectAll(selectCellGroup).each(function (data, i) {
-	          var group = d3.select(this);
-	          group.append("text").classed("upiq-legend-cell-text", true).classed("noValue", function (d) {
-	            return d.text === "--";
-	          }).classed("nullValue", function (d) {
-	            return d.text === "N/A";
-	          }).text(function (d) {
-	            return d.text;
-	          }).call(d3textWrap, data.width, 0).attr({
-	            x: 0,
-	            y: cellPadding.top,
-	            lengthAdjust: "spacingAndGlyphs",
-	            height: rowHeight
-	          }).style({
-	            "text-anchor": "middle",
-	            "font-family": "Arial",
-	            "font-weight": textWeight,
-	            "font-size": function (d) {
-	              var subtle = d.text === "N/A" || d.text === "--",
-	                  size = subtle ? defaultTextSize * 0.8 : defaultTextSize;
-	              return "" + size + "px";
-	            },
-	            fill: function (d) {
-	              return d.color || cellStyle.textColor || "#000";
-	            }
-	          }).selectAll("tspan").attr({
-	            x: data.width / 2,
-	            dy: "" + defaultTextSize + "px",
-	            lengthAdjust: "spacingAndGlyphs" });
-	        });
-	
-	        textHeight = d3.max(row.selectAll("text.upiq-legend-cell-text")[0].map(function (element) {
-	          return element.getBoundingClientRect().height;
-	        }));
-	
-	        cellHeight = textHeight + cellPadding.top + cellPadding.bottom;
-	
-	        // set height of cell bg rect and the clipping path rect
-	        // (must select by classname, due to blink/webkit bug, see note [1] above)
-	        row.selectAll(".upiq-legend-table-cell-bg, .groupClip rect").attr({
-	          height: cellHeight
-	        });
-	
-	        // dynamically size text length to fit cells, IFF too wide:
-	        row.selectAll("text, tspan")[0].forEach(function (element) {
-	          var selected = d3.select(element),
-	              desiredWidth = selected.datum().width * 1.05,
-	              bRect = element.getBoundingClientRect(),
-	              widthForgiveness = desiredWidth < 16 ? 1.6 : 1.25,
-	              textWidth = bRect.width;
-	          if (textWidth > desiredWidth * widthForgiveness) {
-	            selected.attr({
-	              textLength: desiredWidth });
-	          }
-	          if (element.tagName === "text" && textHeight > bRect.height * 1.7) {
-	            // other cells are multi-line, and this is likely single-line:
-	            selected.attr({
-	              y: textHeight > bRect.height ? textHeight / 4 : 1
-	            });
-	          }
-	        }, this);
-	
-	        // transparent opacity for bg of legend label (first) cell:
-	        d3.select(row.selectAll(".upiq-legend-table-cell-bg")[0][0]).attr({
-	          "fill-opacity": 0 });
-	
-	        d3.select(row.selectAll(".upiq-legend-cell-text")[0][0]).attr({
-	          textLength: null }).style({
-	          "font-size": "" + defaultTextSize * 0.9 + "px"
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderLegendRow: {
-	      value: function renderLegendRow(cellData, rowStyle, cellStyle) {
-	        var row = this.makeRow(rowStyle || {}),
-	            rowHeight;
-	        this.drawCells(row, cellData, cellStyle);
-	        rowHeight = this.fitRow(row);
-	        return [row, rowHeight];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    rowCellData: {
-	      value: function rowCellData(textGetter) {
-	        /** return Array of cellInfo objects each containing content and computed
-	         *      scaled layout/position data for row cells; text content is
-	         *      obtained by calling textGetter with a key (usually date); this
-	         *      iterates through all periods in plot using specified frequency,
-	         *      thus creating cells for 
-	         *
-	         *      Constraint: textGetter function must return an empty string if
-	         *      there is no text for the period/key; textGetter may also return
-	         *      strings such as 'N/A' for sentinel values depending upon what is
-	         *      appropriate.
-	         *
-	         *      This function should be usable to obtain basic cell positioning
-	         *      and content for both header and content rows.
-	         */
-	        if (typeof textGetter !== "function") {
-	          throw new Error("rowCellData not passed textGetter function");
+	      }).each(function (d, i) {
+	        var cellGroup = d3.select(this);
+	        if (d.className) {
+	          cellGroup.classed(d.className, true);
 	        }
-	        var _data$domain = _slicedToArray(this.data.domain, 2);
+	      });
 	
-	        var start = _data$domain[0];
-	        var end = _data$domain[1];
-	        var timePeriods = this.plotter.timeRange(start, end);
-	        var timeStep = this.plotter.timeStep;
-	        var timeScale = this.xScale;
-	        var firstWidth = null; // set once in first run of closure below
-	        var scaleDomain = timeScale.domain();
-	        var barChart = this.plotter.type === "bar";
-	        var leftPadBar = Math.floor(timeScale.range().slice(-1)[0] / 200);
-	        var groupSpacing = barChart ? this.plotter.chart.groupSpacing() : 0;
-	        var padDenominator = 2 + groupSpacing * 0.2;
-	        var additionalPad = this.plotter.type === "line" ? 0 : (timeScale(this.plotter.timeOffset(scaleDomain[0], +1).valueOf()) - timeScale(scaleDomain[0])) / padDenominator;
-	        var xOffset = Math.round(this.margins.left + additionalPad);
-	        var dataStart = this.data.domain[0];
-	        var quarterly = this.plotter.interval === "month" && timeStep === 3;
-	        var interval = quarterly ? "quarter" : this.plotter.interval;
-	        var cellInfo = timePeriods.map(function (d) {
-	          var periodStart = d,
-	              periodEnd = moment.utc(d).endOf(interval).toDate(),
-	              startX = Math.round(timeScale(periodStart.valueOf())),
-	              endX = Math.round(timeScale(periodEnd.valueOf())),
-	              rectWidth = Math.round(endX - startX),
-	              groupLeft = Math.round(timeScale(d.valueOf()) - 5);
-	          firstWidth = firstWidth || rectWidth;
-	          groupLeft = Math.round(groupLeft - firstWidth / 2);
-	          groupLeft -= barChart ? leftPadBar : 0;
-	          return {
-	            key: d,
-	            width: rectWidth - 2,
-	            x: xOffset + groupLeft,
-	            y: 0,
-	            stamp: d.toISOString(),
-	            text: textGetter(d) || ""
-	          };
-	        }, this);
-	        return cellInfo;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    headerTableData: {
-	      value: function headerTableData() {
-	        /** return Array of cellInfo objects each containing content and computed
-	         *      scaled layout/position data for column headings (axis labels).
-	         */
-	        var data = this.data,
-	            axisTitle = this.data.x_label,
-	            legendLabelCell = {
-	          x: 5,
-	          y: 0,
-	          width: this.plotter.margins.left - 10,
-	          color: "#aaa",
-	          className: "upiq-legend-xaxis-title",
-	          text: axisTitle ? axisTitle + " →" : ""
+	      // make defs for group, then add a clip path with rect same as cell bg
+	      row.selectAll(selectCellGroup).append('defs').append('clipPath').classed('groupClip', true) // see note [1] below
+	      .attr({
+	        id: cellID
+	      }).append('rect').attr({
+	        x: 0,
+	        y: 0,
+	        width: function width(cellPosition) {
+	          return cellPosition.width + 2;
 	        },
-	            textGetter = function (d) {
-	          return data.axisLabel(d).label || "";
-	        };
-	        return [legendLabelCell].concat(this.rowCellData(textGetter));
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    seriesRowData: {
-	      value: function seriesRowData(series) {
-	        var baseData = series.data,
-	            // d3.map (pseudo-ES6-Map) of DataPoint
-	        infoMap = {},
-	            // ms (implicitly cast) key/name to datapoint
-	        noValue = "--",
-	            legendLabelCell = {
-	          x: 5,
-	          y: 0,
-	          width: this.plotter.margins.left - 10,
-	          className: "upiq-legend-series-title",
-	          text: series.title
+	        height: rowHeight });
+	
+	      /* NOTE [1]: webkit/blink selector bug makes it impossible to select
+	       *            clipPath element or any other camelCase element by tagName;
+	       *            thus we must use a class attribute.
+	       *
+	       *  Appears to be long-standing bug with no resolution for clients we
+	       *  must support, so this workaround is here for a good long while...
+	       *
+	       *  Ref: 
+	       *  https://code.google.com/p/chromium/issues/detail?id=237435
+	       *  https://bugs.webkit.org/show_bug.cgi?id=83438
+	       *
+	       */
+	
+	      // initial, will be sized to fit...
+	      row.selectAll(selectCellGroup).attr({
+	        'clip-path': function clipPath() {
+	          var cellGroup = d3.select(this),
+	              cPath = cellGroup.select('defs .groupClip');
+	          return 'url(#' + cPath.attr('id') + ')';
+	        }
+	      });
+	
+	      // make bg rects in each group, with width
+	      row.selectAll(selectCellGroup).append('rect').classed('upiq-legend-table-cell-bg', true).attr({
+	        x: 0,
+	        y: 0,
+	        width: function width(cellPosition) {
+	          return cellPosition.width;
 	        },
-	            textGetter = function (d) {
-	          var ms = d.valueOf(),
-	              format = function (v) {
-	            return v === null ? "N/A" : d3.format(",.1f")(v);
+	        height: rowHeight, // initial, will be sized to fit...
+	        fill: cellStyle.fill || '#d0e9d9',
+	        'fill-opacity': cellStyle['fill-opacity'] || '1.0',
+	        stroke: cellStyle.stroke
+	      });
+	
+	      // make text elements, centered:
+	      row.selectAll(selectCellGroup).each(function (data, i) {
+	        var group = d3.select(this);
+	        group.append('text').classed('upiq-legend-cell-text', true).classed('noValue', function (d) {
+	          return d.text === '--';
+	        }).classed('nullValue', function (d) {
+	          return d.text === 'N/A';
+	        }).text(function (d) {
+	          return d.text;
+	        }).call(_utils.d3textWrap, data.width, 0).attr({
+	          x: 0,
+	          y: cellPadding.top,
+	          lengthAdjust: 'spacingAndGlyphs',
+	          height: rowHeight
+	        }).style({
+	          'text-anchor': 'middle',
+	          'font-family': 'Arial',
+	          'font-weight': textWeight,
+	          'font-size': function fontSize(d) {
+	            var subtle = d.text === 'N/A' || d.text === '--',
+	                size = subtle ? defaultTextSize * 0.8 : defaultTextSize;
+	            return '' + size + 'px';
 	          },
-	              text;
-	          if (Object.keys(infoMap).indexOf(ms.toString()) === -1) {
-	            return noValue;
+	          'fill': function fill(d) {
+	            return d.color || cellStyle.textColor || '#000';
 	          }
-	          return format(infoMap[ms].value);
+	        }).selectAll('tspan').attr({
+	          x: data.width / 2.0,
+	          dy: '' + defaultTextSize + 'px',
+	          lengthAdjust: 'spacingAndGlyphs'
+	        });
+	      });
+	
+	      textHeight = d3.max(row.selectAll('text.upiq-legend-cell-text')[0].map(function (element) {
+	        return element.getBoundingClientRect().height;
+	      }));
+	
+	      cellHeight = textHeight + cellPadding.top + cellPadding.bottom;
+	
+	      // set height of cell bg rect and the clipping path rect
+	      // (must select by classname, due to blink/webkit bug, see note [1] above)
+	      row.selectAll('.upiq-legend-table-cell-bg, .groupClip rect').attr({
+	        height: cellHeight
+	      });
+	
+	      // dynamically size text length to fit cells, IFF too wide:
+	      row.selectAll('text, tspan')[0].forEach(function (element) {
+	        var selected = d3.select(element),
+	            desiredWidth = selected.datum().width * 1.05,
+	            bRect = element.getBoundingClientRect(),
+	            widthForgiveness = desiredWidth < 16 ? 1.6 : 1.25,
+	            textWidth = bRect.width;
+	        if (textWidth > desiredWidth * widthForgiveness) {
+	          selected.attr({
+	            textLength: desiredWidth
+	          });
+	        }
+	        if (element.tagName === 'text' && textHeight > bRect.height * 1.7) {
+	          // other cells are multi-line, and this is likely single-line:
+	          selected.attr({
+	            y: textHeight > bRect.height ? textHeight / 4.0 : 1
+	          });
+	        }
+	      }, this);
+	
+	      // transparent opacity for bg of legend label (first) cell:
+	      d3.select(row.selectAll('.upiq-legend-table-cell-bg')[0][0]).attr({
+	        'fill-opacity': 0.0
+	      });
+	
+	      d3.select(row.selectAll('.upiq-legend-cell-text')[0][0]).attr({
+	        textLength: null
+	      }).style({
+	        'font-size': '' + defaultTextSize * 0.9 + 'px'
+	      });
+	    }
+	  }, {
+	    key: 'renderLegendRow',
+	    value: function renderLegendRow(cellData, rowStyle, cellStyle) {
+	      var row = this.makeRow(rowStyle || {}),
+	          rowHeight;
+	      this.drawCells(row, cellData, cellStyle);
+	      rowHeight = this.fitRow(row);
+	      return [row, rowHeight];
+	    }
+	  }, {
+	    key: 'rowCellData',
+	    value: function rowCellData(textGetter) {
+	      /** return Array of cellInfo objects each containing content and computed
+	       *      scaled layout/position data for row cells; text content is
+	       *      obtained by calling textGetter with a key (usually date); this
+	       *      iterates through all periods in plot using specified frequency,
+	       *      thus creating cells for 
+	       *
+	       *      Constraint: textGetter function must return an empty string if
+	       *      there is no text for the period/key; textGetter may also return
+	       *      strings such as 'N/A' for sentinel values depending upon what is
+	       *      appropriate.
+	       *
+	       *      This function should be usable to obtain basic cell positioning
+	       *      and content for both header and content rows.
+	       */
+	      if (typeof textGetter !== 'function') {
+	        throw new Error('rowCellData not passed textGetter function');
+	      }
+	
+	      var _data$domain = _slicedToArray(this.data.domain, 2);
+	
+	      var start = _data$domain[0];
+	      var end = _data$domain[1];
+	      var timePeriods = this.plotter.timeRange(start, end);
+	      var timeStep = this.plotter.timeStep;
+	      var timeScale = this.xScale;
+	      var firstWidth = null; // set once in first run of closure below
+	      var scaleDomain = timeScale.domain();
+	      var barChart = this.plotter.type === 'bar';
+	      var leftPadBar = Math.floor(timeScale.range().slice(-1)[0] / 200.0);
+	      var groupSpacing = barChart ? this.plotter.chart.groupSpacing() : 0.0;
+	      var padDenominator = 2 + groupSpacing * 0.2;
+	      var additionalPad = this.plotter.type === 'line' ? 0 : (timeScale(this.plotter.timeOffset(scaleDomain[0], +1).valueOf()) - timeScale(scaleDomain[0])) / padDenominator;
+	      var xOffset = Math.round(this.margins.left + additionalPad);
+	      var dataStart = this.data.domain[0];
+	      var quarterly = this.plotter.interval === 'month' && timeStep === 3;
+	      var interval = quarterly ? 'quarter' : this.plotter.interval;
+	      var cellInfo = timePeriods.map(function (d) {
+	        var periodStart = d,
+	            periodEnd = moment.utc(d).endOf(interval).toDate(),
+	            startX = Math.round(timeScale(periodStart.valueOf())),
+	            endX = Math.round(timeScale(periodEnd.valueOf())),
+	            rectWidth = Math.round(endX - startX),
+	            groupLeft = Math.round(timeScale(d.valueOf()) - 5);
+	        firstWidth = firstWidth || rectWidth;
+	        groupLeft = Math.round(groupLeft - firstWidth / 2.0);
+	        groupLeft -= barChart ? leftPadBar : 0;
+	        return {
+	          key: d,
+	          width: rectWidth - 2,
+	          x: xOffset + groupLeft,
+	          y: 0,
+	          stamp: d.toISOString(),
+	          text: textGetter(d) || ''
 	        };
-	        baseData.forEach(function (key, point) {
-	          infoMap[key] = point;
-	        }, this);
-	        return [legendLabelCell].concat(this.rowCellData(textGetter));
+	      }, this);
+	      return cellInfo;
+	    }
+	  }, {
+	    key: 'headerTableData',
+	    value: function headerTableData() {
+	      /** return Array of cellInfo objects each containing content and computed
+	       *      scaled layout/position data for column headings (axis labels).
+	       */
+	      var data = this.data,
+	          axisTitle = this.data.x_label,
+	          legendLabelCell = {
+	        x: 5,
+	        y: 0,
+	        width: this.plotter.margins.left - 10,
+	        color: '#aaa',
+	        className: 'upiq-legend-xaxis-title',
+	        text: axisTitle ? axisTitle + ' →' : ''
 	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderLegendRows: {
-	      value: function renderLegendRows() {
-	        var headerData = this.headerTableData(),
-	            color = ColorTool,
-	            headerRowStyle = {
-	          fill: "#eee",
-	          "fill-opacity": "0.5",
-	          className: "upiq-legend-header-row"
+	          textGetter = function textGetter(d) {
+	        return data.axisLabel(d).label || '';
+	      };
+	      return [legendLabelCell].concat(this.rowCellData(textGetter));
+	    }
+	  }, {
+	    key: 'seriesRowData',
+	    value: function seriesRowData(series) {
+	      var baseData = series.data,
+	          // d3.map (pseudo-ES6-Map) of DataPoint
+	      infoMap = {},
+	          // ms (implicitly cast) key/name to datapoint
+	      noValue = '--',
+	          legendLabelCell = {
+	        x: 5,
+	        y: 0,
+	        width: this.plotter.margins.left - 10,
+	        className: 'upiq-legend-series-title',
+	        text: series.title
+	      },
+	          textGetter = function textGetter(d) {
+	        var ms = d.valueOf(),
+	            format = function format(v) {
+	          return v === null ? 'N/A' : d3.format(',.1f')(v);
 	        },
-	            headerCellStyle = {
-	          fill: "#eee",
-	          "fill-opacity": "0",
-	          textColor: "#666"
-	        },
-	            baseRowStyle = {
-	          fill: "#cccccc"
-	        },
-	            baseCellStyle = {
-	          fill: "#ffffff",
-	          textColor: "#000"
-	        },
-	            top = 0,
+	            text;
+	        if (Object.keys(infoMap).indexOf(ms.toString()) === -1) {
+	          return noValue;
+	        }
+	        return format(infoMap[ms].value);
+	      };
+	      baseData.forEach(function (key, point) {
+	        infoMap[key] = point;
+	      }, this);
+	      return [legendLabelCell].concat(this.rowCellData(textGetter));
+	    }
+	  }, {
+	    key: 'renderLegendRows',
+	    value: function renderLegendRows() {
+	      var headerData = this.headerTableData(),
+	          color = _utils.ColorTool,
+	          headerRowStyle = {
+	        fill: '#eee',
+	        'fill-opacity': '0.5',
+	        className: 'upiq-legend-header-row'
+	      },
+	          headerCellStyle = {
+	        fill: '#eee',
+	        'fill-opacity': '0',
+	        textColor: '#666'
+	      },
+	          baseRowStyle = {
+	        fill: '#cccccc'
+	      },
+	          baseCellStyle = {
+	        fill: '#ffffff',
+	        textColor: '#000'
+	      },
+	          top = 0,
+	          row,
+	          rowHeight;
+	
+	      var _renderLegendRow = this.renderLegendRow(headerData, headerRowStyle, headerCellStyle);
+	
+	      var _renderLegendRow2 = _slicedToArray(_renderLegendRow, 2);
+	
+	      row = _renderLegendRow2[0];
+	      rowHeight = _renderLegendRow2[1];
+	
+	      row.attr({
+	        transform: 'translate(0,' + top + ')'
+	      });
+	      top += rowHeight;
+	      this.data.series.forEach(function (series) {
+	        var rowData = this.seriesRowData(series),
+	            cellBgColor = color.lighten(series.color, 0.2),
+	            firstCellColor = series.color,
+	            textColor = color.isDark(cellBgColor) ? '#fff' : '#000',
+	            rowStyle = Object.create(baseRowStyle),
+	            cellStyle = Object.create(baseCellStyle),
 	            row,
 	            rowHeight;
-	        var _ref = this.renderLegendRow(headerData, headerRowStyle, headerCellStyle);
+	        rowStyle.fill = series.color;
+	        cellStyle.fill = cellBgColor;
+	        cellStyle.textColor = textColor;
+	        cellStyle.first = Object.create(cellStyle); // clone base, 1st col
+	        cellStyle.first.fill = firstCellColor; // ...override bgcolor
 	
-	        var _ref2 = _slicedToArray(_ref, 2);
+	        var _renderLegendRow3 = this.renderLegendRow(rowData, rowStyle, cellStyle);
 	
-	        row = _ref2[0];
-	        rowHeight = _ref2[1];
+	        var _renderLegendRow32 = _slicedToArray(_renderLegendRow3, 2);
+	
+	        row = _renderLegendRow32[0];
+	        rowHeight = _renderLegendRow32[1];
+	
 	        row.attr({
-	          transform: "translate(0," + top + ")"
+	          transform: 'translate(0,' + top + ')'
 	        });
 	        top += rowHeight;
-	        this.data.series.forEach(function (series) {
-	          var rowData = this.seriesRowData(series),
-	              cellBgColor = color.lighten(series.color, 0.2),
-	              firstCellColor = series.color,
-	              textColor = color.isDark(cellBgColor) ? "#fff" : "#000",
-	              rowStyle = Object.create(baseRowStyle),
-	              cellStyle = Object.create(baseCellStyle),
-	              row,
-	              rowHeight;
-	          rowStyle.fill = series.color;
-	          cellStyle.fill = cellBgColor;
-	          cellStyle.textColor = textColor;
-	          cellStyle.first = Object.create(cellStyle); // clone base, 1st col
-	          cellStyle.first.fill = firstCellColor; // ...override bgcolor
-	          var _ref3 = this.renderLegendRow(rowData, rowStyle, cellStyle);
-	
-	          var _ref32 = _slicedToArray(_ref3, 2);
-	
-	          row = _ref32[0];
-	          rowHeight = _ref32[1];
-	          row.attr({
-	            transform: "translate(0," + top + ")"
-	          });
-	          top += rowHeight;
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    unloadInteractiveFeatures: {
-	      value: function unloadInteractiveFeatures() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    columnCells: {
-	      value: function columnCells(key) {
-	        var rows = this.legendGroup.selectAll("g.upiq-legend-row"),
-	            columnCells = [];
-	        rows.each(function (d, i) {
-	          var row = d3.select(this),
-	              cells = row.selectAll(".upiq-legend-table-cell"),
-	              result = cells[0].filter(function (cell) {
-	            var data = d3.select(cell).data()[0];
-	            return data && data.key && data.key.valueOf() == key.valueOf();
-	          });
-	          columnCells.push(result[0]);
+	      }, this);
+	    }
+	  }, {
+	    key: 'unloadInteractiveFeatures',
+	    value: function unloadInteractiveFeatures() {
+	      /** called by this.clear(), should clear event handling before re-render */
+	    }
+	  }, {
+	    key: 'columnCells',
+	    value: function columnCells(key) {
+	      var rows = this.legendGroup.selectAll('g.upiq-legend-row'),
+	          columnCells = [];
+	      rows.each(function (d, i) {
+	        var row = d3.select(this),
+	            cells = row.selectAll('.upiq-legend-table-cell'),
+	            result = cells[0].filter(function (cell) {
+	          var data = d3.select(cell).data()[0];
+	          return data && data.key && data.key.valueOf() == key.valueOf();
 	        });
-	        return columnCells;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    highlightColumn: {
-	      value: function highlightColumn(key) {
-	        var cells = d3.selectAll(this.columnCells(key));
-	        cells.classed("col-highlighted", true);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clearHighlights: {
-	      value: function clearHighlights() {
-	        var cells = this.legendGroup.selectAll(".upiq-legend-table-cell");
-	        cells.classed("col-highlighted", false);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    coordinateEvent: {
-	      value: function coordinateEvent(cell, plugin) {
-	        /* coordinate with hover or click plugins, such that hovering or clicking
-	         * in tabular legend has effect on data-point hover/click.
-	         */
-	        var data = cell.data()[0],
-	            key = data ? data.key : null,
-	            tableRow,
-	            seriesIndex,
-	            series;
-	        if (key) {
-	          tableRow = cell[0][0].parentNode;
-	          seriesIndex = this.legendGroup.selectAll(".upiq-legend-row")[0].indexOf(tableRow) - 1;
-	          series = this.data.series[seriesIndex];
-	          if (series) {
-	            data = series.data.get(key.valueOf());
-	            if (data) {
-	              data.x = data.key.valueOf();
-	              data.y = data.value;
-	              if (data.y !== null) {
-	                plugin.showOverlay(null, data, series);
-	              }
+	        columnCells.push(result[0]);
+	      });
+	      return columnCells;
+	    }
+	  }, {
+	    key: 'highlightColumn',
+	    value: function highlightColumn(key) {
+	      var cells = d3.selectAll(this.columnCells(key));
+	      cells.classed('col-highlighted', true);
+	    }
+	  }, {
+	    key: 'clearHighlights',
+	    value: function clearHighlights() {
+	      var cells = this.legendGroup.selectAll('.upiq-legend-table-cell');
+	      cells.classed('col-highlighted', false);
+	    }
+	  }, {
+	    key: 'coordinateEvent',
+	    value: function coordinateEvent(cell, plugin) {
+	      /* coordinate with hover or click plugins, such that hovering or clicking
+	       * in tabular legend has effect on data-point hover/click.
+	       */
+	      var data = cell.data()[0],
+	          key = data ? data.key : null,
+	          tableRow,
+	          seriesIndex,
+	          series;
+	      if (key) {
+	        tableRow = cell[0][0].parentNode;
+	        seriesIndex = this.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
+	        series = this.data.series[seriesIndex];
+	        if (series) {
+	          data = series.data.get(key.valueOf());
+	          if (data) {
+	            data.x = data.key.valueOf();
+	            data.y = data.value;
+	            if (data.y !== null) {
+	              plugin.showOverlay(null, data, series);
 	            }
 	          }
 	        }
+	      }
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      var self = this,
+	          click = this.plotter.getPlugin('PointClickPlugin'),
+	          hover = self.plotter.getPlugin('PointHoverPlugin'),
+	          table = this.svg.select('g.upiq-legend'),
+	          sCell = 'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text',
+	          cells = this.svg.selectAll(sCell),
+	          cellKey = function cellKey(cell) {
+	        return (cell.data()[0] || {}).key || null;
 	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    loadInteractiveFeatures: {
-	      value: function loadInteractiveFeatures() {
-	        var self = this,
-	            click = this.plotter.getPlugin("PointClickPlugin"),
-	            hover = self.plotter.getPlugin("PointHoverPlugin"),
-	            table = this.svg.select("g.upiq-legend"),
-	            sCell = "g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text",
-	            cells = this.svg.selectAll(sCell),
-	            cellKey = function (cell) {
-	          return (cell.data()[0] || {}).key || null;
-	        },
-	            getCell = function (target) {
+	          getCell = function getCell(_x4) {
+	        var _again2 = true;
+	
+	        _function2: while (_again2) {
+	          var target = _x4;
+	          parent = pClass = isCell = undefined;
+	          _again2 = false;
+	
 	          var parent = target.parentNode,
-	              pClass = parent.getAttribute("class") || "",
-	              isCell = pClass.indexOf("upiq-legend-table-cell") !== -1;
+	              pClass = parent.getAttribute('class') || '',
+	              isCell = pClass.indexOf('upiq-legend-table-cell') !== -1;
 	          if (isCell) {
 	            return parent;
 	          }
-	          if (parent.tagName === "svg") {
+	          if (parent.tagName === 'svg') {
 	            return null; // prevent inf recurse
 	          }
-	          return getCell(parent);
-	        };
-	        if (!this.enabled) return;
-	        // hover behavior:
-	        table.on("mouseover", function (d, i) {
+	          _x4 = parent;
+	          _again2 = true;
+	          continue _function2;
+	        }
+	      };
+	      if (!this.enabled) return;
+	      // hover behavior:
+	      table.on('mouseover', function (d, i) {
+	        var rawTarget = d3.event.target,
+	            targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
+	            key;
+	        if (targetCell) {
+	          key = cellKey(targetCell);
+	          if (key) {
+	            if (hover) {
+	              hover.clearOverlays();
+	              self.coordinateEvent(targetCell, hover);
+	            }
+	            self.highlightColumn(key);
+	            self.plotter.highlightX(key); // highlight X tick
+	          }
+	        }
+	      }).on('mouseout', function (d, i) {
+	        if (hover) {
+	          hover.clearOverlays();
+	        }
+	        self.clearHighlights();
+	        self.plotter.clearHighlights();
+	      });
+	      // click behavior:
+	      if (click) {
+	        table.on('click', function (d, i) {
 	          var rawTarget = d3.event.target,
 	              targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
 	              key;
 	          if (targetCell) {
 	            key = cellKey(targetCell);
 	            if (key) {
-	              if (hover) {
-	                hover.clearOverlays();
-	                self.coordinateEvent(targetCell, hover);
-	              }
-	              self.highlightColumn(key);
-	              self.plotter.highlightX(key); // highlight X tick
+	              self.coordinateEvent(targetCell, click);
 	            }
 	          }
-	        }).on("mouseout", function (d, i) {
-	          if (hover) {
-	            hover.clearOverlays();
-	          }
-	          self.clearHighlights();
-	          self.plotter.clearHighlights();
 	        });
-	        // click behavior:
-	        if (click) {
-	          table.on("click", function (d, i) {
-	            var rawTarget = d3.event.target,
-	                targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
-	                key;
-	            if (targetCell) {
-	              key = cellKey(targetCell);
-	              if (key) {
-	                self.coordinateEvent(targetCell, click);
-	              }
-	            }
-	          });
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _postRender: {
-	      value: function _postRender() {
-	        // adjustments as needed after rendering other bits
-	        var table = this.plotGroup.select(SEL_LEGEND),
-	            rows = this.plotGroup.selectAll("upiq-legend-table-row"),
-	            tableHeight = table[0][0].getBoundingClientRect().height,
-	            gridHeight = this.plotter.gridHeight(),
-	            intermediarySpacing = (this.margins.top || 10) + 10,
-	            tableOrigin = gridHeight + intermediarySpacing,
-	            plotHeight = tableHeight + gridHeight + intermediarySpacing,
-	            plotBottomMargin = 15;
-	        // size plotCore div with enough space for legend:
-	        this.plotCore.style({
-	          height: "" + plotHeight + "px"
-	        });
-	        table.attr({
-	          transform: "translate(5, " + tableOrigin + ")" });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        this.prepare();
-	        this.makeLegendGroup();
-	        this.renderLegendRows();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    postRender: {
-	      value: function postRender() {
-	        if (this.enabled) {
-	          // post-render adjustments (e.g. position fully rendered table)
-	          this._postRender();
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    useTabularLegend: {
-	      value: function useTabularLegend() {
-	        return this.data.legend_placement === "tabular";
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    update: {
-	      value: function update() {
-	        if (!this.enabled) {
-	          return; // plugin not applicable to plot
-	        }
-	        this.clear();
-	        this.render();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	      }
 	    }
-	  });
+	  }, {
+	    key: '_postRender',
+	    value: function _postRender() {
+	      // adjustments as needed after rendering other bits
+	      var table = this.plotGroup.select(SEL_LEGEND),
+	          rows = this.plotGroup.selectAll('upiq-legend-table-row'),
+	          tableHeight = table[0][0].getBoundingClientRect().height,
+	          gridHeight = this.plotter.gridHeight(),
+	          intermediarySpacing = (this.margins.top || 10) + 10,
+	          tableOrigin = gridHeight + intermediarySpacing,
+	          plotHeight = tableHeight + gridHeight + intermediarySpacing,
+	          plotBottomMargin = 15;
+	      // size plotCore div with enough space for legend:
+	      this.plotCore.style({
+	        height: '' + plotHeight + 'px'
+	      });
+	      table.attr({
+	        transform: 'translate(5, ' + tableOrigin + ')'
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.prepare();
+	      this.makeLegendGroup();
+	      this.renderLegendRows();
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      if (this.enabled) {
+	        // post-render adjustments (e.g. position fully rendered table)
+	        this._postRender();
+	      }
+	    }
+	  }, {
+	    key: 'useTabularLegend',
+	    value: function useTabularLegend() {
+	      return this.data.legend_placement === 'tabular';
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      if (!this.enabled) {
+	        return; // plugin not applicable to plot
+	      }
+	      this.clear();
+	      this.render();
+	    }
+	  }]);
 	
 	  return TabularLegendRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
-	// initial, will be sized to fit...
-	/** called by this.clear(), should clear event handling before re-render */
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.TabularLegendRenderer = TabularLegendRenderer;
 
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _plugin = __webpack_require__(9);
 	
 	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(4);
 	
-	var _utils = __webpack_require__(6);
+	var PointLabelsRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(PointLabelsRenderer, _BaseRenderingPlugin);
 	
-	var ColorTool = _utils.ColorTool;
-	var uuid4 = _utils.uuid4;
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var PointLabelsRenderer = exports.PointLabelsRenderer = (function (BaseRenderingPlugin) {
 	  function PointLabelsRenderer(plotter) {
-	    _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), "constructor", this).call(this, plotter);
+	    _classCallCheck(this, PointLabelsRenderer);
+	
+	    _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), 'constructor', this).call(this, plotter);
 	  }
 	
-	  _inherits(PointLabelsRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(PointLabelsRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), "preRender", this).call(this);
-	        /** after div is sized, we need to possibly adjust for label headroom */
-	        if (this._needsLabelHeadroom()) {
-	          this.margins.top = 5 + Math.floor(this.plotter.plotHeight / 15);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _needsLabelHeadroom: {
-	      value: function _needsLabelHeadroom() {
-	        var data = this.data,
-	            considered = data.series.filter(data.showLabels, data),
-	            highValued = function (series) {
-	          var values = [];
-	          series.data.forEach(function (k, point) {
-	            values.push(point.value || 0);
-	          });
-	          return Math.max.apply(null, values) > 90;
-	        };
-	        considered = considered.filter(highValued);
-	        return !!considered.length; // high-val labeled series gets room
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    scalePoint: {
-	      value: function scalePoint(point) {
-	        /** return scaled point (plain) object */
-	        var scaled = Object.create(point),
-	            // wrap with orig point as proto
-	        x = point.key.valueOf(),
-	            y = point.value;
-	        scaled.x = this.xScale(x);
-	        scaled.y = this.yScale(y);
-	        // default x2, y2 as label coordinate (default is used by bar chart, and
-	        // is above the marker data x,y):
-	        scaled.x2 = scaled.x + 5;
-	        scaled.y2 = scaled.y - Math.floor(this.plotter.plotWidth / 90);
-	        return scaled;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    lineSlope: {
-	      value: function lineSlope(pointA, pointB) {
-	        /** slope between pointA and pointB, where points have attrs x, y */
-	        var rise, run;
-	        if (pointA === null || pointB === null) {
-	          // constant slope: in effect means horizontal tangent line for any
-	          // point that has no previous, next points in series.
-	          return 0;
-	        }
-	        rise = (pointB.y - pointA.y) * -1; // *-1 compensates for svg origin@top
-	        run = pointB.x - pointA.x;
-	        return rise / run;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    pointAngles: {
-	      value: function pointAngles(point, prev, next) {
-	        /** 
-	          * return array of: tangent line angle, perpendiculat angle, and
-	          * inflection angle
-	          */
-	        var slope = this.lineSlope,
-	            slopeA = prev === null ? slope(point, next) : slope(prev, point),
-	            slopeB = next === null ? slope(prev, point) : slope(point, next),
-	            avgSlope = (slopeA + slopeB) / 2,
-	            perpendicularSlope = -1 / avgSlope,
-	            tanLnAngle = Math.atan(avgSlope),
-	            positioningAngle = Math.atan(perpendicularSlope),
-	            inflectionAngle = Math.PI - Math.abs(Math.atan(slopeB)) - Math.abs(Math.atan(slopeA));
-	        return [tanLnAngle, positioningAngle, inflectionAngle];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    scaledPoints: {
-	      value: function scaledPoints(series) {
-	        var points = [],
-	            scaledPoints = [],
-	            gridZero = this.plotter.gridHeight() + this.margins.top,
-	            textSize = this.plotter.baseFontSize * 0.75;
-	        series.data.forEach(function (k, point) {
-	          if (point.value !== null) {
-	            points.push(point);
-	          }
-	        }); // map to Array of points, filtering out null-valued
-	        scaledPoints = points.map(this.scalePoint, this);
-	        if (this.plotter.type === "line") {
-	          scaledPoints.forEach(function (point, idx, arr) {
-	            /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
-	              * line to point, which should look better than simply displaying
-	              * above a point marker (insofar as chances of text overlapping
-	              * line-drawing for same series are minimized).
-	              */
-	            var prev = idx === 0 ? null : arr[idx - 1];
-	            var next = idx === arr.length - 1 ? null : arr[idx + 1];var _pointAngles = this.pointAngles(point, prev, next);
-	
-	            var _pointAngles2 = _slicedToArray(_pointAngles, 3);
-	
-	            var tanAngle = _pointAngles2[0];
-	            var posAngle = _pointAngles2[1];
-	            //tanLnSlope = this.tangentLineSlope(point, prev, next),
-	            //perpendicularSlope = -1 / tanLnSlope,
-	            //positioningAngle = Math.atan(perpendicularSlope),
-	            var inflectionAngle = _pointAngles2[2];
-	            // angle multipler, *-1 if acute angle:
-	            var acute = inflectionAngle < Math.PI / 2;
-	            var downward = prev && next && prev.y < point.y && next.y < point.y;
-	            var mult = acute && downward ? -1 : 1;
-	            // text is wider than tall, so perceived hypotenuse difference
-	            // from marker to text should be shorter when tanLnSlope is
-	            // less than 1 (45°):
-	            var textAbove = !downward && Math.abs(tanAngle) < Math.PI / 4;
-	            var baseDistance = textAbove ? 60 : 52;
-	            var distanceDenominator = downward && acute ? 33 : baseDistance;
-	            // ideal hypotenuse distance:
-	            var c = Math.floor(this.plotter.plotWidth / distanceDenominator);
-	            // opposite leg, delta for Y
-	            var a = mult * c * Math.sin(posAngle);
-	            // adjacent leg, delta for X
-	            var b = mult * c * Math.cos(posAngle);
-	            // if tangent line has negative slope (going down left-to-right)
-	            // then we want to multiply a,b each by -1
-	            if (tanAngle < 0) {
-	              b *= -1;
-	              a *= -1;
-	            }
-	            point.x2 = point.x - b;
-	            point.y2 = point.y + a;
-	            if (point.y2 > gridZero - textSize) {
-	              point.y2 = point.y - a;
-	            }
-	          }, this);
-	        }
-	        return scaledPoints;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    mkGroup: {
-	      value: function mkGroup() {
-	        var group = this.plotGroup.selectAll("g.upiq-point-labels").data([null]),
-	            gridOffsetX = this.margins.left,
-	            gridOffsetY = this.margins.top;
-	        group.enter().append("g").classed("upiq-point-labels", true).attr({
-	          transform: "translate(" + gridOffsetX + ", " + gridOffsetY + ")"
-	        });
-	        return group;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderPoint: {
-	      value: function renderPoint(point, seriesGroup, series) {
-	        var format = function (v) {
-	          return v === null ? "" : d3.format(",.1f")(v);
-	        },
-	            seriesIdx = series.position,
-	            color = series.color,
-	            ct = ColorTool,
-	            yOffset = Math.floor(this.plotter.plotWidth / 60);
-	        // empty label? no element!
-	        if (point.value === null) {
-	          return;
-	        }
-	        // adjust color lighter or darker to contrast with line:
-	        color = ct.isDark(color) ? ct.lighten(color, 0.5) : ct.darken(color, 0.5);
-	        seriesGroup.append("text").classed("upiq-point-label point-label-" + seriesIdx, true).attr({
-	          "text-anchor": "middle",
-	          x: point.x2,
-	          y: point.y2
-	        }).style({
-	          fill: color }).text(format(point.value));
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderSeries: {
-	      value: function renderSeries(series, group) {
-	        var _this = this;
-	        var scaledPoints = this.scaledPoints(series),
-	            seriesGroup = group.append("g").classed("upiq-series-labels", true);
-	        seriesGroup.attr({
-	          fill: series.color,
-	          "font-family": "Arial Narrow",
-	          "font-size": "75%" // % of this.plotter.baseFontSize implied
-	        }).style({
-	          fill: series.color });
-	        scaledPoints.forEach(function (p) {
-	          return _this.renderPoint(p, seriesGroup, series);
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        var _this = this;
-	        var considered = this.data.series.filter(function (s) {
-	          return _this.data.showLabels(s);
-	        }),
-	            group = this.mkGroup();
-	        considered.forEach(function (series) {
-	          this.renderSeries(series, group);
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(PointLabelsRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), 'preRender', this).call(this);
+	      /** after div is sized, we need to possibly adjust for label headroom */
+	      if (this._needsLabelHeadroom()) {
+	        this.margins.top = 5 + Math.floor(this.plotter.plotHeight / 15);
+	      }
 	    }
-	  });
+	  }, {
+	    key: '_needsLabelHeadroom',
+	    value: function _needsLabelHeadroom() {
+	      var data = this.data,
+	          considered = data.series.filter(data.showLabels, data),
+	          highValued = function highValued(series) {
+	        var values = [];
+	        series.data.forEach(function (k, point) {
+	          values.push(point.value || 0);
+	        });
+	        return Math.max.apply(null, values) > 90;
+	      };
+	      considered = considered.filter(highValued);
+	      return !!considered.length; // high-val labeled series gets room
+	    }
+	  }, {
+	    key: 'scalePoint',
+	    value: function scalePoint(point) {
+	      /** return scaled point (plain) object */
+	      var scaled = Object.create(point),
+	          // wrap with orig point as proto
+	      x = point.key.valueOf(),
+	          y = point.value;
+	      scaled.x = this.xScale(x);
+	      scaled.y = this.yScale(y);
+	      // default x2, y2 as label coordinate (default is used by bar chart, and
+	      // is above the marker data x,y):
+	      scaled.x2 = scaled.x + 5;
+	      scaled.y2 = scaled.y - Math.floor(this.plotter.plotWidth / 90);
+	      return scaled;
+	    }
+	  }, {
+	    key: 'lineSlope',
+	    value: function lineSlope(pointA, pointB) {
+	      /** slope between pointA and pointB, where points have attrs x, y */
+	      var rise, run;
+	      if (pointA === null || pointB === null) {
+	        // constant slope: in effect means horizontal tangent line for any
+	        // point that has no previous, next points in series.
+	        return 0;
+	      }
+	      rise = (pointB.y - pointA.y) * -1; // *-1 compensates for svg origin@top
+	      run = pointB.x - pointA.x;
+	      return rise / run;
+	    }
+	  }, {
+	    key: 'pointAngles',
+	    value: function pointAngles(point, prev, next) {
+	      /** 
+	        * return array of: tangent line angle, perpendiculat angle, and
+	        * inflection angle
+	        */
+	      var slope = this.lineSlope,
+	          slopeA = prev === null ? slope(point, next) : slope(prev, point),
+	          slopeB = next === null ? slope(prev, point) : slope(point, next),
+	          avgSlope = (slopeA + slopeB) / 2.0,
+	          perpendicularSlope = -1 / avgSlope,
+	          tanLnAngle = Math.atan(avgSlope),
+	          positioningAngle = Math.atan(perpendicularSlope),
+	          inflectionAngle = Math.PI - Math.abs(Math.atan(slopeB)) - Math.abs(Math.atan(slopeA));
+	      return [tanLnAngle, positioningAngle, inflectionAngle];
+	    }
+	  }, {
+	    key: 'scaledPoints',
+	    value: function scaledPoints(series) {
+	      var points = [],
+	          scaledPoints = [],
+	          gridZero = this.plotter.gridHeight() + this.margins.top,
+	          textSize = this.plotter.baseFontSize * 0.75;
+	      series.data.forEach(function (k, point) {
+	        if (point.value !== null) {
+	          points.push(point);
+	        }
+	      }); // map to Array of points, filtering out null-valued
+	      scaledPoints = points.map(this.scalePoint, this);
+	      if (this.plotter.type === 'line') {
+	        scaledPoints.forEach(function (point, idx, arr) {
+	          /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
+	            * line to point, which should look better than simply displaying
+	            * above a point marker (insofar as chances of text overlapping
+	            * line-drawing for same series are minimized).
+	            */
+	          var prev = idx === 0 ? null : arr[idx - 1];
+	
+	          // if tangent line has negative slope (going down left-to-right)
+	          // then we want to multiply a,b each by -1
+	          var next = idx === arr.length - 1 ? null : arr[idx + 1];
+	
+	          var _pointAngles = this.pointAngles(point, prev, next);
+	
+	          var _pointAngles2 = _slicedToArray(_pointAngles, 3);
+	
+	          var tanAngle = _pointAngles2[0];
+	          var posAngle = _pointAngles2[1];
+	
+	          var inflectionAngle = _pointAngles2[2];
+	          // angle multipler, *-1 if acute angle:
+	          var acute = inflectionAngle < Math.PI / 2;
+	          var downward = prev && next && prev.y < point.y && next.y < point.y;
+	          var mult = acute && downward ? -1 : 1;
+	          // text is wider than tall, so perceived hypotenuse difference
+	          // from marker to text should be shorter when tanLnSlope is
+	          // less than 1 (45°):
+	          var textAbove = !downward && Math.abs(tanAngle) < Math.PI / 4;
+	          var baseDistance = textAbove ? 60 : 52;
+	          var distanceDenominator = downward && acute ? 33 : baseDistance;
+	          // ideal hypotenuse distance:
+	          var c = Math.floor(this.plotter.plotWidth / distanceDenominator);
+	          // opposite leg, delta for Y
+	          var a = mult * c * Math.sin(posAngle);
+	          // adjacent leg, delta for X
+	          var b = mult * c * Math.cos(posAngle);if (tanAngle < 0) {
+	            b *= -1;
+	            a *= -1;
+	          }
+	          point.x2 = point.x - b;
+	          point.y2 = point.y + a;
+	          if (point.y2 > gridZero - textSize) {
+	            point.y2 = point.y - a;
+	          }
+	        }, this);
+	      }
+	      return scaledPoints;
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.plotGroup.selectAll('g.upiq-point-labels').data([null]),
+	          gridOffsetX = this.margins.left,
+	          gridOffsetY = this.margins.top;
+	      group.enter().append('g').classed('upiq-point-labels', true).attr({
+	        transform: 'translate(' + gridOffsetX + ', ' + gridOffsetY + ')'
+	      });
+	      return group;
+	    }
+	  }, {
+	    key: 'renderPoint',
+	    value: function renderPoint(point, seriesGroup, series) {
+	      var format = function format(v) {
+	        return v === null ? '' : d3.format(',.1f')(v);
+	      },
+	          seriesIdx = series.position,
+	          color = series.color,
+	          ct = _utils.ColorTool,
+	          yOffset = Math.floor(this.plotter.plotWidth / 60);
+	      // empty label? no element!
+	      if (point.value === null) {
+	        return;
+	      }
+	      // adjust color lighter or darker to contrast with line:
+	      color = ct.isDark(color) ? ct.lighten(color, 0.5) : ct.darken(color, 0.5);
+	      seriesGroup.append('text').classed('upiq-point-label point-label-' + seriesIdx, true).attr({
+	        'text-anchor': 'middle',
+	        x: point.x2,
+	        y: point.y2
+	      }).style({
+	        fill: color
+	      }).text(format(point.value));
+	    }
+	  }, {
+	    key: 'renderSeries',
+	    value: function renderSeries(series, group) {
+	      var _this = this;
+	
+	      var scaledPoints = this.scaledPoints(series),
+	          seriesGroup = group.append('g').classed('upiq-series-labels', true);
+	      seriesGroup.attr({
+	        fill: series.color,
+	        'font-family': 'Arial Narrow',
+	        'font-size': '75%' // % of this.plotter.baseFontSize implied
+	      }).style({
+	        fill: series.color
+	      });
+	      scaledPoints.forEach(function (p) {
+	        return _this.renderPoint(p, seriesGroup, series);
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      var considered = this.data.series.filter(function (s) {
+	        return _this2.data.showLabels(s);
+	      }),
+	          group = this.mkGroup();
+	      considered.forEach(function (series) {
+	        this.renderSeries(series, group);
+	      }, this);
+	    }
+	  }]);
 	
 	  return PointLabelsRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.PointLabelsRenderer = PointLabelsRenderer;
+	//tanLnSlope = this.tangentLineSlope(point, prev, next),
+	//perpendicularSlope = -1 / tanLnSlope,
+	//positioningAngle = Math.atan(perpendicularSlope),
 
 /***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
 	
 	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(4);
 	
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var TrendLineRenderer = exports.TrendLineRenderer = (function (BaseRenderingPlugin) {
+	var TrendLineRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(TrendLineRenderer, _BaseRenderingPlugin);
+	
 	  function TrendLineRenderer(plotter) {
-	    _get(Object.getPrototypeOf(TrendLineRenderer.prototype), "constructor", this).call(this, plotter);
+	    _classCallCheck(this, TrendLineRenderer);
+	
+	    _get(Object.getPrototypeOf(TrendLineRenderer.prototype), 'constructor', this).call(this, plotter);
+	    // blacklist trident from mid-markers, due to bug:
+	    //  http://stackoverflow.com/a/21727740/835961
+	    this.showMarkers = window.navigator.userAgent.indexOf('Trident') === -1;
 	  }
 	
-	  _inherits(TrendLineRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(TrendLineRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(TrendLineRenderer.prototype), "preRender", this).call(this);
-	        this.plotWidth = this.plotter.plotWidth;
+	  _createClass(TrendLineRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(TrendLineRenderer.prototype), 'preRender', this).call(this);
+	      this.plotWidth = this.plotter.plotWidth;
+	    }
+	  }, {
+	    key: 'scaleTrendLine',
+	    value: function scaleTrendLine(line) {
+	      /** given line coodinates in unscaled x1,y1,x2,y2 (object), return
+	        * object with scaled respective coordinate values.
+	        */
+	      var r = {
+	        x1: this.plotter.timeScale(line.x1),
+	        y1: this.yScale(line.y1),
+	        x2: this.plotter.timeScale(line.x2),
+	        y2: this.yScale(line.y2),
+	        trend_color: line.trend_color,
+	        trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
 	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    scaleTrendLine: {
-	      value: function scaleTrendLine(line) {
-	        /** given line coodinates in unscaled x1,y1,x2,y2 (object), return
-	          * object with scaled respective coordinate values.
-	          */
-	        var r = {
-	          x1: this.plotter.timeScale(line.x1),
-	          y1: this.yScale(line.y1),
-	          x2: this.plotter.timeScale(line.x2),
-	          y2: this.yScale(line.y2),
-	          trend_color: line.trend_color,
-	          trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
-	        },
-	            decline = r.y1 > r.y2;
-	        // slope on normal axis, not top-down SVG coordinate system:
-	        r.slope = -1 * (r.y2 - r.y1) / (r.x2 - r.x1);
-	        r.slope = decline ? -1 * r.slope : r.slope;
-	        return r;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        var _this = this;
-	        var considered = this.data.series.filter(function (s) {
-	          return !!s.show_trend;
-	        }),
-	            lines = considered.map(function (s) {
-	          return _this.data.fittedTrendline(s);
-	        }, this),
-	            scaledLines = lines.map(this.scaleTrendLine, this),
-	            firstLine = scaledLines.length ? scaledLines[0] : null,
-	            slope = firstLine ? firstLine.slope : 0,
-	            markerRotation = -1 * Math.atan(slope) * (180 / Math.PI),
-	            gridOffsetX = this.margins.left,
-	            gridOffsetY = this.margins.top,
-	            lineFn = d3.svg.line().x(function (d) {
-	          return d.x;
-	        }).y(function (d) {
-	          return d.y;
-	        }).interpolate("linear"),
-	            group;
-	        if (!considered) {
-	          return; // no trendlines!
-	        }
+	          decline = r.y1 > r.y2;
+	      // slope on normal axis, not top-down SVG coordinate system:
+	      r.slope = -1 * (r.y2 - r.y1) / (r.x2 - r.x1);
+	      r.slope = decline ? -1 * r.slope : r.slope;
+	      return r;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
 	
-	        group = this.plotGroup.append("g").classed("upiq-trendlines", true).attr({
-	          transform: "translate(" + gridOffsetX + ", " + gridOffsetY + ")",
-	          opacity: "0.5"
+	      var considered = this.data.series.filter(function (s) {
+	        return !!s.show_trend;
+	      }),
+	          lines = considered.map(function (s) {
+	        return _this.data.fittedTrendline(s);
+	      }, this),
+	          scaledLines = lines.map(this.scaleTrendLine, this),
+	          firstLine = scaledLines.length ? scaledLines[0] : null,
+	          slope = firstLine ? firstLine.slope : 0,
+	          markerRotation = -1 * Math.atan(slope) * (180 / Math.PI),
+	          gridOffsetX = this.margins.left,
+	          gridOffsetY = this.margins.top,
+	          lineFn = d3.svg.line().x(function (d) {
+	        return d.x;
+	      }).y(function (d) {
+	        return d.y;
+	      }).interpolate('linear'),
+	          midMarkers = this.showMarkers,
+	          group;
+	      if (!considered) {
+	        return; // no trendlines!
+	      }
+	
+	      group = this.plotGroup.append('g').classed('upiq-trendlines', true).attr({
+	        transform: 'translate(' + gridOffsetX + ', ' + gridOffsetY + ')',
+	        opacity: '0.5'
+	      });
+	
+	      scaledLines.forEach(function (line, idx) {
+	        var markerCount = Math.floor((line.point_count || 12) / 2),
+	            data = [],
+	            x1 = line.x1,
+	            y1 = line.y1,
+	            x2 = line.x2,
+	            y2 = line.y2,
+	            rise = y2 - y1,
+	            run = x2 - x1,
+	            slope = rise / run,
+	            markerRotation = Math.atan(slope) * (180 / Math.PI);
+	
+	        this.plotGroup.select('defs').append('marker').attr({
+	          id: 'trendmarker-' + idx,
+	          viewBox: '0 0 10 10',
+	          markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+	          markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+	          orient: markerRotation,
+	          refX: 0,
+	          refY: 5
+	        }).append('path').attr({
+	          d: 'M 0 0 L 10 5 L 0 10 L 0 0 Z',
+	          fill: line.trend_color,
+	          opacity: 0.5
 	        });
 	
-	        scaledLines.forEach(function (line, idx) {
-	          var markerCount = Math.floor((line.point_count || 12) / 2),
-	              data = [],
-	              x1 = line.x1,
-	              y1 = line.y1,
-	              x2 = line.x2,
-	              y2 = line.y2,
-	              rise = y2 - y1,
-	              run = x2 - x1,
-	              slope = rise / run,
-	              markerRotation = Math.atan(slope) * (180 / Math.PI);
-	
-	          this.plotGroup.select("defs").append("marker").attr({
-	            id: "trendmarker-" + idx,
-	            viewBox: "0 0 10 10",
-	            markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
-	            markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
-	            orient: markerRotation,
-	            refX: 0,
-	            refY: 5
-	          }).append("path").attr({
-	            d: "M 0 0 L 10 5 L 0 10 z",
-	            fill: line.trend_color,
-	            opacity: 0.5
+	        data.push({ x: x1, y: y1 });
+	        d3.range(1, markerCount + 1).forEach(function (i) {
+	          data.push({
+	            x: x2 - run * i / markerCount,
+	            y: y2 - rise * i / markerCount
 	          });
-	
-	          data.push({ x: x1, y: y1 });
-	          d3.range(1, markerCount + 1).forEach(function (i) {
-	            data.push({
-	              x: x2 - run * i / markerCount,
-	              y: y2 - rise * i / markerCount
-	            });
-	          });
-	          data.push({ x: x2, y: y2 });
-	          group.append("path").attr({
-	            d: lineFn(data),
-	            stroke: line.trend_color,
-	            "stroke-width": line.trend_width,
-	            "marker-mid": "url(#trendmarker-" + idx + ")",
-	            fill: "none"
-	          });
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	        });
+	        data.push({ x: x2, y: y2 });
+	        group.append('path').attr({
+	          d: lineFn(data),
+	          stroke: line.trend_color,
+	          'stroke-width': line.trend_width,
+	          'marker-mid': midMarkers ? 'url(#trendmarker-' + idx + ')' : undefined,
+	          fill: 'none'
+	        });
+	      }, this);
 	    }
-	  });
+	  }]);
 	
 	  return TrendLineRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.TrendLineRenderer = TrendLineRenderer;
 
 /***/ },
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var d3 = __webpack_require__(3);
-	var moment = __webpack_require__(4);
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 	
 	var _utils = __webpack_require__(6);
 	
-	var ColorTool = _utils.ColorTool;
-	var uuid4 = _utils.uuid4;
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	
-	
+	var _plugin = __webpack_require__(9);
 	
 	// classname and selector globals:
-	var LINESWRAP_CLASSNAME = "nv-linesWrap",
-	    BARWRAP_CLASSNAME = "nv-barsWrap";
+	var d3 = __webpack_require__(3);
+	var moment = __webpack_require__(4);
 	
+	var LINESWRAP_CLASSNAME = 'nv-linesWrap',
+	    BARWRAP_CLASSNAME = 'nv-barsWrap';
 	
-	var GoalLineRenderer = exports.GoalLineRenderer = (function (BaseRenderingPlugin) {
+	var GoalLineRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(GoalLineRenderer, _BaseRenderingPlugin);
+	
 	  function GoalLineRenderer(plotter) {
-	    _get(Object.getPrototypeOf(GoalLineRenderer.prototype), "constructor", this).call(this, plotter);
+	    _classCallCheck(this, GoalLineRenderer);
+	
+	    _get(Object.getPrototypeOf(GoalLineRenderer.prototype), 'constructor', this).call(this, plotter);
 	    this.group = null;
 	  }
 	
-	  _inherits(GoalLineRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(GoalLineRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(GoalLineRenderer.prototype), "preRender", this).call(this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    mkGroup: {
-	      value: function mkGroup() {
-	        var baseGroup = this.svg.select(this.plotter.nvType + " > g"),
-	            group = baseGroup.select("g.nvd3.nv-distribution"),
-	            type = this.data.chart_type || "line",
-	            isLine = type === "line",
-	            wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
-	        if (group.empty()) {
-	          group = baseGroup.insert("g", "." + wrapType).classed("nvd3 nv-distribution", true);
-	        }
-	        this.group = group;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        var goalValue = this.data.goal,
-	            hasGoal = !!goalValue,
-	            goalColor = this.data.goal_color || "#ff0000",
-	            timeScale = this.plotter.timeScale,
-	            xMax = timeScale(timeScale.domain()[1].valueOf()),
-	            yPos = Math.floor(this.yScale(goalValue)),
-	            goal,
-	            line,
-	            text;
-	        if (!hasGoal) return;
-	        this.mkGroup();
-	        // JOIN goal group (contains line, text) selection to singular null-data
-	        goal = this.group.selectAll("g.nv-dist.nv-goal").data([null]);
-	        // enter JOIN, set group to use goal color, add line, config coords:
-	        line = goal.enter().append("g").attr("class", "nv-dist nv-goal").style("stroke", goalColor).append("line").classed("nv-goal-line", true).attr({
-	          x1: 0,
-	          y1: yPos,
-	          x2: xMax,
-	          y2: yPos
-	        });
-	        // add text with explicit coordinates
-	        text = goal.append("text").classed("nv-goal-lbl", true).text("Goal: " + goalValue).style({
-	          fill: goalColor }).attr({
-	          "text-anchor": "start",
-	          "fill-opacity": 0, // can be overridden in CSS
-	          x: 3,
-	          y: yPos - 3
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clear: {
-	      value: function clear() {
-	        if (this.group) {
-	          this.group.remove();
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(GoalLineRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(GoalLineRenderer.prototype), 'preRender', this).call(this);
 	    }
-	  });
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var baseGroup = this.svg.select(this.plotter.nvType + ' > g'),
+	          group = baseGroup.select('g.nvd3.nv-distribution'),
+	          type = this.data.chart_type || 'line',
+	          isLine = type === 'line',
+	          wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
+	      if (group.empty()) {
+	        group = baseGroup.insert('g', '.' + wrapType).classed('nvd3 nv-distribution', true);
+	      }
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var goalValue = this.data.goal,
+	          hasGoal = !!goalValue,
+	          goalColor = this.data.goal_color || '#ff0000',
+	          timeScale = this.plotter.timeScale,
+	          xMax = timeScale(timeScale.domain()[1].valueOf()),
+	          yPos = Math.floor(this.yScale(goalValue)),
+	          goal,
+	          line,
+	          text;
+	      if (!hasGoal) return;
+	      this.mkGroup();
+	      // JOIN goal group (contains line, text) selection to singular null-data
+	      goal = this.group.selectAll('g.nv-dist.nv-goal').data([null]);
+	      // enter JOIN, set group to use goal color, add line, config coords:
+	      line = goal.enter().append('g').attr('class', 'nv-dist nv-goal').style('stroke', goalColor).append('line').classed('nv-goal-line', true).attr({
+	        x1: 0,
+	        y1: yPos,
+	        x2: xMax,
+	        y2: yPos
+	      });
+	      // add text with explicit coordinates
+	      text = goal.append('text').classed('nv-goal-lbl', true).text('Goal: ' + goalValue).style({
+	        fill: goalColor
+	      }).attr({
+	        'text-anchor': 'start',
+	        'fill-opacity': 0, // can be overridden in CSS
+	        'x': 3,
+	        'y': yPos - 3
+	      });
+	    }
+	  }, {
+	    key: 'clear',
+	    value: function clear() {
+	      if (this.group) {
+	        this.group.remove();
+	      }
+	    }
+	  }]);
 	
 	  return GoalLineRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.GoalLineRenderer = GoalLineRenderer;
 
 /***/ },
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var ColorTool = __webpack_require__(6).ColorTool;
-	var ContinuityLinesPlugin = exports.ContinuityLinesPlugin = (function (BaseRenderingPlugin) {
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var _utils = __webpack_require__(6);
+	
+	var ContinuityLinesPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(ContinuityLinesPlugin, _BaseRenderingPlugin);
+	
 	  function ContinuityLinesPlugin() {
-	    if (Object.getPrototypeOf(ContinuityLinesPlugin) !== null) {
-	      Object.getPrototypeOf(ContinuityLinesPlugin).apply(this, arguments);
-	    }
+	    _classCallCheck(this, ContinuityLinesPlugin);
+	
+	    _get(Object.getPrototypeOf(ContinuityLinesPlugin.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
-	  _inherits(ContinuityLinesPlugin, BaseRenderingPlugin);
+	  _createClass(ContinuityLinesPlugin, [{
+	    key: 'extractPathLineSegments',
+	    value: function extractPathLineSegments(data) {
+	      /** parse SVG path data stream into Array or segments */
+	      var moveToInstruction = /[Mm]/,
+	          lineToInstruction = /[Ll]/,
+	          splitLine = function splitLine(v) {
+	        return v.split(lineToInstruction);
+	      },
 	
-	  _prototypeProperties(ContinuityLinesPlugin, null, {
-	    extractPathLineSegments: {
-	      value: function extractPathLineSegments(data) {
-	        /** parse SVG path data stream into Array or segments */
-	        var moveToInstruction = /[Mm]/,
-	            lineToInstruction = /[Ll]/,
-	            splitLine = function (v) {
-	          return v.split(lineToInstruction);
-	        },
+	      //isLine = v => (splitLine(v).length > 1),
+	      isLine = function isLine(v) {
+	        return v !== '';
+	      },
+	          commaSplit = function commaSplit(v) {
+	        return v.split(',');
+	      },
+	          mkPoint = function mkPoint(v) {
+	        var _commaSplit = commaSplit(v);
 	
-	        //isLine = v => (splitLine(v).length > 1),
-	        isLine = function (v) {
-	          return v !== "";
-	        },
-	            commaSplit = function (v) {
-	          return v.split(",");
-	        },
-	            mkPoint = function (v) {
-	          var _commaSplit = commaSplit(v);
+	        var _commaSplit2 = _slicedToArray(_commaSplit, 2);
 	
-	          var _commaSplit2 = _slicedToArray(_commaSplit, 2);
+	        var x = _commaSplit2[0];
+	        var y = _commaSplit2[1];
 	
-	          var x = _commaSplit2[0];
-	          var y = _commaSplit2[1];
-	          return {
-	            x: x,
-	            y: y
-	          };
-	        },
-	            toPoints = function (segment) {
-	          return splitLine(segment).map(mkPoint);
-	        },
-	            segments = data.split(moveToInstruction).filter(isLine).map(toPoints);
-	        return segments;
+	        return {
+	          x: x,
+	          y: y
+	        };
 	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    missingLines: {
-	      value: function missingLines(data) {
-	        /** given an Array of line segments in a path, return missing connector
-	          * lines as SVG path data, if and only if appropriate (otherwise, '').
-	          */
-	        var pathData = "";
-	        if (data.length < 2) return pathData; // no segments need connection
-	        data.forEach(function (segment, idx) {
-	          var next = data[idx + 1],
-	              pointA,
-	              pointB;
-	          if (next === undefined) return; // end of sequence
-	          pointA = segment.slice(-1).pop();
-	          pointB = next[0];
-	          pathData += "M" + pointA.x + "," + pointA.y + "L" + pointB.x + "," + pointB.y;
-	        }, this);
-	        return pathData;
+	          toPoints = function toPoints(segment) {
+	        return splitLine(segment).map(mkPoint);
 	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderMissing: {
-	      value: function renderMissing(group, missing, behavior, series) {
-	        var useDashes = behavior === "dashed",
-	            path = group.append("path").attr({
-	          d: missing
-	        }).classed("nv-line upiq-continuation-line", true);
-	        if (useDashes) {
-	          path.style({
-	            "stroke-dasharray": "4 4",
-	            stroke: ColorTool.lighten(series.color, 0.33)
-	          });
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    adjustLines: {
-	      value: function adjustLines(series) {
-	        var idx = series.position,
-	            classname = "nv-series-" + idx,
-	            baseSel = ".nv-linesWrap g.nv-line .nv-groups .nv-group." + classname,
-	            baseGroup = this.svg.select(baseSel),
-	            path = baseGroup.select("path.nv-line"),
-	            data = this.extractPathLineSegments(path.attr("d")),
-	            missing = this.missingLines(data),
-	            behavior = series.break_lines; // either 'solid' or 'dashed'
-	        if (missing) {
-	          this.renderMissing(baseGroup, missing, behavior, series);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        var _this = this;
-	        var considered = this.data.series.filter(function (s) {
-	          return s.break_lines !== "hidden";
-	        });
-	        if (this.plotter.type !== "line") return;
-	        considered.forEach(function (series) {
-	          return _this.adjustLines(series);
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	          segments = data.split(moveToInstruction).filter(isLine).map(toPoints);
+	      return segments;
 	    }
-	  });
+	  }, {
+	    key: 'missingLines',
+	    value: function missingLines(data) {
+	      /** given an Array of line segments in a path, return missing connector
+	        * lines as SVG path data, if and only if appropriate (otherwise, '').
+	        */
+	      var pathData = '';
+	      if (data.length < 2) return pathData; // no segments need connection
+	      data.forEach(function (segment, idx) {
+	        var next = data[idx + 1],
+	            pointA,
+	            pointB;
+	        if (next === undefined) return; // end of sequence
+	        pointA = segment.slice(-1).pop();
+	        pointB = next[0];
+	        pathData += 'M' + pointA.x + ',' + pointA.y + 'L' + pointB.x + ',' + pointB.y;
+	      }, this);
+	      return pathData;
+	    }
+	  }, {
+	    key: 'renderMissing',
+	    value: function renderMissing(group, missing, behavior, series) {
+	      var useDashes = behavior === 'dashed',
+	          path = group.append('path').attr({
+	        d: missing
+	      }).classed('nv-line upiq-continuation-line', true);
+	      if (useDashes) {
+	        path.style({
+	          'stroke-dasharray': '4 4',
+	          stroke: _utils.ColorTool.lighten(series.color, 0.33)
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'adjustLines',
+	    value: function adjustLines(series) {
+	      var idx = series.position,
+	          classname = 'nv-series-' + idx,
+	          baseSel = '.nv-linesWrap g.nv-line .nv-groups .nv-group.' + classname,
+	          baseGroup = this.svg.select(baseSel),
+	          path = baseGroup.select('path.nv-line'),
+	          segList = path[0][0].pathSegList,
+	          segLen = segList.numberOfItems,
+	          segments = [],
+	          data,
+	          missing,
+	          i,
+	          behavior = series.break_lines; // either 'solid' or 'dashed'
+	      for (i = 0; i < segLen; i++) {
+	        segments.push(segList.getItem(i));
+	      }
+	      data = this.extractPathLineSegments(segments.map(function (s) {
+	        return '' + s.pathSegTypeAsLetter + s.x + ',' + s.y;
+	      }, this).join(''));
+	      missing = this.missingLines(data);
+	      if (missing) {
+	        this.renderMissing(baseGroup, missing, behavior, series);
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
+	
+	      var considered = this.data.series.filter(function (s) {
+	        return s.break_lines !== 'hidden';
+	      });
+	      if (this.plotter.type !== 'line') return;
+	      considered.forEach(function (series) {
+	        return _this.adjustLines(series);
+	      });
+	    }
+	  }]);
 	
 	  return ContinuityLinesPlugin;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.ContinuityLinesPlugin = ContinuityLinesPlugin;
 
 /***/ },
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var AxisTitleRenderer = exports.AxisTitleRenderer = (function (BaseRenderingPlugin) {
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var AxisTitleRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(AxisTitleRenderer, _BaseRenderingPlugin);
+	
 	  function AxisTitleRenderer() {
-	    if (Object.getPrototypeOf(AxisTitleRenderer) !== null) {
-	      Object.getPrototypeOf(AxisTitleRenderer).apply(this, arguments);
-	    }
+	    _classCallCheck(this, AxisTitleRenderer);
+	
+	    _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
-	  _inherits(AxisTitleRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(AxisTitleRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        var minMargin = Math.floor(this.plotter.baseFontSize * 4);
-	        _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), "preRender", this).call(this);
-	        this.titleX = this.data.x_label || "";
-	        this.titleY = this.data.y_label || "";
-	        this.hasLabels = !!this.titleX || !!this.titleY;
-	        this.superTiny = this.plotter.options.tiny;
-	        // adjust room for each (in margins):
-	        if (this.titleY && this.margins.left < minMargin && !this.superTiny) {
-	          this.margins.left = minMargin;
-	        }
-	        if (this.titleX) {
-	          this.margins.bottom += this.plotter.baseFontSize * 1.2;
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    mkGroup: {
-	      value: function mkGroup() {
-	        var group = this.plotGroup.selectAll("g.upiq-axis-titles").data([null]);
-	        group.enter().append("g").classed("upiq-axis-titles", true);
-	        this.group = group;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderX: {
-	      value: function renderX() {
-	        var tabularLegend = this.data.legend_placement === "tabular",
-	            topMargin = this.margins.top,
-	            x = Math.floor(this.plotter.gridWidth() / 2) + this.margins.left + 5,
-	            y = this.plotter.plotHeight - 5,
-	            element;
-	        if (tabularLegend) {
-	          return;
-	        }
-	        element = this.group.append("text").classed("x-title", true).text(this.titleX).style({
-	          "font-family": "Arial",
-	          "text-anchor": "middle" }).attr({
-	          transform: "translate(" + x + "," + y + ")"
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    renderY: {
-	      value: function renderY() {
-	        var element = this.group.append("text").classed("y-title", true),
-	            topMargin = this.margins.top,
-	            x = this.plotter.baseFontSize + 5,
-	            y = Math.floor(this.plotter.gridHeight() / 2) + topMargin;
-	        element.text(this.titleY).style({
-	          "font-family": "Arial",
-	          "text-anchor": "middle" }).attr({
-	          transform: "translate(" + x + "," + y + ") rotate(-90)"
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        if (!this.hasLabels) {
-	          return; // no labels to render
-	        }
-	        this.mkGroup();
-	        if (this.titleX) {
-	          this.renderX();
-	        }
-	        if (this.titleY && !this.superTiny) {
-	          this.renderY();
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(AxisTitleRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      var minMargin = Math.floor(this.plotter.baseFontSize * 4);
+	      _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), 'preRender', this).call(this);
+	      this.titleX = this.data.x_label || '';
+	      this.titleY = this.data.y_label || '';
+	      this.hasLabels = !!this.titleX || !!this.titleY;
+	      this.superTiny = this.plotter.options.tiny;
+	      // adjust room for each (in margins):
+	      if (this.titleY && this.margins.left < minMargin && !this.superTiny) {
+	        this.margins.left = minMargin;
+	      }
+	      if (this.titleX) {
+	        this.margins.bottom += this.plotter.baseFontSize * 1.2;
+	      }
 	    }
-	  });
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.plotGroup.selectAll('g.upiq-axis-titles').data([null]);
+	      group.enter().append('g').classed('upiq-axis-titles', true);
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'renderX',
+	    value: function renderX() {
+	      var tabularLegend = this.data.legend_placement === 'tabular',
+	          topMargin = this.margins.top,
+	          x = Math.floor(this.plotter.gridWidth() / 2.0) + this.margins.left + 5,
+	          y = this.plotter.plotHeight - 5,
+	          element;
+	      if (tabularLegend) {
+	        return;
+	      }
+	      element = this.group.append('text').classed('x-title', true).text(this.titleX).style({
+	        'font-family': 'Arial',
+	        'text-anchor': 'middle'
+	      }).attr({
+	        transform: 'translate(' + x + ',' + y + ')'
+	      });
+	    }
+	  }, {
+	    key: 'renderY',
+	    value: function renderY() {
+	      var element = this.group.append('text').classed('y-title', true),
+	          topMargin = this.margins.top,
+	          x = this.plotter.baseFontSize + 5,
+	          y = Math.floor(this.plotter.gridHeight() / 2.0) + topMargin;
+	      element.text(this.titleY).style({
+	        'font-family': 'Arial',
+	        'text-anchor': 'middle'
+	      }).attr({
+	        transform: 'translate(' + x + ',' + y + ') rotate(-90)'
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.hasLabels) {
+	        return; // no labels to render
+	      }
+	      this.mkGroup();
+	      if (this.titleX) {
+	        this.renderX();
+	      }
+	      if (this.titleY && !this.superTiny) {
+	        this.renderY();
+	      }
+	    }
+	  }]);
 	
 	  return AxisTitleRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.AxisTitleRenderer = AxisTitleRenderer;
 
 /***/ },
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var XTickLabelsRenderer = exports.XTickLabelsRenderer = (function (BaseRenderingPlugin) {
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var XTickLabelsRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(XTickLabelsRenderer, _BaseRenderingPlugin);
+	
 	  function XTickLabelsRenderer(plotter) {
-	    _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), "constructor", this).call(this, plotter);
+	    _classCallCheck(this, XTickLabelsRenderer);
+	
+	    _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'constructor', this).call(this, plotter);
 	    this.type = this.plotter.type;
 	  }
 	
-	  _inherits(XTickLabelsRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(XTickLabelsRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), "preRender", this).call(this);
-	        this.enabled = this.data.legend_placement !== "tabular";
-	        if (!this.enabled) return;
-	        this.angle = this.type === "bar" || this.plotter.plotWidth < 360 ? 90 : 45;
-	        this.angleRadians = Math.PI / 180 * this.angle;
-	        this.relSize = this.type === "bar" ? 0.8 : 0.9;
-	        this.labels = this.data.axisLabels();
-	        this.height = this.labelHeight();
-	        this.margins.bottom += this.height;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    mkGroup: {
-	      value: function mkGroup() {
-	        var group = this.plotGroup.selectAll("g.upiq-x-tick-labels").data([null]),
-	            isBar = this.type === "bar",
-	            tickVals = this.plotter.tickVals,
-	            columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
-	            padLeft = this.type === "bar" ? Math.floor(columnWidth / 2) + 1 : 5,
-	            groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
-	        group.enter().append("g").classed("upiq-x-tick-labels", true).style({
-	          "font-size": this.type === "bar" ? "80%" : "90%"
-	        }).attr({
-	          transform: "translate(" + padLeft + ", " + groupTop + ")"
-	        });
-	        this.group = group;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    labelHeight: {
-	      value: function labelHeight() {
-	        /* y-height of largest-length label */
-	        var maxLabel = Math.max.apply(null, this.labels.map(function (v) {
-	          return v.label.length;
-	        })),
-	            fontSize = this.plotter.baseFontSize * this.relSize,
-	            multiplier = 0.5875,
-	            estimatedPx = fontSize * (maxLabel + 2) * multiplier,
-	            heightNeeded = Math.floor(estimatedPx * Math.sin(this.angleRadians));
-	        return heightNeeded;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    drawLabel: {
-	      value: function drawLabel(info) {
-	        var x = Math.floor(this.scale(info.key) + this.margins.left),
-	            y = 5,
-	            angle = -1 * this.angle;
-	        this.group.append("text").text(info.label).style({
-	          "text-anchor": "end" }).attr({
-	          x: x,
-	          y: y,
-	          transform: "rotate(" + angle + " " + x + " " + y + ")"
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    drawLabels: {
-	      value: function drawLabels() {
-	        var _this = this;
-	        /** draw labels */
-	        this.labels.forEach(function (info) {
-	          return _this.drawLabel(info);
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        if (!this.enabled) {
-	          return;
-	        }
-	        this.scale = this.plotter.timeScale;
-	        this.mkGroup();
-	        this.drawLabels();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(XTickLabelsRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'preRender', this).call(this);
+	      this.enabled = this.data.legend_placement !== 'tabular';
+	      if (!this.enabled) return;
+	      this.angle = this.type === 'bar' || this.plotter.plotWidth < 360 ? 90 : 45;
+	      this.angleRadians = Math.PI / 180 * this.angle;
+	      this.relSize = this.type === 'bar' ? 0.8 : 0.9;
+	      this.labels = this.data.axisLabels();
+	      this.height = this.labelHeight();
+	      this.margins.bottom += this.height;
 	    }
-	  });
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.plotGroup.selectAll('g.upiq-x-tick-labels').data([null]),
+	          isBar = this.type === 'bar',
+	          tickVals = this.plotter.tickVals,
+	          columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
+	          padLeft = this.type === 'bar' ? Math.floor(columnWidth / 2) + 1 : 5,
+	          groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
+	      group.enter().append('g').classed('upiq-x-tick-labels', true).style({
+	        'font-size': this.type === 'bar' ? '80%' : '90%'
+	      }).attr({
+	        transform: 'translate(' + padLeft + ', ' + groupTop + ')'
+	      });
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'labelHeight',
+	    value: function labelHeight() {
+	      /* y-height of largest-length label */
+	      var maxLabel = Math.max.apply(null, this.labels.map(function (v) {
+	        return v.label.length;
+	      })),
+	          fontSize = this.plotter.baseFontSize * this.relSize,
+	          multiplier = 0.5875,
+	          estimatedPx = fontSize * (maxLabel + 2) * multiplier,
+	          heightNeeded = Math.floor(estimatedPx * Math.sin(this.angleRadians));
+	      return heightNeeded;
+	    }
+	  }, {
+	    key: 'drawLabel',
+	    value: function drawLabel(info) {
+	      var x = Math.floor(this.scale(info.key) + this.margins.left),
+	          y = 5,
+	          angle = -1 * this.angle;
+	      this.group.append('text').text(info.label).style({
+	        'text-anchor': 'end'
+	      }).attr({
+	        x: x,
+	        y: y,
+	        transform: 'rotate(' + angle + ' ' + x + ' ' + y + ')'
+	      });
+	    }
+	  }, {
+	    key: 'drawLabels',
+	    value: function drawLabels() {
+	      var _this = this;
+	
+	      /** draw labels */
+	      this.labels.forEach(function (info) {
+	        return _this.drawLabel(info);
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this.scale = this.plotter.timeScale;
+	      this.mkGroup();
+	      this.drawLabels();
+	    }
+	  }]);
 	
 	  return XTickLabelsRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.XTickLabelsRenderer = XTickLabelsRenderer;
 
 /***/ },
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var _utils = __webpack_require__(6);
+	
 	var d3 = __webpack_require__(3);
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var d3textWrap = __webpack_require__(6).d3textWrap;
-	var BasicLegendRenderer = exports.BasicLegendRenderer = (function (BaseRenderingPlugin) {
+	
+	var BasicLegendRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(BasicLegendRenderer, _BaseRenderingPlugin);
+	
 	  function BasicLegendRenderer(plotter) {
-	    _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), "constructor", this).call(this, plotter);
-	    this.all_locations = ["e", "n"]; // 'east' is really northeast...
+	    _classCallCheck(this, BasicLegendRenderer);
+	
+	    _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'constructor', this).call(this, plotter);
+	    this.all_locations = ['e', 'n']; // 'east' is really northeast...
 	  }
 	
-	  _inherits(BasicLegendRenderer, BaseRenderingPlugin);
-	
-	  _prototypeProperties(BasicLegendRenderer, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), "preRender", this).call(this);
-	        this.placement = this.data.legend_placement;
-	        this.smallPlot = this.plotter.options.small;
-	        this.loc = this._location();
-	        this.enabled = this._enabled();
-	        if (this.enabled) {
-	          this.initialPositioning();
-	        }
-	        this.rowMax = this.smallPlot ? 2 : 4;
-	        this.textSize = this.plotter.baseFontSize * 0.8;
-	        if (this.data.series.length > 4 && !this.smallPlot) {
-	          this.textSize *= 0.8;
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    initialPositioning: {
-	      value: function initialPositioning() {
-	        /** set width, height;
-	          * adjust margins and if needed positioning of plot relative to legend
-	          */
-	        var loc = this.loc,
-	            isTop = this.loc === "n",
-	            plotWidth = this.plotter.plotWidth,
-	            legendHeight = isTop ? 30 : this.plotter.plotHeight,
-	            gridLeft = this.plotter.margins.left,
-	            topWidth = plotWidth - gridLeft - this.margins.right,
-	            legendWidth = isTop ? topWidth : Math.floor(plotWidth * 0.2),
-	            legendMargin = Math.floor(0.01 * plotWidth),
-	            gridRight = plotWidth - legendWidth - legendMargin;
-	        this.width = legendWidth - 1;
-	        this.left = isTop ? gridLeft : gridRight + legendMargin;
-	        this.top = isTop ? 1 : this.plotter.margins.top - 1;
-	        this.height = legendHeight - this.top - 1;
-	        if (!isTop) {
-	          this.margins.right = this.width + legendMargin + 2;
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _enabled: {
-	      value: function _enabled() {
-	        var nonTabularPlacement = this.placement && this.placement !== "tabular",
-	            multiSeries = this.data.series.length > 1;
-	        return nonTabularPlacement && this.loc !== null && multiSeries;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _location: {
-	      value: function _location() {
-	        var specifiedLocation = this.data.legend_location,
-	            unsupported = this.all_locations.indexOf(specifiedLocation) === -1,
-	            plotWidth = this.plotter.plotWidth,
-	            loc = unsupported ? "e" : specifiedLocation;
-	        if (!specifiedLocation) return null; // no legend
-	        return this.smallPlot ? "n" : loc;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _legendOrigin: {
-	      value: function _legendOrigin() {
-	        return [this.left, this.top]; // x,y
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    container: {
-	      value: function container() {
-	        /** outermost container for the legend */
-	        return this.loc === "n" ? this.abovePlotGroup : this.plotGroup;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    mkGroup: {
-	      value: function mkGroup() {
-	        var group = this.container().selectAll("g.upiq-basic-legend").data([null]);var _legendOrigin = this._legendOrigin();
-	
-	        var _legendOrigin2 = _slicedToArray(_legendOrigin, 2);
-	
-	        var x = _legendOrigin2[0];
-	        var y = _legendOrigin2[1];
-	        group.enter().append("g").classed("upiq-basic-legend", true).attr({
-	          transform: "translate(" + x + ", " + y + ")"
-	        });
-	        this.group = group;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    drawBgRect: {
-	      value: function drawBgRect() {
-	        this.group.append("rect").classed("legend-bg", true).attr({
-	          height: this.height,
-	          width: Math.floor(this.width),
-	          fill: "#fff",
-	          "fill-opacity": 0,
-	          "stroke-opacity": 0
-	        }).style({
-	          "stroke-width": "0.175%",
-	          stroke: "#999"
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    mkElementGroup: {
-	      value: function mkElementGroup(idx, padding) {
-	        var isTop = this.loc === "n",
-	            rowIdx = isTop ? Math.floor(idx / this.rowMax) : idx,
-	            leftPadding = isTop ? 0 : padding,
-	            rowPos = isTop ? idx % this.rowMax : idx,
-	            left = (isTop ? rowPos * this.itemWidth : 0) + leftPadding,
-	            rowTop = rowIdx * 30,
-	            group = this.group.append("g").classed("upiq-legend-series", true).attr({
-	          transform: "translate(" + left + ", " + rowTop + ")"
-	        });
-	        return group;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    drawElement: {
-	      value: function drawElement(series) {
-	        var color = series.color,
-	            label = series.title,
-	            padding = Math.floor(this.plotter.plotWidth * 0.01),
-	            innerPadding = Math.floor(padding / 2),
-	            idx = series.position,
-	            group = this.mkElementGroup(idx, padding),
-	            groupY = 0 + (this.loc === "n" ? 1 : idx) * this.textSize,
-	            colorBoxSize = Math.floor(this.plotter.plotWidth / 45),
-	            textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
-	            text;
-	        // draw background rectangle (transparent by default, used for sizing)
-	        group.append("rect").classed("legend-series-bg", true).attr({
-	          x: 0,
-	          y: 0,
-	          width: this.itemWidth,
-	          height: 30
-	        }).style({
-	          stroke: "#aaa",
-	          "stroke-width": "0.2%",
-	          fill: "#fff",
-	          "fill-opacity": 0,
-	          "stroke-opacity": 0
-	        });
-	        // draw color swatch for series:
-	        group.append("rect").classed("legend-series-color", true).attr({
-	          x: innerPadding,
-	          y: groupY,
-	          width: colorBoxSize,
-	          height: colorBoxSize
-	        }).style({
-	          fill: color
-	        });
-	        // draw label for series
-	        group.append("g").attr({
-	          transform: "translate(" + (colorBoxSize + innerPadding * 2) + " " + groupY + ")"
-	        }).append("text").attr({
-	          x: 0,
-	          y: 0,
-	          "font-size": "" + this.textSize + "px"
-	        }).style({
-	          "dominant-baseline": "middle"
-	        }).text(label).call(d3textWrap, textWidth, 0);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    drawElements: {
-	      value: function drawElements() {
-	        var isTop = this.loc === "n",
-	            itemCount = this.data.series.length,
-	            n = isTop ? this.rowMax : itemCount;
-	        this.itemWidth = Math.floor(isTop ? this.width / n : this.width * 0.9);
-	        this.data.series.forEach(function (series) {
-	          this.drawElement(series);
-	        }, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        if (!this.enabled) {
-	          return;
-	        }
-	        this.mkGroup();
-	        this.drawBgRect();
-	        this.drawElements();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _postRender: {
-	      value: function _postRender() {
-	        var seriesGroups = this.group.selectAll("g.upiq-legend-series"),
-	            selParent = this.group[0][0],
-	            rowMax = this.rowMax,
-	            groupSelections = seriesGroups[0].map(function (group, idx) {
-	          return d3.select(group).call(function (g) {
-	            return g[0].parentNode = selParent;
-	          });
-	        }, this),
-	            numSeries = groupSelections.length,
-	            selHeight = function (e) {
-	          return e[0][0].getBoundingClientRect().height;
-	        },
-	            _height = function (g) {
-	          return Math.ceil(selHeight(g.select("text")) * 1.35);
-	        },
-	            height = Math.max.apply(null, groupSelections.map(_height)),
-	            isTop = this.loc === "n",
-	            margin = Math.floor(this.plotter.plotWidth / 120);
-	        // align elements within each series group:
-	        groupSelections.forEach(function (group, index) {
-	          var middle = Math.round(height / 2);
-	          group.select("rect.legend-series-color").call(function (rect) {
-	            var rectHeight = rect[0][0].getBoundingClientRect().height,
-	                rectTop = middle - Math.floor(rectHeight / 2);
-	            rect.attr({
-	              y: rectTop
-	            });
-	          });
-	          group.select("g").call(function (textGroup) {
-	            var _d3$transform$translate = _slicedToArray(d3.transform(textGroup.attr("transform")).translate, 2);
-	
-	            var x = _d3$transform$translate[0];
-	            var y = _d3$transform$translate[1];
-	            var text = textGroup.select("text");
-	            var tHeight = text[0][0].getBoundingClientRect().height;
-	            var numSpans = text.selectAll("tspan").size();
-	            var multi = numSpans > 1;
-	            var lineHeight = Math.round(tHeight / numSpans);
-	            var multiLineOffset = middle - Math.floor((tHeight - lineHeight) / 2);
-	            var textMiddle = multi ? multiLineOffset : middle;
-	            textGroup.attr({
-	              transform: "translate(" + x + " " + textMiddle + ")"
-	            });
-	          });
-	        }, this);
-	        // distribute series groups (evenly size, evenly spaced):
-	        groupSelections.forEach(function (group, index) {
-	          var rowIdx = Math.floor(index / rowMax),
-	              rowY = margin + rowIdx * height,
-	              yOffset = isTop ? rowY : index * height + margin,
-	              xOffset = d3.transform(group.attr("transform")).translate[0],
-	              bgRect = group.select("rect.legend-series-bg");
-	          // space:
-	          group.attr({
-	            transform: "translate(" + xOffset + " " + yOffset + ")"
-	          });
-	          // size: even height for background rectangles:
-	          bgRect.attr({
-	            height: height
-	          });
-	        }, this);
-	        // adjust height of bg rect to content
-	        this.group.select("rect.legend-bg").classed("sizing", true).attr({
-	          height: function (d) {
-	            var numRows = Math.ceil(numSeries / rowMax);
-	            return Math.floor(height * (isTop ? numRows : numSeries)) + margin * 2;
-	          }
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    postRender: {
-	      value: function postRender() {
-	        if (!this.enabled) {
-	          return;
-	        }
-	        this._postRender();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(BasicLegendRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'preRender', this).call(this);
+	      this.placement = this.data.legend_placement;
+	      this.smallPlot = this.plotter.options.small;
+	      this.loc = this._location();
+	      this.enabled = this._enabled();
+	      if (this.enabled) {
+	        this.initialPositioning();
+	      }
+	      this.rowMax = this.smallPlot ? 2 : 4;
+	      this.textSize = this.plotter.baseFontSize * 0.8;
+	      if (this.data.series.length > 4 && !this.smallPlot) {
+	        this.textSize *= 0.8;
+	      }
 	    }
-	  });
+	  }, {
+	    key: 'initialPositioning',
+	    value: function initialPositioning() {
+	      /** set width, height;
+	        * adjust margins and if needed positioning of plot relative to legend
+	        */
+	      var loc = this.loc,
+	          isTop = this.loc === 'n',
+	          plotWidth = this.plotter.plotWidth,
+	          legendHeight = isTop ? 30 : this.plotter.plotHeight,
+	          gridLeft = this.plotter.margins.left,
+	          topWidth = plotWidth - gridLeft - this.margins.right,
+	          legendWidth = isTop ? topWidth : Math.floor(plotWidth * 0.2),
+	          legendMargin = Math.floor(0.01 * plotWidth),
+	          gridRight = plotWidth - legendWidth - legendMargin;
+	      this.width = legendWidth - 1;
+	      this.left = isTop ? gridLeft : gridRight + legendMargin;
+	      this.top = isTop ? 1 : this.plotter.margins.top - 1;
+	      this.height = legendHeight - this.top - 1;
+	      if (!isTop) {
+	        this.margins.right = this.width + legendMargin + 2;
+	      }
+	    }
+	  }, {
+	    key: '_enabled',
+	    value: function _enabled() {
+	      var nonTabularPlacement = this.placement && this.placement !== 'tabular',
+	          multiSeries = this.data.series.length > 1;
+	      if (this.plotter.options.tiny || this.plotter.plotWidth < 320) {
+	        nonTabularPlacement = true;
+	      }
+	      return nonTabularPlacement && this.loc !== null && multiSeries;
+	    }
+	  }, {
+	    key: '_location',
+	    value: function _location() {
+	      var specifiedLocation = this.data.legend_location,
+	          unsupported = this.all_locations.indexOf(specifiedLocation) === -1,
+	          plotWidth = this.plotter.plotWidth,
+	          loc = unsupported ? 'e' : specifiedLocation;
+	      if (!specifiedLocation) return null; // no legend
+	      return this.smallPlot ? 'n' : loc;
+	    }
+	  }, {
+	    key: '_legendOrigin',
+	    value: function _legendOrigin() {
+	      return [this.left, this.top]; // x,y
+	    }
+	  }, {
+	    key: 'container',
+	    value: function container() {
+	      /** outermost container for the legend */
+	      return this.loc === 'n' ? this.abovePlotGroup : this.plotGroup;
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.container().selectAll('g.upiq-basic-legend').data([null]);
+	
+	      var _legendOrigin2 = this._legendOrigin();
+	
+	      var _legendOrigin22 = _slicedToArray(_legendOrigin2, 2);
+	
+	      var x = _legendOrigin22[0];
+	      var y = _legendOrigin22[1];
+	
+	      group.enter().append('g').classed('upiq-basic-legend', true).attr({
+	        transform: 'translate(' + x + ', ' + y + ')'
+	      });
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'drawBgRect',
+	    value: function drawBgRect() {
+	      this.group.append('rect').classed('legend-bg', true).attr({
+	        height: this.height,
+	        width: Math.floor(this.width),
+	        'fill': '#fff',
+	        'fill-opacity': 0,
+	        'stroke-opacity': 0
+	      }).style({
+	        'stroke-width': '0.175%',
+	        'stroke': '#999'
+	      });
+	    }
+	  }, {
+	    key: 'mkElementGroup',
+	    value: function mkElementGroup(idx, padding) {
+	      var isTop = this.loc === 'n',
+	          rowIdx = isTop ? Math.floor(idx / this.rowMax) : idx,
+	          leftPadding = isTop ? 0 : padding,
+	          rowPos = isTop ? idx % this.rowMax : idx,
+	          left = (isTop ? rowPos * this.itemWidth : 0) + leftPadding,
+	          rowTop = rowIdx * 30,
+	          group = this.group.append('g').classed('upiq-legend-series', true).attr({
+	        transform: 'translate(' + left + ', ' + rowTop + ')'
+	      });
+	      return group;
+	    }
+	  }, {
+	    key: 'drawElement',
+	    value: function drawElement(series) {
+	      var color = series.color,
+	          label = series.title,
+	          padding = Math.floor(this.plotter.plotWidth * 0.01),
+	          innerPadding = Math.floor(padding / 2),
+	          idx = series.position,
+	          group = this.mkElementGroup(idx, padding),
+	          groupY = 0 + (this.loc === 'n' ? 1 : idx) * this.textSize,
+	          colorBoxSize = Math.floor(this.plotter.plotWidth / 45),
+	          textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
+	          text;
+	      // draw background rectangle (transparent by default, used for sizing)
+	      group.append('rect').classed('legend-series-bg', true).attr({
+	        x: 0,
+	        y: 0,
+	        width: this.itemWidth,
+	        height: 30
+	      }).style({
+	        stroke: '#aaa',
+	        'stroke-width': '0.2%',
+	        'fill': '#fff',
+	        'fill-opacity': 0,
+	        'stroke-opacity': 0
+	      });
+	      // draw color swatch for series:
+	      group.append('rect').classed('legend-series-color', true).attr({
+	        x: innerPadding,
+	        y: groupY,
+	        width: colorBoxSize,
+	        height: colorBoxSize
+	      }).style({
+	        fill: color
+	      });
+	      // draw label for series
+	      group.append('g').attr({
+	        transform: 'translate(' + (colorBoxSize + innerPadding * 2) + ' ' + groupY + ')'
+	      }).append('text').attr({
+	        x: 0,
+	        y: 0,
+	        'font-size': this.textSize + 'px'
+	      }).style({
+	        'dominant-baseline': 'middle'
+	      }).text(label).call(_utils.d3textWrap, textWidth, 0);
+	    }
+	  }, {
+	    key: 'drawElements',
+	    value: function drawElements() {
+	      var isTop = this.loc === 'n',
+	          itemCount = this.data.series.length,
+	          n = isTop ? this.rowMax : itemCount;
+	      this.itemWidth = Math.floor(isTop ? this.width / n : this.width * 0.9);
+	      this.data.series.forEach(function (series) {
+	        this.drawElement(series);
+	      }, this);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this.mkGroup();
+	      this.drawBgRect();
+	      this.drawElements();
+	    }
+	  }, {
+	    key: '_postRender',
+	    value: function _postRender() {
+	      var seriesGroups = this.group.selectAll('g.upiq-legend-series'),
+	          selParent = this.group[0][0],
+	          rowMax = this.rowMax,
+	          groupSelections = seriesGroups[0].map(function (group, idx) {
+	        return d3.select(group).call(function (g) {
+	          return g[0].parentNode = selParent;
+	        });
+	      }, this),
+	          numSeries = groupSelections.length,
+	          selHeight = function selHeight(e) {
+	        return e[0][0].getBoundingClientRect().height;
+	      },
+	          _height = function _height(g) {
+	        return Math.ceil(selHeight(g.select('text')) * 1.35);
+	      },
+	          _height2 = Math.max.apply(null, groupSelections.map(_height)),
+	          isTop = this.loc === 'n',
+	          margin = Math.floor(this.plotter.plotWidth / 120);
+	      // align elements within each series group:
+	      groupSelections.forEach(function (group, index) {
+	        var middle = Math.round(_height2 / 2.0);
+	        group.select('rect.legend-series-color').call(function (rect) {
+	          var rectHeight = rect[0][0].getBoundingClientRect().height,
+	              rectTop = middle - Math.floor(rectHeight / 2);
+	          rect.attr({
+	            y: rectTop
+	          });
+	        });
+	        group.select('g').call(function (textGroup) {
+	          var _d3$transform$translate = _slicedToArray(d3.transform(textGroup.attr('transform')).translate, 2);
+	
+	          var x = _d3$transform$translate[0];
+	          var y = _d3$transform$translate[1];
+	          var text = textGroup.select('text');
+	          var tHeight = text[0][0].getBoundingClientRect().height;
+	          var numSpans = text.selectAll('tspan').size();
+	          var multi = numSpans > 1;
+	          var lineHeight = Math.round(tHeight / numSpans);
+	          var multiLineOffset = middle - Math.floor((tHeight - lineHeight) / 2);
+	          var textMiddle = multi ? multiLineOffset : middle;
+	          textGroup.attr({
+	            transform: 'translate(' + x + ' ' + textMiddle + ')'
+	          });
+	        });
+	      }, this);
+	      // distribute series groups (evenly size, evenly spaced):
+	      groupSelections.forEach(function (group, index) {
+	        var rowIdx = Math.floor(index / rowMax),
+	            rowY = margin + rowIdx * _height2,
+	            yOffset = isTop ? rowY : index * _height2 + margin,
+	            xOffset = d3.transform(group.attr('transform')).translate[0],
+	            bgRect = group.select('rect.legend-series-bg');
+	        // space:
+	        group.attr({
+	          transform: 'translate(' + xOffset + ' ' + yOffset + ')'
+	        });
+	        // size: even height for background rectangles:
+	        bgRect.attr({
+	          height: _height2
+	        });
+	      }, this);
+	      // adjust height of bg rect to content
+	      this.group.select('rect.legend-bg').classed('sizing', true).attr({
+	        height: function height(d) {
+	          var numRows = Math.ceil(numSeries / rowMax);
+	          return Math.floor(_height2 * (isTop ? numRows : numSeries)) + margin * 2;
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this._postRender();
+	    }
+	  }]);
 	
 	  return BasicLegendRenderer;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.BasicLegendRenderer = BasicLegendRenderer;
 
 /***/ },
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var _utils = __webpack_require__(6);
+	
 	var d3 = __webpack_require__(3);
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var ColorTool = __webpack_require__(6).ColorTool;
-	var PointHoverPlugin = exports.PointHoverPlugin = (function (BaseRenderingPlugin) {
+	
+	var PointHoverPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(PointHoverPlugin, _BaseRenderingPlugin);
+	
 	  function PointHoverPlugin(plotter) {
-	    _get(Object.getPrototypeOf(PointHoverPlugin.prototype), "constructor", this).call(this, plotter);
-	    this.__name__ = "PointHoverPlugin";
+	    _classCallCheck(this, PointHoverPlugin);
+	
+	    _get(Object.getPrototypeOf(PointHoverPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.__name__ = 'PointHoverPlugin';
 	  }
 	
-	  _inherits(PointHoverPlugin, BaseRenderingPlugin);
-	
-	  _prototypeProperties(PointHoverPlugin, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(PointHoverPlugin.prototype), "preRender", this).call(this);
-	        this.overlay = null; // will be set in render(), used in interactive...
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        this.xScale = this.plotter.timeScale;
-	        this.yScale = this.plotter.yScale;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    scaledCoordinates: {
-	      value: function scaledCoordinates(point) {
-	        /** get stable x,y from scale+data as event clientX, etc unreliable */
-	        var x = Math.floor(this.xScale(point.x) + this.margins.left),
-	            y = Math.floor(this.yScale(point.y) + this.margins.top);
-	        return [x, y];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    glowMarker: {
-	      value: function glowMarker(marker) {
-	        marker.classed("highlighted", true);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clearGlow: {
-	      value: function clearGlow() {
-	        this.svg.selectAll("path.nv-point.highlighted").classed("highlighted", false);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    showOverlay: {
-	      value: function showOverlay(marker, dataPoint, series) {
-	        var color = ColorTool.lighten(series.color, 0.8);
-	        var borderColor = series.color;var _scaledCoordinates = this.scaledCoordinates(dataPoint);
-	
-	        var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
-	
-	        var x = _scaledCoordinates2[0];
-	        var y = _scaledCoordinates2[1];
-	        var useLeft = x < this.plotter.plotWidth * 0.85;
-	        var fontSize = Math.max(10, this.plotter.baseFontSize * 0.7);
-	        var overlay;
-	        var pad;
-	        var w;
-	        // if marker is null, traverse to it:
-	        if (marker === null) {
-	          // .nv-scatterWrap .nv-groups .nv-series-0 path
-	          marker = d3.select(this.svg.selectAll(".nv-scatterWrap .nv-groups .nv-series-" + series.position + " path.nv-point")[0].filter(function (m) {
-	            return d3.select(m).data()[0].x === dataPoint.x;
-	          })[0]);
-	        }
-	        this.glowMarker(marker);
-	        // adjust border/text color if not dark enough:
-	        if (ColorTool.isLight(borderColor)) {
-	          borderColor = ColorTool.darken(borderColor, 0.4);
-	        }
-	        // pad x, y for use in overlay, so that overlay not on top of part of pt:
-	        w = this.plotter.plotWidth;
-	        pad = Math.max(5, w * 0.02) * (this.plotter.type === "bar" ? 1.8 : 1);
-	        x = Math.floor(useLeft ? x + pad : x);
-	        // create on-hover overlay:
-	        overlay = this.plotCore.append("div").classed("point-hover-tip", true).style({
-	          border: "0.1em solid " + borderColor,
-	          "background-color": color,
-	          position: "absolute",
-	          left: useLeft ? "" + x + "px" : undefined,
-	          right: !useLeft ? "" + (this.plotter.plotWidth - x) + "px" : undefined,
-	          top: "" + y + "px",
-	          "font-size": "" + fontSize + "px"
-	        });
-	        overlay.append("p").classed("value-info", true).style("color", borderColor).append("span").text(this.plotter.yformat(dataPoint.y));
-	        overlay.append("p").classed("click-hint", true).text("Click datapoint for details.");
-	        this.plotter.highlightX(dataPoint.x);
-	        if (this.plotter.pluginEnabled("TabularLegendRenderer")) {
-	          this.plotter.getPlugin("TabularLegendRenderer").highlightColumn(dataPoint.x);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    clearOverlays: {
-	      value: function clearOverlays() {
-	        this.plotCore.selectAll(".point-hover-tip").transition(3000).style("opacity", 0).remove();
-	        this.plotter.clearHighlights();
-	        this.clearGlow();
-	        if (this.plotter.pluginEnabled("TabularLegendRenderer")) {
-	          this.plotter.getPlugin("TabularLegendRenderer").clearHighlights();
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    loadInteractiveFeatures: {
-	      value: function loadInteractiveFeatures() {
-	        var self = this,
-	            markers = this.svg.selectAll(".nv-point, .nv-bar"),
-	            data = markers.data(),
-	            onHover = function (d, i) {
-	          var marker = d3.select(this),
-	              dataPoint = marker.data()[0],
-	              series = self.data.series[dataPoint.seriesIndex];
-	          self.showOverlay(marker, dataPoint, series);
-	        },
-	            onMouseOut = function (d, i) {
-	          self.clearOverlays();
-	        };
-	        markers.on("mouseover", onHover).on("mouseout", onMouseOut);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(PointHoverPlugin, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(PointHoverPlugin.prototype), 'preRender', this).call(this);
+	      this.overlay = null; // will be set in render(), used in interactive...
 	    }
-	  });
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.xScale = this.plotter.timeScale;
+	      this.yScale = this.plotter.yScale;
+	    }
+	  }, {
+	    key: 'scaledCoordinates',
+	    value: function scaledCoordinates(point) {
+	      /** get stable x,y from scale+data as event clientX, etc unreliable */
+	      var x = Math.floor(this.xScale(point.x) + this.margins.left),
+	          y = Math.floor(this.yScale(point.y) + this.margins.top);
+	      return [x, y];
+	    }
+	  }, {
+	    key: 'glowMarker',
+	    value: function glowMarker(marker) {
+	      marker.classed('highlighted', true);
+	    }
+	  }, {
+	    key: 'clearGlow',
+	    value: function clearGlow() {
+	      this.svg.selectAll('path.nv-point.highlighted').classed('highlighted', false);
+	    }
+	  }, {
+	    key: 'showOverlay',
+	    value: function showOverlay(marker, dataPoint, series) {
+	      var color = _utils.ColorTool.lighten(series.color, 0.8);
+	
+	      // if marker is null, traverse to it:
+	      var borderColor = series.color;
+	
+	      var _scaledCoordinates = this.scaledCoordinates(dataPoint);
+	
+	      var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
+	
+	      var x = _scaledCoordinates2[0];
+	      var y = _scaledCoordinates2[1];
+	      var useLeft = x < this.plotter.plotWidth * 0.85;
+	      var fontSize = Math.max(10, this.plotter.baseFontSize * 0.7);
+	      var overlay;
+	      var pad;
+	      var w;if (marker === null) {
+	        // .nv-scatterWrap .nv-groups .nv-series-0 path
+	        marker = d3.select(this.svg.selectAll('.nv-scatterWrap .nv-groups .nv-series-' + series.position + ' path.nv-point')[0].filter(function (m) {
+	          return d3.select(m).data()[0].x === dataPoint.x;
+	        })[0]);
+	      }
+	      this.glowMarker(marker);
+	      // adjust border/text color if not dark enough:
+	      if (_utils.ColorTool.isLight(borderColor)) {
+	        borderColor = _utils.ColorTool.darken(borderColor, 0.4);
+	      }
+	      // pad x, y for use in overlay, so that overlay not on top of part of pt:
+	      w = this.plotter.plotWidth;
+	      pad = Math.max(5, w * 0.02) * (this.plotter.type === 'bar' ? 1.8 : 1);
+	      x = Math.floor(useLeft ? x + pad : x);
+	      // create on-hover overlay:
+	      overlay = this.plotCore.append('div').classed('point-hover-tip', true).style({
+	        border: '0.1em solid ' + borderColor,
+	        'background-color': color,
+	        position: 'absolute',
+	        left: useLeft ? x + 'px' : undefined,
+	        right: !useLeft ? this.plotter.plotWidth - x + 'px' : undefined,
+	        top: y + 'px',
+	        'font-size': fontSize + 'px'
+	      });
+	      overlay.append('p').classed('value-info', true).style('color', borderColor).append('span').text(this.plotter.yformat(dataPoint.y));
+	      overlay.append('p').classed('click-hint', true).text('Click datapoint for details.');
+	      this.plotter.highlightX(dataPoint.x);
+	      if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
+	        this.plotter.getPlugin('TabularLegendRenderer').highlightColumn(dataPoint.x);
+	      }
+	    }
+	  }, {
+	    key: 'clearOverlays',
+	    value: function clearOverlays() {
+	      this.plotCore.selectAll('.point-hover-tip').transition(3000).style('opacity', 0).remove();
+	      this.plotter.clearHighlights();
+	      this.clearGlow();
+	      if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
+	        this.plotter.getPlugin('TabularLegendRenderer').clearHighlights();
+	      }
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      var self = this,
+	          markers = this.svg.selectAll('.nv-point, .nv-bar'),
+	          data = markers.data(),
+	          onHover = function onHover(d, i) {
+	        var marker = d3.select(this),
+	            dataPoint = marker.data()[0],
+	            series = self.data.series[dataPoint.seriesIndex];
+	        self.showOverlay(marker, dataPoint, series);
+	      },
+	          onMouseOut = function onMouseOut(d, i) {
+	        self.clearOverlays();
+	      };
+	      markers.on('mouseover', onHover).on('mouseout', onMouseOut);
+	    }
+	  }]);
 	
 	  return PointHoverPlugin;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.PointHoverPlugin = PointHoverPlugin;
 
 /***/ },
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
-	var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-	
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var d3 = __webpack_require__(3);
-	var BaseRenderingPlugin = __webpack_require__(9).BaseRenderingPlugin;
-	var ColorTool = __webpack_require__(6).ColorTool;
-	var Overlay = __webpack_require__(25).Overlay;
+	'use strict';
 	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var _utils = __webpack_require__(6);
+	
+	var _tinyOverlay = __webpack_require__(25);
+	
+	var d3 = __webpack_require__(3);
 	
 	var document = window.document;
 	
 	function mkHTML(series, point, color) {
-	  var wrap = d3.select(document.createElement("div")),
+	  var wrap = d3.select(document.createElement('div')),
 	      seriesLabel = series.title,
-	      title = wrap.append("h5").text(series.title).style({
-	    "background-color": color,
-	    color: ColorTool.isLight(color) ? "#000" : "#fff"
+	      title = wrap.append('h5').text(series.title).style({
+	    'background-color': color,
+	    color: _utils.ColorTool.isLight(color) ? '#000' : '#fff'
 	  }),
-	      detail = wrap.append("dl"),
-	      fmt = d3.format(series.display_format.replace("%", ",") || ",.1f"),
+	      detail = wrap.append('dl'),
+	      fmt = d3.format(series.display_format.replace('%', ',') || ',.1f'),
 	      displayValue = fmt(point.y);
 	  // Period title (series title):
-	  detail.append("dt").classed("name", true).append("span").classed("point-title", true).text(point.title);
+	  detail.append('dt').classed('name', true).append('span').classed('point-title', true).text(point.title);
 	  // Display value (final computed value, formatted):
-	  detail.append("dd").classed("value", true).text(true ? displayValue : "n/a (null)");
+	  detail.append('dd').classed('value', true).text(true ? displayValue : 'n/a (null)');
 	  // Note:
-	  detail.append("p").classed("note", true).text(point.note);
+	  detail.append('p').classed('note', true).text(point.note);
 	  if (point.uri) {
-	    detail.append("a").attr({
+	    detail.append('a').attr({
 	      href: point.uri,
-	      target: "_blank"
-	    }).text("View data source");
+	      target: '_blank'
+	    }).text('View data source');
 	  }
 	  return wrap;
 	}
 	
+	var PointClickPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(PointClickPlugin, _BaseRenderingPlugin);
 	
-	var PointClickPlugin = exports.PointClickPlugin = (function (BaseRenderingPlugin) {
 	  function PointClickPlugin(plotter) {
-	    _get(Object.getPrototypeOf(PointClickPlugin.prototype), "constructor", this).call(this, plotter);
-	    this.__name__ = "PointClickPlugin";
+	    _classCallCheck(this, PointClickPlugin);
+	
+	    _get(Object.getPrototypeOf(PointClickPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.__name__ = 'PointClickPlugin';
 	  }
 	
-	  _inherits(PointClickPlugin, BaseRenderingPlugin);
-	
-	  _prototypeProperties(PointClickPlugin, null, {
-	    preRender: {
-	      value: function preRender() {
-	        _get(Object.getPrototypeOf(PointClickPlugin.prototype), "preRender", this).call(this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    render: {
-	      value: function render() {
-	        this.xScale = this.plotter.timeScale;
-	        this.yScale = this.plotter.yScale;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    scaledCoordinates: {
-	      value: function scaledCoordinates(point) {
-	        /** get stable x,y from scale+data as event clientX, etc unreliable */
-	        var x = Math.floor(this.xScale(point.x) + this.margins.left),
-	            y = Math.floor(this.yScale(point.y) + this.margins.top);
-	        return [x, y];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    showOverlay: {
-	      value: function showOverlay(marker, dataPoint, series) {
-	        var color = series.color;
-	        var ct = ColorTool;
-	        var titleColor = ct.isLight(color) ? ct.darken(color) : color;var _scaledCoordinates = this.scaledCoordinates(dataPoint);
-	
-	        var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
-	
-	        var x = _scaledCoordinates2[0];
-	        var y = _scaledCoordinates2[1];
-	        var useLeft = x < this.plotter.plotWidth * 0.5;
-	        var fontSize = Math.max(13, this.plotter.baseFontSize * 0.7);
-	        var html = mkHTML(series, dataPoint, titleColor).html();
-	        var overlay = new Overlay(html, {
-	          container: this.plotCore[0][0],
-	          classname: useLeft ? "left" : undefined,
-	          style: {
-	            left: useLeft ? "" + x + "px" : undefined,
-	            right: !useLeft ? "" + (this.plotter.plotWidth - x) + "px" : undefined,
-	            top: "" + y + "px",
-	            width: "45%",
-	            "min-width": "150px",
-	            "max-width": "300px",
-	            border: "1.5% solid " + color,
-	            "font-size": "" + fontSize + "px",
-	            "z-index": 10000
-	          }
-	        });
-	        var pad;
-	        var w;
-	        overlay.open();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    loadInteractiveFeatures: {
-	      value: function loadInteractiveFeatures() {
-	        var self = this,
-	            markers = this.svg.selectAll(".nv-point, .nv-bar"),
-	            data = markers.data(),
-	            onClick = function (d, i) {
-	          var marker = d3.select(this),
-	              dataPoint = marker.data()[0],
-	              series = self.data.series[dataPoint.seriesIndex];
-	          self.showOverlay(marker, dataPoint, series);
-	        };
-	        markers.on("click", onClick);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(PointClickPlugin, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(PointClickPlugin.prototype), 'preRender', this).call(this);
 	    }
-	  });
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.xScale = this.plotter.timeScale;
+	      this.yScale = this.plotter.yScale;
+	    }
+	  }, {
+	    key: 'scaledCoordinates',
+	    value: function scaledCoordinates(point) {
+	      /** get stable x,y from scale+data as event clientX, etc unreliable */
+	      var x = Math.floor(this.xScale(point.x) + this.margins.left),
+	          y = Math.floor(this.yScale(point.y) + this.margins.top);
+	      return [x, y];
+	    }
+	  }, {
+	    key: 'showOverlay',
+	    value: function showOverlay(marker, dataPoint, series) {
+	      var color = series.color;
+	      var ct = _utils.ColorTool;
+	      var titleColor = ct.isLight(color) ? ct.darken(color) : color;
+	
+	      var _scaledCoordinates = this.scaledCoordinates(dataPoint);
+	
+	      var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
+	
+	      var x = _scaledCoordinates2[0];
+	      var y = _scaledCoordinates2[1];
+	      var useLeft = x < this.plotter.plotWidth * 0.5;
+	      var fontSize = Math.max(13, this.plotter.baseFontSize * 0.7);
+	      var html = mkHTML(series, dataPoint, titleColor).html();
+	      var overlay = new _tinyOverlay.Overlay(html, {
+	        container: this.plotCore[0][0],
+	        classname: useLeft ? 'left' : undefined,
+	        style: {
+	          left: useLeft ? x + 'px' : undefined,
+	          right: !useLeft ? this.plotter.plotWidth - x + 'px' : undefined,
+	          top: y + 'px',
+	          width: '45%',
+	          'min-width': '150px',
+	          'max-width': '300px',
+	          'font-size': fontSize + 'px',
+	          'z-index': 10000
+	        }
+	      });
+	      var pad;
+	      var w;
+	      overlay.open();
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      var self = this,
+	          markers = this.svg.selectAll('.nv-point, .nv-bar'),
+	          data = markers.data(),
+	          onClick = function onClick(d, i) {
+	        var marker = d3.select(this),
+	            dataPoint = marker.data()[0],
+	            series = self.data.series[dataPoint.seriesIndex];
+	        self.showOverlay(marker, dataPoint, series);
+	      };
+	      markers.on('click', onClick);
+	    }
+	  }]);
 	
 	  return PointClickPlugin;
-	})(BaseRenderingPlugin);
-	exports.__esModule = true;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.PointClickPlugin = PointClickPlugin;
 
 /***/ },
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } };
-	
-	var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
-	
 	// tinyOverlay.es6.js -- a minimal JavaScript (ES6) overlay library
 	// Author: Sean Upton <sean.upton@hsc.utah.edu>
 	// (c) 2013, 2015 University of Utah / MIT-licensed, text at:
@@ -29191,8 +28984,19 @@
 	/*jshint esnext:true, eqnull:true, undef:true */
 	/*globals require, window */
 	
-	var uuid4 = __webpack_require__(6).uuid4;
+	'use strict';
 	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _utils = __webpack_require__(6);
 	
 	var document = window.document;
 	
@@ -29206,7 +29010,7 @@
 	
 	function attr(target, name, value) {
 	  // multi-attr
-	  if (typeof name !== "string") {
+	  if (typeof name !== 'string') {
 	    Object.keys(name).forEach(function (k) {
 	      return attr(target, k, name[k]);
 	    });
@@ -29225,31 +29029,32 @@
 	    return;
 	  }
 	  target.style.removeProperty(spec);
+	  if (value === undefined) return;
 	  target.style.setProperty(spec, value);
 	}
 	
 	function create(tagname, classname, html) {
 	  var el, id;
-	  if (tagname.indexOf(".") !== -1) {
-	    var _ref = tagname.split(".");
+	  if (tagname.indexOf('.') !== -1) {
+	    var _tagname$split = tagname.split('.');
 	
-	    var _ref2 = _slicedToArray(_ref, 2);
+	    var _tagname$split2 = _slicedToArray(_tagname$split, 2);
 	
-	    tagname = _ref2[0];
-	    classname = _ref2[1];
+	    tagname = _tagname$split2[0];
+	    classname = _tagname$split2[1];
 	  }
-	  if (tagname.indexOf("#") !== -1) {
-	    var _ref3 = tagname.split("#");
+	  if (tagname.indexOf('#') !== -1) {
+	    var _tagname$split3 = tagname.split('#');
 	
-	    var _ref32 = _slicedToArray(_ref3, 2);
+	    var _tagname$split32 = _slicedToArray(_tagname$split3, 2);
 	
-	    tagname = _ref32[0];
-	    id = _ref32[1];
+	    tagname = _tagname$split32[0];
+	    id = _tagname$split32[1];
 	  }
 	  el = document.createElement(tagname);
 	  attr(el, {
 	    id: id,
-	    "class": classname
+	    'class': classname
 	  });
 	  if (html) {
 	    el.innerHTML = html;
@@ -29259,7 +29064,7 @@
 	
 	function toDOM(html, wrapperTag, wrapperClass) {
 	  /** make DOM object(s) from HTML snippets */
-	  var wrapper = create(wrapperTag || "div", wrapperClass, html),
+	  var wrapper = create(wrapperTag || 'div', wrapperClass, html),
 	      children = wrapper.childNodes;
 	  if (children.length === 1) {
 	    return children[0];
@@ -29268,30 +29073,32 @@
 	}
 	
 	var snippets = {
-	  CONTROL: String() + "<div class=\"olControl\">" + "  <span class=\"olControlBtn\">" + "   <a class=\"close\" title=\"close\">&times;</a>" + "  </span>" + "</div>"
+	  CONTROL: String() + '<div class="olControl">' + '  <span class="olControlBtn">' + '   <a class="close" title="close">&times;</a>' + '  </span>' + '</div>'
 	};
 	
-	var Overlay = exports.Overlay = (function () {
+	var Overlay = (function () {
 	  /** Overlay objects are rendered on construction, but only shown and
 	    * attached on open(), destroyed on close().
 	    */
 	
 	  function Overlay(html, options, onclose) {
-	    var id = (options || {}).id || uuid4(),
-	        body = document.getElementsByTagName("body")[0],
-	        inner = create("div#" + id + ".overlayInner", null, html),
+	    _classCallCheck(this, Overlay);
+	
+	    var id = (options || {}).id || (0, _utils.uuid4)(),
+	        body = document.getElementsByTagName('body')[0],
+	        inner = create('div#' + id + '.overlayInner', null, html),
 	        userClass = (options || {}).classname,
-	        classname = "tinyOverlay" + (userClass ? " " + userClass : ""),
-	        overlayDiv = create("div." + classname),
+	        classname = 'tinyOverlay' + (userClass ? ' ' + userClass : ''),
+	        overlayDiv = create('div.' + classname),
 	        control = toDOM(snippets.CONTROL);
 	    // setup instance attrs:
 	    this.id = id;
 	    this.options = options;
-	    this.container = this.options.container || document.querySelector("body");
+	    this.container = this.options.container || document.querySelector('body');
 	    // detached overlay div element; latern will be attached/shown:
 	    this.target = overlayDiv;
 	    this.options = options || {};
-	    this.options.style = this.options.style || { width: "120px" };
+	    this.options.style = this.options.style || { width: '120px' };
 	    // Set passed styles for overlay div:
 	    style(this.target, this.options.style);
 	    // append content to outermost overlay DIV:
@@ -29302,45 +29109,40 @@
 	    this.onclose = onclose instanceof Array ? onclose : [onclose];
 	  }
 	
-	  _prototypeProperties(Overlay, null, {
-	    open: {
-	      value: function open() {
-	        var self = this,
-	            container = this.container,
-	            otherOverlays = toArray(container.querySelectorAll("div.tinyOverlay")),
-	            closeBtn = this.target.querySelector("span.olControlBtn a.close");
-	        // destroy any other overlays on page:
-	        otherOverlays.forEach(function (n) {
-	          return n.parentNode.removeChild(n);
-	        });
-	        // append detached div to overlay:
-	        this.container.appendChild(this.target);
-	        // hookup action for close button:
-	        closeBtn.addEventListener("click", function (event) {
-	          self.close();
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    close: {
-	      value: function close() {
-	        var _this = this;
-	        this.target.parentNode.removeChild(this.target);
-	        this.onclose.forEach(function (callback) {
-	          return callback.call(_this);
-	        });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
+	  _createClass(Overlay, [{
+	    key: 'open',
+	    value: function open() {
+	      var self = this,
+	          container = this.container,
+	          otherOverlays = toArray(container.querySelectorAll('div.tinyOverlay')),
+	          closeBtn = this.target.querySelector('span.olControlBtn a.close');
+	      // destroy any other overlays on page:
+	      otherOverlays.forEach(function (n) {
+	        return n.parentNode.removeChild(n);
+	      });
+	      // append detached div to overlay:
+	      this.container.appendChild(this.target);
+	      // hookup action for close button:
+	      closeBtn.addEventListener('click', function (event) {
+	        self.close();
+	      });
 	    }
-	  });
+	  }, {
+	    key: 'close',
+	    value: function close() {
+	      var _this = this;
+	
+	      this.target.parentNode.removeChild(this.target);
+	      this.onclose.forEach(function (callback) {
+	        return callback.call(_this);
+	      });
+	    }
+	  }]);
 	
 	  return Overlay;
 	})();
-	exports.__esModule = true;
+	
+	exports.Overlay = Overlay;
 
 /***/ }
 /******/ ])
