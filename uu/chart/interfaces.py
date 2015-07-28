@@ -563,8 +563,7 @@ class IChartDisplay(form.Schema):
             ),
         vocabulary=SimpleVocabulary((
             SimpleTerm(value=None, token=str(None), title=u'Legend disabled'),
-            SimpleTerm(value='outside', title=_(u'Outside grid')),
-            SimpleTerm(value='inside', title=_(u'Inside grid')),
+            SimpleTerm(value='outside', title=_(u'Basic legend, outside grid')),
             SimpleTerm(value='tabular', title=_(
                 u'Tabular legend with data, below plot')),
             )),
@@ -579,14 +578,8 @@ class IChartDisplay(form.Schema):
                       u'legend placement is selected or if the '
                       u'legend is hidden (for less than two series).'),
         vocabulary=SimpleVocabulary((
-            SimpleTerm(value='nw', title=_(u'Top left')),
             SimpleTerm(value='n', title=_(u'Top')),
-            SimpleTerm(value='ne', title=_(u'Top right')),
             SimpleTerm(value='e', title=_(u'Right')),
-            SimpleTerm(value='se', title=_(u'Bottom right')),
-            SimpleTerm(value='s', title=_(u'Bottom')),
-            SimpleTerm(value='sw', title=_(u'Bottom left')),
-            SimpleTerm(value='w', title=_(u'Left')),
             )),
         required=False,
         default='e',  # right hand side
