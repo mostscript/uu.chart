@@ -40,10 +40,10 @@
   </property>
  
   <!-- Method aliases -->
-  <alias from="(Default)" to="@@chart_view"/>
+  <alias from="(Default)" to="@@report"/>
   <alias from="edit" to="@@edit"/>
   <alias from="sharing" to="@@sharing"/>
-  <alias from="view" to="@@chart_view"/>
+  <alias from="view" to="@@report"/>
  
   <!-- Actions -->
   <action title="View" action_id="view" category="object" condition_expr=""
