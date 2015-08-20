@@ -175,6 +175,10 @@ class ChartJSON(object):
                     if not (name.endswith('color') and
                             str(v).upper() == 'AUTO'):
                         series[name] = v
+                    # backward-compatibility for shapes given current lack
+                    # of support for distinguishing hollow/filled markers:
+                    if name == 'marker_style' and v.startswith('filled'):
+                        series[name] = v.replace('filled', '').lower()
             # display format via display precision (digits after decimal pt)
             precision = getattr(seq, 'display_precision', 1)
             series['display_format'] = '%%.%if' % precision
