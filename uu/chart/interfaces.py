@@ -692,7 +692,8 @@ class ILineDisplayCore(form.Schema, ISeriesDisplay):
             SimpleTerm(value=u'x', title=u'X'),
             SimpleTerm(value=u'plus', title=u'Plus sign'),
             SimpleTerm(value=u'dash', title=u'Dash'),
-            SimpleTerm(value=u'triangle-up', title=u'Triangle'),
+            SimpleTerm(value=u'triangle-up', title=u'Triangle (upward)'),
+            SimpleTerm(value=u'triangle-down', title=u'Triangle (downward)'),
             ]),
         default=u'square',
         )
