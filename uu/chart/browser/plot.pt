@@ -18,7 +18,7 @@
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/integration.js?api=2015-07-27"></script>
 </metal:block>
 <metal:block fill-slot="style_slot">
-  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report.css?api=2015-07-27" />
+  <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report.css?api=2015-08-21" />
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.css?api=2015-07-27" />
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report-management.css" />
 <style>
@@ -91,7 +91,7 @@
   </div>
 
  <!-- report management, if applicable -->
- <div class="report-management" tal:condition="python:not request.form.get('goprint')">
+ <div class="report-management" tal:condition="python:not request.form.get('goprint') and view.can_manage()">
    <h4 tal:content="python:'Manage this %s' % ('report' if is_report else 'chart')">Manage this report:</h4>
 
    <div class="report-actions" tal:condition="is_report">

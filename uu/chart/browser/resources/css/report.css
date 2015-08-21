@@ -46,3 +46,18 @@ div.printlink {
 #content-core #uu-chart-report .report-core .plotdiv .plot-info {
   padding: 0.4em;
 }
+
+/* hide add-new menu from non-manager project contributors */
+#plone-contentmenu-factories, #plone-contentmenu-actions, #plone-contentmenu-workflow {
+  display:none;
+}
+
+body.userrole-manager #plone-contentmenu-factories,
+body.userrole-manager #plone-contentmenu-actions,
+body.userrole-manager #plone-contentmenu-workflow,
+body.userrole-owner #plone-contentmenu-factories,
+body.userrole-owner #plone-contentmenu-actions,
+body.userrole-owner #plone-contentmenu-workflow
+ {
+  display:block;
+}
