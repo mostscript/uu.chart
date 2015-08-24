@@ -168,7 +168,7 @@ class ReportStylesView(object):
             createContentInContainer(
                 stylebook,
                 LINESTYLE_TYPE,
-                title=u'Line style %s' % i,
+                title=u'Line style %s' % i + 1,
                 )
         clone_chart_styles(source=mimic, target=stylebook)
         self._contained = self._stylebooks = None  # un-cache now outdated
