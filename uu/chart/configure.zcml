@@ -25,6 +25,18 @@
     />
 
   <subscriber
+    for="uu.chart.interfaces.IChartStyleBook
+         zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+    handler=".styles.update_quick_line_styles"
+    />
+
+  <subscriber
+    for="uu.chart.interfaces.IChartStyleBook
+         zope.lifecycleevent.interfaces.IObjectAddedEvent"
+    handler=".styles.update_quick_line_styles"
+    />
+
+  <subscriber
     for="uu.chart.interfaces.ILineStyle
          zope.lifecycleevent.interfaces.IObjectModifiedEvent"
     handler=".styles.handle_line_style_modified"

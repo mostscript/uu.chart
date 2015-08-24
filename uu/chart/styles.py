@@ -1,8 +1,10 @@
 from plone.dexterity.content import Container, Item
+from plone.dexterity.utils import createContentInContainer
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
+from zope.container.interfaces import IContainerModifiedEvent
 
-from interfaces import IChartStyleBook, ILineStyle, IBaseChart
+from interfaces import IChartStyleBook, ILineStyle, IBaseChart, LINESTYLE_TYPE
 from browser.styles import clone_chart_styles
 
 
@@ -20,6 +22,30 @@ class LineStyle(Item):
     portal_type = 'uu.chart.linestyle'
 
     implements(ILineStyle)
+
+
+def update_quick_line_styles(context, event=None):
+    # on zope.container.contained.ContainerModifiedEvent, we ignore:
+    if IContainerModifiedEvent.providedBy(event):
+        return
+    quick = context.quick_styles
+    existing = [l for l in context.objectValues() if ILineStyle.providedBy(l)]
+    val = lambda o, name, default: spec.get(name, getattr(o, name, default))
+    copy_to = lambda o, name, default: setattr(o, name, val(o, name, default))
+    i = -1
+    for spec in quick:
+        i += 1
+        if i + 1 < len(existing):
+            line_style = existing[i]
+            copy_to(line_style, 'color', 'Auto')
+            copy_to(line_style, 'marker_style', 'square')
+        else:
+            line_style = createContentInContainer(
+                context,
+                LINESTYLE_TYPE,
+                title=u'Line style %s' % i,
+                **spec
+                )
 
 
 def handle_stylebook_modified(context, event):

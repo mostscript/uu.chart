@@ -91,6 +91,7 @@ uu.chart.interfaces -- narrative summary of components:
 from datetime import date, datetime
 import operator
 
+from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 from plone.app.textfield import RichText
 from plone.directives import form
 from plone.formwidget.contenttree import ContentTreeFieldWidget
@@ -529,7 +530,7 @@ class IChartDisplay(form.Schema):
                 u'Tabular legend with data, below plot')),
             )),
         required=False,
-        default='outside',
+        default='tabular',
         )
 
     legend_location = schema.Choice(
@@ -1024,11 +1025,45 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
 ## style book content interfaces:
 
 
+class ISeriesQuickStyles(form.Schema):
+    """Interface for quick line styles (commonly used) for style book"""
+    
+    form.widget(color=NativeColorFieldWidget)
+    color = schema.TextLine(
+        title=_(u'Series color'),
+        description=_(u'If omitted, color will be selected from defaults.'),
+        required=False,
+        default=u'Auto',
+        )
+
+    marker_style = schema.Choice(
+        title=_(u'Marker style'),
+        description=_(u'Shape/type of the point-value marker.'),
+        vocabulary=SimpleVocabulary([
+            SimpleTerm(value=u'diamond', title=u'Diamond'),
+            SimpleTerm(value=u'circle', title=u'Circle'),
+            SimpleTerm(value=u'square', title=u'Square'),
+            SimpleTerm(value=u'x', title=u'X'),
+            SimpleTerm(value=u'plus', title=u'Plus sign'),
+            SimpleTerm(value=u'dash', title=u'Dash'),
+            SimpleTerm(value=u'triangle-up', title=u'Triangle (upward)'),
+            SimpleTerm(value=u'triangle-down', title=u'Triangle (downward)'),
+            ]),
+        default=u'square',
+        )
+
+
 class IChartStyleBook(IChartDisplay):
     """
     Style book for charts, can contain (as folder) ILineStyle items,
     in an ordered manner.
     """
+
+    form.widget(quick_styles=DataGridFieldFactory)
+    quick_styles = schema.List(
+        title=u'Quick series styles',
+        value_type=DictRow(schema=ISeriesQuickStyles),
+        )
 
     # hide fields that are per-chart-specific
     form.omitted('x_label')
