@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      tal:omit-tag="">
+    <input id="" name="" class="" title="" lang="" disabled=""
+           readonly="" alt="" tabindex="" accesskey="" size="" maxlength=""
+           style="" value="Auto" type="color"
+           tal:attributes="id string:${view/id}-picker;
+                           name string:${view/name}-picker;
+                           class view/klass;
+                           style view/style;
+                           title view/title;
+                           lang view/lang;
+                           onclick view/onclick;
+                           ondblclick view/ondblclick;
+                           onmousedown view/onmousedown;
+                           onmouseup view/onmouseup;
+                           onmouseover view/onmouseover;
+                           onmousemove view/onmousemove;
+                           onmouseout view/onmouseout;
+                           onkeypress view/onkeypress;
+                           onkeydown view/onkeydown;
+                           onkeyup view/onkeyup;
+                           value view/value;
+                           disabled view/disabled;
+                           tabindex view/tabindex;
+                           onfocus view/onfocus;
+                           onblur view/onblur;
+                           onchange view/onchange;
+                           readonly view/readonly;
+                           alt view/alt;
+                           accesskey view/accesskey;
+                           onselect view/onselect;
+                           size view/size;
+                           maxlength view/maxlength" />
+  
+  <input
+    id=""
+    name=""
+    type="hidden"
+    value=""
+    tal:attributes="id view/id; name view/name; value view/value"
+    />
+
+  <a id=""
+     title="Clear color selection"
+     class="color-clear"
+     tal:attributes="id string:${view/id}-clear"
+     style="display: block;float: left;background-color: rgb(255, 221, 221);text-align: center;border-radius: 2em;line-height: 1em;font-weight: bold;padding: 0px 0.025em 0.15em 0.1em;width: 1em;box-shadow: 0em 0.025em 0.05em rgb(170, 170, 170);color: black;cursor:pointer">
+    x
+  </a>
+
+  <span
+      class="color-selection"
+      style="float:left;padding:0 0.3em"
+      tal:attributes="id string:${view/id}-selected">
+    <span class="color-auto" style="font-style:italic;color:#999" tal:condition="python: view.value == 'Auto'">Using default color</span>
+    <span 
+      class="color-specified"
+      style=""
+      tal:condition="python: view.value != 'Auto'"
+      tal:attributes="style string:color:${view/value};;"
+      tal:content="view/value">
+    </span>
+  </span>
+
+  <script type="text/javascript">
+    (function ($) {
+      var selPicker = '<tal:block content="string:#${view/id}-picker"></tal:block>',
+          selInput = '<tal:block content="string:#${view/id}"></tal:block>',
+          selClearLink = '<tal:block content="string:#${view/id}-clear"></tal:block>',
+          selSelected = '<tal:block content="string:#${view/id}-selected"></tal:block>',
+          picker = $(selPicker),
+          input = $(selInput),
+          selected = $(selSelected),
+          clearLink = $(selClearLink),
+          initialValue = '<tal:block content="view/value"></tal:block>';
+      
+      if (initialValue === 'Auto') {
+        picker.val('#dddddd');
+        clearLink.hide();
+      }
+      
+      // on change of color:
+      $('input#<tal:block content="string:${view/id}-picker"></tal:block>')
+        .change(function () {
+          var value = picker.val();
+          input.val(value);
+          selected.text(value).css({'color': value});
+          clearLink.show();
+        });
+    
+      // clear link:
+      clearLink.click(function () {
+        input.val('Auto');
+        selected.text('Using default color').css({'color': '#999'});
+        picker.val('#dddddd');
+        clearLink.hide();
+      });
+
+
+    }(jQuery));
+  </script>
+
+</html>

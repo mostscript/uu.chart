@@ -96,7 +96,6 @@ from plone.directives import form
 from plone.formwidget.contenttree import ContentTreeFieldWidget
 from plone.formwidget.contenttree.source import UUIDSourceBinder
 from plone.uuid.interfaces import IAttributeUUID
-from z3c.form import widget
 from z3c.form.browser.textarea import TextAreaFieldWidget
 from zope.interface import Interface, Invalid, invariant, implements
 from zope.component.hooks import getSite
@@ -105,14 +104,13 @@ from zope.location.interfaces import ILocation
 from zope import schema
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-from collective.z3cform.colorpicker import colorpicker
 
 from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
 from uu.formlibrary.measure.interfaces import MeasureGroupContentSourceBinder
 from uu.formlibrary.measure.interfaces import PermissiveVocabulary
 
 from uu.chart import _  # MessageFactory for package
-
+from uu.chart.browser.color import NativeColorFieldWidget
 
 # type name globals:
 TIMESERIES_TYPE = 'uu.chart.timeseries'
@@ -241,43 +239,6 @@ class MeasureGroupParentBinder(MeasureGroupContentSourceBinder):
         ## get a context (indirection) of measure bound, use that to get
         ## group and contained content in superclass implementation:
         return super(MeasureGroupParentBinder, self).__call__(measure)
-
-
-class RWColorPickerWidget(colorpicker.ColorpickerWidget):
-    """
-    Color picker that is read-write and uses JS to keep
-    the string value of 'Auto' for null/empty/non-specified
-    color values.
-    """
-    readonly = False
-
-    def getJS(self):
-        orig = super(RWColorPickerWidget, self).getJS()
-        lines = orig.split('\n')
-        js_additional = """
-            var hexclr = /^#?([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?$/;
-            var input = jQuery('#%s');
-            if (!input[0].value) input.value = 'Auto';
-            input.css('color', '#bbb');
-            input.change(function(event) {
-                if (!hexclr.test(this.value)) {
-                    this.value = 'Auto';
-                    input.css('color', '#bbb');
-                    input.css('backgroundColor', 'white');
-                }
-            });
-            """.replace('%s', self.id).strip()
-        lines.insert(-1, js_additional)
-        return '\n'.join(lines)
-
-
-def ColorpickerFieldWidget(field, request):
-    """
-    Get color picker field widget, set readonly to false on
-    each constrcuted widget instance.  This allows removing
-    a color and setting an empty string as a value.
-    """
-    return widget.FieldWidget(field, RWColorPickerWidget(request))
 
 
 ## constants for use in package:
@@ -538,7 +499,7 @@ class IChartDisplay(form.Schema):
         default=False,
         )
 
-    form.widget(goal_color=ColorpickerFieldWidget)
+    form.widget(goal_color=NativeColorFieldWidget)
     goal_color = schema.TextLine(
         title=_(u'Goal-line color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -622,7 +583,7 @@ class ISeriesDisplay(form.Schema):
     or line chart.
     """
 
-    form.widget(color=ColorpickerFieldWidget)
+    form.widget(color=NativeColorFieldWidget)
     color = schema.TextLine(
         title=_(u'Series color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -643,7 +604,7 @@ class ISeriesDisplay(form.Schema):
         default=2,
         )
 
-    form.widget(trend_color=ColorpickerFieldWidget)
+    form.widget(trend_color=NativeColorFieldWidget)
     trend_color = schema.TextLine(
         title=_(u'Trend-line color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -714,7 +675,7 @@ class ILineDisplayCore(form.Schema, ISeriesDisplay):
         default=2,
         )
 
-    form.widget(marker_color=ColorpickerFieldWidget)
+    form.widget(marker_color=NativeColorFieldWidget)
     marker_color = schema.TextLine(
         title=_(u'Marker color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -1061,6 +1022,7 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
 
 
 ## style book content interfaces:
+
 
 class IChartStyleBook(IChartDisplay):
     """
