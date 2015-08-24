@@ -28,7 +28,6 @@ setup(
         'setuptools',
         'zope.schema>=3.8.0',
         'plone.app.dexterity',
-        'collective.z3cform.colorpicker',
         'collective.z3cform.datagridfield',
         'Products.CMFPlone',
         'plone.browserlayer',
