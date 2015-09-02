@@ -1,12 +1,17 @@
 from zope.schema import getFieldsInOrder
 
+from persistent.mapping import PersistentMapping
 from plone.dexterity.utils import createContentInContainer
 from plone.uuid.interfaces import IUUID
 from Products.statusmessages.interfaces import IStatusMessage
+from zope.annotation import IAnnotations
 
 from uu.chart.interfaces import STYLEBOOK_TYPE, CHART_TYPES, LINESTYLE_TYPE
 from uu.chart.interfaces import ILineDisplayCore
 from uu.chart.interfaces import IChartStyleBook
+
+
+ANNO_KEY = 'uu.chart'
 
 
 def _clone_attrs(source, target, schema, exclude=()):
@@ -60,14 +65,17 @@ class ReportStylesView(object):
     def can_paste_stylebooks(self):
         if self.request.get('__cp', None) is not None:
             if self.context.cb_dataValid():
-                oblist = self.context.cb_dataItems()
-                if oblist:
-                    return all(
-                        map(
-                            lambda o: IChartStyleBook.providedBy(o),
-                            oblist,
+                try:
+                    oblist = self.context.cb_dataItems()
+                    if oblist:
+                        return all(
+                            map(
+                                lambda o: IChartStyleBook.providedBy(o),
+                                oblist,
+                                )
                             )
-                        )
+                except KeyError:
+                    pass  # object(s) in clipboard subsequently deleted
         return False
 
     @property
@@ -186,6 +194,91 @@ class ReportStylesView(object):
                 self.update_apply(*args, **kwargs)
             if 'existing-mimic' in req.form:
                 self.update_mimic(*args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        self.update(*args, **kwargs)
+        return self.index(*args, **kwargs)  # provided by template via Five
+
+
+class MeasureGroupStyles(object):
+    """
+    ad-hoc measure group adapter for style book enumeration,
+    get/set of default.
+    """
+
+    def __init__(self, context):
+        self.context = context  # IMeasureGroup
+
+    def stylebooks(self):
+        """enumerate"""
+        if not getattr(self, '_stylebooks', None):
+            self._stylebooks = filter(
+                lambda o: IChartStyleBook.providedBy(o),
+                self.context.objectValues()
+                )
+        return self._stylebooks
+
+    def _save_default(self, name):
+        if name in [o.getId() for o in self.stylebooks()]:
+            anno = IAnnotations(self.context)
+            if ANNO_KEY not in anno:
+                anno[ANNO_KEY] = PersistentMapping()
+            anno[ANNO_KEY]['default_stylebook'] = name
+
+    def _default_stylebook(self):
+        if not getattr(self, '_default', None):
+            if not [o.getId() for o in self.stylebooks()]:
+                return None
+            anno = IAnnotations(self.context).get(ANNO_KEY, {})
+            self._default = anno.get('default_stylebook', None)
+        return self._default
+
+    default_stylebook = property(_default_stylebook, _save_default)
+
+
+class MeasureGroupStylesView(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        self.status = IStatusMessage(self.request)
+        self.adapter = MeasureGroupStyles(self.context)
+
+    def save_default(self):
+        name = self.request.get('default_stylebook')
+        self.adapter.default_stylebook = name
+        if self.adapter.default_stylebook == name:
+            # success saving
+            title = self.context[name].Title()
+            msg = 'Saved default style book of: %s' % title
+            self.status.addStatusMessage(msg, type='info')
+
+    def default_stylebook(self):
+        return self.adapter.default_stylebook
+
+    def can_paste_stylebooks(self):
+        if self.request.get('__cp', None) is not None:
+            if self.context.cb_dataValid():
+                try:
+                    oblist = self.context.cb_dataItems()
+                    if oblist:
+                        return all(
+                            map(
+                                lambda o: IChartStyleBook.providedBy(o),
+                                oblist,
+                                )
+                            )
+                except KeyError:
+                    pass  # object(s) in clipboard subsequently removed
+        return False
+
+    def update(self, *args, **kwargs):
+        self.stylebooks = self.adapter.stylebooks()  # template enumerates...
+        self.show_paste = self.can_paste_stylebooks()
+        req = self.request
+        if req.get('REQUEST_METHOD', 'GET') == 'POST' and 'savebtn' in req:
+            # save default stylebook name
+            self.save_default()
 
     def __call__(self, *args, **kwargs):
         self.update(*args, **kwargs)

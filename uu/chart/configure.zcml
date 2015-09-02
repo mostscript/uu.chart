@@ -37,9 +37,21 @@
     />
 
   <subscriber
+    for="uu.chart.interfaces.IChartStyleBook
+         zope.lifecycleevent.interfaces.IObjectAddedEvent"
+    handler=".styles.stylebook_added"
+    />
+
+  <subscriber
     for="uu.chart.interfaces.ILineStyle
          zope.lifecycleevent.interfaces.IObjectModifiedEvent"
     handler=".styles.handle_line_style_modified"
+    />
+
+  <subscriber
+    for="uu.formlibrary.measure.interfaces.IMeasureGroup
+         zope.lifecycleevent.interfaces.IObjectAddedEvent"
+    handler=".styles.measure_group_added"
     />
 
   <!-- subscribers for workflow publish/unpublish of reports -->

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object 
+    name="uu.formlibrary.measuregroup"
+    meta_type="Dexterity FTI"
+    i18n:domain="uu.formlibrary"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+  <property name="allowed_content_types" purge="False">
+    <element value="uu.chart.stylebook"/>
+  </property>
+
+  <!-- Styles tab graft-on action -->
+  <action
+      title="Styles"
+      action_id="styles"
+      category="object"
+      condition_expr=""
+      url_expr="string:${object_url}/@@styles"
+      visible="True">
+    <permission value="Modify portal content"/>
+  </action>
+
+</object>

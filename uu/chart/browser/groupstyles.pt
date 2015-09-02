@@ -1,0 +1,250 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="uu.chart">
+<head>
+<metal:block fill-slot="javascript_head_slot">
+</metal:block>
+<metal:block fill-slot="style_slot">
+<style>
+
+div.style-tools>div {
+    border:1px solid #999;
+    margin:0.5em;
+    padding:0.3em;
+}
+
+div.style-tools {
+}
+
+.stylebook-creation {
+    background-color:#f0fff9;
+}
+
+.add-button {
+    margin:0.6em 0.2em;
+    padding:0.4em 0.1em;
+    background-color:#dfd;
+}
+
+.add-button a {
+    text-decoration:none;
+    border-bottom:none !important;
+    display:block;
+    width:100%;
+}
+
+.add-button a:before {
+    content:"\2009\002b\2009";
+}
+
+#select-all-chart-checkboxes {
+}
+
+.style-tools input.apply-button, .add-button {
+    font-size:100%;
+    font-weight:bold;
+    height:2em;
+    border-radius:0.3em;
+    border:1px solid #999;
+    margin-right:0.5em;
+}
+
+.style-tools .notes {
+    margin:0.5em;
+    padding:0.5em;
+    font-size:90%;
+    color:#888;
+}
+
+p.stylebook-desc {
+    font-size:85%;
+    color:#aaa;
+}
+
+.subtle {
+    font-size:80%;
+    color:#9bb;
+    font-style:italic;
+    border:1px solid #ddd;
+}
+
+.subtle:before {
+    width:2em;
+    background-color:#ddd;
+    content:"\2009\2009\2009\2009\2009\2009";
+    margin-right:0.5em;
+}
+
+form#defaults {
+  margin:0.3em;
+  padding:0.3em;
+  border:1px solid #aaa;
+}
+
+form#defaults li {
+  clear:both;
+  display:block;
+  padding-bottom:2.5em;
+  list-style-type:none;
+  margin-left:-1.8em;
+}
+
+form#defaults li input, form#defaults li label {
+  float:left;
+  margin-left:0.5em;
+}
+
+form#defaults li label em {
+  font-weight:normal;
+  color:#aaa;
+}
+
+form#defaults p.subtle, .savedefault {
+  display:block;
+  clear:both;
+  margin-top:0.5em;
+}
+
+
+form#defaults .swatch {
+  float:left;
+  margin-left:0.5em;
+}
+
+form#defaults .swatch span {
+  display:none;
+}
+
+form#defaults .swatch:before {
+  content:"/";
+  color:#999;
+}
+
+form#defaults .swatch:first-child:before {
+  content:none;
+}
+
+form#defaults .swatch:after {
+  content:"\25a0";
+  font-size:17px;
+  font-weight:bold;
+}
+
+form#defaults .swatch.circle:after {
+  content:"\25cf";
+}
+
+form#defaults .swatch.diamond:after {
+  content:"\25c6";
+}
+
+form#defaults .swatch.x:after {
+  content:"\00d7";
+}
+
+form#defaults .swatch.plus:after {
+  content:"+";
+}
+
+form#defaults .swatch.dash:after {
+  content:"\25ac";
+}
+
+form#defaults .swatch.triangle-up:after {
+  content:"\2009\25b2";
+  font-size:12px;
+}
+
+form#defaults .swatch.triangle-down:after {
+  content:"\2009\25bc";
+  font-size:12px;
+}
+
+form#defaults .swatches {
+  float:left;
+  border:1px solid #aaa;
+  border-radius:0.3em;
+  padding:0 0.4em 0.05em 0.1em;
+  margin:0 0.3em;
+}
+form#defaults .swatches:empty {
+  display:none !important;
+}
+
+</style>
+</metal:block>
+</head>
+<body>
+<div metal:fill-slot="main">
+ <div class="stylebook-listing" tal:define="stylebooks view/stylebooks; default view/default_stylebook">
+  <h2>Style books for: <em tal:content="context/Title">GROUP TITLE</em></h2>
+  <hr />
+  <tal:block condition="view/stylebooks">
+    <form method="POST" id="defaults">
+      <h4>Select default style book</h4>
+      <ul>
+        <li tal:repeat="stylebook stylebooks">
+          <tal:block define="selected python:stylebook.getId() == view.default_stylebook()">
+            <input
+              type="radio"
+              name="default_stylebook"
+              tal:attributes="value python:stylebook.getId();
+                              id string:${stylebook/getId}-select;
+                              checked python: 'CHECKED' if selected else ''" />
+              <label for="" tal:attributes="for string:${stylebook/getId}-select">
+                <a href=""
+                  target="_blank"
+                  tal:attributes="href string:${stylebook/absolute_url}/edit"
+                  tal:content="stylebook/Title"
+                  >STYLEBOOK TITLE</a>
+                <em tal:condition="selected">Selected default</em>
+              </label>
+              <div class="swatches"><tal:block repeat="line stylebook/contentValues">
+                  <div class="swatch"
+                      tal:attributes="style string:color:${line/color};
+                                      class string:swatch ${line/marker_style}">
+                    <span>X</span>
+                  </div>
+                </tal:block></div>
+              <p tal:condition="python: stylebook.Description().strip()"
+                tal:content="stylebook/Description"
+                class="stylebook-desc"
+                >Description</p>
+          </tal:block>
+        </li>
+      </ul>
+      <input type="submit" value="Save default" name="savebtn" class="savedefault" />
+      <p class="subtle">Links to edit style books will open in a new window or tab.</p>
+    </form>
+  </tal:block>
+  <p tal:condition="python: not stylebooks">There are no style books in this measure group.</p>
+ </div>
+ <div class="style-tools">
+  <h3>Style tools</h3>
+  <div class="stylebook-creation">
+      <div class="add-button"><a class="create-button" href="++add++uu.chart.stylebook">Create new style book</a></div>
+      <div class="add-button" tal:condition="view/show_paste"><a class="create-button" href="object_paste">Click here to paste copied style book.</a></div>
+  </div>
+ </div>
+
+  <div>
+    <h5>To create a new style book, you can:</h5>
+    <ol>
+      <li><a href="++add++uu.chart.stylebook">Create an original style book.</a></li>
+      <li>
+            Paste a style book from a report or another measure group:
+            <em tal:condition="not:view/show_paste">
+                no style books are currently in clipboard or
+                the clipboard contains disallowed items.
+            </em>
+            <a href="object_paste" tal:condition="view/show_paste">Click here to paste.</a>
+      </li>
+    </ol>
+    <p class="subtle">To remove a style book, visit the <a href="folder_contents">folder contents</a> tab of the measure group.</p>
+  </div>
+</div>
+</body>
+</html>

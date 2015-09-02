@@ -50,6 +50,15 @@
     />
 
   <browser:page
+    name="styles"
+    for="uu.formlibrary.measure.interfaces.IMeasureGroup"
+    class=".styles.MeasureGroupStylesView"
+    template="groupstyles.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
     name="report"
     for="..interfaces.IDataReport"
     class=".report.ReportView"
