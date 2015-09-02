@@ -177,6 +177,17 @@
     layer="uu.chart.interfaces.IChartProductLayer"
     />
 
+  <!-- stylebook edit links viewlet -->
+  <browser:viewlet
+    name="uu.chart.stylebook.editlinks"
+    for="uu.chart.interfaces.IChartStyleBook"
+    class="plone.app.layout.viewlets.common.ViewletBase"
+    template="style_edit_links.pt"
+    layer="uu.chart.interfaces.IChartProductLayer"
+    manager="plone.app.layout.viewlets.interfaces.IBelowContent"
+    permission="cmf.ModifyPortalContent"
+    />
+
   <!-- z3c.form widget template hookup for native color widget -->
   <z3c:widgetTemplate
     mode="input"

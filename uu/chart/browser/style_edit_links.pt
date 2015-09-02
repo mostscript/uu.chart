@@ -1,0 +1,124 @@
+<div class="line-style-edit-links">
+  <style>
+div.line-style-edit-links {
+  clear: both;
+  background-color: rgb(233, 224, 208);
+  padding: 0.6em;
+  border: 1px solid rgb(153, 153, 153);
+  margin: -1.5em 0px 1.5em;
+}
+
+div.line-style-edit-links ul {
+ padding-left:1em;
+  font-size:75%;
+  min-height:3em;
+  margin-top:0.7em;
+}
+
+div.line-style-edit-links ul li a {
+  text-decoration:underline;
+  margin:0 0.3em 0 0;
+  display:block;
+  float:left;
+  padding:0 0.3em;
+}
+
+
+fieldset#folder-listing {
+  display:none;
+}
+
+.swatch {
+  float:left;
+  margin-left:0.5em;
+}
+
+.swatch span {
+  display:none;
+}
+
+.swatch:before {
+  content:"/";
+  color:#999;
+}
+
+.swatch:first-child:before {
+  content:none;
+}
+
+.swatch:after {
+  content:"\25a0";
+  font-size:17px;
+  font-weight:bold;
+}
+
+.swatch.circle:after {
+  content:"\25cf";
+}
+
+.swatch.diamond:after {
+  content:"\25c6";
+}
+
+.swatch.x:after {
+  content:"\00d7";
+}
+
+.swatch.plus:after {
+  content:"+";
+}
+
+.swatch.dash:after {
+  content:"\25ac";
+}
+
+.swatch.triangle-up:after {
+  content:"\2009\25b2";
+  font-size:12px;
+}
+
+.swatch.triangle-down:after {
+  content:"\2009\25bc";
+  font-size:12px;
+}
+
+.plot-icon {
+  font-weight:bold;
+  color:#666;
+  font-size:140%;
+  margin-top:-0.2em;
+  transform:rotate(-90deg);
+  width:1em;
+  height:1em;
+  float:left;
+}
+
+.line-style-edit-links .infotext {
+  color:#888;
+  font-size:80%;
+  padding:1em;
+}
+  </style>
+  <h4>
+    <a href="./folder_contents" target="_blank">
+      <div class="plot-icon">
+      ☈ </div>
+      &nbsp; View and edit additional details of line styles
+    </a>
+  </h4>
+  <p tal:condition="python:request['URL'].endswith('@@edit')" class="infotext">
+    <em>Please save changes before viewing/editing line styles.</em>
+  </p>
+  <ul>
+    <li tal:repeat="line context/objectValues" style="display:block;list-style-type:none;line-height:1.5em">
+      <div class="swatch"
+          tal:attributes="style string:color:${line/color};;float:left;
+                          class string:swatch ${line/marker_style}">
+        <span>X</span>
+      </div>
+      <a target="_blank"
+         tal:attributes="href string:${line/getId}/edit"
+         tal:content="line/Title">LINE</a>
+    </li>
+  </ul>
+</div>
