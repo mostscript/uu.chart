@@ -6,6 +6,7 @@ uu.chart.populate = (function ($, ns) {
 
     ns.GROUP_TYPE = 'uu.formlibrary.measuregroup';
     ns.MEASURE_TYPE = 'uu.formlibrary.measure';
+    ns.STYLEBOOK_TYPE = 'uu.chart.stylebook';
     ns.DATASET_TYPE = 'uu.formlibrary.setspecifier';
 
     ns.BASE = $('base').attr('href');
@@ -149,8 +150,10 @@ uu.chart.populate = (function ($, ns) {
             mSel = $('#measure-selection', form),
             dSel = $('#dataset-selection', form),
             groupURL = ns.groupURL(groupUID),
-            dsURL = groupURL + '/@@listing?portal_type=' + ns.DATASET_TYPE,
-            measureURL = groupURL + '/@@listing?portal_type=' + ns.MEASURE_TYPE;
+            groupListingURL = groupURL + '/@@listing?portal_type=',
+            reportListingURL = ns.BASE + '/@@listing?portal_type=',
+            dsURL = groupListingURL + ns.DATASET_TYPE,
+            measureURL = groupListingURL + ns.MEASURE_TYPE;
         if (!groupUID) {
             return;
         }
