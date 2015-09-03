@@ -1,3 +1,5 @@
+import json
+
 from zope.schema import getFieldsInOrder
 
 from persistent.mapping import PersistentMapping
@@ -280,7 +282,24 @@ class MeasureGroupStylesView(object):
             # save default stylebook name
             self.save_default()
 
+    def json(self):
+        """JSON output"""
+        setHeader = self.request.response.setHeader
+        _info = lambda o: {'uid': IUUID(o), 'name': o.getId(), 'title': o.title}
+        stylebooks = [_info(o) for o in self.stylebooks]
+        result = {
+            'default_stylebook': self.default_stylebook(),
+            'stylebooks': stylebooks,
+            'length': len(stylebooks)
+        }
+        msg = json.dumps(result)
+        setHeader('Content-type', 'application/json')
+        setHeader('Content-length', len(msg))
+        return msg
+
     def __call__(self, *args, **kwargs):
         self.update(*args, **kwargs)
+        if self.request.get('json', False):
+            return self.json()
         return self.index(*args, **kwargs)  # provided by template via Five
 
