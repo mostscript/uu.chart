@@ -29,7 +29,7 @@ def clone_line_styles(source, target):
     target.reindexObject()
 
 
-def clone_chart_styles(source, target):
+def clone_chart_styles(source, target, exclude=()):
     """
     Clone chart styles from source to target, where either may be
     a stylebook or a chart.
@@ -38,7 +38,7 @@ def clone_chart_styles(source, target):
         source,
         target,
         IChartStyleBook,
-        exclude=('x_label', 'y_label'),
+        exclude=['x_label', 'y_label'] + list(exclude),
         )
     source_lines = source.objectValues()
     target_lines = target.objectValues()
@@ -197,8 +197,39 @@ class ReportStylesView(object):
             if 'existing-mimic' in req.form:
                 self.update_mimic(*args, **kwargs)
 
+    def line_spec(self, book):
+        """Line color/shape spec list for stylebook"""
+        lines = book.objectValues()
+        _info = lambda o: {
+            'color': o.color or 'Auto',
+            'marker_style': o.marker_style,
+            }
+        return map(_info, lines)
+
+    def json(self):
+        """JSON output"""
+        setHeader = self.request.response.setHeader
+        _info = lambda o: {
+            'uid': IUUID(o),
+            'name': o.getId(),
+            'title': o.title,
+            'linespec': self.line_spec(o),
+            }
+        stylebooks = [_info(o) for o in self.stylebooks()]
+        result = {
+            'default_stylebook': None,  # not set for report context
+            'stylebooks': stylebooks,
+            'length': len(stylebooks),
+        }
+        msg = json.dumps(result)
+        setHeader('Content-type', 'application/json')
+        setHeader('Content-length', len(msg))
+        return msg
+
     def __call__(self, *args, **kwargs):
         self.update(*args, **kwargs)
+        if self.request.get('json', False):
+            return self.json()
         return self.index(*args, **kwargs)  # provided by template via Five
 
 
@@ -282,15 +313,29 @@ class MeasureGroupStylesView(object):
             # save default stylebook name
             self.save_default()
 
+    def line_spec(self, book):
+        """Line color/shape spec list for stylebook"""
+        lines = book.objectValues()
+        _info = lambda o: {
+            'color': o.color or 'Auto',
+            'marker_style': o.marker_style,
+            }
+        return map(_info, lines)
+
     def json(self):
         """JSON output"""
         setHeader = self.request.response.setHeader
-        _info = lambda o: {'uid': IUUID(o), 'name': o.getId(), 'title': o.title}
+        _info = lambda o: {
+            'uid': IUUID(o),
+            'name': o.getId(),
+            'title': o.title,
+            'linespec': self.line_spec(o),
+            }
         stylebooks = [_info(o) for o in self.stylebooks]
         result = {
             'default_stylebook': self.default_stylebook(),
             'stylebooks': stylebooks,
-            'length': len(stylebooks)
+            'length': len(stylebooks),
         }
         msg = json.dumps(result)
         setHeader('Content-type', 'application/json')

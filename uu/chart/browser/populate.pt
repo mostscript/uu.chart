@@ -259,6 +259,89 @@ form.reorder div.button-reorder a {
   box-shadow: inset -1px -1px 3px #775;
 }
 
+.swatch {
+  float:left;
+  margin-left:0.2em;
+}
+
+.swatch span {
+  display:none;
+}
+
+.swatch:before {
+  content:"/ ";
+  color:#999;
+}
+
+.swatch:first-child:before {
+  content:none;
+}
+
+.swatch:after {
+  content:"\25a0";
+  font-size:17px;
+  font-weight:bold;
+}
+
+.swatch.circle:after {
+  content:"\25cf";
+}
+
+.swatch.diamond:after {
+  content:"\25c6";
+}
+
+.swatch.x:after {
+  content:"\00d7";
+}
+
+.swatch.plus:after {
+  content:"+";
+}
+
+.swatch.dash:after {
+  content:"\25ac";
+}
+
+.swatch.triangle-up:after {
+  content:"\2009\25b2";
+  font-size:12px;
+}
+
+.swatch.triangle-down:after {
+  content:"\2009\25bc";
+  font-size:12px;
+}
+
+.chooser {
+  height:2em;
+}
+
+.chooser select {
+  float:left;
+}
+
+.swatches {
+  float:left;
+}
+
+.plot-icon {
+  font-weight:bold;
+  color:#666;
+  font-size:140%;
+  margin-top:-0.2em;
+  transform:rotate(-90deg);
+  width:1em;
+  height:1em;
+  float:left;
+}
+
+.line-style-edit-links .infotext {
+  color:#888;
+  font-size:80%;
+  padding:1em;
+}
+
 </style>
 </metal:block>
 </head>
@@ -310,12 +393,6 @@ form.reorder div.button-reorder a {
                 <th>
                   <label>Chart type</label>
                 </th>
-                <th>
-                  <label>Use tabular legend?</label>
-                </th>
-                <th>
-                  <label>Extend chart end-date to workspace end date?</label>
-                </th>
               </tr>
               <tr>
                 <td>
@@ -329,12 +406,6 @@ form.reorder div.button-reorder a {
                     <option value="runchart-line">Time-series, line</option>
                     <option value="runchart-bar">Time-series, bar</option>
                   </select>
-                </td>
-                <td>
-                  <input type="checkbox" name="onechart-tabular" />
-                </td>
-                <td>
-                  <input type="checkbox" name="onechart-enddate" />
                 </td>
               </tr>
            </table>
@@ -352,7 +423,7 @@ form.reorder div.button-reorder a {
     <h5>Select data-sets (one per line/bar)</h5>
     <table id="dataset-selection">
     </table>
-  
+ 
     <div class="chart-defaults">
       <h6>Additional chart defaults</h6>
       <p><em>These are optional; if start/end dates are not provided, the displayed X-axis domain on time-series plots will fit all available data.</em></p>
@@ -378,6 +449,13 @@ form.reorder div.button-reorder a {
              <option tal:condition="python:term.value != 'abbr+year'" tal:content="term/title" tal:attributes="value term/value" />
          </tal:block>
         </select>
+      </div>
+
+      <div id="themepicker">
+        <h4>Choose a theme:</h4>
+        <div class="chooser">
+          <!-- selection UI populated by JS -->
+        </div>
       </div>
 
     </div>

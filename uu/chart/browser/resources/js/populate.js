@@ -9,12 +9,34 @@ uu.chart.populate = (function ($, ns) {
   ns.STYLEBOOK_TYPE = 'uu.chart.stylebook';
   ns.DATASET_TYPE = 'uu.formlibrary.setspecifier';
 
+  ns.DEFAULT_COLORS = [
+    '#393960',
+    '#8AA9C9',
+    '#5F9EA0',
+    '#9370DB',
+    '#4682B4',
+    '#2E8B57',
+    '#FF7F50',
+    '#FFD700',
+    '#DA70D6',
+    '#008080'
+  ];
+
+  ns.DEFAULT_THEME = {
+    linespec: ns.DEFAULT_COLORS.map(
+      function (c) {
+        return { color: c, marker_style: 'square' };
+    })
+  };
+
   ns.BASE = $('base').attr('href');
   ns.GROUP_QS = 'root=1&portal_type=' + ns.GROUP_TYPE;
   ns.GROUP_JSON_URL = ns.BASE + '/@@finder?' + ns.GROUP_QS;
 
   // module-scoped globals:
   ns.GROUPS = [];
+  ns.themes = [];  // list of theme objects with uid, id, title properties
+  ns.default_stylebook = null;  // to be UID of default, once loaded
 
   // snippets:
 
@@ -52,14 +74,6 @@ uu.chart.populate = (function ($, ns) {
     ' <th>Chart title</th>' +
     ' <th>Plot type</th>' +
     ' <th>Goal</th>' +
-    ' <th class="center-check">' + 
-    ' Use tabular legend? <br />' +
-    ' <a href="javascript:void(0)" class="tabular-selectall">[All]</a>' +    
-    ' </th>' +
-    ' <th class="center-check">' +
-    ' Extend to workspace end-date? <br />' +
-    ' <a href="javascript:void(0)" class="enddate-selectall">[All]</a>' +    
-    ' </th>' +
     '</tr>';
   ns.html.datasetHeadings = String() + 
     '<tr>' +
@@ -70,10 +84,6 @@ uu.chart.populate = (function ($, ns) {
     ' </th>' +
     ' <th>Legend label</th>' +
     '</tr>';
-  ns.html.tabularLegendCheck = String() +
-    '<input name="tabular_legend:list" type="checkbox" class="tabular-check" />';
-  ns.html.workspaceEndCheck = String() +
-    '<input name="use_workspace_end_date:list" type="checkbox" class="end-check" />';
 
   // namespaced functions:
 
@@ -145,6 +155,92 @@ uu.chart.populate = (function ($, ns) {
     });
   };
 
+  ns.lineSwatch = function (line, idx) {
+    var shape = line.marker_style || 'square',
+        color = line.color || 'Auto',
+        swatch = $('<div>')
+          .addClass('swatch')
+          .addClass(shape);
+    $('<span>X</span>').appendTo(swatch);  // content, will be replaced by css
+    color = (color === 'Auto') ? ns.DEFAULT_COLORS[idx] : color;
+    swatch.css('color', color); 
+    return swatch;
+  };
+
+  ns.previewTheme = function (chooser, val) {
+    var theme,
+        swatches = $('<div class="swatches">');
+    theme = ns.themes.filter(function (o) { return o.uid === val; })[0];
+    if (!theme) {
+      theme = ns.DEFAULT_THEME;
+    }
+    $('.swatches', chooser).remove();
+    swatches.appendTo(chooser);
+    theme.linespec.map(ns.lineSwatch).forEach(function (swatch) {
+      swatch.appendTo(swatches);
+    });
+  };
+
+  ns.displayThemes = function (form) {
+    var chooser = $('#themepicker .chooser', form),
+        select;
+    // Empty UI:
+    chooser.empty();
+    // append select:
+    select = $('<select class="themechoice" name="theme">').appendTo(chooser);
+    // append auto/null option:
+    $('<option value="auto">No theme / automatic</option>').appendTo(select);
+    // append options:
+    ns.themes.forEach(function (info) {
+      var option = $('<option>').appendTo(select);
+      option.attr('value', info.uid);
+      option.text(info.title);
+    });
+    // Set default, if applicable:
+    if (ns.default_stylebook !== null) {
+      select.val(ns.default_stylebook);
+    }
+    // hook up preview for load, change:
+    ns.previewTheme(chooser, select.val());
+    select.unbind().change(function () {
+      ns.previewTheme(chooser, select.val());
+    });
+  };
+
+  ns.loadThemes = function (form, groupURL) {
+    var groupThemesURL = groupURL + '/@@styles?json=1',
+        reportThemesURL = ns.BASE + '/@@styles?json=1',
+        loadThemes = function (data) {
+            ns.themes = ns.themes.concat(data.stylebooks);
+            ns.displayThemes(form);
+        },
+        loadDefault = function (data) {
+          var defaultName = data.default_stylebook || null,
+              defaultStyle = (data.stylebooks || []).filter(function (o) {
+                return o.name === defaultName;
+              })[0] || {},
+              defaultUID = defaultStyle.uid || null;
+          ns.default_stylebook = defaultUID;
+        };
+    // Empty global (merged) state of theme enumeration, default:
+    ns.themes = [];
+    ns.default_stylebook = null;
+    // Chained load of state via: group, report enumeration; default;
+    // these calls are chained to avoid race conditions modifying ns.themes;
+    // display once all are complete.
+    $.ajax({
+      url: groupThemesURL,
+      success: function (data) {
+        loadDefault(data);
+        loadThemes(data);
+        $.ajax({
+          url: reportThemesURL,
+          success: loadThemes
+        });
+      }
+    });
+  };
+
   ns.loadStep2 = function (groupUID) {
     var form = $('#component-selection'),
       mSel = $('#measure-selection', form),
@@ -161,6 +257,9 @@ uu.chart.populate = (function ($, ns) {
     mSel.append($(ns.html.measureHeadings));
     dSel.empty();
     dSel.append($(ns.html.datasetHeadings));
+    // trigger theme loading
+    ns.loadThemes(form, groupURL);
+    // load measures:
     $.ajax({
       url: measureURL,
       success: function (data) {
@@ -184,23 +283,11 @@ uu.chart.populate = (function ($, ns) {
             chartTypeInputCell = $('<td />').append(chartTypeInput),
             goalInput = $(ns.html.chartGoalInput)
               .attr('name', 'goal-' + uid),
-            goalCell = $('<td />').append(goalInput),
-            tabularLegendCheck = $(ns.html.tabularLegendCheck)
-              .attr('value', uid),
-            legendCheckCell = $('<td />')
-              .addClass('center-check')
-              .append(tabularLegendCheck),
-            workspaceEndCheck = $(ns.html.workspaceEndCheck)
-              .attr('value', uid),
-            workspaceEndCheckCell = $('<td />')
-              .addClass('center-check')
-              .append(workspaceEndCheck);
+            goalCell = $('<td />').append(goalInput);
           tr.append(titleCell);
           tr.append(titleInputCell);
           tr.append(chartTypeInputCell);
           tr.append(goalCell);
-          tr.append(legendCheckCell);
-          tr.append(workspaceEndCheckCell);
           if (info.subject && info.subject.length) {
             info.subject.forEach(function(tag) {
               if (tag.substring(0, 11) === 'goal_value_') {
@@ -218,16 +305,6 @@ uu.chart.populate = (function ($, ns) {
           });
           goalInput.change(function () {
             $(this).addClass('modified');
-          });
-          tabularLegendCheck.click(function () {
-            if (!tr.hasClass('selected')) {
-              check.click();
-            }
-          });
-          workspaceEndCheck.click(function () {
-            if (!tr.hasClass('selected')) {
-              check.click();
-            }
           });
           mSel.append(tr);
         });
@@ -259,39 +336,10 @@ uu.chart.populate = (function ($, ns) {
             $(this).text('[All]');
           }
         });
-        $('a.tabular-selectall').click(function () {
-          var inputs = $('input.tabular-check');
-          if (!selectall.tabular) {
-            inputs.attr('checked', 'CHECKED');
-            if (!selectall.measures) {
-              $('a.measure-selectall').click();
-            }
-            selectall.tabular = true;
-            $(this).text('[Uncheck all]');
-          } else {
-            inputs.attr('checked', false);
-            selectall.tabular = false;
-            $(this).text('[All]');
-          }
-        });
-        $('a.enddate-selectall').click(function () {
-          var inputs = $('input.end-check');
-          if (!selectall.end) {
-            inputs.attr('checked', 'CHECKED');
-            if (!selectall.measures) {
-              $('a.measure-selectall').click();
-            }
-            selectall.end = true;
-            $(this).text('[Uncheck all]');
-          } else {
-            inputs.attr('checked', false);
-            selectall.end = false;
-            $(this).text('[All]');
-          }
-        });
         ns.hookupMoveButtons(mSel);
       }
     });
+    // load datasets:
     $.ajax({
       url: dsURL,
       success: function (data) {

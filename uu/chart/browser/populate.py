@@ -10,6 +10,10 @@ from Products.statusmessages.interfaces import IStatusMessage
 from uu.chart.interfaces import TIMESERIES_TYPE, NAMEDSERIES_TYPE
 from uu.chart.interfaces import DATE_AXIS_LABEL_CHOICES
 from uu.chart.interfaces import MEASURESERIES_DATA
+from uu.chart.interfaces import resolve_uid
+
+from uu.chart.browser.styles import clone_chart_styles
+
 
 try:
     from collective.teamwork.utils import get_workspaces
@@ -144,6 +148,7 @@ class ReportPopulateView(object):
         chart per each measure containing one series for each respective
         dataset.
         """
+        charts = []
         _ignore = ('portal_type', 'uid')
         for m_info in measures:
             kw = dict((k, v) for k, v in m_info.items() if k not in _ignore)
@@ -166,6 +171,7 @@ class ReportPopulateView(object):
                 mseries.dataset = ds_info.get('uid')
                 mseries.display_precision = m_info.get('display_precision', 1)
                 mseries.reindexObject()
+            charts.append(chart)
         self.status.addStatusMessage(
             'Created %s charts (per-measure), containing %s series each.' % (
                 len(measures),
@@ -173,6 +179,7 @@ class ReportPopulateView(object):
                 ),
             type='info',
             )
+        return charts
 
     def populate_multimeasure_chart(self, measures, datasets):
         """
@@ -221,20 +228,47 @@ class ReportPopulateView(object):
             'data-sets' % (len(measures), len(datasets)),
             type='info',
             )
+        return chart
+
+    def get_theme(self):
+        uid = self.request.get('theme', None)
+        if uid is None:
+            return None  # sentinel for defaults
+        return resolve_uid(uid)
+
+    def apply_theme(self, charts):
+        """
+        Get theme, if appropriate, and apply to all charts passed.
+        """
+        theme = self.get_theme()
+        if theme is None:
+            return   # use defaults, do not apply a stylebook
+        for chart in charts:
+            clone_chart_styles(
+                theme,
+                chart,
+                exclude=['chart_type', 'show_goal']
+                )
+        self.status.addStatusMessage(
+            'Applied theme "%s" to chart(s).' % theme.Title(),
+            type='info'
+            )
 
     def update(self, *args, **kwargs):
         req = self.request
         if "create.plots" in req:
             if req.get('chart-type', None) == 'multi-measure-chart':
-                self.populate_multimeasure_chart(
+                chart = self.populate_multimeasure_chart(
                     req.get('selected_measures', []),
                     req.get('selected_datasets', []),
                     )
+                self.apply_theme([chart])
             else:
                 measures, datasets = self.extract()
                 if not measures:
                     return
-                self.populate(measures, datasets)
+                charts = self.populate(measures, datasets)
+                self.apply_theme(charts)
             req.response.redirect(self.context.absolute_url())
     
     def __call__(self, *args, **kwargs):

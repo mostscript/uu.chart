@@ -10,7 +10,7 @@
 
   <!-- Styles tab graft-on action -->
   <action
-      title="Styles"
+      title="Themes"
       action_id="styles"
       category="object"
       condition_expr=""

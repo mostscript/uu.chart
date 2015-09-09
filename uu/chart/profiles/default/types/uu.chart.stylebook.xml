@@ -5,9 +5,9 @@
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">Style book</property>
-  <property name="description" i18n:translate="">A style book for plots within a data report.</property>
-  <property name="content_icon">book_icon.png</property>
+  <property name="title" i18n:translate="">Plot theme</property>
+  <property name="description" i18n:translate="">A theme for plots within a data report.</property>
+  <property name="content_icon">++resource++uu.chart.icons/theme-icon.png</property>
   <property name="allow_discussion">False</property>
   <property name="global_allow">False</property>
   <property name="immediate_view">../@@styles</property>

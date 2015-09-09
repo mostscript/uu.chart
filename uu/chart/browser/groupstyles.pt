@@ -87,7 +87,7 @@ form#defaults {
 form#defaults li {
   clear:both;
   display:block;
-  padding-bottom:2.5em;
+  padding-bottom:0.5em;
   list-style-type:none;
   margin-left:-1.8em;
 }
@@ -180,11 +180,11 @@ form#defaults .swatches:empty {
 <body>
 <div metal:fill-slot="main">
  <div class="stylebook-listing" tal:define="stylebooks view/stylebooks; default view/default_stylebook">
-  <h2>Style books for: <em tal:content="context/Title">GROUP TITLE</em></h2>
+  <h2>Themes for: <em tal:content="context/Title">GROUP TITLE</em></h2>
   <hr />
   <tal:block condition="view/stylebooks">
     <form method="POST" id="defaults">
-      <h4>Select default style book</h4>
+      <h4>Select default theme</h4>
       <ul>
         <li tal:repeat="stylebook stylebooks">
           <tal:block define="selected python:stylebook.getId() == view.default_stylebook()">
@@ -213,37 +213,41 @@ form#defaults .swatches:empty {
                 tal:content="stylebook/Description"
                 class="stylebook-desc"
                 >Description</p>
+            <a href="" class="copylink" tal:attributes="href string:${stylebook/absolute_url}/object_copy">
+              <img src="copy_icon.png" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/copy_icon.png" />
+              Copy
+            </a>
           </tal:block>
         </li>
       </ul>
       <input type="submit" value="Save default" name="savebtn" class="savedefault" />
-      <p class="subtle">Links to edit style books will open in a new window or tab.</p>
+      <p class="subtle">Links to edit themes will open in a new window or tab.</p>
     </form>
   </tal:block>
-  <p tal:condition="python: not stylebooks">There are no style books in this measure group.</p>
+  <p tal:condition="python: not stylebooks">There are no themes in this measure group.</p>
  </div>
  <div class="style-tools">
-  <h3>Style tools</h3>
+  <h3>Theme tools</h3>
   <div class="stylebook-creation">
-      <div class="add-button"><a class="create-button" href="++add++uu.chart.stylebook">Create new style book</a></div>
-      <div class="add-button" tal:condition="view/show_paste"><a class="create-button" href="object_paste">Click here to paste copied style book.</a></div>
+      <div class="add-button"><a class="create-button" href="++add++uu.chart.stylebook">Create new theme</a></div>
+      <div class="add-button" tal:condition="view/show_paste"><a class="create-button" href="object_paste">Click here to paste copied theme.</a></div>
   </div>
  </div>
 
   <div>
-    <h5>To create a new style book, you can:</h5>
+    <h5>To create a new theme, you can:</h5>
     <ol>
-      <li><a href="++add++uu.chart.stylebook">Create an original style book.</a></li>
+      <li><a href="++add++uu.chart.stylebook">Create an original theme.</a></li>
       <li>
-            Paste a style book from a report or another measure group:
+            Paste a theme from a report or another measure group:
             <em tal:condition="not:view/show_paste">
-                no style books are currently in clipboard or
+                no themes are currently in clipboard or
                 the clipboard contains disallowed items.
             </em>
             <a href="object_paste" tal:condition="view/show_paste">Click here to paste.</a>
       </li>
     </ol>
-    <p class="subtle">To remove a style book, visit the <a href="folder_contents">folder contents</a> tab of the measure group.</p>
+    <p class="subtle">To remove or rename a theme, visit the <a href="folder_contents">folder contents</a> tab of the measure group.</p>
   </div>
 </div>
 </body>
