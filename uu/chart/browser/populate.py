@@ -138,10 +138,14 @@ class ReportPopulateView(object):
             datasets = map(self._datasetinfo, dataset_uids)
         return measures, datasets
 
-    def populate(self, charts, series):
-        """Given lists of charts, series for each, create content"""
+    def populate(self, measures, datasets):
+        """
+        Given lists of measures, datasets for each, create content: one
+        chart per each measure containing one series for each respective
+        dataset.
+        """
         _ignore = ('portal_type', 'uid')
-        for m_info in charts:
+        for m_info in measures:
             kw = dict((k, v) for k, v in m_info.items() if k not in _ignore)
             chart = createContentInContainer(
                 self.context,
@@ -149,7 +153,7 @@ class ReportPopulateView(object):
                 **kw
                 )
             self._set_date_settings(chart)
-            for ds_info in series:
+            for ds_info in datasets:
                 kw = dict(
                     (k, v) for k, v in ds_info.items() if k not in _ignore
                     )
@@ -164,8 +168,8 @@ class ReportPopulateView(object):
                 mseries.reindexObject()
         self.status.addStatusMessage(
             'Created %s charts (per-measure), containing %s series each.' % (
-                len(charts),
-                len(series),
+                len(measures),
+                len(datasets),
                 ),
             type='info',
             )
@@ -227,10 +231,10 @@ class ReportPopulateView(object):
                     req.get('selected_datasets', []),
                     )
             else:
-                charts, series = self.extract()
-                if not charts:
+                measures, datasets = self.extract()
+                if not measures:
                     return
-                self.populate(charts, series)
+                self.populate(measures, datasets)
             req.response.redirect(self.context.absolute_url())
     
     def __call__(self, *args, **kwargs):
