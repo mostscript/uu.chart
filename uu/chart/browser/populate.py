@@ -102,7 +102,6 @@ class ReportPopulateView(object):
         _value = lambda key: self.request.get(key)
         measure_uid = _value('selected_measures')[0]
         defaults = self._measureinfo(measure_uid)
-        tabular = bool(_value('onechart-tabular'))
         extend = bool(_value('onechart-enddate'))
         chart_type = _value('onechart-type') or 'runchart-line'
         fti = TIMESERIES_TYPE if 'runchart' in chart_type else NAMEDSERIES_TYPE
@@ -113,8 +112,8 @@ class ReportPopulateView(object):
             'goal': float(goal) if goal else None,
             'show_goal': bool(goal),
             'goal_color': '#ff0000',
-            'legend_placement': 'tabular' if tabular else 'outside',
-            'point_labels': 'omit' if tabular else 'show',
+            'legend_placement': 'tabular',
+            'point_labels': 'omit',
             'chart_type': _value('onechart-title'),
             'end': self._workspace_end() if extend else None,
             'chart_type': 'bar' if chart_type.endswith('bar') else 'line',
