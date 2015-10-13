@@ -61,3 +61,21 @@ body.userrole-owner #plone-contentmenu-workflow
  {
   display:block;
 }
+
+.upiq-report-control .control-subtle {
+  font-size:90%;
+  color:#999;
+}
+
+.upiq-report-control .control-current-layout {
+  font-weight:bold;
+  color:#677;
+}
+
+#uu-chart-report .compact .plotdiv h3.plot-title {
+  font-size:90%;
+}
+
+#uu-chart-report .compact .plotdiv .plot-more {
+  display:none;
+}

@@ -24064,6 +24064,7 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	exports.urlArgs = urlArgs;
 	exports.parseDate = parseDate;
 	exports.range = range;
 	exports.geometricBatch = geometricBatch;
@@ -24098,6 +24099,24 @@
 	};
 	
 	exports.uuid4 = uuid4;
+	
+	function urlArgs() {
+	  var qs = window.location.search.slice(1),
+	      pair = function pair(part) {
+	    return part.split('=');
+	  },
+	      pairs = qs.split('&').map(pair),
+	      result = {};
+	  pairs.forEach(function (_ref) {
+	    var _ref2 = _slicedToArray(_ref, 2);
+	
+	    var key = _ref2[0];
+	    var value = _ref2[1];
+	
+	    result[key] = value;
+	  });
+	  return result;
+	}
 	
 	function parseDate(spec, useMoment) {
 	  /** parse date specification/stamp, strictly ISO 8601 if string, and assume
@@ -24166,11 +24185,11 @@
 	    /** given JSON where charts and data-points may be key/value pairs in 
 	      * JSON Arrays, normalize to simple Arrays of objects.
 	      */
-	    var kv2data = function kv2data(_ref) {
-	      var _ref2 = _slicedToArray(_ref, 2);
+	    var kv2data = function kv2data(_ref3) {
+	      var _ref32 = _slicedToArray(_ref3, 2);
 	
-	      var k = _ref2[0];
-	      var v = _ref2[1];
+	      var k = _ref32[0];
+	      var v = _ref32[1];
 	      return v;
 	    },
 	        // key/value pair array to data/value object
@@ -25219,19 +25238,36 @@
 	}
 	
 	function loadReports(opts) {
+	  var pageArgs = (0, _utils.urlArgs)(),
+	      safeInt = function safeInt(v) {
+	    v = parseInt(v, 10);
+	    return !isNaN(v) ? v : null;
+	  },
+	      hash = window.location.hash;
 	  // default options
 	  opts = opts || {};
 	  opts.interactive = opts.interactive || 'true';
 	  opts.prefix = opts.prefix || 'plot';
+	  // initial page layout may come from options, querystring, or hash
+	  opts.layout = opts.layout || pageArgs.layout || 'normal';
+	  if (hash) {
+	    opts.layout = hash === '#compact' ? 'compact' : opts.layout;
+	    opts.layout = hash === '#standard' ? 'normal' : opts.layout;
+	  }
+	  // column count only applicable to compact mode:
+	  opts.columns = opts.columns || pageArgs.columns || 4;
 	  // Let the HTML drive what gets loaded: any element that contains
 	  // class of 'report-core' and 'data-report-json' should get
 	  // loaded with the URL listed in data-report-json.
 	  d3.select('.report-core').each(function (d, i) {
 	    var container = d3.select(this),
 	        url = container.attr('data-report-json'),
+	        layout = container.attr('data-report-layout'),
 	        size = parseInt(container.attr('data-report-size'), 10),
 	        reportOptions = Object.create(opts);
 	    reportOptions.prefix = container.attr('data-report-prefix') || opts.prefix;
+	    reportOptions.layout = container.attr('data-report-layout') || opts.layout;
+	    reportOptions.columns = safeInt(container.attr('data-report-columns') || opts.columns);
 	    reportOptions.batching = container.attr('data-report-batch-step') || 'all';
 	    reportOptions.size = isNaN(size) ? null : size;
 	    loadReport(container, url, reportOptions);
@@ -25707,7 +25743,6 @@
 	        description: 'Marker shape, selected from enumerated ' + 'vocabulary of allowable choices.',
 	        type: 'string',
 	        constraint: function constraint(value, obj) {
-	          //if(value === 'x') return 'cross';
 	          if (value === 'filledCircle') {
 	            obj.filled = true;
 	            return 'circle';
@@ -26120,6 +26155,8 @@
 	
 	var _click = __webpack_require__(24);
 	
+	var _compact = __webpack_require__(25);
+	
 	// Set up namespace:
 	var moment = __webpack_require__(4);
 	var d3 = __webpack_require__(3);
@@ -26133,7 +26170,7 @@
 	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
 	
 	// Core plugins:
-	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
+	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
 	
 	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
 	var INTERVALS = {
@@ -26195,9 +26232,11 @@
 	    key: 'getOptions',
 	    value: function getOptions(o) {
 	      /** get options and/or load initial defaults */
-	      o = o || {};
+	      o = Object.create(o) || {};
 	      // interactive mode:
 	      o.interactive = o.interactive === undefined ? true : o.interactive;
+	      // Check for whether plot will be contained inside a compact layout:
+	      o.compact = o.layout === 'compact';
 	      // tiny mode (may be overridden by sizePlot during preRender (<165px),
 	      // may be true/false, undefined, or 'disabled':
 	      o.tiny = o.tiny === undefined ? false : o.tiny;
@@ -26330,7 +26369,7 @@
 	      });
 	      chart.xAxis.tickValues(this.tickVals);
 	      // y-axis:
-	      chart.yAxis.tickFormat(d3.format(',')).tickValues(yTickVals(5)).showMaxMin(false).tickPadding(6);
+	      chart.yAxis.tickFormat(d3.format(',.0f')).tickValues(yTickVals(5)).showMaxMin(false).tickPadding(6);
 	      chart.xDomain(this.xDomain).yDomain(this.data.range);
 	    }
 	  }, {
@@ -26561,12 +26600,12 @@
 	      // - Add singleton 'defs' to svg:
 	      this.svg.append('defs');
 	      // - create an NVD3 chart object that will be returned:
-	      chart = this.nvChartFactory();
+	      this.chart = this.nvChartFactory();
 	      // - get scales from chart, set for use by plotter, plugins:
 	      // -- xScale may be oridinal or linear:
-	      this.xScale = chart.xScale();
+	      this.xScale = this.chart.xScale();
 	      // -- yScale:
-	      this.yScale = chart.yScale();
+	      this.yScale = this.chart.yScale();
 	      // - Bind plugin svg, scales for plugins, call any plugins pre-render
 	      this.plugins.forEach(function (plugin) {
 	        if (typeof plugin.preRender === 'function') {
@@ -26574,10 +26613,9 @@
 	        }
 	      }, this);
 	      // - Set chart positioning: width, height, margins:
-	      chart.width(this.plotWidth); // width before margins
-	      chart.height(this.plotHeight); // height before margins
-	      chart.margin(this.margins); // margins around exterior of grid
-	      return chart;
+	      this.chart.width(this.plotWidth); // width before margins
+	      this.chart.height(this.plotHeight); // height before margins
+	      this.chart.margin(this.margins); // margins around exterior of grid
 	    }
 	  }, {
 	    key: '_grid',
@@ -26632,7 +26670,7 @@
 	      var data = this.allSeries(),
 	          sDomain,
 	          sRange;
-	      this.chart = this.preRender();
+	      this.preRender();
 	      // now that we have chart, configure axes:
 	      this._configAxes();
 	      // Bind data to selection, call this.chart function in context
@@ -27724,6 +27762,7 @@
 	        return _this2.data.showLabels(s);
 	      }),
 	          group = this.mkGroup();
+	      if (this.plotter.options.tiny) return;
 	      considered.forEach(function (series) {
 	        this.renderSeries(series, group);
 	      }, this);
@@ -28188,7 +28227,7 @@
 	      if (this.titleY && this.margins.left < minMargin && !this.superTiny) {
 	        this.margins.left = minMargin;
 	      }
-	      if (this.titleX) {
+	      if (this.titleX && !this.superTiny) {
 	        this.margins.bottom += this.plotter.baseFontSize * 1.2;
 	      }
 	    }
@@ -28289,7 +28328,8 @@
 	    key: 'preRender',
 	    value: function preRender() {
 	      _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'preRender', this).call(this);
-	      this.enabled = this.data.legend_placement !== 'tabular';
+	      this.tiny = this.plotter.options.tiny;
+	      this.enabled = this.data.legend_placement !== 'tabular' || this.tiny;
 	      if (!this.enabled) return;
 	      this.angle = this.type === 'bar' || this.plotter.plotWidth < 360 ? 90 : 45;
 	      this.angleRadians = Math.PI / 180 * this.angle;
@@ -28303,12 +28343,13 @@
 	    value: function mkGroup() {
 	      var group = this.plotGroup.selectAll('g.upiq-x-tick-labels').data([null]),
 	          isBar = this.type === 'bar',
+	          linePlotFontSize = this.plotter.plotWidth < 200 ? '75%' : '90%',
 	          tickVals = this.plotter.tickVals,
 	          columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
 	          padLeft = this.type === 'bar' ? Math.floor(columnWidth / 2) + 1 : 5,
 	          groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
 	      group.enter().append('g').classed('upiq-x-tick-labels', true).style({
-	        'font-size': this.type === 'bar' ? '80%' : '90%'
+	        'font-size': this.type === 'bar' ? '80%' : linePlotFontSize
 	      }).attr({
 	        transform: 'translate(' + padLeft + ', ' + groupTop + ')'
 	      });
@@ -28413,14 +28454,15 @@
 	      _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'preRender', this).call(this);
 	      this.placement = this.data.legend_placement;
 	      this.smallPlot = this.plotter.options.small;
+	      this.tiny = this.plotter.options.tiny;
 	      this.loc = this._location();
 	      this.enabled = this._enabled();
 	      if (this.enabled) {
 	        this.initialPositioning();
 	      }
-	      this.rowMax = this.smallPlot ? 2 : 4;
-	      this.textSize = this.plotter.baseFontSize * 0.8;
-	      if (this.data.series.length > 4 && !this.smallPlot) {
+	      this.rowMax = this.tiny ? 1 : this.smallPlot ? 2 : 4;
+	      this.textSize = this.plotter.baseFontSize * (this.tiny ? 0.9 : 0.8);
+	      if (this.data.series.length > 4 && !this.smallPlot && !this.tiny) {
 	        this.textSize *= 0.8;
 	      }
 	    }
@@ -28432,10 +28474,11 @@
 	        */
 	      var loc = this.loc,
 	          isTop = this.loc === 'n',
+	          tiny = this.tiny,
 	          plotWidth = this.plotter.plotWidth,
 	          legendHeight = isTop ? 30 : this.plotter.plotHeight,
 	          gridLeft = this.plotter.margins.left,
-	          topWidth = plotWidth - gridLeft - this.margins.right,
+	          topWidth = plotWidth - (tiny ? 10 : gridLeft) - this.margins.right,
 	          legendWidth = isTop ? topWidth : Math.floor(plotWidth * 0.2),
 	          legendMargin = Math.floor(0.01 * plotWidth),
 	          gridRight = plotWidth - legendWidth - legendMargin;
@@ -28470,7 +28513,8 @@
 	  }, {
 	    key: '_legendOrigin',
 	    value: function _legendOrigin() {
-	      return [this.left, this.top]; // x,y
+	      var left = this.plotter.options.tiny ? 10 : this.left;
+	      return [left, this.top]; // x,y
 	    }
 	  }, {
 	    key: 'container',
@@ -28528,12 +28572,13 @@
 	    value: function drawElement(series) {
 	      var color = series.color,
 	          label = series.title,
-	          padding = Math.floor(this.plotter.plotWidth * 0.01),
+	          tiny = this.tiny,
+	          padding = Math.floor(this.plotter.plotWidth * (tiny ? 0.1 : 0.01)),
 	          innerPadding = Math.floor(padding / 2),
 	          idx = series.position,
 	          group = this.mkElementGroup(idx, padding),
 	          groupY = 0 + (this.loc === 'n' ? 1 : idx) * this.textSize,
-	          colorBoxSize = Math.floor(this.plotter.plotWidth / 45),
+	          colorBoxSize = Math.floor(this.plotter.plotWidth / (tiny ? 20 : 45)),
 	          textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
 	          text;
 	      // draw background rectangle (transparent by default, used for sizing)
@@ -28554,7 +28599,7 @@
 	        x: innerPadding,
 	        y: groupY,
 	        width: colorBoxSize,
-	        height: colorBoxSize
+	        height: colorBoxSize * (tiny ? 2 : 1)
 	      }).style({
 	        fill: color
 	      });
@@ -28857,7 +28902,7 @@
 	
 	var _utils = __webpack_require__(6);
 	
-	var _tinyOverlay = __webpack_require__(25);
+	var _tinyOverlay = __webpack_require__(26);
 	
 	var d3 = __webpack_require__(3);
 	
@@ -28974,6 +29019,305 @@
 
 /***/ },
 /* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(9);
+	
+	var d3 = __webpack_require__(3);
+	
+	var CompactLayoutPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(CompactLayoutPlugin, _BaseRenderingPlugin);
+	
+	  function CompactLayoutPlugin(plotter) {
+	    _classCallCheck(this, CompactLayoutPlugin);
+	
+	    _get(Object.getPrototypeOf(CompactLayoutPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.colCount = this.plotter.options.columns || 4;
+	    this.container = d3.select(this.plotter.plotDiv[0][0].parentNode);
+	  }
+	
+	  _createClass(CompactLayoutPlugin, [{
+	    key: 'isEnabled',
+	    value: function isEnabled() {
+	      return this.plotter.options.layout === 'compact';
+	    }
+	  }, {
+	    key: 'sizeColumns',
+	    value: function sizeColumns() {
+	      var padding_mult = 0.89,
+	          pct = Math.floor(100 / this.colCount * padding_mult),
+	          spec = '' + pct + '%',
+	          clientWidth;
+	      this.plotDiv.style({
+	        width: spec,
+	        float: 'left'
+	      });
+	      clientWidth = this.plotDiv[0][0].getBoundingClientRect().width;
+	      this.plotter.plotWidth = clientWidth;
+	      this.plotter.plotHeight = Math.floor(clientWidth * 0.85);
+	      this.chart.width(this.plotter.plotWidth); // width before margins
+	      this.chart.height(this.plotter.plotHeight); // height before margins
+	      this.plotter.baseFontSize = Math.max(11, Math.floor(clientWidth / 45 * 2) / 2.0);
+	      this.plotter.plotCore.style({
+	        'font-size': '' + this.plotter.baseFontSize + 'px',
+	        height: '' + this.plotter.plotHeight + 'px'
+	      });
+	    }
+	  }, {
+	    key: 'markerSize',
+	    value: function markerSize(d) {
+	      return (d.size || 8) * Math.pow(this.plotter.plotWidth / 220, 2);
+	    }
+	  }, {
+	    key: 'layoutAdjustments',
+	    value: function layoutAdjustments() {
+	      // toggle small plot:
+	      this.plotter.options.small = true;
+	      this.plotter.relativeWidth = true;
+	      this.plotter.options.tiny = true;
+	    }
+	  }, {
+	    key: 'expandAll',
+	    value: function expandAll() {
+	      window.plotqi.plotters.forEach(function (plotter) {
+	        plotter.options.layout = 'normal';
+	        plotter.options.interactive = true;
+	        plotter.refresh();
+	      });
+	    }
+	  }, {
+	    key: 'contractAll',
+	    value: function contractAll() {
+	      // first, mark state on all plotters as incomplete (needed for onComplete)
+	      window.plotqi.plotters.forEach(function (plotter) {
+	        plotter.complete = false;
+	      });
+	      // then re-render:
+	      window.plotqi.plotters.forEach(function (plotter) {
+	        plotter.options.layout = 'compact';
+	        plotter.refresh();
+	      });
+	    }
+	  }, {
+	    key: 'hookupToggle',
+	    value: function hookupToggle() {
+	      var control = d3.select('.upiq-report-control'),
+	          hasControl = !!control.size(),
+	          hookedUp = hasControl && window.plotqi.compactControlReady,
+	          alreadyCompact = this.enabled,
+	          labelStandard = 'Standard',
+	          labelCompact = 'Compact',
+	          linkText = alreadyCompact ? labelStandard : labelCompact,
+	          otherText = !alreadyCompact ? labelStandard : labelCompact,
+	          href = alreadyCompact ? '#standard' : '#compact',
+	          toggleState = alreadyCompact,
+	          self = this,
+	          link;
+	      if (hasControl && !hookedUp) {
+	        control.html('').append('span').classed('control-subtle', true).text('Layout: ');
+	        control.append('span').classed('control-current-layout', true).text(otherText);
+	        control.append('span').classed('divider', true).text(' | ');
+	        link = control.append('a').classed('upiq-compact-toggle', true).attr({
+	          href: href
+	        }).text(linkText);
+	        link.on('click', function (d, i) {
+	          var newState = !toggleState,
+	              href = newState ? '#compact' : '#standard',
+	              linkText = newState ? labelStandard : labelCompact,
+	              otherText = toggleState ? labelStandard : labelCompact,
+	              action = newState ? self.contractAll : self.expandAll;
+	          link.attr({
+	            href: href
+	          }).text(linkText);
+	          control.select('span.control-current-layout').text(otherText);
+	          toggleState = newState; // flip
+	          action();
+	        });
+	        // finally set state to avoid duplication:
+	        window.plotqi.compactControlReady = true;
+	      }
+	    }
+	  }, {
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(CompactLayoutPlugin.prototype), 'preRender', this).call(this);
+	      this.enabled = this.isEnabled();
+	      this.hookupToggle(); // hookup regardless of initial state, if div
+	      if (this.enabled) {
+	        this.chart = this.plotter.chart;
+	        // ensure container marked as compact:
+	        this.container.classed('compact', true);
+	        // Disable interactive features:
+	        this.originally_interactive = this.plotter.options.interactive || false;
+	        this.plotter.options.interactive = false;
+	        // get column css spec from count:
+	        this.sizeColumns();
+	        // other various layout adjustments:
+	        this.layoutAdjustments();
+	        // use slightly larger point markers on line than usual vs. width
+	        if (this.data.chart_type === 'line') {
+	          this.plotter.chart.pointSize(this.markerSize.bind(this));
+	        }
+	      } else {
+	        this.container.classed('compact', false);
+	      }
+	    }
+	  }, {
+	    key: 'plotClicked',
+	    value: function plotClicked() {
+	      var url = this.plotter.data.url || null;
+	      if (url) {
+	        // just open plot url in a new window
+	        window.open(url, '_blank');
+	      }
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      var self = this;
+	      if (this.enabled && this.originally_interactive) {
+	        this.svg.on('click', function (d, i) {
+	          self.plotClicked();
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'rowPlotters',
+	    value: function rowPlotters(plotter) {
+	      var plotters = window.plotqi.plotters,
+	          plotIdx = plotters.indexOf(plotter),
+	          colCount = this.colCount,
+	          plotRow = Math.floor(plotIdx / colCount);
+	      return plotters.filter(function (p) {
+	        var idx = plotters.indexOf(p),
+	            sameRow = Math.floor(idx / colCount) === plotRow;
+	        return sameRow;
+	      });
+	    }
+	  }, {
+	    key: 'rowHeight',
+	    value: function rowHeight(plotter) {
+	      var rowPlotters = this.rowPlotters(plotter);
+	      return Math.ceil(Math.max.apply(null, rowPlotters.map(function (p) {
+	        return p.plotHeight;
+	      })));
+	    }
+	  }, {
+	    key: 'adjustHeight',
+	    value: function adjustHeight(plotter) {
+	      var title = plotter.plotDiv.select('.plot-title'),
+	          titleHeight = title[0][0].getBoundingClientRect().height,
+	          titleDifferential = this.tallestTitle - titleHeight,
+	          topLine = this.topLine;
+	      plotter.plotCore.style({
+	        'margin-top': Math.ceil(titleDifferential) + 'px'
+	      });
+	      plotter.plotHeight = this.rowHeight(plotter); //this.maxHeight;
+	      plotter.plotCore.style({
+	        height: '' + plotter.plotHeight + 'px'
+	      });
+	      plotter.svg.select('.upiq-plot').attr({
+	        transform: 'translate(0 ' + topLine + ')'
+	      });
+	    }
+	  }, {
+	    key: 'swapLegends',
+	    value: function swapLegends(plotter) {
+	      var plotHeight = plotter.plotGroup[0][0].getBoundingClientRect().height;
+	      plotter.abovePlotGroup.attr({
+	        transform: 'translate(0 ' + plotHeight + ')'
+	      });
+	      plotter.plotGroup.attr({
+	        transform: 'translate(0 0)'
+	      });
+	    }
+	  }, {
+	    key: 'allDone',
+	    value: function allDone() {
+	      var _this = this;
+	
+	      var colCount = this.colCount,
+	          container = this.container,
+	          firstOfRow = this.container.selectAll('.plotdiv').filter(function (d, i) {
+	        return i % colCount === 0 && i !== 0 ? _this : null;
+	      }),
+	          plotters = window.plotqi.plotters,
+	          maxHeight = Math.ceil(Math.max.apply(null, plotters.map(function (p) {
+	        return p.plotHeight;
+	      })));
+	      // Insert line-break div between "rows"
+	      firstOfRow.each(function (d, i) {
+	        var _this2 = this;
+	
+	        container.insert('div', function (d) {
+	          return _this2;
+	        }).classed('rowbreak', true);
+	      });
+	      // Adjust uniform height, and set main plot group to uniform position
+	      this.maxHeight = maxHeight;
+	      this.tallestTitle = Math.max.apply(null, plotters.map(function (plotter) {
+	        var title = plotter.plotDiv.select('.plot-title');
+	        return title[0][0].getBoundingClientRect().height;
+	      }));
+	      this.topLine = Math.max.apply(null, plotters.map(function (plotter) {
+	        return plotter.abovePlotGroup[0][0].getBoundingClientRect().height;
+	      }));
+	      plotters.forEach(this.adjustHeight, this);
+	      plotters.forEach(this.swapLegends, this);
+	    }
+	  }, {
+	    key: 'isDone',
+	    value: function isDone() {
+	      var plotters = window.plotqi.plotters,
+	          expected = window.plotqi.plotCount,
+	          completed = plotters.filter(function (p) {
+	        return p.complete;
+	      });
+	      return completed.length === expected;
+	    }
+	  }, {
+	    key: 'onComplete',
+	    value: function onComplete() {
+	      if (this.enabled) {
+	        if (this.isDone()) {
+	          this.allDone();
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      if (this.enabled) {
+	        this.clear();
+	        this.render();
+	      }
+	    }
+	  }]);
+	
+	  return CompactLayoutPlugin;
+	})(_plugin.BaseRenderingPlugin);
+	
+	exports.CompactLayoutPlugin = CompactLayoutPlugin;
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// tinyOverlay.es6.js -- a minimal JavaScript (ES6) overlay library

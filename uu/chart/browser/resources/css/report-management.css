@@ -26,6 +26,10 @@ td.jqplot-table-legend:first-child {
   padding-left:0;
 }
 
+.report-management {
+  clear:both;
+}
+
 .report-management h4 {
   font-size:90%;
   border-bottom:1px solid #494;

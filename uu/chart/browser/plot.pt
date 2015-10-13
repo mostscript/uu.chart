@@ -16,6 +16,22 @@
 </tal:block>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/datefix.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/integration.js?api=2015-07-27"></script>
+
+  <script type="text/javascript">
+  (function ($) {
+    document.addEventListener('DOMContentLoaded', function () {
+      var clickPrint = function () {
+          var link = $(this),
+              href = link.attr('href').split('#')[0],
+              hash = window.location.hash;
+          if (hash) link.attr('href', href + hash);
+          return true;
+        },
+        printlink = $('div.printlink a');
+      printlink.click(clickPrint);
+    });
+  }(jQuery));
+  </script>
 </metal:block>
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" href="" tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.css/report.css?api=2015-08-21" />
@@ -47,7 +63,8 @@
                        data-report-json string:${context/absolute_url}/@@report_json;
                        data-report-size view/size;">
 
-    <!-- print links (legacy) -->
+    <div class="upiq-report-control"></div>
+    <!-- print link -->
     <div class="printlink">
       <a href=""
          target="_blank"
