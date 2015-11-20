@@ -26356,6 +26356,11 @@
 	        var out = [],
 	            interval = (range[1] - range[0]) / n,
 	            i;
+	        if (range[0] === range[1] && range[1] === 0) {
+	          // range of [0,0] causes problem interval, infinite loop
+	          range = [0, 100];
+	          interval = 20;
+	        }
 	        for (i = range[0]; i <= range[1]; i += interval) {
 	          out.push(i);
 	        }
@@ -26370,7 +26375,7 @@
 	      chart.xAxis.tickValues(this.tickVals);
 	      // y-axis:
 	      chart.yAxis.tickFormat(d3.format(',.0f')).tickValues(yTickVals(5)).showMaxMin(false).tickPadding(6);
-	      chart.xDomain(this.xDomain).yDomain(this.data.range);
+	      chart.xDomain(this.xDomain).yDomain(range);
 	    }
 	  }, {
 	    key: 'timeOffset',
