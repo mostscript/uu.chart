@@ -25934,22 +25934,12 @@
 	        title: 'Range minimum',
 	        description: 'Minimum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
 	        type: 'number',
-	        constraint: function constraint(value, obj) {
-	          var max = obj.range_max != null ? obj.range_max : null;
-	          if (value > max) throw new _classvizEs6Js.ValidationError(this, value, 'range_min must be less than or equal to range_max');
-	          return value;
-	        },
 	        required: false
 	      },
 	      range_max: {
 	        title: 'Range maximum',
 	        description: 'Maximum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
 	        type: 'number',
-	        constraint: function constraint(value, obj) {
-	          var min = obj.range_min != null ? obj.range_min : null;
-	          if (value < min) throw new _classvizEs6Js.ValidationError(this, value, 'range_max must be greater than or equal to range_min');
-	          return value;
-	        },
 	        required: false
 	      },
 	      units: {
@@ -26063,9 +26053,6 @@
 	        type: Date,
 	        constraint: function constraint(value, obj) {
 	          value = dateTypeConstraint(value);
-	          var end = obj.end;
-	          if (end == null) return value;
-	          if (value > end) throw new _classvizEs6Js.ValidationError(this, value, 'Start date cannot be after end date');
 	          return value;
 	        },
 	        required: false
@@ -26076,9 +26063,6 @@
 	        type: Date,
 	        constraint: function constraint(value, obj) {
 	          value = dateTypeConstraint(value);
-	          var start = obj.start;
-	          if (start == null) return value;
-	          if (value < start) throw new _classvizEs6Js.ValidationError(this, value, 'End date cannot be before start date');
 	          return value;
 	        },
 	        required: false
