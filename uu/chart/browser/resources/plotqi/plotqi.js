@@ -24085,7 +24085,7 @@
 	var styleSheet = styleEl.sheet;
 	
 	exports.styleSheet = styleSheet;
-	var DEFAULT_COLORS = ['#393960', '#8AA9C9', '#5F9EA0', '#9370DB', '#4682B4', '#2E8B57', '#FF7F50', '#FFD700', '#DA70D6', '#008080'];
+	var DEFAULT_COLORS = ['#393960', '#8AA9C9', '#5F9EA0', '#9370DB', '#4682B4', '#2E8B57', '#FF7F50', '#FFD700', '#DA70D6', '#008080', '#FF1493', '#6A5ACD', '#708090', '#FF6347', '#66CDAA', '#F08080'];
 	
 	// uuid function via http://stackoverflow.com/a/2117523/835961
 	exports.DEFAULT_COLORS = DEFAULT_COLORS;
@@ -24719,7 +24719,8 @@
 	    get: function get() {
 	      var explicitColor = this._color,
 	          pos = !explicitColor ? this.position : null,
-	          color = explicitColor !== 'auto' ? explicitColor : _utilsEs6Js.DEFAULT_COLORS[pos];
+	          defaultColor = _utilsEs6Js.DEFAULT_COLORS[pos] || '#999999',
+	          color = explicitColor !== 'auto' ? explicitColor : defaultColor;
 	      return color;
 	    },
 	    set: function set(v) {
@@ -26185,9 +26186,14 @@
 	var SEL_CHARTSVG = '.chart-svg';
 	
 	// registration of custom marker symbols for NVD3 1.7.x+
-	nv.utils.symbolMap.set('x', function (size) {
-	  size = Math.sqrt(size) * 1.8;
+	nv.utils.symbolMap.set('x', function (specifiedSize) {
+	  var size = Math.sqrt(specifiedSize) * 1.8;
 	  return 'M' + -size / 2 + ',' + -size / 2 + 'l' + size + ',' + size + 'm0,' + -size + 'l' + -size + ',' + size;
+	});
+	
+	nv.utils.symbolMap.set('plus', function (specifiedSize) {
+	  var size = Math.sqrt(specifiedSize) * 1.8;
+	  return 'M0,0' + 'l0,' + size + 'm' + -size / 2 + ',' + -(size / 2) + 'l' + size + ',0';
 	});
 	
 	var TimeSeriesPlotter = (function () {
