@@ -26329,6 +26329,25 @@
 	      return plugin;
 	    }
 	  }, {
+	    key: 'computedInterval',
+	    value: function computedInterval(value) {
+	      /** Given maximum possible value, infer a display maximum, interval.
+	        * Returns two-value array of max, interval.
+	        */
+	      var n,
+	          n_max = 0,
+	          interval,
+	          m = Math;
+	      // boundary check:
+	      if (value <= 0 || value === Infinity) return [100, 20]; // safety
+	      // normal inference:
+	      for (n = 1; n_max < value; n++) {
+	        n_max = 10 * m.max(1, m.pow(10, m.floor((n - 1) / 5))) * (n % 5 || 5);
+	        interval = [0, 1].indexOf(n % 5) !== -1 ? n_max / 5 : n_max / (n % 5);
+	      }
+	      return [n_max, interval];
+	    }
+	  }, {
 	    key: '_configAxes',
 	    value: function _configAxes() {
 	      var _this4 = this;
@@ -26345,11 +26364,17 @@
 	          yTickVals = function yTickVals(n) {
 	        var out = [],
 	            interval = (range[1] - range[0]) / n,
+	            inferred,
 	            i;
-	        if (range[0] === range[1] && range[1] === 0) {
-	          // range of [0,0] causes problem interval, infinite loop
+	        if (range[0] === range[1] && range[1] <= 100) {
+	          // e.g. range of [0,0] causes problem interval, infinite loop
 	          range = [0, 100];
 	          interval = 20;
+	        }
+	        if (range[1] > 100 && !_this4.data.range_max) {
+	          inferred = _this4.computedInterval(range[1]);
+	          range = [0, inferred[0]];
+	          interval = inferred[1];
 	        }
 	        for (i = range[0]; i <= range[1]; i += interval) {
 	          out.push(i);
@@ -27588,14 +27613,27 @@
 	    }
 	  }, {
 	    key: 'scalePoint',
-	    value: function scalePoint(point) {
+	    value: function scalePoint(info) {
 	      /** return scaled point (plain) object */
-	      var scaled = Object.create(point),
+	      var point = info[0],
+	          series = info[1],
+	          scaled = Object.create(point),
 	          // wrap with orig point as proto
-	      x = point.key.valueOf(),
+	      timeStep = this.plotter.timeStep,
+	          quarterly = this.plotter.interval === 'month' && timeStep === 3,
+	          interval = quarterly ? 'quarter' : this.plotter.interval,
+	          x = point.key.valueOf(),
+	          periodEnd = moment.utc(x).endOf(interval).toDate(),
+	          endX = Math.round(this.xScale(periodEnd.valueOf())),
+	          width = endX - Math.round(this.xScale(x)),
+	          barWidth = width / this.data.series.length,
+	          barOffset = series.position * barWidth * 0.65 + barWidth * 0.35,
 	          y = point.value;
 	      scaled.x = this.xScale(x);
 	      scaled.y = this.yScale(y);
+	      if (this.plotter.data.chart_type === 'bar') {
+	        scaled.x += barOffset;
+	      }
 	      // default x2, y2 as label coordinate (default is used by bar chart, and
 	      // is above the marker data x,y):
 	      scaled.x2 = scaled.x + 5;
@@ -27642,7 +27680,7 @@
 	          textSize = this.plotter.baseFontSize * 0.75;
 	      series.data.forEach(function (k, point) {
 	        if (point.value !== null) {
-	          points.push(point);
+	          points.push([point, series]);
 	        }
 	      }); // map to Array of points, filtering out null-valued
 	      scaledPoints = points.map(this.scalePoint, this);
@@ -27756,7 +27794,13 @@
 	      var considered = this.data.series.filter(function (s) {
 	        return _this2.data.showLabels(s);
 	      }),
-	          group = this.mkGroup();
+	          group = this.mkGroup(),
+	          tickVals = this.plotter.tickVals;
+	      // force continuous scale in case of oridinal scale via bar chart:
+	      this.xScale = this.plotter.timeScale;
+	      this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
+	      // column width interval based on sample of first data column, scaled:
+	      this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
 	      if (this.plotter.options.tiny) return;
 	      considered.forEach(function (series) {
 	        this.renderSeries(series, group);
