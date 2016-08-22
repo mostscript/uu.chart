@@ -8,11 +8,19 @@
 <metal:block fill-slot="javascript_head_slot">
   <script type="text/javascript"
           src=""
-          tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/populate.js?api=20140723">
+          tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.js/populate.js?api=20160822">
   </script>
 </metal:block>
 <metal:block fill-slot="style_slot">
 <style>
+
+.pattern-pickadate-wrapper .pattern-pickadate-date-wrapper .picker__input {
+  max-width: 10em;
+  font-size:130% !Important;
+  font-weight: bold;
+  color:#69a;
+}
+
 #group-selector {
   display:block;
 }
@@ -429,12 +437,12 @@ form.reorder div.button-reorder a {
       <p><em>These are optional; if start/end dates are not provided, the displayed X-axis domain on time-series plots will fit all available data.</em></p>
 
       <div style="width:15em; float:left">
-        <label>Start date (MM/DD/YYYY):</label> <br />
-        <input class="smartdate-widget date-field" type="text" name="start-date" />
+        <label>Start date:</label> <br />
+        <input class="pat-type-a-date date-field" type="text" name="start-date" data-pat-type-a-date='{"time": false}' />
       </div>
       <div style="float:left; width:20em;">
-        <label>End date (MM/DD/YYYY):</label> <br />
-        <input class="smartdate-widget date-field" type="text" name="end-date" />
+        <label>End date:</label> <br />
+        <input class="pat-type-a-date date-field" type="text" name="end-date" data-pat-type-a-date='{"time": false}' />
         <p style="font-size:80%; line-height:100%"><em>Note: end-date should align to the last date you expect data to display; for form data, this is often the beginning of a month/period.</em></p>
       </div>
       <div style="clear:both">

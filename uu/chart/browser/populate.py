@@ -52,8 +52,10 @@ class ReportPopulateView(object):
     def _date(self, stamp):
         if not stamp:
             return None
-        month, day, year = [int(v) for v in stamp.strip().split('/')]
-        return datetime.date(year, month, day)
+        # assume ISO 8601 via type-a-date/pickadate pattern (Plone/Mockup):
+        parts = stamp.strip()[:10].split('-')  # y, m, d
+        parts = map(int, parts)
+        return datetime.date(*parts)
 
     def _set_date_settings(self, chart):
         start_date = self._date(self.request.get('start-date', None))

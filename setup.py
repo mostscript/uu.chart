@@ -31,7 +31,6 @@ setup(
         'collective.z3cform.datagridfield',
         'Products.CMFPlone',
         'plone.browserlayer',
-        'uu.smartdate',
         'uu.formlibrary',
         'tzlocal',
         # -*- Extra requirements: -*-
