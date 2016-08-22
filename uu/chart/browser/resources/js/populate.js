@@ -29,7 +29,7 @@ uu.chart.populate = (function ($, ns) {
     })
   };
 
-  ns.BASE = $('base').attr('href');
+  ns.BASE = window.location.href.split('?')[0].split('@@')[0];
   ns.GROUP_QS = 'root=1&portal_type=' + ns.GROUP_TYPE;
   ns.GROUP_JSON_URL = ns.BASE + '/@@finder?' + ns.GROUP_QS;
 
