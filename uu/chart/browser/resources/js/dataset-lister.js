@@ -10,7 +10,6 @@
   ns.clearDatasets = function () {
     var datasetSelect = $('select#form-widgets-dataset'),
         existing = $('option', datasetSelect);
-    console.log('clear');
     existing.each(function (idx) {
       var option = $(this);
       if (option.attr('value') !== '--NOVALUE--') {
@@ -31,10 +30,8 @@
         onData = function (response) {
           var data = (response instanceof Array) ? response : [],
               datasetSelect = $('select#form-widgets-dataset');
-          console.log('onData');
           ns.clearDatasets();
           if (datasetSelect.length) {
-            console.log(data);
             data.forEach(function (pair) {
               var value=pair[0],
                   title=pair[1],
@@ -58,7 +55,6 @@
       ns.loadDatasets(uid);
     } else {
       //clear
-      console.log('clear1', uid);
       ns.clearDatasets();
     }
   };
@@ -80,15 +76,12 @@
           function (v) { return body.hasClass(v); }
         ),
         measureInput = $('input[name="form.widgets.measure"]');
-    console.log('hello', is_add_form, is_edit_form);
     if (measureInput.length && is_add_form) {
       // call measureChanged once as initial poke to load datasets:
-      console.log('add form init');
       ns.measureChanged.bind(this)();
     }
     if (is_edit_form || is_add_form) {
       measureInput.on('change', function (event) {
-        console.log('change', $(this).val());
         ns.measureChanged.bind(this)();
       });
     }
