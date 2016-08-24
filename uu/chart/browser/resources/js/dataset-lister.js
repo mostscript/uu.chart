@@ -75,16 +75,18 @@
         is_edit_form = edit_body_classes.every(
           function (v) { return body.hasClass(v); }
         ),
-        measureInput = $('input[name="form.widgets.measure"]');
+        measureInput;
+    if (!(is_edit_form || is_add_form)) {
+      return;
+    }
+    measureInput = $('input[name="form.widgets.measure"]');
     if (measureInput.length && is_add_form) {
       // call measureChanged once as initial poke to load datasets:
       ns.measureChanged.bind(this)();
     }
-    if (is_edit_form || is_add_form) {
-      measureInput.on('change', function (event) {
-        ns.measureChanged.bind(this)();
-      });
-    }
+    measureInput.on('change', function (event) {
+      ns.measureChanged.bind(this)();
+    });
   });
 
 
