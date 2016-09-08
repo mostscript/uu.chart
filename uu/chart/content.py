@@ -10,7 +10,7 @@ from plone.dexterity.content import Item, Container
 from zope.interface import implements
 from plone.uuid.interfaces import IAttributeUUID
 
-from uu.smartdate.converter import normalize_usa_date
+from uu.formlibrary.utils import normalize_usa_date
 
 from uu.chart.interfaces import IDataReport
 from uu.chart.interfaces import ITimeSeriesChart, ITimeDataSequence
@@ -36,7 +36,6 @@ def filter_data(context, points):
     parent = aq_parent(aq_inner(context))
     if ITimeSeriesCollection.providedBy(parent):
         if getattr(parent, 'force_crop', False):
-            start, end = parent.start, parent.end
             if parent.start:
                 _after_start = lambda p: p.date >= parent.start
                 points = filter(_after_start, points)

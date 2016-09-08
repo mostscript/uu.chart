@@ -94,8 +94,7 @@ import operator
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 from plone.app.textfield import RichText
 from plone.directives import form
-from plone.formwidget.contenttree import ContentTreeFieldWidget
-from plone.formwidget.contenttree.source import UUIDSourceBinder
+from plone.autoform import directives
 from plone.uuid.interfaces import IAttributeUUID
 from z3c.form.browser.textarea import TextAreaFieldWidget
 from zope.interface import Interface, Invalid, invariant, implements
@@ -106,6 +105,8 @@ from zope import schema
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
+from uu.formlibrary.interfaces import is_content_uuid
+from uu.formlibrary.browser.widget import CustomRootRelatedWidget
 from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
 from uu.formlibrary.measure.interfaces import MeasureGroupContentSourceBinder
 from uu.formlibrary.measure.interfaces import PermissiveVocabulary
@@ -772,16 +773,26 @@ class IBaseChart(
         fields=['info'],
         )
 
-    form.widget(stylebook=ContentTreeFieldWidget)
-    stylebook = schema.Choice(
-        title=u'Bound stylebook',
-        description=u'If a stylebook is bound, any updates to that style '
-                    u'book will OVER-WRITE display configuration saved '
+    directives.widget(
+        'stylebook',
+        CustomRootRelatedWidget,
+        pattern_options={
+            'selectableTypes': ['uu.chart.stylebook'],
+            'maximumSelectionSize': 1,
+            'baseCriteria': [{
+                'i': 'portal_type',
+                'o': 'plone.app.querystring.operation.string.is',
+                'v': 'uu.chart.stylebook',
+                }]
+            }
+        )
+    stylebook = schema.BytesLine(
+        title=u'Bound theme',
+        description=u'If a theme is bound, any updates to that theme '
+                    u'will OVER-WRITE display configuration saved '
                     u'on this chart.',
-        source=UUIDSourceBinder(
-            portal_type=STYLEBOOK_TYPE,
-            ),
         required=False,
+        constraint=is_content_uuid
         )
 
     info = RichText(
@@ -969,15 +980,26 @@ class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
 
 class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
 
-    form.widget(measure=ContentTreeFieldWidget)
-    measure = schema.Choice(
+    directives.widget(
+        'measure',
+        CustomRootRelatedWidget,
+        custom_root_query={'portal_type': 'uu.formlibrary.measurelibrary'},
+        pattern_options={
+            'selectableTypes': [MEASURE_DEFINITION_TYPE],
+            'maximumSelectionSize': 1,
+            'baseCriteria': [{
+                'i': 'portal_type',
+                'o': 'plone.app.querystring.operation.string.is',
+                'v': MEASURE_DEFINITION_TYPE,
+                }]
+            }
+        )
+    measure = schema.BytesLine(
         title=u'Bound measure',
         description=u'Measure definition that defines a function to apply '
                     u'to a dataset of forms to obtain a computed value for '
                     u'each as a data-point.',
-        source=UUIDSourceBinder(
-            portal_type=MEASURE_DEFINITION_TYPE,
-            ),
+        constraint=is_content_uuid,
         )
 
     dataset = schema.Choice(
