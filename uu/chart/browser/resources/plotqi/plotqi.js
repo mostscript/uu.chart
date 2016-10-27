@@ -49,14 +49,14 @@
 	
 	'use strict';  /*jshint -W097 */
 	__webpack_require__(1);
-	var d3 = __webpack_require__(3);
-	var moment = __webpack_require__(4);
-	__webpack_require__(2);
+	var d3 = __webpack_require__(2);
+	var moment = __webpack_require__(3);
+	__webpack_require__(5);
 
 
 /***/ },
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	// window.Symbol polyfill / monkey-patch subset of (unkeyed) ES6 Symbol...
 	// modified, but upstream via: 
@@ -118,83 +118,49 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window, document */
-	
-	'use strict';
-	
-	var _utils = __webpack_require__(6);
-	
-	var _chartviz = __webpack_require__(7);
-	
-	var _loader = __webpack_require__(8);
-	
-	var _plugin = __webpack_require__(9);
-	
-	var d3 = __webpack_require__(3);
-	
-	var nv = __webpack_require__(5);
-	
-	function readySetGo(callback) {
-	  document.addEventListener('DOMContentLoaded', callback);
-	}
-	
-	window.plotqi = window.plotqi || {};
-	window.plotqi.ready = readySetGo;
-	window.plotqi.load = _loader.loadReports;
-	window.plotqi.BaseRenderingPlugin = _plugin.BaseRenderingPlugin;
-	
-	// Calling semantics:
-	//  <script type="text/javascript">
-	//    (function () {
-	//      // break if no reasonable ES5 support:
-	//      if (!Array.prototype.forEach || !Object.create) {
-	//        alert('Your browser does not support this application.');
-	//        return;
-	//      }
-	//      // add any integration-specific custom plugins:
-	//      window.plotqi.ADDITIONAL_PLUGINS.push(MyCustomPlugin);
-	//      window.plotqi.ready(window.plotqi.load);
-	//    }());
-	//  </script>
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
 	  var d3 = {
-	    version: "3.5.3"
-	  };
-	  if (!Date.now) Date.now = function() {
-	    return +new Date();
+	    version: "3.5.17"
 	  };
 	  var d3_arraySlice = [].slice, d3_array = function(list) {
 	    return d3_arraySlice.call(list);
 	  };
-	  var d3_document = document, d3_documentElement = d3_document.documentElement, d3_window = window;
-	  try {
-	    d3_array(d3_documentElement.childNodes)[0].nodeType;
-	  } catch (e) {
-	    d3_array = function(list) {
-	      var i = list.length, array = new Array(i);
-	      while (i--) array[i] = list[i];
-	      return array;
-	    };
+	  var d3_document = this.document;
+	  function d3_documentElement(node) {
+	    return node && (node.ownerDocument || node.document || node).documentElement;
 	  }
-	  try {
-	    d3_document.createElement("div").style.setProperty("opacity", 0, "");
-	  } catch (error) {
-	    var d3_element_prototype = d3_window.Element.prototype, d3_element_setAttribute = d3_element_prototype.setAttribute, d3_element_setAttributeNS = d3_element_prototype.setAttributeNS, d3_style_prototype = d3_window.CSSStyleDeclaration.prototype, d3_style_setProperty = d3_style_prototype.setProperty;
-	    d3_element_prototype.setAttribute = function(name, value) {
-	      d3_element_setAttribute.call(this, name, value + "");
-	    };
-	    d3_element_prototype.setAttributeNS = function(space, local, value) {
-	      d3_element_setAttributeNS.call(this, space, local, value + "");
-	    };
-	    d3_style_prototype.setProperty = function(name, value, priority) {
-	      d3_style_setProperty.call(this, name, value + "", priority);
-	    };
+	  function d3_window(node) {
+	    return node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
+	  }
+	  if (d3_document) {
+	    try {
+	      d3_array(d3_document.documentElement.childNodes)[0].nodeType;
+	    } catch (e) {
+	      d3_array = function(list) {
+	        var i = list.length, array = new Array(i);
+	        while (i--) array[i] = list[i];
+	        return array;
+	      };
+	    }
+	  }
+	  if (!Date.now) Date.now = function() {
+	    return +new Date();
+	  };
+	  if (d3_document) {
+	    try {
+	      d3_document.createElement("DIV").style.setProperty("opacity", 0, "");
+	    } catch (error) {
+	      var d3_element_prototype = this.Element.prototype, d3_element_setAttribute = d3_element_prototype.setAttribute, d3_element_setAttributeNS = d3_element_prototype.setAttributeNS, d3_style_prototype = this.CSSStyleDeclaration.prototype, d3_style_setProperty = d3_style_prototype.setProperty;
+	      d3_element_prototype.setAttribute = function(name, value) {
+	        d3_element_setAttribute.call(this, name, value + "");
+	      };
+	      d3_element_prototype.setAttributeNS = function(space, local, value) {
+	        d3_element_setAttributeNS.call(this, space, local, value + "");
+	      };
+	      d3_style_prototype.setProperty = function(name, value, priority) {
+	        d3_style_setProperty.call(this, name, value + "", priority);
+	      };
+	    }
 	  }
 	  d3.ascending = d3_ascending;
 	  function d3_ascending(a, b) {
@@ -374,20 +340,20 @@
 	    while (i < n) pairs[i] = [ p0 = p1, p1 = array[++i] ];
 	    return pairs;
 	  };
-	  d3.zip = function() {
-	    if (!(n = arguments.length)) return [];
-	    for (var i = -1, m = d3.min(arguments, d3_zipLength), zips = new Array(m); ++i < m; ) {
-	      for (var j = -1, n, zip = zips[i] = new Array(n); ++j < n; ) {
-	        zip[j] = arguments[j][i];
+	  d3.transpose = function(matrix) {
+	    if (!(n = matrix.length)) return [];
+	    for (var i = -1, m = d3.min(matrix, d3_transposeLength), transpose = new Array(m); ++i < m; ) {
+	      for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n; ) {
+	        row[j] = matrix[j][i];
 	      }
 	    }
-	    return zips;
+	    return transpose;
 	  };
-	  function d3_zipLength(d) {
+	  function d3_transposeLength(d) {
 	    return d.length;
 	  }
-	  d3.transpose = function(matrix) {
-	    return d3.zip.apply(d3, matrix);
+	  d3.zip = function() {
+	    return d3.transpose(arguments);
 	  };
 	  d3.keys = function(map) {
 	    var keys = [];
@@ -607,6 +573,9 @@
 	    }
 	  });
 	  d3.behavior = {};
+	  function d3_identity(d) {
+	    return d;
+	  }
 	  d3.rebind = function(target, source) {
 	    var i = 1, n = arguments.length, method;
 	    while (++i < n) target[method = arguments[i]] = d3_rebind(target, source, source[method]);
@@ -713,8 +682,12 @@
 	    return n.querySelector(s);
 	  }, d3_selectAll = function(s, n) {
 	    return n.querySelectorAll(s);
-	  }, d3_selectMatcher = d3_documentElement.matches || d3_documentElement[d3_vendorSymbol(d3_documentElement, "matchesSelector")], d3_selectMatches = function(n, s) {
-	    return d3_selectMatcher.call(n, s);
+	  }, d3_selectMatches = function(n, s) {
+	    var d3_selectMatcher = n.matches || n[d3_vendorSymbol(n, "matchesSelector")];
+	    d3_selectMatches = function(n, s) {
+	      return d3_selectMatcher.call(n, s);
+	    };
+	    return d3_selectMatches(n, s);
 	  };
 	  if (typeof Sizzle === "function") {
 	    d3_select = function(s, n) {
@@ -724,7 +697,7 @@
 	    d3_selectMatches = Sizzle.matchesSelector;
 	  }
 	  d3.selection = function() {
-	    return d3_selectionRoot;
+	    return d3.select(d3_document.documentElement);
 	  };
 	  var d3_selectionPrototype = d3.selection.prototype = [];
 	  d3_selectionPrototype.select = function(selector) {
@@ -767,9 +740,10 @@
 	      return d3_selectAll(selector, this);
 	    };
 	  }
+	  var d3_nsXhtml = "http://www.w3.org/1999/xhtml";
 	  var d3_nsPrefix = {
 	    svg: "http://www.w3.org/2000/svg",
-	    xhtml: "http://www.w3.org/1999/xhtml",
+	    xhtml: d3_nsXhtml,
 	    xlink: "http://www.w3.org/1999/xlink",
 	    xml: "http://www.w3.org/XML/1998/namespace",
 	    xmlns: "http://www.w3.org/2000/xmlns/"
@@ -778,10 +752,7 @@
 	    prefix: d3_nsPrefix,
 	    qualify: function(name) {
 	      var i = name.indexOf(":"), prefix = name;
-	      if (i >= 0) {
-	        prefix = name.slice(0, i);
-	        name = name.slice(i + 1);
-	      }
+	      if (i >= 0 && (prefix = name.slice(0, i)) !== "xmlns") name = name.slice(i + 1);
 	      return d3_nsPrefix.hasOwnProperty(prefix) ? {
 	        space: d3_nsPrefix[prefix],
 	        local: name
@@ -884,7 +855,10 @@
 	        for (priority in name) this.each(d3_selection_style(priority, name[priority], value));
 	        return this;
 	      }
-	      if (n < 2) return d3_window.getComputedStyle(this.node(), null).getPropertyValue(name);
+	      if (n < 2) {
+	        var node = this.node();
+	        return d3_window(node).getComputedStyle(node, null).getPropertyValue(name);
+	      }
 	      priority = "";
 	    }
 	    return this.each(d3_selection_style(name, value, priority));
@@ -950,11 +924,14 @@
 	    });
 	  };
 	  function d3_selection_creator(name) {
-	    return typeof name === "function" ? name : (name = d3.ns.qualify(name)).local ? function() {
+	    function create() {
+	      var document = this.ownerDocument, namespace = this.namespaceURI;
+	      return namespace === d3_nsXhtml && document.documentElement.namespaceURI === d3_nsXhtml ? document.createElement(name) : document.createElementNS(namespace, name);
+	    }
+	    function createNS() {
 	      return this.ownerDocument.createElementNS(name.space, name.local);
-	    } : function() {
-	      return this.ownerDocument.createElementNS(this.namespaceURI, name);
-	    };
+	    }
+	    return typeof name === "function" ? name : (name = d3.ns.qualify(name)).local ? createNS : create;
 	  }
 	  d3_selectionPrototype.insert = function(name, before) {
 	    name = d3_selection_creator(name);
@@ -986,12 +963,14 @@
 	      if (key) {
 	        var nodeByKeyValue = new d3_Map(), keyValues = new Array(n), keyValue;
 	        for (i = -1; ++i < n; ) {
-	          if (nodeByKeyValue.has(keyValue = key.call(node = group[i], node.__data__, i))) {
-	            exitNodes[i] = node;
-	          } else {
-	            nodeByKeyValue.set(keyValue, node);
+	          if (node = group[i]) {
+	            if (nodeByKeyValue.has(keyValue = key.call(node, node.__data__, i))) {
+	              exitNodes[i] = node;
+	            } else {
+	              nodeByKeyValue.set(keyValue, node);
+	            }
+	            keyValues[i] = keyValue;
 	          }
-	          keyValues[i] = keyValue;
 	        }
 	        for (i = -1; ++i < m; ) {
 	          if (!(node = nodeByKeyValue.get(keyValue = key.call(groupData, nodeData = groupData[i], i)))) {
@@ -1003,7 +982,7 @@
 	          nodeByKeyValue.set(keyValue, true);
 	        }
 	        for (i = -1; ++i < n; ) {
-	          if (nodeByKeyValue.get(keyValues[i]) !== true) {
+	          if (i in keyValues && nodeByKeyValue.get(keyValues[i]) !== true) {
 	            exitNodes[i] = group[i];
 	          }
 	        }
@@ -1179,16 +1158,27 @@
 	    };
 	  }
 	  d3.select = function(node) {
-	    var group = [ typeof node === "string" ? d3_select(node, d3_document) : node ];
-	    group.parentNode = d3_documentElement;
+	    var group;
+	    if (typeof node === "string") {
+	      group = [ d3_select(node, d3_document) ];
+	      group.parentNode = d3_document.documentElement;
+	    } else {
+	      group = [ node ];
+	      group.parentNode = d3_documentElement(node);
+	    }
 	    return d3_selection([ group ]);
 	  };
 	  d3.selectAll = function(nodes) {
-	    var group = d3_array(typeof nodes === "string" ? d3_selectAll(nodes, d3_document) : nodes);
-	    group.parentNode = d3_documentElement;
+	    var group;
+	    if (typeof nodes === "string") {
+	      group = d3_array(d3_selectAll(nodes, d3_document));
+	      group.parentNode = d3_document.documentElement;
+	    } else {
+	      group = d3_array(nodes);
+	      group.parentNode = null;
+	    }
 	    return d3_selection([ group ]);
 	  };
-	  var d3_selectionRoot = d3.select(d3_documentElement);
 	  d3_selectionPrototype.on = function(type, listener, capture) {
 	    var n = arguments.length;
 	    if (n < 3) {
@@ -1236,9 +1226,11 @@
 	    mouseenter: "mouseover",
 	    mouseleave: "mouseout"
 	  });
-	  d3_selection_onFilters.forEach(function(k) {
-	    if ("on" + k in d3_document) d3_selection_onFilters.remove(k);
-	  });
+	  if (d3_document) {
+	    d3_selection_onFilters.forEach(function(k) {
+	      if ("on" + k in d3_document) d3_selection_onFilters.remove(k);
+	    });
+	  }
 	  function d3_selection_onListener(listener, argumentz) {
 	    return function(e) {
 	      var o = d3.event;
@@ -1260,11 +1252,14 @@
 	      }
 	    };
 	  }
-	  var d3_event_dragSelect = "onselectstart" in d3_document ? null : d3_vendorSymbol(d3_documentElement.style, "userSelect"), d3_event_dragId = 0;
-	  function d3_event_dragSuppress() {
-	    var name = ".dragsuppress-" + ++d3_event_dragId, click = "click" + name, w = d3.select(d3_window).on("touchmove" + name, d3_eventPreventDefault).on("dragstart" + name, d3_eventPreventDefault).on("selectstart" + name, d3_eventPreventDefault);
+	  var d3_event_dragSelect, d3_event_dragId = 0;
+	  function d3_event_dragSuppress(node) {
+	    var name = ".dragsuppress-" + ++d3_event_dragId, click = "click" + name, w = d3.select(d3_window(node)).on("touchmove" + name, d3_eventPreventDefault).on("dragstart" + name, d3_eventPreventDefault).on("selectstart" + name, d3_eventPreventDefault);
+	    if (d3_event_dragSelect == null) {
+	      d3_event_dragSelect = "onselectstart" in node ? false : d3_vendorSymbol(node.style, "userSelect");
+	    }
 	    if (d3_event_dragSelect) {
-	      var style = d3_documentElement.style, select = style[d3_event_dragSelect];
+	      var style = d3_documentElement(node).style, select = style[d3_event_dragSelect];
 	      style[d3_event_dragSelect] = "none";
 	    }
 	    return function(suppressClick) {
@@ -1285,24 +1280,27 @@
 	  d3.mouse = function(container) {
 	    return d3_mousePoint(container, d3_eventSource());
 	  };
-	  var d3_mouse_bug44083 = /WebKit/.test(d3_window.navigator.userAgent) ? -1 : 0;
+	  var d3_mouse_bug44083 = this.navigator && /WebKit/.test(this.navigator.userAgent) ? -1 : 0;
 	  function d3_mousePoint(container, e) {
 	    if (e.changedTouches) e = e.changedTouches[0];
 	    var svg = container.ownerSVGElement || container;
 	    if (svg.createSVGPoint) {
 	      var point = svg.createSVGPoint();
-	      if (d3_mouse_bug44083 < 0 && (d3_window.scrollX || d3_window.scrollY)) {
-	        svg = d3.select("body").append("svg").style({
-	          position: "absolute",
-	          top: 0,
-	          left: 0,
-	          margin: 0,
-	          padding: 0,
-	          border: "none"
-	        }, "important");
-	        var ctm = svg[0][0].getScreenCTM();
-	        d3_mouse_bug44083 = !(ctm.f || ctm.e);
-	        svg.remove();
+	      if (d3_mouse_bug44083 < 0) {
+	        var window = d3_window(container);
+	        if (window.scrollX || window.scrollY) {
+	          svg = d3.select("body").append("svg").style({
+	            position: "absolute",
+	            top: 0,
+	            left: 0,
+	            margin: 0,
+	            padding: 0,
+	            border: "none"
+	          }, "important");
+	          var ctm = svg[0][0].getScreenCTM();
+	          d3_mouse_bug44083 = !(ctm.f || ctm.e);
+	          svg.remove();
+	        }
 	      }
 	      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX, 
 	      point.y = e.clientY;
@@ -1321,13 +1319,13 @@
 	    }
 	  };
 	  d3.behavior.drag = function() {
-	    var event = d3_eventDispatch(drag, "drag", "dragstart", "dragend"), origin = null, mousedown = dragstart(d3_noop, d3.mouse, d3_behavior_dragMouseSubject, "mousemove", "mouseup"), touchstart = dragstart(d3_behavior_dragTouchId, d3.touch, d3_behavior_dragTouchSubject, "touchmove", "touchend");
+	    var event = d3_eventDispatch(drag, "drag", "dragstart", "dragend"), origin = null, mousedown = dragstart(d3_noop, d3.mouse, d3_window, "mousemove", "mouseup"), touchstart = dragstart(d3_behavior_dragTouchId, d3.touch, d3_identity, "touchmove", "touchend");
 	    function drag() {
 	      this.on("mousedown.drag", mousedown).on("touchstart.drag", touchstart);
 	    }
 	    function dragstart(id, position, subject, move, end) {
 	      return function() {
-	        var that = this, target = d3.event.target, parent = that.parentNode, dispatch = event.of(that, arguments), dragged = 0, dragId = id(), dragName = ".drag" + (dragId == null ? "" : "-" + dragId), dragOffset, dragSubject = d3.select(subject()).on(move + dragName, moved).on(end + dragName, ended), dragRestore = d3_event_dragSuppress(), position0 = position(parent, dragId);
+	        var that = this, target = d3.event.target.correspondingElement || d3.event.target, parent = that.parentNode, dispatch = event.of(that, arguments), dragged = 0, dragId = id(), dragName = ".drag" + (dragId == null ? "" : "-" + dragId), dragOffset, dragSubject = d3.select(subject(target)).on(move + dragName, moved).on(end + dragName, ended), dragRestore = d3_event_dragSuppress(target), position0 = position(parent, dragId);
 	        if (origin) {
 	          dragOffset = origin.apply(that, arguments);
 	          dragOffset = [ dragOffset.x - position0[0], dragOffset.y - position0[1] ];
@@ -1355,7 +1353,7 @@
 	        function ended() {
 	          if (!position(parent, dragId)) return;
 	          dragSubject.on(move + dragName, null).on(end + dragName, null);
-	          dragRestore(dragged && d3.event.target === target);
+	          dragRestore(dragged);
 	          dispatch({
 	            type: "dragend"
 	          });
@@ -1371,12 +1369,6 @@
 	  };
 	  function d3_behavior_dragTouchId() {
 	    return d3.event.changedTouches[0].identifier;
-	  }
-	  function d3_behavior_dragTouchSubject() {
-	    return d3.event.target;
-	  }
-	  function d3_behavior_dragMouseSubject() {
-	    return d3_window;
 	  }
 	  d3.touches = function(container, touches) {
 	    if (arguments.length < 2) touches = d3_eventSource().touches;
@@ -1413,18 +1405,22 @@
 	  }
 	  var ρ = Math.SQRT2, ρ2 = 2, ρ4 = 4;
 	  d3.interpolateZoom = function(p0, p1) {
-	    var ux0 = p0[0], uy0 = p0[1], w0 = p0[2], ux1 = p1[0], uy1 = p1[1], w1 = p1[2];
-	    var dx = ux1 - ux0, dy = uy1 - uy0, d2 = dx * dx + dy * dy, d1 = Math.sqrt(d2), b0 = (w1 * w1 - w0 * w0 + ρ4 * d2) / (2 * w0 * ρ2 * d1), b1 = (w1 * w1 - w0 * w0 - ρ4 * d2) / (2 * w1 * ρ2 * d1), r0 = Math.log(Math.sqrt(b0 * b0 + 1) - b0), r1 = Math.log(Math.sqrt(b1 * b1 + 1) - b1), dr = r1 - r0, S = (dr || Math.log(w1 / w0)) / ρ;
-	    function interpolate(t) {
-	      var s = t * S;
-	      if (dr) {
-	        var coshr0 = d3_cosh(r0), u = w0 / (ρ2 * d1) * (coshr0 * d3_tanh(ρ * s + r0) - d3_sinh(r0));
+	    var ux0 = p0[0], uy0 = p0[1], w0 = p0[2], ux1 = p1[0], uy1 = p1[1], w1 = p1[2], dx = ux1 - ux0, dy = uy1 - uy0, d2 = dx * dx + dy * dy, i, S;
+	    if (d2 < ε2) {
+	      S = Math.log(w1 / w0) / ρ;
+	      i = function(t) {
+	        return [ ux0 + t * dx, uy0 + t * dy, w0 * Math.exp(ρ * t * S) ];
+	      };
+	    } else {
+	      var d1 = Math.sqrt(d2), b0 = (w1 * w1 - w0 * w0 + ρ4 * d2) / (2 * w0 * ρ2 * d1), b1 = (w1 * w1 - w0 * w0 - ρ4 * d2) / (2 * w1 * ρ2 * d1), r0 = Math.log(Math.sqrt(b0 * b0 + 1) - b0), r1 = Math.log(Math.sqrt(b1 * b1 + 1) - b1);
+	      S = (r1 - r0) / ρ;
+	      i = function(t) {
+	        var s = t * S, coshr0 = d3_cosh(r0), u = w0 / (ρ2 * d1) * (coshr0 * d3_tanh(ρ * s + r0) - d3_sinh(r0));
 	        return [ ux0 + u * dx, uy0 + u * dy, w0 * coshr0 / d3_cosh(ρ * s + r0) ];
-	      }
-	      return [ ux0 + t * dx, uy0 + t * dy, w0 * Math.exp(ρ * s) ];
+	      };
 	    }
-	    interpolate.duration = S * 1e3;
-	    return interpolate;
+	    i.duration = S * 1e3;
+	    return i;
 	  };
 	  d3.behavior.zoom = function() {
 	    var view = {
@@ -1432,6 +1428,15 @@
 	      y: 0,
 	      k: 1
 	    }, translate0, center0, center, size = [ 960, 500 ], scaleExtent = d3_behavior_zoomInfinity, duration = 250, zooming = 0, mousedown = "mousedown.zoom", mousemove = "mousemove.zoom", mouseup = "mouseup.zoom", mousewheelTimer, touchstart = "touchstart.zoom", touchtime, event = d3_eventDispatch(zoom, "zoomstart", "zoom", "zoomend"), x0, x1, y0, y1;
+	    if (!d3_behavior_zoomWheel) {
+	      d3_behavior_zoomWheel = "onwheel" in d3_document ? (d3_behavior_zoomDelta = function() {
+	        return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1);
+	      }, "wheel") : "onmousewheel" in d3_document ? (d3_behavior_zoomDelta = function() {
+	        return d3.event.wheelDelta;
+	      }, "mousewheel") : (d3_behavior_zoomDelta = function() {
+	        return -d3.event.detail;
+	      }, "MozMousePixelScroll");
+	    }
 	    function zoom(g) {
 	      g.on(mousedown, mousedowned).on(d3_behavior_zoomWheel + ".zoom", mousewheeled).on("dblclick.zoom", dblclicked).on(touchstart, touchstarted);
 	    }
@@ -1485,8 +1490,9 @@
 	      view = {
 	        x: view.x,
 	        y: view.y,
-	        k: +_
+	        k: null
 	      };
+	      scaleTo(+_);
 	      rescale();
 	      return zoom;
 	    };
@@ -1582,11 +1588,10 @@
 	    function zoomended(dispatch) {
 	      if (!--zooming) dispatch({
 	        type: "zoomend"
-	      });
-	      center0 = null;
+	      }), center0 = null;
 	    }
 	    function mousedowned() {
-	      var that = this, target = d3.event.target, dispatch = event.of(that, arguments), dragged = 0, subject = d3.select(d3_window).on(mousemove, moved).on(mouseup, ended), location0 = location(d3.mouse(that)), dragRestore = d3_event_dragSuppress();
+	      var that = this, dispatch = event.of(that, arguments), dragged = 0, subject = d3.select(d3_window(that)).on(mousemove, moved).on(mouseup, ended), location0 = location(d3.mouse(that)), dragRestore = d3_event_dragSuppress(that);
 	      d3_selection_interrupt.call(that);
 	      zoomstarted(dispatch);
 	      function moved() {
@@ -1596,12 +1601,12 @@
 	      }
 	      function ended() {
 	        subject.on(mousemove, null).on(mouseup, null);
-	        dragRestore(dragged && d3.event.target === target);
+	        dragRestore(dragged);
 	        zoomended(dispatch);
 	      }
 	    }
 	    function touchstarted() {
-	      var that = this, dispatch = event.of(that, arguments), locations0 = {}, distance0 = 0, scale0, zoomName = ".zoom-" + d3.event.changedTouches[0].identifier, touchmove = "touchmove" + zoomName, touchend = "touchend" + zoomName, targets = [], subject = d3.select(that), dragRestore = d3_event_dragSuppress();
+	      var that = this, dispatch = event.of(that, arguments), locations0 = {}, distance0 = 0, scale0, zoomName = ".zoom-" + d3.event.changedTouches[0].identifier, touchmove = "touchmove" + zoomName, touchend = "touchend" + zoomName, targets = [], subject = d3.select(that), dragRestore = d3_event_dragSuppress(that);
 	      started();
 	      zoomstarted(dispatch);
 	      subject.on(mousedown, null).on(touchstart, started);
@@ -1672,8 +1677,8 @@
 	    }
 	    function mousewheeled() {
 	      var dispatch = event.of(this, arguments);
-	      if (mousewheelTimer) clearTimeout(mousewheelTimer); else translate0 = location(center0 = center || d3.mouse(this)), 
-	      d3_selection_interrupt.call(this), zoomstarted(dispatch);
+	      if (mousewheelTimer) clearTimeout(mousewheelTimer); else d3_selection_interrupt.call(this), 
+	      translate0 = location(center0 = center || d3.mouse(this)), zoomstarted(dispatch);
 	      mousewheelTimer = setTimeout(function() {
 	        mousewheelTimer = null;
 	        zoomended(dispatch);
@@ -1689,14 +1694,7 @@
 	    }
 	    return d3.rebind(zoom, event, "on");
 	  };
-	  var d3_behavior_zoomInfinity = [ 0, Infinity ];
-	  var d3_behavior_zoomDelta, d3_behavior_zoomWheel = "onwheel" in d3_document ? (d3_behavior_zoomDelta = function() {
-	    return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1);
-	  }, "wheel") : "onmousewheel" in d3_document ? (d3_behavior_zoomDelta = function() {
-	    return d3.event.wheelDelta;
-	  }, "mousewheel") : (d3_behavior_zoomDelta = function() {
-	    return -d3.event.detail;
-	  }, "MozMousePixelScroll");
+	  var d3_behavior_zoomInfinity = [ 0, Infinity ], d3_behavior_zoomDelta, d3_behavior_zoomWheel;
 	  d3.color = d3_color;
 	  function d3_color() {}
 	  d3_color.prototype.toString = function() {
@@ -1826,7 +1824,7 @@
 	  }
 	  function d3_rgb_parse(format, rgb, hsl) {
 	    var r = 0, g = 0, b = 0, m1, m2, color;
-	    m1 = /([a-z]+)\((.*)\)/i.exec(format);
+	    m1 = /([a-z]+)\((.*)\)/.exec(format = format.toLowerCase());
 	    if (m1) {
 	      m2 = m1[2].split(",");
 	      switch (m1[1]) {
@@ -1841,7 +1839,9 @@
 	        }
 	      }
 	    }
-	    if (color = d3_rgb_names.get(format)) return rgb(color.r, color.g, color.b);
+	    if (color = d3_rgb_names.get(format)) {
+	      return rgb(color.r, color.g, color.b);
+	    }
 	    if (format != null && format.charAt(0) === "#" && !isNaN(color = parseInt(format.slice(1), 16))) {
 	      if (format.length === 4) {
 	        r = (color & 3840) >> 4;
@@ -2004,6 +2004,7 @@
 	    plum: 14524637,
 	    powderblue: 11591910,
 	    purple: 8388736,
+	    rebeccapurple: 6697881,
 	    red: 16711680,
 	    rosybrown: 12357519,
 	    royalblue: 4286945,
@@ -2042,9 +2043,6 @@
 	    };
 	  }
 	  d3.functor = d3_functor;
-	  function d3_identity(d) {
-	    return d;
-	  }
 	  d3.xhr = d3_xhrType(d3_identity);
 	  function d3_xhrType(response) {
 	    return function(url, mimeType, callback) {
@@ -2055,7 +2053,7 @@
 	  }
 	  function d3_xhr(url, mimeType, response, callback) {
 	    var xhr = {}, dispatch = d3.dispatch("beforesend", "progress", "load", "error"), headers = {}, request = new XMLHttpRequest(), responseType = null;
-	    if (d3_window.XDomainRequest && !("withCredentials" in request) && /^(http(s)?:)?\/\//.test(url)) request = new XDomainRequest();
+	    if (this.XDomainRequest && !("withCredentials" in request) && /^(http(s)?:)?\/\//.test(url)) request = new XDomainRequest();
 	    "onload" in request ? request.onload = request.onerror = respond : request.onreadystatechange = function() {
 	      request.readyState > 3 && respond();
 	    };
@@ -2241,17 +2239,19 @@
 	  };
 	  d3.csv = d3.dsv(",", "text/csv");
 	  d3.tsv = d3.dsv("	", "text/tab-separated-values");
-	  var d3_timer_queueHead, d3_timer_queueTail, d3_timer_interval, d3_timer_timeout, d3_timer_active, d3_timer_frame = d3_window[d3_vendorSymbol(d3_window, "requestAnimationFrame")] || function(callback) {
+	  var d3_timer_queueHead, d3_timer_queueTail, d3_timer_interval, d3_timer_timeout, d3_timer_frame = this[d3_vendorSymbol(this, "requestAnimationFrame")] || function(callback) {
 	    setTimeout(callback, 17);
 	  };
-	  d3.timer = function(callback, delay, then) {
+	  d3.timer = function() {
+	    d3_timer.apply(this, arguments);
+	  };
+	  function d3_timer(callback, delay, then) {
 	    var n = arguments.length;
 	    if (n < 2) delay = 0;
 	    if (n < 3) then = Date.now();
 	    var time = then + delay, timer = {
 	      c: callback,
 	      t: time,
-	      f: false,
 	      n: null
 	    };
 	    if (d3_timer_queueTail) d3_timer_queueTail.n = timer; else d3_timer_queueHead = timer;
@@ -2261,7 +2261,8 @@
 	      d3_timer_interval = 1;
 	      d3_timer_frame(d3_timer_step);
 	    }
-	  };
+	    return timer;
+	  }
 	  function d3_timer_step() {
 	    var now = d3_timer_mark(), delay = d3_timer_sweep() - now;
 	    if (delay > 24) {
@@ -2280,22 +2281,21 @@
 	    d3_timer_sweep();
 	  };
 	  function d3_timer_mark() {
-	    var now = Date.now();
-	    d3_timer_active = d3_timer_queueHead;
-	    while (d3_timer_active) {
-	      if (now >= d3_timer_active.t) d3_timer_active.f = d3_timer_active.c(now - d3_timer_active.t);
-	      d3_timer_active = d3_timer_active.n;
+	    var now = Date.now(), timer = d3_timer_queueHead;
+	    while (timer) {
+	      if (now >= timer.t && timer.c(now - timer.t)) timer.c = null;
+	      timer = timer.n;
 	    }
 	    return now;
 	  }
 	  function d3_timer_sweep() {
 	    var t0, t1 = d3_timer_queueHead, time = Infinity;
 	    while (t1) {
-	      if (t1.f) {
-	        t1 = t0 ? t0.n = t1.n : d3_timer_queueHead = t1.n;
-	      } else {
+	      if (t1.c) {
 	        if (t1.t < time) time = t1.t;
 	        t1 = (t0 = t1).n;
+	      } else {
+	        t1 = t0 ? t0.n = t1.n : d3_timer_queueHead = t1.n;
 	      }
 	    }
 	    d3_timer_queueTail = t0;
@@ -2310,7 +2310,7 @@
 	  var d3_formatPrefixes = [ "y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y" ].map(d3_formatPrefix);
 	  d3.formatPrefix = function(value, precision) {
 	    var i = 0;
-	    if (value) {
+	    if (value = +value) {
 	      if (value < 0) value *= -1;
 	      if (precision) value = d3.round(value, d3_format_precision(value, precision));
 	      i = 1 + Math.floor(1e-12 + Math.log(value) / Math.LN10);
@@ -2660,7 +2660,8 @@
 	        if (i != string.length) return null;
 	        if ("p" in d) d.H = d.H % 12 + d.p * 12;
 	        var localZ = d.Z != null && d3_date !== d3_date_utc, date = new (localZ ? d3_date_utc : d3_date)();
-	        if ("j" in d) date.setFullYear(d.y, 0, d.j); else if ("w" in d && ("W" in d || "U" in d)) {
+	        if ("j" in d) date.setFullYear(d.y, 0, d.j); else if ("W" in d || "U" in d) {
+	          if (!("w" in d)) d.w = "W" in d ? 1 : 0;
 	          date.setFullYear(d.y, 0, 1);
 	          date.setFullYear(d.y, 0, "W" in d ? (d.w + 6) % 7 + d.W * 7 - (date.getDay() + 5) % 7 : d.w + d.U * 7 - (date.getDay() + 6) % 7);
 	        } else date.setFullYear(d.y, d.m, d.d);
@@ -3644,7 +3645,7 @@
 	        λ0 = λ, sinφ0 = sinφ, cosφ0 = cosφ, point0 = point;
 	      }
 	    }
-	    return (polarAngle < -ε || polarAngle < ε && d3_geo_areaRingSum < 0) ^ winding & 1;
+	    return (polarAngle < -ε || polarAngle < ε && d3_geo_areaRingSum < -ε) ^ winding & 1;
 	  }
 	  function d3_geo_clipCircle(radius) {
 	    var cr = Math.cos(radius), smallRadius = cr > 0, notHemisphere = abs(cr) > ε, interpolate = d3_geo_circleInterpolate(radius, 6 * d3_radians);
@@ -5802,7 +5803,7 @@
 	    (function find(node, x1, y1, x2, y2) {
 	      if (x1 > x3 || y1 > y3 || x2 < x0 || y2 < y0) return;
 	      if (point = node.point) {
-	        var point, dx = x - point[0], dy = y - point[1], distance2 = dx * dx + dy * dy;
+	        var point, dx = x - node.x, dy = y - node.y, distance2 = dx * dx + dy * dy;
 	        if (distance2 < minDistance2) {
 	          var distance = Math.sqrt(minDistance2 = distance2);
 	          x0 = x - distance, y0 = y - distance;
@@ -5911,7 +5912,7 @@
 	  }
 	  d3.interpolators = [ function(a, b) {
 	    var t = typeof b;
-	    return (t === "string" ? d3_rgb_names.has(b) || /^(#|rgb\(|hsl\()/.test(b) ? d3_interpolateRgb : d3_interpolateString : b instanceof d3_color ? d3_interpolateRgb : Array.isArray(b) ? d3_interpolateArray : t === "object" && isNaN(b) ? d3_interpolateObject : d3_interpolateNumber)(a, b);
+	    return (t === "string" ? d3_rgb_names.has(b.toLowerCase()) || /^(#|rgb\(|hsl\()/i.test(b) ? d3_interpolateRgb : d3_interpolateString : b instanceof d3_color ? d3_interpolateRgb : Array.isArray(b) ? d3_interpolateArray : t === "object" && isNaN(b) ? d3_interpolateObject : d3_interpolateNumber)(a, b);
 	  } ];
 	  d3.interpolateArray = d3_interpolateArray;
 	  function d3_interpolateArray(a, b) {
@@ -6112,54 +6113,68 @@
 	    f: 0
 	  };
 	  d3.interpolateTransform = d3_interpolateTransform;
-	  function d3_interpolateTransform(a, b) {
-	    var s = [], q = [], n, A = d3.transform(a), B = d3.transform(b), ta = A.translate, tb = B.translate, ra = A.rotate, rb = B.rotate, wa = A.skew, wb = B.skew, ka = A.scale, kb = B.scale;
-	    if (ta[0] != tb[0] || ta[1] != tb[1]) {
-	      s.push("translate(", null, ",", null, ")");
+	  function d3_interpolateTransformPop(s) {
+	    return s.length ? s.pop() + "," : "";
+	  }
+	  function d3_interpolateTranslate(ta, tb, s, q) {
+	    if (ta[0] !== tb[0] || ta[1] !== tb[1]) {
+	      var i = s.push("translate(", null, ",", null, ")");
 	      q.push({
-	        i: 1,
+	        i: i - 4,
 	        x: d3_interpolateNumber(ta[0], tb[0])
 	      }, {
-	        i: 3,
+	        i: i - 2,
 	        x: d3_interpolateNumber(ta[1], tb[1])
 	      });
 	    } else if (tb[0] || tb[1]) {
 	      s.push("translate(" + tb + ")");
-	    } else {
-	      s.push("");
 	    }
-	    if (ra != rb) {
+	  }
+	  function d3_interpolateRotate(ra, rb, s, q) {
+	    if (ra !== rb) {
 	      if (ra - rb > 180) rb += 360; else if (rb - ra > 180) ra += 360;
 	      q.push({
-	        i: s.push(s.pop() + "rotate(", null, ")") - 2,
+	        i: s.push(d3_interpolateTransformPop(s) + "rotate(", null, ")") - 2,
 	        x: d3_interpolateNumber(ra, rb)
 	      });
 	    } else if (rb) {
-	      s.push(s.pop() + "rotate(" + rb + ")");
+	      s.push(d3_interpolateTransformPop(s) + "rotate(" + rb + ")");
 	    }
-	    if (wa != wb) {
+	  }
+	  function d3_interpolateSkew(wa, wb, s, q) {
+	    if (wa !== wb) {
 	      q.push({
-	        i: s.push(s.pop() + "skewX(", null, ")") - 2,
+	        i: s.push(d3_interpolateTransformPop(s) + "skewX(", null, ")") - 2,
 	        x: d3_interpolateNumber(wa, wb)
 	      });
 	    } else if (wb) {
-	      s.push(s.pop() + "skewX(" + wb + ")");
+	      s.push(d3_interpolateTransformPop(s) + "skewX(" + wb + ")");
 	    }
-	    if (ka[0] != kb[0] || ka[1] != kb[1]) {
-	      n = s.push(s.pop() + "scale(", null, ",", null, ")");
+	  }
+	  function d3_interpolateScale(ka, kb, s, q) {
+	    if (ka[0] !== kb[0] || ka[1] !== kb[1]) {
+	      var i = s.push(d3_interpolateTransformPop(s) + "scale(", null, ",", null, ")");
 	      q.push({
-	        i: n - 4,
+	        i: i - 4,
 	        x: d3_interpolateNumber(ka[0], kb[0])
 	      }, {
-	        i: n - 2,
+	        i: i - 2,
 	        x: d3_interpolateNumber(ka[1], kb[1])
 	      });
-	    } else if (kb[0] != 1 || kb[1] != 1) {
-	      s.push(s.pop() + "scale(" + kb + ")");
+	    } else if (kb[0] !== 1 || kb[1] !== 1) {
+	      s.push(d3_interpolateTransformPop(s) + "scale(" + kb + ")");
 	    }
-	    n = q.length;
+	  }
+	  function d3_interpolateTransform(a, b) {
+	    var s = [], q = [];
+	    a = d3.transform(a), b = d3.transform(b);
+	    d3_interpolateTranslate(a.translate, b.translate, s, q);
+	    d3_interpolateRotate(a.rotate, b.rotate, s, q);
+	    d3_interpolateSkew(a.skew, b.skew, s, q);
+	    d3_interpolateScale(a.scale, b.scale, s, q);
+	    a = b = null;
 	    return function(t) {
-	      var i = -1, o;
+	      var i = -1, n = q.length, o;
 	      while (++i < n) s[(o = q[i]).i] = o.x(t);
 	      return s.join("");
 	    };
@@ -6263,7 +6278,7 @@
 	          index: di,
 	          startAngle: x0,
 	          endAngle: x,
-	          value: (x - x0) / k
+	          value: groupSums[di]
 	        };
 	        x += padding;
 	      }
@@ -6331,7 +6346,7 @@
 	    return chord;
 	  };
 	  d3.layout.force = function() {
-	    var force = {}, event = d3.dispatch("start", "tick", "end"), size = [ 1, 1 ], drag, alpha, friction = .9, linkDistance = d3_layout_forceLinkDistance, linkStrength = d3_layout_forceLinkStrength, charge = -30, chargeDistance2 = d3_layout_forceChargeDistance2, gravity = .1, theta2 = .64, nodes = [], links = [], distances, strengths, charges;
+	    var force = {}, event = d3.dispatch("start", "tick", "end"), timer, size = [ 1, 1 ], drag, alpha, friction = .9, linkDistance = d3_layout_forceLinkDistance, linkStrength = d3_layout_forceLinkStrength, charge = -30, chargeDistance2 = d3_layout_forceChargeDistance2, gravity = .1, theta2 = .64, nodes = [], links = [], distances, strengths, charges;
 	    function repulse(node) {
 	      return function(quad, x1, _, x2) {
 	        if (quad.point !== node) {
@@ -6355,6 +6370,7 @@
 	    }
 	    force.tick = function() {
 	      if ((alpha *= .99) < .005) {
+	        timer = null;
 	        event.end({
 	          type: "end",
 	          alpha: alpha = 0
@@ -6372,7 +6388,7 @@
 	          l = alpha * strengths[i] * ((l = Math.sqrt(l)) - distances[i]) / l;
 	          x *= l;
 	          y *= l;
-	          t.x -= x * (k = s.weight / (t.weight + s.weight));
+	          t.x -= x * (k = s.weight + t.weight ? s.weight / (s.weight + t.weight) : .5);
 	          t.y -= y * k;
 	          s.x += x * (k = 1 - k);
 	          s.y += y * k;
@@ -6468,13 +6484,21 @@
 	      if (!arguments.length) return alpha;
 	      x = +x;
 	      if (alpha) {
-	        if (x > 0) alpha = x; else alpha = 0;
+	        if (x > 0) {
+	          alpha = x;
+	        } else {
+	          timer.c = null, timer.t = NaN, timer = null;
+	          event.end({
+	            type: "end",
+	            alpha: alpha = 0
+	          });
+	        }
 	      } else if (x > 0) {
 	        event.start({
 	          type: "start",
 	          alpha: alpha = x
 	        });
-	        d3.timer(force.tick);
+	        timer = d3_timer(force.tick);
 	      }
 	      return force;
 	    };
@@ -6516,8 +6540,8 @@
 	            neighbors[o.target.index].push(o.source);
 	          }
 	        }
-	        var candidates = neighbors[i], j = -1, m = candidates.length, x;
-	        while (++j < m) if (!isNaN(x = candidates[j][dimension])) return x;
+	        var candidates = neighbors[i], j = -1, l = candidates.length, x;
+	        while (++j < l) if (!isNaN(x = candidates[j][dimension])) return x;
 	        return Math.random() * size;
 	      }
 	      return force.resume();
@@ -6728,7 +6752,7 @@
 	    function pie(data) {
 	      var n = data.length, values = data.map(function(d, i) {
 	        return +value.call(pie, d, i);
-	      }), a = +(typeof startAngle === "function" ? startAngle.apply(this, arguments) : startAngle), da = (typeof endAngle === "function" ? endAngle.apply(this, arguments) : endAngle) - a, p = Math.min(Math.abs(da) / n, +(typeof padAngle === "function" ? padAngle.apply(this, arguments) : padAngle)), pa = p * (da < 0 ? -1 : 1), k = (da - n * pa) / d3.sum(values), index = d3.range(n), arcs = [], v;
+	      }), a = +(typeof startAngle === "function" ? startAngle.apply(this, arguments) : startAngle), da = (typeof endAngle === "function" ? endAngle.apply(this, arguments) : endAngle) - a, p = Math.min(Math.abs(da) / n, +(typeof padAngle === "function" ? padAngle.apply(this, arguments) : padAngle)), pa = p * (da < 0 ? -1 : 1), sum = d3.sum(values), k = sum ? (da - n * pa) / sum : 0, index = d3.range(n), arcs = [], v;
 	      if (sort != null) index.sort(sort === d3_layout_pieSortByValue ? function(i, j) {
 	        return values[j] - values[i];
 	      } : function(i, j) {
@@ -7441,10 +7465,8 @@
 	    }
 	    function treemap(d) {
 	      var nodes = stickies || hierarchy(d), root = nodes[0];
-	      root.x = 0;
-	      root.y = 0;
-	      root.dx = size[0];
-	      root.dy = size[1];
+	      root.x = root.y = 0;
+	      if (root.value) root.dx = size[0], root.dy = size[1]; else root.dx = root.dy = 0;
 	      if (stickies) hierarchy.revalue(root);
 	      scale([ root ], root.dx * root.dy / root.value);
 	      (stickies ? stickify : squarify)(root);
@@ -7664,7 +7686,9 @@
 	    return d3.rebind(scale, linear, "range", "rangeRound", "interpolate", "clamp");
 	  }
 	  function d3_scale_linearNice(domain, m) {
-	    return d3_scale_nice(domain, d3_scale_niceStep(d3_scale_linearTickRange(domain, m)[2]));
+	    d3_scale_nice(domain, d3_scale_niceStep(d3_scale_linearTickRange(domain, m)[2]));
+	    d3_scale_nice(domain, d3_scale_niceStep(d3_scale_linearTickRange(domain, m)[2]));
+	    return domain;
 	  }
 	  function d3_scale_linearTickRange(domain, m) {
 	    if (m == null) m = 10;
@@ -7766,10 +7790,11 @@
 	    scale.tickFormat = function(n, format) {
 	      if (!arguments.length) return d3_scale_logFormat;
 	      if (arguments.length < 2) format = d3_scale_logFormat; else if (typeof format !== "function") format = d3.format(format);
-	      var k = Math.max(.1, n / scale.ticks().length), f = positive ? (e = 1e-12, Math.ceil) : (e = -1e-12, 
-	      Math.floor), e;
+	      var k = Math.max(1, base * n / scale.ticks().length);
 	      return function(d) {
-	        return d / pow(f(log(d) + e)) <= k ? format(d) : "";
+	        var i = d / pow(Math.round(log(d)));
+	        if (i * base < base - .5) i *= base;
+	        return i <= k ? format(d) : "";
 	      };
 	    };
 	    scale.copy = function() {
@@ -8108,11 +8133,16 @@
 	      } else {
 	        x2 = y2 = 0;
 	      }
-	      if ((rc = Math.min(Math.abs(r1 - r0) / 2, +cornerRadius.apply(this, arguments))) > .001) {
+	      if (da > ε && (rc = Math.min(Math.abs(r1 - r0) / 2, +cornerRadius.apply(this, arguments))) > .001) {
 	        cr = r0 < r1 ^ cw ? 0 : 1;
-	        var oc = x3 == null ? [ x2, y2 ] : x1 == null ? [ x0, y0 ] : d3_geom_polygonIntersect([ x0, y0 ], [ x3, y3 ], [ x1, y1 ], [ x2, y2 ]), ax = x0 - oc[0], ay = y0 - oc[1], bx = x1 - oc[0], by = y1 - oc[1], kc = 1 / Math.sin(Math.acos((ax * bx + ay * by) / (Math.sqrt(ax * ax + ay * ay) * Math.sqrt(bx * bx + by * by))) / 2), lc = Math.sqrt(oc[0] * oc[0] + oc[1] * oc[1]);
+	        var rc1 = rc, rc0 = rc;
+	        if (da < π) {
+	          var oc = x3 == null ? [ x2, y2 ] : x1 == null ? [ x0, y0 ] : d3_geom_polygonIntersect([ x0, y0 ], [ x3, y3 ], [ x1, y1 ], [ x2, y2 ]), ax = x0 - oc[0], ay = y0 - oc[1], bx = x1 - oc[0], by = y1 - oc[1], kc = 1 / Math.sin(Math.acos((ax * bx + ay * by) / (Math.sqrt(ax * ax + ay * ay) * Math.sqrt(bx * bx + by * by))) / 2), lc = Math.sqrt(oc[0] * oc[0] + oc[1] * oc[1]);
+	          rc0 = Math.min(rc, (r0 - lc) / (kc - 1));
+	          rc1 = Math.min(rc, (r1 - lc) / (kc + 1));
+	        }
 	        if (x1 != null) {
-	          var rc1 = Math.min(rc, (r1 - lc) / (kc + 1)), t30 = d3_svg_arcCornerTangents(x3 == null ? [ x2, y2 ] : [ x3, y3 ], [ x0, y0 ], r1, rc1, cw), t12 = d3_svg_arcCornerTangents([ x1, y1 ], [ x2, y2 ], r1, rc1, cw);
+	          var t30 = d3_svg_arcCornerTangents(x3 == null ? [ x2, y2 ] : [ x3, y3 ], [ x0, y0 ], r1, rc1, cw), t12 = d3_svg_arcCornerTangents([ x1, y1 ], [ x2, y2 ], r1, rc1, cw);
 	          if (rc === rc1) {
 	            path.push("M", t30[0], "A", rc1, ",", rc1, " 0 0,", cr, " ", t30[1], "A", r1, ",", r1, " 0 ", 1 - cw ^ d3_svg_arcSweep(t30[1][0], t30[1][1], t12[1][0], t12[1][1]), ",", cw, " ", t12[1], "A", rc1, ",", rc1, " 0 0,", cr, " ", t12[0]);
 	          } else {
@@ -8122,7 +8152,7 @@
 	          path.push("M", x0, ",", y0);
 	        }
 	        if (x3 != null) {
-	          var rc0 = Math.min(rc, (r0 - lc) / (kc - 1)), t03 = d3_svg_arcCornerTangents([ x0, y0 ], [ x3, y3 ], r0, -rc0, cw), t21 = d3_svg_arcCornerTangents([ x2, y2 ], x1 == null ? [ x0, y0 ] : [ x1, y1 ], r0, -rc0, cw);
+	          var t03 = d3_svg_arcCornerTangents([ x0, y0 ], [ x3, y3 ], r0, -rc0, cw), t21 = d3_svg_arcCornerTangents([ x2, y2 ], x1 == null ? [ x0, y0 ] : [ x1, y1 ], r0, -rc0, cw);
 	          if (rc === rc0) {
 	            path.push("L", t21[0], "A", rc0, ",", rc0, " 0 0,", cr, " ", t21[1], "A", r0, ",", r0, " 0 ", cw ^ d3_svg_arcSweep(t21[1][0], t21[1][1], t03[1][0], t03[1][1]), ",", 1 - cw, " ", t03[1], "A", rc0, ",", rc0, " 0 0,", cr, " ", t03[0]);
 	          } else {
@@ -8204,7 +8234,7 @@
 	    return (x0 - x1) * y0 - (y0 - y1) * x0 > 0 ? 0 : 1;
 	  }
 	  function d3_svg_arcCornerTangents(p0, p1, r1, rc, cw) {
-	    var x01 = p0[0] - p1[0], y01 = p0[1] - p1[1], lo = (cw ? rc : -rc) / Math.sqrt(x01 * x01 + y01 * y01), ox = lo * y01, oy = -lo * x01, x1 = p0[0] + ox, y1 = p0[1] + oy, x2 = p1[0] + ox, y2 = p1[1] + oy, x3 = (x1 + x2) / 2, y3 = (y1 + y2) / 2, dx = x2 - x1, dy = y2 - y1, d2 = dx * dx + dy * dy, r = r1 - rc, D = x1 * y2 - x2 * y1, d = (dy < 0 ? -1 : 1) * Math.sqrt(r * r * d2 - D * D), cx0 = (D * dy - dx * d) / d2, cy0 = (-D * dx - dy * d) / d2, cx1 = (D * dy + dx * d) / d2, cy1 = (-D * dx + dy * d) / d2, dx0 = cx0 - x3, dy0 = cy0 - y3, dx1 = cx1 - x3, dy1 = cy1 - y3;
+	    var x01 = p0[0] - p1[0], y01 = p0[1] - p1[1], lo = (cw ? rc : -rc) / Math.sqrt(x01 * x01 + y01 * y01), ox = lo * y01, oy = -lo * x01, x1 = p0[0] + ox, y1 = p0[1] + oy, x2 = p1[0] + ox, y2 = p1[1] + oy, x3 = (x1 + x2) / 2, y3 = (y1 + y2) / 2, dx = x2 - x1, dy = y2 - y1, d2 = dx * dx + dy * dy, r = r1 - rc, D = x1 * y2 - x2 * y1, d = (dy < 0 ? -1 : 1) * Math.sqrt(Math.max(0, r * r * d2 - D * D)), cx0 = (D * dy - dx * d) / d2, cy0 = (-D * dx - dy * d) / d2, cx1 = (D * dy + dx * d) / d2, cy1 = (-D * dx + dy * d) / d2, dx0 = cx0 - x3, dy0 = cy0 - y3, dx1 = cx1 - x3, dy1 = cy1 - y3;
 	    if (dx0 * dx0 + dy0 * dy0 > dx1 * dx1 + dy1 * dy1) cx0 = cx1, cy0 = cy1;
 	    return [ [ cx0 - ox, cy0 - oy ], [ cx0 * r1 / r, cy0 * r1 / r ] ];
 	  }
@@ -8276,10 +8306,10 @@
 	    value.closed = /-closed$/.test(key);
 	  });
 	  function d3_svg_lineLinear(points) {
-	    return points.join("L");
+	    return points.length > 1 ? points.join("L") : points + "Z";
 	  }
 	  function d3_svg_lineLinearClosed(points) {
-	    return d3_svg_lineLinear(points) + "Z";
+	    return points.join("L") + "Z";
 	  }
 	  function d3_svg_lineStep(points) {
 	    var i = 0, n = points.length, p = points[0], path = [ p[0], ",", p[1] ];
@@ -8301,7 +8331,7 @@
 	    return points.length < 4 ? d3_svg_lineLinear(points) : points[1] + d3_svg_lineHermite(points.slice(1, -1), d3_svg_lineCardinalTangents(points, tension));
 	  }
 	  function d3_svg_lineCardinalClosed(points, tension) {
-	    return points.length < 3 ? d3_svg_lineLinear(points) : points[0] + d3_svg_lineHermite((points.push(points[0]), 
+	    return points.length < 3 ? d3_svg_lineLinearClosed(points) : points[0] + d3_svg_lineHermite((points.push(points[0]), 
 	    points), d3_svg_lineCardinalTangents([ points[points.length - 2] ].concat(points, [ points[1] ]), tension));
 	  }
 	  function d3_svg_lineCardinal(points, tension) {
@@ -8737,9 +8767,11 @@
 	  var d3_selection_interrupt = d3_selection_interruptNS(d3_transitionNamespace());
 	  function d3_selection_interruptNS(ns) {
 	    return function() {
-	      var lock, active;
-	      if ((lock = this[ns]) && (active = lock[lock.active])) {
-	        if (--lock.count) delete lock[lock.active]; else delete this[ns];
+	      var lock, activeId, active;
+	      if ((lock = this[ns]) && (active = lock[activeId = lock.active])) {
+	        active.timer.c = null;
+	        active.timer.t = NaN;
+	        if (--lock.count) delete lock[activeId]; else delete this[ns];
 	        lock.active += .5;
 	        active.event && active.event.interrupt.call(this, this.__data__, active.index);
 	      }
@@ -8757,7 +8789,7 @@
 	  d3_transitionPrototype.node = d3_selectionPrototype.node;
 	  d3_transitionPrototype.size = d3_selectionPrototype.size;
 	  d3.transition = function(selection, name) {
-	    return selection && selection.transition ? d3_transitionInheritId ? selection.transition(name) : selection : d3_selectionRoot.transition(selection);
+	    return selection && selection.transition ? d3_transitionInheritId ? selection.transition(name) : selection : d3.selection().transition(selection);
 	  };
 	  d3.transition.prototype = d3_transitionPrototype;
 	  d3_transitionPrototype.select = function(selector) {
@@ -8886,7 +8918,7 @@
 	    }
 	    function styleString(b) {
 	      return b == null ? styleNull : (b += "", function() {
-	        var a = d3_window.getComputedStyle(this, null).getPropertyValue(name), i;
+	        var a = d3_window(this).getComputedStyle(this, null).getPropertyValue(name), i;
 	        return a !== b && (i = d3_interpolate(a, b), function(t) {
 	          this.style.setProperty(name, i(t), priority);
 	        });
@@ -8897,7 +8929,7 @@
 	  d3_transitionPrototype.styleTween = function(name, tween, priority) {
 	    if (arguments.length < 3) priority = "";
 	    function styleTween(d, i) {
-	      var f = tween.call(this, d, i, d3_window.getComputedStyle(this, null).getPropertyValue(name));
+	      var f = tween.call(this, d, i, d3_window(this).getComputedStyle(this, null).getPropertyValue(name));
 	      return f && function(t) {
 	        this.style.setProperty(name, f(t), priority);
 	      };
@@ -8994,12 +9026,68 @@
 	    var lock = node[ns] || (node[ns] = {
 	      active: 0,
 	      count: 0
-	    }), transition = lock[id];
+	    }), transition = lock[id], time, timer, duration, ease, tweens;
+	    function schedule(elapsed) {
+	      var delay = transition.delay;
+	      timer.t = delay + time;
+	      if (delay <= elapsed) return start(elapsed - delay);
+	      timer.c = start;
+	    }
+	    function start(elapsed) {
+	      var activeId = lock.active, active = lock[activeId];
+	      if (active) {
+	        active.timer.c = null;
+	        active.timer.t = NaN;
+	        --lock.count;
+	        delete lock[activeId];
+	        active.event && active.event.interrupt.call(node, node.__data__, active.index);
+	      }
+	      for (var cancelId in lock) {
+	        if (+cancelId < id) {
+	          var cancel = lock[cancelId];
+	          cancel.timer.c = null;
+	          cancel.timer.t = NaN;
+	          --lock.count;
+	          delete lock[cancelId];
+	        }
+	      }
+	      timer.c = tick;
+	      d3_timer(function() {
+	        if (timer.c && tick(elapsed || 1)) {
+	          timer.c = null;
+	          timer.t = NaN;
+	        }
+	        return 1;
+	      }, 0, time);
+	      lock.active = id;
+	      transition.event && transition.event.start.call(node, node.__data__, i);
+	      tweens = [];
+	      transition.tween.forEach(function(key, value) {
+	        if (value = value.call(node, node.__data__, i)) {
+	          tweens.push(value);
+	        }
+	      });
+	      ease = transition.ease;
+	      duration = transition.duration;
+	    }
+	    function tick(elapsed) {
+	      var t = elapsed / duration, e = ease(t), n = tweens.length;
+	      while (n > 0) {
+	        tweens[--n].call(node, e);
+	      }
+	      if (t >= 1) {
+	        transition.event && transition.event.end.call(node, node.__data__, i);
+	        if (--lock.count) delete lock[id]; else delete node[ns];
+	        return 1;
+	      }
+	    }
 	    if (!transition) {
-	      var time = inherit.time;
+	      time = inherit.time;
+	      timer = d3_timer(schedule, 0, time);
 	      transition = lock[id] = {
 	        tween: new d3_Map(),
 	        time: time,
+	        timer: timer,
 	        delay: inherit.delay,
 	        duration: inherit.duration,
 	        ease: inherit.ease,
@@ -9007,49 +9095,6 @@
 	      };
 	      inherit = null;
 	      ++lock.count;
-	      d3.timer(function(elapsed) {
-	        var delay = transition.delay, duration, ease, timer = d3_timer_active, tweened = [];
-	        timer.t = delay + time;
-	        if (delay <= elapsed) return start(elapsed - delay);
-	        timer.c = start;
-	        function start(elapsed) {
-	          if (lock.active > id) return stop();
-	          var active = lock[lock.active];
-	          if (active) {
-	            --lock.count;
-	            delete lock[lock.active];
-	            active.event && active.event.interrupt.call(node, node.__data__, active.index);
-	          }
-	          lock.active = id;
-	          transition.event && transition.event.start.call(node, node.__data__, i);
-	          transition.tween.forEach(function(key, value) {
-	            if (value = value.call(node, node.__data__, i)) {
-	              tweened.push(value);
-	            }
-	          });
-	          ease = transition.ease;
-	          duration = transition.duration;
-	          d3.timer(function() {
-	            timer.c = tick(elapsed || 1) ? d3_true : tick;
-	            return 1;
-	          }, 0, time);
-	        }
-	        function tick(elapsed) {
-	          if (lock.active !== id) return 1;
-	          var t = elapsed / duration, e = ease(t), n = tweened.length;
-	          while (n > 0) {
-	            tweened[--n].call(node, e);
-	          }
-	          if (t >= 1) {
-	            transition.event && transition.event.end.call(node, node.__data__, i);
-	            return stop();
-	          }
-	        }
-	        function stop() {
-	          if (--lock.count) delete lock[id]; else delete node[ns];
-	          return 1;
-	        }
-	      }, 0, time);
 	    }
 	  }
 	  d3.svg.axis = function() {
@@ -9103,7 +9148,7 @@
 	    };
 	    axis.ticks = function() {
 	      if (!arguments.length) return tickArguments_;
-	      tickArguments_ = arguments;
+	      tickArguments_ = d3_array(arguments);
 	      return axis;
 	    };
 	    axis.tickValues = function(x) {
@@ -9263,8 +9308,8 @@
 	      g.selectAll(".extent,.e>rect,.w>rect").attr("height", yExtent[1] - yExtent[0]);
 	    }
 	    function brushstart() {
-	      var target = this, eventTarget = d3.select(d3.event.target), event_ = event.of(target, arguments), g = d3.select(target), resizing = eventTarget.datum(), resizingX = !/^(n|s)$/.test(resizing) && x, resizingY = !/^(e|w)$/.test(resizing) && y, dragging = eventTarget.classed("extent"), dragRestore = d3_event_dragSuppress(), center, origin = d3.mouse(target), offset;
-	      var w = d3.select(d3_window).on("keydown.brush", keydown).on("keyup.brush", keyup);
+	      var target = this, eventTarget = d3.select(d3.event.target), event_ = event.of(target, arguments), g = d3.select(target), resizing = eventTarget.datum(), resizingX = !/^(n|s)$/.test(resizing) && x, resizingY = !/^(e|w)$/.test(resizing) && y, dragging = eventTarget.classed("extent"), dragRestore = d3_event_dragSuppress(target), center, origin = d3.mouse(target), offset;
+	      var w = d3.select(d3_window(target)).on("keydown.brush", keydown).on("keyup.brush", keyup);
 	      if (d3.event.changedTouches) {
 	        w.on("touchmove.brush", brushmove).on("touchend.brush", brushend);
 	      } else {
@@ -9625,492 +9670,71 @@
 	  d3.xml = d3_xhrType(function(request) {
 	    return request.responseXML;
 	  });
-	  if (true) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (d3), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); else if (typeof module === "object" && module.exports) module.exports = d3;
-	  this.d3 = d3;
+	  if (true) this.d3 = d3, !(__WEBPACK_AMD_DEFINE_FACTORY__ = (d3), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); else if (typeof module === "object" && module.exports) module.exports = d3; else this.d3 = d3;
 	}();
 
-
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {//! moment.js
-	//! version : 2.9.0
+	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
+	//! version : 2.15.2
 	//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 	//! license : MIT
 	//! momentjs.com
 	
-	(function (undefined) {
-	    /************************************
-	        Constants
-	    ************************************/
+	;(function (global, factory) {
+	     true ? module.exports = factory() :
+	    typeof define === 'function' && define.amd ? define(factory) :
+	    global.moment = factory()
+	}(this, function () { 'use strict';
 	
-	    var moment,
-	        VERSION = '2.9.0',
-	        // the global-scope this is NOT the global object in Node.js
-	        globalScope = (typeof global !== 'undefined' && (typeof window === 'undefined' || window === global.window)) ? global : this,
-	        oldGlobalMoment,
-	        round = Math.round,
-	        hasOwnProperty = Object.prototype.hasOwnProperty,
-	        i,
+	    var hookCallback;
 	
-	        YEAR = 0,
-	        MONTH = 1,
-	        DATE = 2,
-	        HOUR = 3,
-	        MINUTE = 4,
-	        SECOND = 5,
-	        MILLISECOND = 6,
+	    function utils_hooks__hooks () {
+	        return hookCallback.apply(null, arguments);
+	    }
 	
-	        // internal storage for locale config files
-	        locales = {},
+	    // This is done to register the method called with moment()
+	    // without creating circular dependencies.
+	    function setHookCallback (callback) {
+	        hookCallback = callback;
+	    }
 	
-	        // extra moment internal properties (plugins register props here)
-	        momentProperties = [],
+	    function isArray(input) {
+	        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
+	    }
 	
-	        // check for nodeJS
-	        hasModule = (typeof module !== 'undefined' && module && module.exports),
+	    function isObject(input) {
+	        // IE8 will treat undefined and null as object if it wasn't for
+	        // input != null
+	        return input != null && Object.prototype.toString.call(input) === '[object Object]';
+	    }
 	
-	        // ASP.NET json date format regex
-	        aspNetJsonRegex = /^\/?Date\((\-?\d+)/i,
-	        aspNetTimeSpanJsonRegex = /(\-)?(?:(\d*)\.)?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/,
-	
-	        // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-	        // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-	        isoDurationRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/,
-	
-	        // format tokens
-	        formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|x|X|zz?|ZZ?|.)/g,
-	        localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,
-	
-	        // parsing token regexes
-	        parseTokenOneOrTwoDigits = /\d\d?/, // 0 - 99
-	        parseTokenOneToThreeDigits = /\d{1,3}/, // 0 - 999
-	        parseTokenOneToFourDigits = /\d{1,4}/, // 0 - 9999
-	        parseTokenOneToSixDigits = /[+\-]?\d{1,6}/, // -999,999 - 999,999
-	        parseTokenDigits = /\d+/, // nonzero number of digits
-	        parseTokenWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i, // any word (or two) characters or numbers including two/three word month in arabic.
-	        parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/gi, // +00:00 -00:00 +0000 -0000 or Z
-	        parseTokenT = /T/i, // T (ISO separator)
-	        parseTokenOffsetMs = /[\+\-]?\d+/, // 1234567890123
-	        parseTokenTimestampMs = /[\+\-]?\d+(\.\d{1,3})?/, // 123456789 123456789.123
-	
-	        //strict parsing regexes
-	        parseTokenOneDigit = /\d/, // 0 - 9
-	        parseTokenTwoDigits = /\d\d/, // 00 - 99
-	        parseTokenThreeDigits = /\d{3}/, // 000 - 999
-	        parseTokenFourDigits = /\d{4}/, // 0000 - 9999
-	        parseTokenSixDigits = /[+-]?\d{6}/, // -999,999 - 999,999
-	        parseTokenSignedNumber = /[+-]?\d+/, // -inf - inf
-	
-	        // iso 8601 regex
-	        // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-	        isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/,
-	
-	        isoFormat = 'YYYY-MM-DDTHH:mm:ssZ',
-	
-	        isoDates = [
-	            ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
-	            ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
-	            ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
-	            ['GGGG-[W]WW', /\d{4}-W\d{2}/],
-	            ['YYYY-DDD', /\d{4}-\d{3}/]
-	        ],
-	
-	        // iso time formats and regexes
-	        isoTimes = [
-	            ['HH:mm:ss.SSSS', /(T| )\d\d:\d\d:\d\d\.\d+/],
-	            ['HH:mm:ss', /(T| )\d\d:\d\d:\d\d/],
-	            ['HH:mm', /(T| )\d\d:\d\d/],
-	            ['HH', /(T| )\d\d/]
-	        ],
-	
-	        // timezone chunker '+10:00' > ['10', '00'] or '-1530' > ['-', '15', '30']
-	        parseTimezoneChunker = /([\+\-]|\d\d)/gi,
-	
-	        // getter and setter names
-	        proxyGettersAndSetters = 'Date|Hours|Minutes|Seconds|Milliseconds'.split('|'),
-	        unitMillisecondFactors = {
-	            'Milliseconds' : 1,
-	            'Seconds' : 1e3,
-	            'Minutes' : 6e4,
-	            'Hours' : 36e5,
-	            'Days' : 864e5,
-	            'Months' : 2592e6,
-	            'Years' : 31536e6
-	        },
-	
-	        unitAliases = {
-	            ms : 'millisecond',
-	            s : 'second',
-	            m : 'minute',
-	            h : 'hour',
-	            d : 'day',
-	            D : 'date',
-	            w : 'week',
-	            W : 'isoWeek',
-	            M : 'month',
-	            Q : 'quarter',
-	            y : 'year',
-	            DDD : 'dayOfYear',
-	            e : 'weekday',
-	            E : 'isoWeekday',
-	            gg: 'weekYear',
-	            GG: 'isoWeekYear'
-	        },
-	
-	        camelFunctions = {
-	            dayofyear : 'dayOfYear',
-	            isoweekday : 'isoWeekday',
-	            isoweek : 'isoWeek',
-	            weekyear : 'weekYear',
-	            isoweekyear : 'isoWeekYear'
-	        },
-	
-	        // format function strings
-	        formatFunctions = {},
-	
-	        // default relative time thresholds
-	        relativeTimeThresholds = {
-	            s: 45,  // seconds to minute
-	            m: 45,  // minutes to hour
-	            h: 22,  // hours to day
-	            d: 26,  // days to month
-	            M: 11   // months to year
-	        },
-	
-	        // tokens to ordinalize and pad
-	        ordinalizeTokens = 'DDD w W M D d'.split(' '),
-	        paddedTokens = 'M D H h m s w W'.split(' '),
-	
-	        formatTokenFunctions = {
-	            M    : function () {
-	                return this.month() + 1;
-	            },
-	            MMM  : function (format) {
-	                return this.localeData().monthsShort(this, format);
-	            },
-	            MMMM : function (format) {
-	                return this.localeData().months(this, format);
-	            },
-	            D    : function () {
-	                return this.date();
-	            },
-	            DDD  : function () {
-	                return this.dayOfYear();
-	            },
-	            d    : function () {
-	                return this.day();
-	            },
-	            dd   : function (format) {
-	                return this.localeData().weekdaysMin(this, format);
-	            },
-	            ddd  : function (format) {
-	                return this.localeData().weekdaysShort(this, format);
-	            },
-	            dddd : function (format) {
-	                return this.localeData().weekdays(this, format);
-	            },
-	            w    : function () {
-	                return this.week();
-	            },
-	            W    : function () {
-	                return this.isoWeek();
-	            },
-	            YY   : function () {
-	                return leftZeroFill(this.year() % 100, 2);
-	            },
-	            YYYY : function () {
-	                return leftZeroFill(this.year(), 4);
-	            },
-	            YYYYY : function () {
-	                return leftZeroFill(this.year(), 5);
-	            },
-	            YYYYYY : function () {
-	                var y = this.year(), sign = y >= 0 ? '+' : '-';
-	                return sign + leftZeroFill(Math.abs(y), 6);
-	            },
-	            gg   : function () {
-	                return leftZeroFill(this.weekYear() % 100, 2);
-	            },
-	            gggg : function () {
-	                return leftZeroFill(this.weekYear(), 4);
-	            },
-	            ggggg : function () {
-	                return leftZeroFill(this.weekYear(), 5);
-	            },
-	            GG   : function () {
-	                return leftZeroFill(this.isoWeekYear() % 100, 2);
-	            },
-	            GGGG : function () {
-	                return leftZeroFill(this.isoWeekYear(), 4);
-	            },
-	            GGGGG : function () {
-	                return leftZeroFill(this.isoWeekYear(), 5);
-	            },
-	            e : function () {
-	                return this.weekday();
-	            },
-	            E : function () {
-	                return this.isoWeekday();
-	            },
-	            a    : function () {
-	                return this.localeData().meridiem(this.hours(), this.minutes(), true);
-	            },
-	            A    : function () {
-	                return this.localeData().meridiem(this.hours(), this.minutes(), false);
-	            },
-	            H    : function () {
-	                return this.hours();
-	            },
-	            h    : function () {
-	                return this.hours() % 12 || 12;
-	            },
-	            m    : function () {
-	                return this.minutes();
-	            },
-	            s    : function () {
-	                return this.seconds();
-	            },
-	            S    : function () {
-	                return toInt(this.milliseconds() / 100);
-	            },
-	            SS   : function () {
-	                return leftZeroFill(toInt(this.milliseconds() / 10), 2);
-	            },
-	            SSS  : function () {
-	                return leftZeroFill(this.milliseconds(), 3);
-	            },
-	            SSSS : function () {
-	                return leftZeroFill(this.milliseconds(), 3);
-	            },
-	            Z    : function () {
-	                var a = this.utcOffset(),
-	                    b = '+';
-	                if (a < 0) {
-	                    a = -a;
-	                    b = '-';
-	                }
-	                return b + leftZeroFill(toInt(a / 60), 2) + ':' + leftZeroFill(toInt(a) % 60, 2);
-	            },
-	            ZZ   : function () {
-	                var a = this.utcOffset(),
-	                    b = '+';
-	                if (a < 0) {
-	                    a = -a;
-	                    b = '-';
-	                }
-	                return b + leftZeroFill(toInt(a / 60), 2) + leftZeroFill(toInt(a) % 60, 2);
-	            },
-	            z : function () {
-	                return this.zoneAbbr();
-	            },
-	            zz : function () {
-	                return this.zoneName();
-	            },
-	            x    : function () {
-	                return this.valueOf();
-	            },
-	            X    : function () {
-	                return this.unix();
-	            },
-	            Q : function () {
-	                return this.quarter();
-	            }
-	        },
-	
-	        deprecations = {},
-	
-	        lists = ['months', 'monthsShort', 'weekdays', 'weekdaysShort', 'weekdaysMin'],
-	
-	        updateInProgress = false;
-	
-	    // Pick the first defined of two or three arguments. dfl comes from
-	    // default.
-	    function dfl(a, b, c) {
-	        switch (arguments.length) {
-	            case 2: return a != null ? a : b;
-	            case 3: return a != null ? a : b != null ? b : c;
-	            default: throw new Error('Implement me');
+	    function isObjectEmpty(obj) {
+	        var k;
+	        for (k in obj) {
+	            // even if its not own property I'd still call it non-empty
+	            return false;
 	        }
+	        return true;
+	    }
+	
+	    function isDate(input) {
+	        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+	    }
+	
+	    function map(arr, fn) {
+	        var res = [], i;
+	        for (i = 0; i < arr.length; ++i) {
+	            res.push(fn(arr[i], i));
+	        }
+	        return res;
 	    }
 	
 	    function hasOwnProp(a, b) {
-	        return hasOwnProperty.call(a, b);
+	        return Object.prototype.hasOwnProperty.call(a, b);
 	    }
-	
-	    function defaultParsingFlags() {
-	        // We need to deep clone this object, and es5 standard is not very
-	        // helpful.
-	        return {
-	            empty : false,
-	            unusedTokens : [],
-	            unusedInput : [],
-	            overflow : -2,
-	            charsLeftOver : 0,
-	            nullInput : false,
-	            invalidMonth : null,
-	            invalidFormat : false,
-	            userInvalidated : false,
-	            iso: false
-	        };
-	    }
-	
-	    function printMsg(msg) {
-	        if (moment.suppressDeprecationWarnings === false &&
-	                typeof console !== 'undefined' && console.warn) {
-	            console.warn('Deprecation warning: ' + msg);
-	        }
-	    }
-	
-	    function deprecate(msg, fn) {
-	        var firstTime = true;
-	        return extend(function () {
-	            if (firstTime) {
-	                printMsg(msg);
-	                firstTime = false;
-	            }
-	            return fn.apply(this, arguments);
-	        }, fn);
-	    }
-	
-	    function deprecateSimple(name, msg) {
-	        if (!deprecations[name]) {
-	            printMsg(msg);
-	            deprecations[name] = true;
-	        }
-	    }
-	
-	    function padToken(func, count) {
-	        return function (a) {
-	            return leftZeroFill(func.call(this, a), count);
-	        };
-	    }
-	    function ordinalizeToken(func, period) {
-	        return function (a) {
-	            return this.localeData().ordinal(func.call(this, a), period);
-	        };
-	    }
-	
-	    function monthDiff(a, b) {
-	        // difference in months
-	        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-	            // b is in (anchor - 1 month, anchor + 1 month)
-	            anchor = a.clone().add(wholeMonthDiff, 'months'),
-	            anchor2, adjust;
-	
-	        if (b - anchor < 0) {
-	            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-	            // linear across the month
-	            adjust = (b - anchor) / (anchor - anchor2);
-	        } else {
-	            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-	            // linear across the month
-	            adjust = (b - anchor) / (anchor2 - anchor);
-	        }
-	
-	        return -(wholeMonthDiff + adjust);
-	    }
-	
-	    while (ordinalizeTokens.length) {
-	        i = ordinalizeTokens.pop();
-	        formatTokenFunctions[i + 'o'] = ordinalizeToken(formatTokenFunctions[i], i);
-	    }
-	    while (paddedTokens.length) {
-	        i = paddedTokens.pop();
-	        formatTokenFunctions[i + i] = padToken(formatTokenFunctions[i], 2);
-	    }
-	    formatTokenFunctions.DDDD = padToken(formatTokenFunctions.DDD, 3);
-	
-	
-	    function meridiemFixWrap(locale, hour, meridiem) {
-	        var isPm;
-	
-	        if (meridiem == null) {
-	            // nothing to do
-	            return hour;
-	        }
-	        if (locale.meridiemHour != null) {
-	            return locale.meridiemHour(hour, meridiem);
-	        } else if (locale.isPM != null) {
-	            // Fallback
-	            isPm = locale.isPM(meridiem);
-	            if (isPm && hour < 12) {
-	                hour += 12;
-	            }
-	            if (!isPm && hour === 12) {
-	                hour = 0;
-	            }
-	            return hour;
-	        } else {
-	            // thie is not supposed to happen
-	            return hour;
-	        }
-	    }
-	
-	    /************************************
-	        Constructors
-	    ************************************/
-	
-	    function Locale() {
-	    }
-	
-	    // Moment prototype object
-	    function Moment(config, skipOverflow) {
-	        if (skipOverflow !== false) {
-	            checkOverflow(config);
-	        }
-	        copyConfig(this, config);
-	        this._d = new Date(+config._d);
-	        // Prevent infinite loop in case updateOffset creates new moment
-	        // objects.
-	        if (updateInProgress === false) {
-	            updateInProgress = true;
-	            moment.updateOffset(this);
-	            updateInProgress = false;
-	        }
-	    }
-	
-	    // Duration Constructor
-	    function Duration(duration) {
-	        var normalizedInput = normalizeObjectUnits(duration),
-	            years = normalizedInput.year || 0,
-	            quarters = normalizedInput.quarter || 0,
-	            months = normalizedInput.month || 0,
-	            weeks = normalizedInput.week || 0,
-	            days = normalizedInput.day || 0,
-	            hours = normalizedInput.hour || 0,
-	            minutes = normalizedInput.minute || 0,
-	            seconds = normalizedInput.second || 0,
-	            milliseconds = normalizedInput.millisecond || 0;
-	
-	        // representation for dateAddRemove
-	        this._milliseconds = +milliseconds +
-	            seconds * 1e3 + // 1000
-	            minutes * 6e4 + // 1000 * 60
-	            hours * 36e5; // 1000 * 60 * 60
-	        // Because of dateAddRemove treats 24 hours as different from a
-	        // day when working around DST, we need to store them separately
-	        this._days = +days +
-	            weeks * 7;
-	        // It is impossible translate months into days without knowing
-	        // which months you are are talking about, so we have to store
-	        // it separately.
-	        this._months = +months +
-	            quarters * 3 +
-	            years * 12;
-	
-	        this._data = {};
-	
-	        this._locale = moment.localeData();
-	
-	        this._bubble();
-	    }
-	
-	    /************************************
-	        Helpers
-	    ************************************/
-	
 	
 	    function extend(a, b) {
 	        for (var i in b) {
@@ -10130,37 +9754,137 @@
 	        return a;
 	    }
 	
+	    function create_utc__createUTC (input, format, locale, strict) {
+	        return createLocalOrUTC(input, format, locale, strict, true).utc();
+	    }
+	
+	    function defaultParsingFlags() {
+	        // We need to deep clone this object.
+	        return {
+	            empty           : false,
+	            unusedTokens    : [],
+	            unusedInput     : [],
+	            overflow        : -2,
+	            charsLeftOver   : 0,
+	            nullInput       : false,
+	            invalidMonth    : null,
+	            invalidFormat   : false,
+	            userInvalidated : false,
+	            iso             : false,
+	            parsedDateParts : [],
+	            meridiem        : null
+	        };
+	    }
+	
+	    function getParsingFlags(m) {
+	        if (m._pf == null) {
+	            m._pf = defaultParsingFlags();
+	        }
+	        return m._pf;
+	    }
+	
+	    var some;
+	    if (Array.prototype.some) {
+	        some = Array.prototype.some;
+	    } else {
+	        some = function (fun) {
+	            var t = Object(this);
+	            var len = t.length >>> 0;
+	
+	            for (var i = 0; i < len; i++) {
+	                if (i in t && fun.call(this, t[i], i, t)) {
+	                    return true;
+	                }
+	            }
+	
+	            return false;
+	        };
+	    }
+	
+	    function valid__isValid(m) {
+	        if (m._isValid == null) {
+	            var flags = getParsingFlags(m);
+	            var parsedParts = some.call(flags.parsedDateParts, function (i) {
+	                return i != null;
+	            });
+	            var isNowValid = !isNaN(m._d.getTime()) &&
+	                flags.overflow < 0 &&
+	                !flags.empty &&
+	                !flags.invalidMonth &&
+	                !flags.invalidWeekday &&
+	                !flags.nullInput &&
+	                !flags.invalidFormat &&
+	                !flags.userInvalidated &&
+	                (!flags.meridiem || (flags.meridiem && parsedParts));
+	
+	            if (m._strict) {
+	                isNowValid = isNowValid &&
+	                    flags.charsLeftOver === 0 &&
+	                    flags.unusedTokens.length === 0 &&
+	                    flags.bigHour === undefined;
+	            }
+	
+	            if (Object.isFrozen == null || !Object.isFrozen(m)) {
+	                m._isValid = isNowValid;
+	            }
+	            else {
+	                return isNowValid;
+	            }
+	        }
+	        return m._isValid;
+	    }
+	
+	    function valid__createInvalid (flags) {
+	        var m = create_utc__createUTC(NaN);
+	        if (flags != null) {
+	            extend(getParsingFlags(m), flags);
+	        }
+	        else {
+	            getParsingFlags(m).userInvalidated = true;
+	        }
+	
+	        return m;
+	    }
+	
+	    function isUndefined(input) {
+	        return input === void 0;
+	    }
+	
+	    // Plugins that add properties should also add the key here (null value),
+	    // so we can properly clone ourselves.
+	    var momentProperties = utils_hooks__hooks.momentProperties = [];
+	
 	    function copyConfig(to, from) {
 	        var i, prop, val;
 	
-	        if (typeof from._isAMomentObject !== 'undefined') {
+	        if (!isUndefined(from._isAMomentObject)) {
 	            to._isAMomentObject = from._isAMomentObject;
 	        }
-	        if (typeof from._i !== 'undefined') {
+	        if (!isUndefined(from._i)) {
 	            to._i = from._i;
 	        }
-	        if (typeof from._f !== 'undefined') {
+	        if (!isUndefined(from._f)) {
 	            to._f = from._f;
 	        }
-	        if (typeof from._l !== 'undefined') {
+	        if (!isUndefined(from._l)) {
 	            to._l = from._l;
 	        }
-	        if (typeof from._strict !== 'undefined') {
+	        if (!isUndefined(from._strict)) {
 	            to._strict = from._strict;
 	        }
-	        if (typeof from._tzm !== 'undefined') {
+	        if (!isUndefined(from._tzm)) {
 	            to._tzm = from._tzm;
 	        }
-	        if (typeof from._isUTC !== 'undefined') {
+	        if (!isUndefined(from._isUTC)) {
 	            to._isUTC = from._isUTC;
 	        }
-	        if (typeof from._offset !== 'undefined') {
+	        if (!isUndefined(from._offset)) {
 	            to._offset = from._offset;
 	        }
-	        if (typeof from._pf !== 'undefined') {
-	            to._pf = from._pf;
+	        if (!isUndefined(from._pf)) {
+	            to._pf = getParsingFlags(from);
 	        }
-	        if (typeof from._locale !== 'undefined') {
+	        if (!isUndefined(from._locale)) {
 	            to._locale = from._locale;
 	        }
 	
@@ -10168,7 +9892,7 @@
 	            for (i in momentProperties) {
 	                prop = momentProperties[i];
 	                val = from[prop];
-	                if (typeof val !== 'undefined') {
+	                if (!isUndefined(val)) {
 	                    to[prop] = val;
 	                }
 	            }
@@ -10177,99 +9901,43 @@
 	        return to;
 	    }
 	
-	    function absRound(number) {
+	    var updateInProgress = false;
+	
+	    // Moment prototype object
+	    function Moment(config) {
+	        copyConfig(this, config);
+	        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
+	        // Prevent infinite loop in case updateOffset creates new moment
+	        // objects.
+	        if (updateInProgress === false) {
+	            updateInProgress = true;
+	            utils_hooks__hooks.updateOffset(this);
+	            updateInProgress = false;
+	        }
+	    }
+	
+	    function isMoment (obj) {
+	        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
+	    }
+	
+	    function absFloor (number) {
 	        if (number < 0) {
-	            return Math.ceil(number);
+	            // -0 -> 0
+	            return Math.ceil(number) || 0;
 	        } else {
 	            return Math.floor(number);
 	        }
 	    }
 	
-	    // left zero fill a number
-	    // see http://jsperf.com/left-zero-filling for performance comparison
-	    function leftZeroFill(number, targetLength, forceSign) {
-	        var output = '' + Math.abs(number),
-	            sign = number >= 0;
+	    function toInt(argumentForCoercion) {
+	        var coercedNumber = +argumentForCoercion,
+	            value = 0;
 	
-	        while (output.length < targetLength) {
-	            output = '0' + output;
-	        }
-	        return (sign ? (forceSign ? '+' : '') : '-') + output;
-	    }
-	
-	    function positiveMomentsDifference(base, other) {
-	        var res = {milliseconds: 0, months: 0};
-	
-	        res.months = other.month() - base.month() +
-	            (other.year() - base.year()) * 12;
-	        if (base.clone().add(res.months, 'M').isAfter(other)) {
-	            --res.months;
+	        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
+	            value = absFloor(coercedNumber);
 	        }
 	
-	        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-	
-	        return res;
-	    }
-	
-	    function momentsDifference(base, other) {
-	        var res;
-	        other = makeAs(other, base);
-	        if (base.isBefore(other)) {
-	            res = positiveMomentsDifference(base, other);
-	        } else {
-	            res = positiveMomentsDifference(other, base);
-	            res.milliseconds = -res.milliseconds;
-	            res.months = -res.months;
-	        }
-	
-	        return res;
-	    }
-	
-	    // TODO: remove 'name' arg after deprecation is removed
-	    function createAdder(direction, name) {
-	        return function (val, period) {
-	            var dur, tmp;
-	            //invert the arguments, but complain about it
-	            if (period !== null && !isNaN(+period)) {
-	                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period).');
-	                tmp = val; val = period; period = tmp;
-	            }
-	
-	            val = typeof val === 'string' ? +val : val;
-	            dur = moment.duration(val, period);
-	            addOrSubtractDurationFromMoment(this, dur, direction);
-	            return this;
-	        };
-	    }
-	
-	    function addOrSubtractDurationFromMoment(mom, duration, isAdding, updateOffset) {
-	        var milliseconds = duration._milliseconds,
-	            days = duration._days,
-	            months = duration._months;
-	        updateOffset = updateOffset == null ? true : updateOffset;
-	
-	        if (milliseconds) {
-	            mom._d.setTime(+mom._d + milliseconds * isAdding);
-	        }
-	        if (days) {
-	            rawSetter(mom, 'Date', rawGetter(mom, 'Date') + days * isAdding);
-	        }
-	        if (months) {
-	            rawMonthSetter(mom, rawGetter(mom, 'Month') + months * isAdding);
-	        }
-	        if (updateOffset) {
-	            moment.updateOffset(mom, days || months);
-	        }
-	    }
-	
-	    // check if is an array
-	    function isArray(input) {
-	        return Object.prototype.toString.call(input) === '[object Array]';
-	    }
-	
-	    function isDate(input) {
-	        return Object.prototype.toString.call(input) === '[object Date]' ||
-	            input instanceof Date;
+	        return value;
 	    }
 	
 	    // compare two arrays, return the number of differences
@@ -10287,12 +9955,214 @@
 	        return diffs + lengthDiff;
 	    }
 	
-	    function normalizeUnits(units) {
-	        if (units) {
-	            var lowered = units.toLowerCase().replace(/(.)s$/, '$1');
-	            units = unitAliases[units] || camelFunctions[lowered] || lowered;
+	    function warn(msg) {
+	        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
+	                (typeof console !==  'undefined') && console.warn) {
+	            console.warn('Deprecation warning: ' + msg);
 	        }
-	        return units;
+	    }
+	
+	    function deprecate(msg, fn) {
+	        var firstTime = true;
+	
+	        return extend(function () {
+	            if (utils_hooks__hooks.deprecationHandler != null) {
+	                utils_hooks__hooks.deprecationHandler(null, msg);
+	            }
+	            if (firstTime) {
+	                var args = [];
+	                var arg;
+	                for (var i = 0; i < arguments.length; i++) {
+	                    arg = '';
+	                    if (typeof arguments[i] === 'object') {
+	                        arg += '\n[' + i + '] ';
+	                        for (var key in arguments[0]) {
+	                            arg += key + ': ' + arguments[0][key] + ', ';
+	                        }
+	                        arg = arg.slice(0, -2); // Remove trailing comma and space
+	                    } else {
+	                        arg = arguments[i];
+	                    }
+	                    args.push(arg);
+	                }
+	                warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + (new Error()).stack);
+	                firstTime = false;
+	            }
+	            return fn.apply(this, arguments);
+	        }, fn);
+	    }
+	
+	    var deprecations = {};
+	
+	    function deprecateSimple(name, msg) {
+	        if (utils_hooks__hooks.deprecationHandler != null) {
+	            utils_hooks__hooks.deprecationHandler(name, msg);
+	        }
+	        if (!deprecations[name]) {
+	            warn(msg);
+	            deprecations[name] = true;
+	        }
+	    }
+	
+	    utils_hooks__hooks.suppressDeprecationWarnings = false;
+	    utils_hooks__hooks.deprecationHandler = null;
+	
+	    function isFunction(input) {
+	        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+	    }
+	
+	    function locale_set__set (config) {
+	        var prop, i;
+	        for (i in config) {
+	            prop = config[i];
+	            if (isFunction(prop)) {
+	                this[i] = prop;
+	            } else {
+	                this['_' + i] = prop;
+	            }
+	        }
+	        this._config = config;
+	        // Lenient ordinal parsing accepts just a number in addition to
+	        // number + (possibly) stuff coming from _ordinalParseLenient.
+	        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
+	    }
+	
+	    function mergeConfigs(parentConfig, childConfig) {
+	        var res = extend({}, parentConfig), prop;
+	        for (prop in childConfig) {
+	            if (hasOwnProp(childConfig, prop)) {
+	                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
+	                    res[prop] = {};
+	                    extend(res[prop], parentConfig[prop]);
+	                    extend(res[prop], childConfig[prop]);
+	                } else if (childConfig[prop] != null) {
+	                    res[prop] = childConfig[prop];
+	                } else {
+	                    delete res[prop];
+	                }
+	            }
+	        }
+	        for (prop in parentConfig) {
+	            if (hasOwnProp(parentConfig, prop) &&
+	                    !hasOwnProp(childConfig, prop) &&
+	                    isObject(parentConfig[prop])) {
+	                // make sure changes to properties don't modify parent config
+	                res[prop] = extend({}, res[prop]);
+	            }
+	        }
+	        return res;
+	    }
+	
+	    function Locale(config) {
+	        if (config != null) {
+	            this.set(config);
+	        }
+	    }
+	
+	    var keys;
+	
+	    if (Object.keys) {
+	        keys = Object.keys;
+	    } else {
+	        keys = function (obj) {
+	            var i, res = [];
+	            for (i in obj) {
+	                if (hasOwnProp(obj, i)) {
+	                    res.push(i);
+	                }
+	            }
+	            return res;
+	        };
+	    }
+	
+	    var defaultCalendar = {
+	        sameDay : '[Today at] LT',
+	        nextDay : '[Tomorrow at] LT',
+	        nextWeek : 'dddd [at] LT',
+	        lastDay : '[Yesterday at] LT',
+	        lastWeek : '[Last] dddd [at] LT',
+	        sameElse : 'L'
+	    };
+	
+	    function locale_calendar__calendar (key, mom, now) {
+	        var output = this._calendar[key] || this._calendar['sameElse'];
+	        return isFunction(output) ? output.call(mom, now) : output;
+	    }
+	
+	    var defaultLongDateFormat = {
+	        LTS  : 'h:mm:ss A',
+	        LT   : 'h:mm A',
+	        L    : 'MM/DD/YYYY',
+	        LL   : 'MMMM D, YYYY',
+	        LLL  : 'MMMM D, YYYY h:mm A',
+	        LLLL : 'dddd, MMMM D, YYYY h:mm A'
+	    };
+	
+	    function longDateFormat (key) {
+	        var format = this._longDateFormat[key],
+	            formatUpper = this._longDateFormat[key.toUpperCase()];
+	
+	        if (format || !formatUpper) {
+	            return format;
+	        }
+	
+	        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
+	            return val.slice(1);
+	        });
+	
+	        return this._longDateFormat[key];
+	    }
+	
+	    var defaultInvalidDate = 'Invalid date';
+	
+	    function invalidDate () {
+	        return this._invalidDate;
+	    }
+	
+	    var defaultOrdinal = '%d';
+	    var defaultOrdinalParse = /\d{1,2}/;
+	
+	    function ordinal (number) {
+	        return this._ordinal.replace('%d', number);
+	    }
+	
+	    var defaultRelativeTime = {
+	        future : 'in %s',
+	        past   : '%s ago',
+	        s  : 'a few seconds',
+	        m  : 'a minute',
+	        mm : '%d minutes',
+	        h  : 'an hour',
+	        hh : '%d hours',
+	        d  : 'a day',
+	        dd : '%d days',
+	        M  : 'a month',
+	        MM : '%d months',
+	        y  : 'a year',
+	        yy : '%d years'
+	    };
+	
+	    function relative__relativeTime (number, withoutSuffix, string, isFuture) {
+	        var output = this._relativeTime[string];
+	        return (isFunction(output)) ?
+	            output(number, withoutSuffix, string, isFuture) :
+	            output.replace(/%d/i, number);
+	    }
+	
+	    function pastFuture (diff, output) {
+	        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
+	        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
+	    }
+	
+	    var aliases = {};
+	
+	    function addUnitAlias (unit, shorthand) {
+	        var lowerCase = unit.toLowerCase();
+	        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
+	    }
+	
+	    function normalizeUnits(units) {
+	        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
 	    }
 	
 	    function normalizeObjectUnits(inputObject) {
@@ -10312,70 +10182,589 @@
 	        return normalizedInput;
 	    }
 	
-	    function makeList(field) {
-	        var count, setter;
+	    var priorities = {};
 	
-	        if (field.indexOf('week') === 0) {
-	            count = 7;
-	            setter = 'day';
+	    function addUnitPriority(unit, priority) {
+	        priorities[unit] = priority;
+	    }
+	
+	    function getPrioritizedUnits(unitsObj) {
+	        var units = [];
+	        for (var u in unitsObj) {
+	            units.push({unit: u, priority: priorities[u]});
 	        }
-	        else if (field.indexOf('month') === 0) {
-	            count = 12;
-	            setter = 'month';
-	        }
-	        else {
-	            return;
-	        }
+	        units.sort(function (a, b) {
+	            return a.priority - b.priority;
+	        });
+	        return units;
+	    }
 	
-	        moment[field] = function (format, index) {
-	            var i, getter,
-	                method = moment._locale[field],
-	                results = [];
-	
-	            if (typeof format === 'number') {
-	                index = format;
-	                format = undefined;
-	            }
-	
-	            getter = function (i) {
-	                var m = moment().utc().set(setter, i);
-	                return method.call(moment._locale, m, format || '');
-	            };
-	
-	            if (index != null) {
-	                return getter(index);
-	            }
-	            else {
-	                for (i = 0; i < count; i++) {
-	                    results.push(getter(i));
-	                }
-	                return results;
+	    function makeGetSet (unit, keepTime) {
+	        return function (value) {
+	            if (value != null) {
+	                get_set__set(this, unit, value);
+	                utils_hooks__hooks.updateOffset(this, keepTime);
+	                return this;
+	            } else {
+	                return get_set__get(this, unit);
 	            }
 	        };
 	    }
 	
-	    function toInt(argumentForCoercion) {
-	        var coercedNumber = +argumentForCoercion,
-	            value = 0;
+	    function get_set__get (mom, unit) {
+	        return mom.isValid() ?
+	            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+	    }
 	
-	        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-	            if (coercedNumber >= 0) {
-	                value = Math.floor(coercedNumber);
+	    function get_set__set (mom, unit, value) {
+	        if (mom.isValid()) {
+	            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+	        }
+	    }
+	
+	    // MOMENTS
+	
+	    function stringGet (units) {
+	        units = normalizeUnits(units);
+	        if (isFunction(this[units])) {
+	            return this[units]();
+	        }
+	        return this;
+	    }
+	
+	
+	    function stringSet (units, value) {
+	        if (typeof units === 'object') {
+	            units = normalizeObjectUnits(units);
+	            var prioritized = getPrioritizedUnits(units);
+	            for (var i = 0; i < prioritized.length; i++) {
+	                this[prioritized[i].unit](units[prioritized[i].unit]);
+	            }
+	        } else {
+	            units = normalizeUnits(units);
+	            if (isFunction(this[units])) {
+	                return this[units](value);
+	            }
+	        }
+	        return this;
+	    }
+	
+	    function zeroFill(number, targetLength, forceSign) {
+	        var absNumber = '' + Math.abs(number),
+	            zerosToFill = targetLength - absNumber.length,
+	            sign = number >= 0;
+	        return (sign ? (forceSign ? '+' : '') : '-') +
+	            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
+	    }
+	
+	    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
+	
+	    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
+	
+	    var formatFunctions = {};
+	
+	    var formatTokenFunctions = {};
+	
+	    // token:    'M'
+	    // padded:   ['MM', 2]
+	    // ordinal:  'Mo'
+	    // callback: function () { this.month() + 1 }
+	    function addFormatToken (token, padded, ordinal, callback) {
+	        var func = callback;
+	        if (typeof callback === 'string') {
+	            func = function () {
+	                return this[callback]();
+	            };
+	        }
+	        if (token) {
+	            formatTokenFunctions[token] = func;
+	        }
+	        if (padded) {
+	            formatTokenFunctions[padded[0]] = function () {
+	                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
+	            };
+	        }
+	        if (ordinal) {
+	            formatTokenFunctions[ordinal] = function () {
+	                return this.localeData().ordinal(func.apply(this, arguments), token);
+	            };
+	        }
+	    }
+	
+	    function removeFormattingTokens(input) {
+	        if (input.match(/\[[\s\S]/)) {
+	            return input.replace(/^\[|\]$/g, '');
+	        }
+	        return input.replace(/\\/g, '');
+	    }
+	
+	    function makeFormatFunction(format) {
+	        var array = format.match(formattingTokens), i, length;
+	
+	        for (i = 0, length = array.length; i < length; i++) {
+	            if (formatTokenFunctions[array[i]]) {
+	                array[i] = formatTokenFunctions[array[i]];
 	            } else {
-	                value = Math.ceil(coercedNumber);
+	                array[i] = removeFormattingTokens(array[i]);
 	            }
 	        }
 	
-	        return value;
+	        return function (mom) {
+	            var output = '', i;
+	            for (i = 0; i < length; i++) {
+	                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
+	            }
+	            return output;
+	        };
+	    }
+	
+	    // format date using native date object
+	    function formatMoment(m, format) {
+	        if (!m.isValid()) {
+	            return m.localeData().invalidDate();
+	        }
+	
+	        format = expandFormat(format, m.localeData());
+	        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
+	
+	        return formatFunctions[format](m);
+	    }
+	
+	    function expandFormat(format, locale) {
+	        var i = 5;
+	
+	        function replaceLongDateFormatTokens(input) {
+	            return locale.longDateFormat(input) || input;
+	        }
+	
+	        localFormattingTokens.lastIndex = 0;
+	        while (i >= 0 && localFormattingTokens.test(format)) {
+	            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+	            localFormattingTokens.lastIndex = 0;
+	            i -= 1;
+	        }
+	
+	        return format;
+	    }
+	
+	    var match1         = /\d/;            //       0 - 9
+	    var match2         = /\d\d/;          //      00 - 99
+	    var match3         = /\d{3}/;         //     000 - 999
+	    var match4         = /\d{4}/;         //    0000 - 9999
+	    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
+	    var match1to2      = /\d\d?/;         //       0 - 99
+	    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
+	    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
+	    var match1to3      = /\d{1,3}/;       //       0 - 999
+	    var match1to4      = /\d{1,4}/;       //       0 - 9999
+	    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+	
+	    var matchUnsigned  = /\d+/;           //       0 - inf
+	    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+	
+	    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
+	    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
+	
+	    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+	
+	    // any word (or two) characters or numbers including two/three word month in arabic.
+	    // includes scottish gaelic two word and hyphenated months
+	    var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+	
+	
+	    var regexes = {};
+	
+	    function addRegexToken (token, regex, strictRegex) {
+	        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
+	            return (isStrict && strictRegex) ? strictRegex : regex;
+	        };
+	    }
+	
+	    function getParseRegexForToken (token, config) {
+	        if (!hasOwnProp(regexes, token)) {
+	            return new RegExp(unescapeFormat(token));
+	        }
+	
+	        return regexes[token](config._strict, config._locale);
+	    }
+	
+	    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+	    function unescapeFormat(s) {
+	        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+	            return p1 || p2 || p3 || p4;
+	        }));
+	    }
+	
+	    function regexEscape(s) {
+	        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+	    }
+	
+	    var tokens = {};
+	
+	    function addParseToken (token, callback) {
+	        var i, func = callback;
+	        if (typeof token === 'string') {
+	            token = [token];
+	        }
+	        if (typeof callback === 'number') {
+	            func = function (input, array) {
+	                array[callback] = toInt(input);
+	            };
+	        }
+	        for (i = 0; i < token.length; i++) {
+	            tokens[token[i]] = func;
+	        }
+	    }
+	
+	    function addWeekParseToken (token, callback) {
+	        addParseToken(token, function (input, array, config, token) {
+	            config._w = config._w || {};
+	            callback(input, config._w, config, token);
+	        });
+	    }
+	
+	    function addTimeToArrayFromToken(token, input, config) {
+	        if (input != null && hasOwnProp(tokens, token)) {
+	            tokens[token](input, config._a, config, token);
+	        }
+	    }
+	
+	    var YEAR = 0;
+	    var MONTH = 1;
+	    var DATE = 2;
+	    var HOUR = 3;
+	    var MINUTE = 4;
+	    var SECOND = 5;
+	    var MILLISECOND = 6;
+	    var WEEK = 7;
+	    var WEEKDAY = 8;
+	
+	    var indexOf;
+	
+	    if (Array.prototype.indexOf) {
+	        indexOf = Array.prototype.indexOf;
+	    } else {
+	        indexOf = function (o) {
+	            // I know
+	            var i;
+	            for (i = 0; i < this.length; ++i) {
+	                if (this[i] === o) {
+	                    return i;
+	                }
+	            }
+	            return -1;
+	        };
 	    }
 	
 	    function daysInMonth(year, month) {
 	        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
 	    }
 	
-	    function weeksInYear(year, dow, doy) {
-	        return weekOfYear(moment([year, 11, 31 + dow - doy]), dow, doy).week;
+	    // FORMATTING
+	
+	    addFormatToken('M', ['MM', 2], 'Mo', function () {
+	        return this.month() + 1;
+	    });
+	
+	    addFormatToken('MMM', 0, 0, function (format) {
+	        return this.localeData().monthsShort(this, format);
+	    });
+	
+	    addFormatToken('MMMM', 0, 0, function (format) {
+	        return this.localeData().months(this, format);
+	    });
+	
+	    // ALIASES
+	
+	    addUnitAlias('month', 'M');
+	
+	    // PRIORITY
+	
+	    addUnitPriority('month', 8);
+	
+	    // PARSING
+	
+	    addRegexToken('M',    match1to2);
+	    addRegexToken('MM',   match1to2, match2);
+	    addRegexToken('MMM',  function (isStrict, locale) {
+	        return locale.monthsShortRegex(isStrict);
+	    });
+	    addRegexToken('MMMM', function (isStrict, locale) {
+	        return locale.monthsRegex(isStrict);
+	    });
+	
+	    addParseToken(['M', 'MM'], function (input, array) {
+	        array[MONTH] = toInt(input) - 1;
+	    });
+	
+	    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
+	        var month = config._locale.monthsParse(input, token, config._strict);
+	        // if we didn't find a month name, mark the date as invalid.
+	        if (month != null) {
+	            array[MONTH] = month;
+	        } else {
+	            getParsingFlags(config).invalidMonth = input;
+	        }
+	    });
+	
+	    // LOCALES
+	
+	    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
+	    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
+	    function localeMonths (m, format) {
+	        if (!m) {
+	            return this._months;
+	        }
+	        return isArray(this._months) ? this._months[m.month()] :
+	            this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
 	    }
+	
+	    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
+	    function localeMonthsShort (m, format) {
+	        if (!m) {
+	            return this._monthsShort;
+	        }
+	        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
+	            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+	    }
+	
+	    function units_month__handleStrictParse(monthName, format, strict) {
+	        var i, ii, mom, llc = monthName.toLocaleLowerCase();
+	        if (!this._monthsParse) {
+	            // this is not used
+	            this._monthsParse = [];
+	            this._longMonthsParse = [];
+	            this._shortMonthsParse = [];
+	            for (i = 0; i < 12; ++i) {
+	                mom = create_utc__createUTC([2000, i]);
+	                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
+	                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+	            }
+	        }
+	
+	        if (strict) {
+	            if (format === 'MMM') {
+	                ii = indexOf.call(this._shortMonthsParse, llc);
+	                return ii !== -1 ? ii : null;
+	            } else {
+	                ii = indexOf.call(this._longMonthsParse, llc);
+	                return ii !== -1 ? ii : null;
+	            }
+	        } else {
+	            if (format === 'MMM') {
+	                ii = indexOf.call(this._shortMonthsParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._longMonthsParse, llc);
+	                return ii !== -1 ? ii : null;
+	            } else {
+	                ii = indexOf.call(this._longMonthsParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._shortMonthsParse, llc);
+	                return ii !== -1 ? ii : null;
+	            }
+	        }
+	    }
+	
+	    function localeMonthsParse (monthName, format, strict) {
+	        var i, mom, regex;
+	
+	        if (this._monthsParseExact) {
+	            return units_month__handleStrictParse.call(this, monthName, format, strict);
+	        }
+	
+	        if (!this._monthsParse) {
+	            this._monthsParse = [];
+	            this._longMonthsParse = [];
+	            this._shortMonthsParse = [];
+	        }
+	
+	        // TODO: add sorting
+	        // Sorting makes sure if one month (or abbr) is a prefix of another
+	        // see sorting in computeMonthsParse
+	        for (i = 0; i < 12; i++) {
+	            // make the regex if we don't have it already
+	            mom = create_utc__createUTC([2000, i]);
+	            if (strict && !this._longMonthsParse[i]) {
+	                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
+	                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
+	            }
+	            if (!strict && !this._monthsParse[i]) {
+	                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
+	                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
+	            }
+	            // test the regex
+	            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
+	                return i;
+	            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
+	                return i;
+	            } else if (!strict && this._monthsParse[i].test(monthName)) {
+	                return i;
+	            }
+	        }
+	    }
+	
+	    // MOMENTS
+	
+	    function setMonth (mom, value) {
+	        var dayOfMonth;
+	
+	        if (!mom.isValid()) {
+	            // No op
+	            return mom;
+	        }
+	
+	        if (typeof value === 'string') {
+	            if (/^\d+$/.test(value)) {
+	                value = toInt(value);
+	            } else {
+	                value = mom.localeData().monthsParse(value);
+	                // TODO: Another silent failure?
+	                if (typeof value !== 'number') {
+	                    return mom;
+	                }
+	            }
+	        }
+	
+	        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
+	        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+	        return mom;
+	    }
+	
+	    function getSetMonth (value) {
+	        if (value != null) {
+	            setMonth(this, value);
+	            utils_hooks__hooks.updateOffset(this, true);
+	            return this;
+	        } else {
+	            return get_set__get(this, 'Month');
+	        }
+	    }
+	
+	    function getDaysInMonth () {
+	        return daysInMonth(this.year(), this.month());
+	    }
+	
+	    var defaultMonthsShortRegex = matchWord;
+	    function monthsShortRegex (isStrict) {
+	        if (this._monthsParseExact) {
+	            if (!hasOwnProp(this, '_monthsRegex')) {
+	                computeMonthsParse.call(this);
+	            }
+	            if (isStrict) {
+	                return this._monthsShortStrictRegex;
+	            } else {
+	                return this._monthsShortRegex;
+	            }
+	        } else {
+	            if (!hasOwnProp(this, '_monthsShortRegex')) {
+	                this._monthsShortRegex = defaultMonthsShortRegex;
+	            }
+	            return this._monthsShortStrictRegex && isStrict ?
+	                this._monthsShortStrictRegex : this._monthsShortRegex;
+	        }
+	    }
+	
+	    var defaultMonthsRegex = matchWord;
+	    function monthsRegex (isStrict) {
+	        if (this._monthsParseExact) {
+	            if (!hasOwnProp(this, '_monthsRegex')) {
+	                computeMonthsParse.call(this);
+	            }
+	            if (isStrict) {
+	                return this._monthsStrictRegex;
+	            } else {
+	                return this._monthsRegex;
+	            }
+	        } else {
+	            if (!hasOwnProp(this, '_monthsRegex')) {
+	                this._monthsRegex = defaultMonthsRegex;
+	            }
+	            return this._monthsStrictRegex && isStrict ?
+	                this._monthsStrictRegex : this._monthsRegex;
+	        }
+	    }
+	
+	    function computeMonthsParse () {
+	        function cmpLenRev(a, b) {
+	            return b.length - a.length;
+	        }
+	
+	        var shortPieces = [], longPieces = [], mixedPieces = [],
+	            i, mom;
+	        for (i = 0; i < 12; i++) {
+	            // make the regex if we don't have it already
+	            mom = create_utc__createUTC([2000, i]);
+	            shortPieces.push(this.monthsShort(mom, ''));
+	            longPieces.push(this.months(mom, ''));
+	            mixedPieces.push(this.months(mom, ''));
+	            mixedPieces.push(this.monthsShort(mom, ''));
+	        }
+	        // Sorting makes sure if one month (or abbr) is a prefix of another it
+	        // will match the longer piece.
+	        shortPieces.sort(cmpLenRev);
+	        longPieces.sort(cmpLenRev);
+	        mixedPieces.sort(cmpLenRev);
+	        for (i = 0; i < 12; i++) {
+	            shortPieces[i] = regexEscape(shortPieces[i]);
+	            longPieces[i] = regexEscape(longPieces[i]);
+	        }
+	        for (i = 0; i < 24; i++) {
+	            mixedPieces[i] = regexEscape(mixedPieces[i]);
+	        }
+	
+	        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+	        this._monthsShortRegex = this._monthsRegex;
+	        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+	        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+	    }
+	
+	    // FORMATTING
+	
+	    addFormatToken('Y', 0, 0, function () {
+	        var y = this.year();
+	        return y <= 9999 ? '' + y : '+' + y;
+	    });
+	
+	    addFormatToken(0, ['YY', 2], 0, function () {
+	        return this.year() % 100;
+	    });
+	
+	    addFormatToken(0, ['YYYY',   4],       0, 'year');
+	    addFormatToken(0, ['YYYYY',  5],       0, 'year');
+	    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
+	
+	    // ALIASES
+	
+	    addUnitAlias('year', 'y');
+	
+	    // PRIORITIES
+	
+	    addUnitPriority('year', 1);
+	
+	    // PARSING
+	
+	    addRegexToken('Y',      matchSigned);
+	    addRegexToken('YY',     match1to2, match2);
+	    addRegexToken('YYYY',   match1to4, match4);
+	    addRegexToken('YYYYY',  match1to6, match6);
+	    addRegexToken('YYYYYY', match1to6, match6);
+	
+	    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+	    addParseToken('YYYY', function (input, array) {
+	        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
+	    });
+	    addParseToken('YY', function (input, array) {
+	        array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
+	    });
+	    addParseToken('Y', function (input, array) {
+	        array[YEAR] = parseInt(input, 10);
+	    });
+	
+	    // HELPERS
 	
 	    function daysInYear(year) {
 	        return isLeapYear(year) ? 366 : 365;
@@ -10385,48 +10774,666 @@
 	        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 	    }
 	
-	    function checkOverflow(m) {
-	        var overflow;
-	        if (m._a && m._pf.overflow === -2) {
-	            overflow =
-	                m._a[MONTH] < 0 || m._a[MONTH] > 11 ? MONTH :
-	                m._a[DATE] < 1 || m._a[DATE] > daysInMonth(m._a[YEAR], m._a[MONTH]) ? DATE :
-	                m._a[HOUR] < 0 || m._a[HOUR] > 24 ||
-	                    (m._a[HOUR] === 24 && (m._a[MINUTE] !== 0 ||
-	                                           m._a[SECOND] !== 0 ||
-	                                           m._a[MILLISECOND] !== 0)) ? HOUR :
-	                m._a[MINUTE] < 0 || m._a[MINUTE] > 59 ? MINUTE :
-	                m._a[SECOND] < 0 || m._a[SECOND] > 59 ? SECOND :
-	                m._a[MILLISECOND] < 0 || m._a[MILLISECOND] > 999 ? MILLISECOND :
-	                -1;
+	    // HOOKS
 	
-	            if (m._pf._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-	                overflow = DATE;
+	    utils_hooks__hooks.parseTwoDigitYear = function (input) {
+	        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+	    };
+	
+	    // MOMENTS
+	
+	    var getSetYear = makeGetSet('FullYear', true);
+	
+	    function getIsLeapYear () {
+	        return isLeapYear(this.year());
+	    }
+	
+	    function createDate (y, m, d, h, M, s, ms) {
+	        //can't just apply() to create a date:
+	        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
+	        var date = new Date(y, m, d, h, M, s, ms);
+	
+	        //the date constructor remaps years 0-99 to 1900-1999
+	        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
+	            date.setFullYear(y);
+	        }
+	        return date;
+	    }
+	
+	    function createUTCDate (y) {
+	        var date = new Date(Date.UTC.apply(null, arguments));
+	
+	        //the Date.UTC function remaps years 0-99 to 1900-1999
+	        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
+	            date.setUTCFullYear(y);
+	        }
+	        return date;
+	    }
+	
+	    // start-of-first-week - start-of-year
+	    function firstWeekOffset(year, dow, doy) {
+	        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
+	            fwd = 7 + dow - doy,
+	            // first-week day local weekday -- which local weekday is fwd
+	            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
+	
+	        return -fwdlw + fwd - 1;
+	    }
+	
+	    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+	    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
+	        var localWeekday = (7 + weekday - dow) % 7,
+	            weekOffset = firstWeekOffset(year, dow, doy),
+	            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
+	            resYear, resDayOfYear;
+	
+	        if (dayOfYear <= 0) {
+	            resYear = year - 1;
+	            resDayOfYear = daysInYear(resYear) + dayOfYear;
+	        } else if (dayOfYear > daysInYear(year)) {
+	            resYear = year + 1;
+	            resDayOfYear = dayOfYear - daysInYear(year);
+	        } else {
+	            resYear = year;
+	            resDayOfYear = dayOfYear;
+	        }
+	
+	        return {
+	            year: resYear,
+	            dayOfYear: resDayOfYear
+	        };
+	    }
+	
+	    function weekOfYear(mom, dow, doy) {
+	        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
+	            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
+	            resWeek, resYear;
+	
+	        if (week < 1) {
+	            resYear = mom.year() - 1;
+	            resWeek = week + weeksInYear(resYear, dow, doy);
+	        } else if (week > weeksInYear(mom.year(), dow, doy)) {
+	            resWeek = week - weeksInYear(mom.year(), dow, doy);
+	            resYear = mom.year() + 1;
+	        } else {
+	            resYear = mom.year();
+	            resWeek = week;
+	        }
+	
+	        return {
+	            week: resWeek,
+	            year: resYear
+	        };
+	    }
+	
+	    function weeksInYear(year, dow, doy) {
+	        var weekOffset = firstWeekOffset(year, dow, doy),
+	            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
+	        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
+	    }
+	
+	    // FORMATTING
+	
+	    addFormatToken('w', ['ww', 2], 'wo', 'week');
+	    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
+	
+	    // ALIASES
+	
+	    addUnitAlias('week', 'w');
+	    addUnitAlias('isoWeek', 'W');
+	
+	    // PRIORITIES
+	
+	    addUnitPriority('week', 5);
+	    addUnitPriority('isoWeek', 5);
+	
+	    // PARSING
+	
+	    addRegexToken('w',  match1to2);
+	    addRegexToken('ww', match1to2, match2);
+	    addRegexToken('W',  match1to2);
+	    addRegexToken('WW', match1to2, match2);
+	
+	    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
+	        week[token.substr(0, 1)] = toInt(input);
+	    });
+	
+	    // HELPERS
+	
+	    // LOCALES
+	
+	    function localeWeek (mom) {
+	        return weekOfYear(mom, this._week.dow, this._week.doy).week;
+	    }
+	
+	    var defaultLocaleWeek = {
+	        dow : 0, // Sunday is the first day of the week.
+	        doy : 6  // The week that contains Jan 1st is the first week of the year.
+	    };
+	
+	    function localeFirstDayOfWeek () {
+	        return this._week.dow;
+	    }
+	
+	    function localeFirstDayOfYear () {
+	        return this._week.doy;
+	    }
+	
+	    // MOMENTS
+	
+	    function getSetWeek (input) {
+	        var week = this.localeData().week(this);
+	        return input == null ? week : this.add((input - week) * 7, 'd');
+	    }
+	
+	    function getSetISOWeek (input) {
+	        var week = weekOfYear(this, 1, 4).week;
+	        return input == null ? week : this.add((input - week) * 7, 'd');
+	    }
+	
+	    // FORMATTING
+	
+	    addFormatToken('d', 0, 'do', 'day');
+	
+	    addFormatToken('dd', 0, 0, function (format) {
+	        return this.localeData().weekdaysMin(this, format);
+	    });
+	
+	    addFormatToken('ddd', 0, 0, function (format) {
+	        return this.localeData().weekdaysShort(this, format);
+	    });
+	
+	    addFormatToken('dddd', 0, 0, function (format) {
+	        return this.localeData().weekdays(this, format);
+	    });
+	
+	    addFormatToken('e', 0, 0, 'weekday');
+	    addFormatToken('E', 0, 0, 'isoWeekday');
+	
+	    // ALIASES
+	
+	    addUnitAlias('day', 'd');
+	    addUnitAlias('weekday', 'e');
+	    addUnitAlias('isoWeekday', 'E');
+	
+	    // PRIORITY
+	    addUnitPriority('day', 11);
+	    addUnitPriority('weekday', 11);
+	    addUnitPriority('isoWeekday', 11);
+	
+	    // PARSING
+	
+	    addRegexToken('d',    match1to2);
+	    addRegexToken('e',    match1to2);
+	    addRegexToken('E',    match1to2);
+	    addRegexToken('dd',   function (isStrict, locale) {
+	        return locale.weekdaysMinRegex(isStrict);
+	    });
+	    addRegexToken('ddd',   function (isStrict, locale) {
+	        return locale.weekdaysShortRegex(isStrict);
+	    });
+	    addRegexToken('dddd',   function (isStrict, locale) {
+	        return locale.weekdaysRegex(isStrict);
+	    });
+	
+	    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
+	        var weekday = config._locale.weekdaysParse(input, token, config._strict);
+	        // if we didn't get a weekday name, mark the date as invalid
+	        if (weekday != null) {
+	            week.d = weekday;
+	        } else {
+	            getParsingFlags(config).invalidWeekday = input;
+	        }
+	    });
+	
+	    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
+	        week[token] = toInt(input);
+	    });
+	
+	    // HELPERS
+	
+	    function parseWeekday(input, locale) {
+	        if (typeof input !== 'string') {
+	            return input;
+	        }
+	
+	        if (!isNaN(input)) {
+	            return parseInt(input, 10);
+	        }
+	
+	        input = locale.weekdaysParse(input);
+	        if (typeof input === 'number') {
+	            return input;
+	        }
+	
+	        return null;
+	    }
+	
+	    function parseIsoWeekday(input, locale) {
+	        if (typeof input === 'string') {
+	            return locale.weekdaysParse(input) % 7 || 7;
+	        }
+	        return isNaN(input) ? null : input;
+	    }
+	
+	    // LOCALES
+	
+	    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
+	    function localeWeekdays (m, format) {
+	        if (!m) {
+	            return this._weekdays;
+	        }
+	        return isArray(this._weekdays) ? this._weekdays[m.day()] :
+	            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
+	    }
+	
+	    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
+	    function localeWeekdaysShort (m) {
+	        return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+	    }
+	
+	    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
+	    function localeWeekdaysMin (m) {
+	        return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+	    }
+	
+	    function day_of_week__handleStrictParse(weekdayName, format, strict) {
+	        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
+	        if (!this._weekdaysParse) {
+	            this._weekdaysParse = [];
+	            this._shortWeekdaysParse = [];
+	            this._minWeekdaysParse = [];
+	
+	            for (i = 0; i < 7; ++i) {
+	                mom = create_utc__createUTC([2000, 1]).day(i);
+	                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
+	                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
+	                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
 	            }
+	        }
 	
-	            m._pf.overflow = overflow;
+	        if (strict) {
+	            if (format === 'dddd') {
+	                ii = indexOf.call(this._weekdaysParse, llc);
+	                return ii !== -1 ? ii : null;
+	            } else if (format === 'ddd') {
+	                ii = indexOf.call(this._shortWeekdaysParse, llc);
+	                return ii !== -1 ? ii : null;
+	            } else {
+	                ii = indexOf.call(this._minWeekdaysParse, llc);
+	                return ii !== -1 ? ii : null;
+	            }
+	        } else {
+	            if (format === 'dddd') {
+	                ii = indexOf.call(this._weekdaysParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._shortWeekdaysParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._minWeekdaysParse, llc);
+	                return ii !== -1 ? ii : null;
+	            } else if (format === 'ddd') {
+	                ii = indexOf.call(this._shortWeekdaysParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._weekdaysParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._minWeekdaysParse, llc);
+	                return ii !== -1 ? ii : null;
+	            } else {
+	                ii = indexOf.call(this._minWeekdaysParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._weekdaysParse, llc);
+	                if (ii !== -1) {
+	                    return ii;
+	                }
+	                ii = indexOf.call(this._shortWeekdaysParse, llc);
+	                return ii !== -1 ? ii : null;
+	            }
 	        }
 	    }
 	
-	    function isValid(m) {
-	        if (m._isValid == null) {
-	            m._isValid = !isNaN(m._d.getTime()) &&
-	                m._pf.overflow < 0 &&
-	                !m._pf.empty &&
-	                !m._pf.invalidMonth &&
-	                !m._pf.nullInput &&
-	                !m._pf.invalidFormat &&
-	                !m._pf.userInvalidated;
+	    function localeWeekdaysParse (weekdayName, format, strict) {
+	        var i, mom, regex;
 	
-	            if (m._strict) {
-	                m._isValid = m._isValid &&
-	                    m._pf.charsLeftOver === 0 &&
-	                    m._pf.unusedTokens.length === 0 &&
-	                    m._pf.bigHour === undefined;
+	        if (this._weekdaysParseExact) {
+	            return day_of_week__handleStrictParse.call(this, weekdayName, format, strict);
+	        }
+	
+	        if (!this._weekdaysParse) {
+	            this._weekdaysParse = [];
+	            this._minWeekdaysParse = [];
+	            this._shortWeekdaysParse = [];
+	            this._fullWeekdaysParse = [];
+	        }
+	
+	        for (i = 0; i < 7; i++) {
+	            // make the regex if we don't have it already
+	
+	            mom = create_utc__createUTC([2000, 1]).day(i);
+	            if (strict && !this._fullWeekdaysParse[i]) {
+	                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
+	                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
+	                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
+	            }
+	            if (!this._weekdaysParse[i]) {
+	                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
+	                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
+	            }
+	            // test the regex
+	            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
+	                return i;
+	            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
+	                return i;
+	            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
+	                return i;
+	            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
+	                return i;
 	            }
 	        }
-	        return m._isValid;
 	    }
+	
+	    // MOMENTS
+	
+	    function getSetDayOfWeek (input) {
+	        if (!this.isValid()) {
+	            return input != null ? this : NaN;
+	        }
+	        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
+	        if (input != null) {
+	            input = parseWeekday(input, this.localeData());
+	            return this.add(input - day, 'd');
+	        } else {
+	            return day;
+	        }
+	    }
+	
+	    function getSetLocaleDayOfWeek (input) {
+	        if (!this.isValid()) {
+	            return input != null ? this : NaN;
+	        }
+	        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
+	        return input == null ? weekday : this.add(input - weekday, 'd');
+	    }
+	
+	    function getSetISODayOfWeek (input) {
+	        if (!this.isValid()) {
+	            return input != null ? this : NaN;
+	        }
+	
+	        // behaves the same as moment#day except
+	        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
+	        // as a setter, sunday should belong to the previous week.
+	
+	        if (input != null) {
+	            var weekday = parseIsoWeekday(input, this.localeData());
+	            return this.day(this.day() % 7 ? weekday : weekday - 7);
+	        } else {
+	            return this.day() || 7;
+	        }
+	    }
+	
+	    var defaultWeekdaysRegex = matchWord;
+	    function weekdaysRegex (isStrict) {
+	        if (this._weekdaysParseExact) {
+	            if (!hasOwnProp(this, '_weekdaysRegex')) {
+	                computeWeekdaysParse.call(this);
+	            }
+	            if (isStrict) {
+	                return this._weekdaysStrictRegex;
+	            } else {
+	                return this._weekdaysRegex;
+	            }
+	        } else {
+	            if (!hasOwnProp(this, '_weekdaysRegex')) {
+	                this._weekdaysRegex = defaultWeekdaysRegex;
+	            }
+	            return this._weekdaysStrictRegex && isStrict ?
+	                this._weekdaysStrictRegex : this._weekdaysRegex;
+	        }
+	    }
+	
+	    var defaultWeekdaysShortRegex = matchWord;
+	    function weekdaysShortRegex (isStrict) {
+	        if (this._weekdaysParseExact) {
+	            if (!hasOwnProp(this, '_weekdaysRegex')) {
+	                computeWeekdaysParse.call(this);
+	            }
+	            if (isStrict) {
+	                return this._weekdaysShortStrictRegex;
+	            } else {
+	                return this._weekdaysShortRegex;
+	            }
+	        } else {
+	            if (!hasOwnProp(this, '_weekdaysShortRegex')) {
+	                this._weekdaysShortRegex = defaultWeekdaysShortRegex;
+	            }
+	            return this._weekdaysShortStrictRegex && isStrict ?
+	                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
+	        }
+	    }
+	
+	    var defaultWeekdaysMinRegex = matchWord;
+	    function weekdaysMinRegex (isStrict) {
+	        if (this._weekdaysParseExact) {
+	            if (!hasOwnProp(this, '_weekdaysRegex')) {
+	                computeWeekdaysParse.call(this);
+	            }
+	            if (isStrict) {
+	                return this._weekdaysMinStrictRegex;
+	            } else {
+	                return this._weekdaysMinRegex;
+	            }
+	        } else {
+	            if (!hasOwnProp(this, '_weekdaysMinRegex')) {
+	                this._weekdaysMinRegex = defaultWeekdaysMinRegex;
+	            }
+	            return this._weekdaysMinStrictRegex && isStrict ?
+	                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
+	        }
+	    }
+	
+	
+	    function computeWeekdaysParse () {
+	        function cmpLenRev(a, b) {
+	            return b.length - a.length;
+	        }
+	
+	        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
+	            i, mom, minp, shortp, longp;
+	        for (i = 0; i < 7; i++) {
+	            // make the regex if we don't have it already
+	            mom = create_utc__createUTC([2000, 1]).day(i);
+	            minp = this.weekdaysMin(mom, '');
+	            shortp = this.weekdaysShort(mom, '');
+	            longp = this.weekdays(mom, '');
+	            minPieces.push(minp);
+	            shortPieces.push(shortp);
+	            longPieces.push(longp);
+	            mixedPieces.push(minp);
+	            mixedPieces.push(shortp);
+	            mixedPieces.push(longp);
+	        }
+	        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
+	        // will match the longer piece.
+	        minPieces.sort(cmpLenRev);
+	        shortPieces.sort(cmpLenRev);
+	        longPieces.sort(cmpLenRev);
+	        mixedPieces.sort(cmpLenRev);
+	        for (i = 0; i < 7; i++) {
+	            shortPieces[i] = regexEscape(shortPieces[i]);
+	            longPieces[i] = regexEscape(longPieces[i]);
+	            mixedPieces[i] = regexEscape(mixedPieces[i]);
+	        }
+	
+	        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+	        this._weekdaysShortRegex = this._weekdaysRegex;
+	        this._weekdaysMinRegex = this._weekdaysRegex;
+	
+	        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+	        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+	        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
+	    }
+	
+	    // FORMATTING
+	
+	    function hFormat() {
+	        return this.hours() % 12 || 12;
+	    }
+	
+	    function kFormat() {
+	        return this.hours() || 24;
+	    }
+	
+	    addFormatToken('H', ['HH', 2], 0, 'hour');
+	    addFormatToken('h', ['hh', 2], 0, hFormat);
+	    addFormatToken('k', ['kk', 2], 0, kFormat);
+	
+	    addFormatToken('hmm', 0, 0, function () {
+	        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+	    });
+	
+	    addFormatToken('hmmss', 0, 0, function () {
+	        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
+	            zeroFill(this.seconds(), 2);
+	    });
+	
+	    addFormatToken('Hmm', 0, 0, function () {
+	        return '' + this.hours() + zeroFill(this.minutes(), 2);
+	    });
+	
+	    addFormatToken('Hmmss', 0, 0, function () {
+	        return '' + this.hours() + zeroFill(this.minutes(), 2) +
+	            zeroFill(this.seconds(), 2);
+	    });
+	
+	    function meridiem (token, lowercase) {
+	        addFormatToken(token, 0, 0, function () {
+	            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
+	        });
+	    }
+	
+	    meridiem('a', true);
+	    meridiem('A', false);
+	
+	    // ALIASES
+	
+	    addUnitAlias('hour', 'h');
+	
+	    // PRIORITY
+	    addUnitPriority('hour', 13);
+	
+	    // PARSING
+	
+	    function matchMeridiem (isStrict, locale) {
+	        return locale._meridiemParse;
+	    }
+	
+	    addRegexToken('a',  matchMeridiem);
+	    addRegexToken('A',  matchMeridiem);
+	    addRegexToken('H',  match1to2);
+	    addRegexToken('h',  match1to2);
+	    addRegexToken('HH', match1to2, match2);
+	    addRegexToken('hh', match1to2, match2);
+	
+	    addRegexToken('hmm', match3to4);
+	    addRegexToken('hmmss', match5to6);
+	    addRegexToken('Hmm', match3to4);
+	    addRegexToken('Hmmss', match5to6);
+	
+	    addParseToken(['H', 'HH'], HOUR);
+	    addParseToken(['a', 'A'], function (input, array, config) {
+	        config._isPm = config._locale.isPM(input);
+	        config._meridiem = input;
+	    });
+	    addParseToken(['h', 'hh'], function (input, array, config) {
+	        array[HOUR] = toInt(input);
+	        getParsingFlags(config).bigHour = true;
+	    });
+	    addParseToken('hmm', function (input, array, config) {
+	        var pos = input.length - 2;
+	        array[HOUR] = toInt(input.substr(0, pos));
+	        array[MINUTE] = toInt(input.substr(pos));
+	        getParsingFlags(config).bigHour = true;
+	    });
+	    addParseToken('hmmss', function (input, array, config) {
+	        var pos1 = input.length - 4;
+	        var pos2 = input.length - 2;
+	        array[HOUR] = toInt(input.substr(0, pos1));
+	        array[MINUTE] = toInt(input.substr(pos1, 2));
+	        array[SECOND] = toInt(input.substr(pos2));
+	        getParsingFlags(config).bigHour = true;
+	    });
+	    addParseToken('Hmm', function (input, array, config) {
+	        var pos = input.length - 2;
+	        array[HOUR] = toInt(input.substr(0, pos));
+	        array[MINUTE] = toInt(input.substr(pos));
+	    });
+	    addParseToken('Hmmss', function (input, array, config) {
+	        var pos1 = input.length - 4;
+	        var pos2 = input.length - 2;
+	        array[HOUR] = toInt(input.substr(0, pos1));
+	        array[MINUTE] = toInt(input.substr(pos1, 2));
+	        array[SECOND] = toInt(input.substr(pos2));
+	    });
+	
+	    // LOCALES
+	
+	    function localeIsPM (input) {
+	        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
+	        // Using charAt should be more compatible.
+	        return ((input + '').toLowerCase().charAt(0) === 'p');
+	    }
+	
+	    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
+	    function localeMeridiem (hours, minutes, isLower) {
+	        if (hours > 11) {
+	            return isLower ? 'pm' : 'PM';
+	        } else {
+	            return isLower ? 'am' : 'AM';
+	        }
+	    }
+	
+	
+	    // MOMENTS
+	
+	    // Setting the hour should keep the time, because the user explicitly
+	    // specified which hour he wants. So trying to maintain the same hour (in
+	    // a new timezone) makes sense. Adding/subtracting hours does not follow
+	    // this rule.
+	    var getSetHour = makeGetSet('Hours', true);
+	
+	    var baseConfig = {
+	        calendar: defaultCalendar,
+	        longDateFormat: defaultLongDateFormat,
+	        invalidDate: defaultInvalidDate,
+	        ordinal: defaultOrdinal,
+	        ordinalParse: defaultOrdinalParse,
+	        relativeTime: defaultRelativeTime,
+	
+	        months: defaultLocaleMonths,
+	        monthsShort: defaultLocaleMonthsShort,
+	
+	        week: defaultLocaleWeek,
+	
+	        weekdays: defaultLocaleWeekdays,
+	        weekdaysMin: defaultLocaleWeekdaysMin,
+	        weekdaysShort: defaultLocaleWeekdaysShort,
+	
+	        meridiemParse: defaultLocaleMeridiemParse
+	    };
+	
+	    // internal storage for locale config files
+	    var locales = {};
+	    var globalLocale;
 	
 	    function normalizeLocale(key) {
 	        return key ? key.toLowerCase().replace('_', '-') : key;
@@ -10461,606 +11468,301 @@
 	
 	    function loadLocale(name) {
 	        var oldLocale = null;
-	        if (!locales[name] && hasModule) {
+	        // TODO: Find a better way to register and load all the locales in Node
+	        if (!locales[name] && (typeof module !== 'undefined') &&
+	                module && module.exports) {
 	            try {
-	                oldLocale = moment.locale();
+	                oldLocale = globalLocale._abbr;
 	                !(function webpackMissingModule() { var e = new Error("Cannot find module \"./locale\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-	                // because defineLocale currently also sets the global locale, we want to undo that for lazy loaded locales
-	                moment.locale(oldLocale);
+	                // because defineLocale currently also sets the global locale, we
+	                // want to undo that for lazy loaded locales
+	                locale_locales__getSetGlobalLocale(oldLocale);
 	            } catch (e) { }
 	        }
 	        return locales[name];
 	    }
 	
-	    // Return a moment from input, that is local/utc/utcOffset equivalent to
-	    // model.
-	    function makeAs(input, model) {
-	        var res, diff;
-	        if (model._isUTC) {
-	            res = model.clone();
-	            diff = (moment.isMoment(input) || isDate(input) ?
-	                    +input : +moment(input)) - (+res);
-	            // Use low-level api, because this fn is low-level api.
-	            res._d.setTime(+res._d + diff);
-	            moment.updateOffset(res, false);
-	            return res;
-	        } else {
-	            return moment(input).local();
+	    // This function will load locale and then set the global locale.  If
+	    // no arguments are passed in, it will simply return the current global
+	    // locale key.
+	    function locale_locales__getSetGlobalLocale (key, values) {
+	        var data;
+	        if (key) {
+	            if (isUndefined(values)) {
+	                data = locale_locales__getLocale(key);
+	            }
+	            else {
+	                data = defineLocale(key, values);
+	            }
+	
+	            if (data) {
+	                // moment.duration._locale = moment._locale = data;
+	                globalLocale = data;
+	            }
 	        }
+	
+	        return globalLocale._abbr;
 	    }
 	
-	    /************************************
-	        Locale
-	    ************************************/
-	
-	
-	    extend(Locale.prototype, {
-	
-	        set : function (config) {
-	            var prop, i;
-	            for (i in config) {
-	                prop = config[i];
-	                if (typeof prop === 'function') {
-	                    this[i] = prop;
+	    function defineLocale (name, config) {
+	        if (config !== null) {
+	            var parentConfig = baseConfig;
+	            config.abbr = name;
+	            if (locales[name] != null) {
+	                deprecateSimple('defineLocaleOverride',
+	                        'use moment.updateLocale(localeName, config) to change ' +
+	                        'an existing locale. moment.defineLocale(localeName, ' +
+	                        'config) should only be used for creating a new locale ' +
+	                        'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
+	                parentConfig = locales[name]._config;
+	            } else if (config.parentLocale != null) {
+	                if (locales[config.parentLocale] != null) {
+	                    parentConfig = locales[config.parentLocale]._config;
 	                } else {
-	                    this['_' + i] = prop;
+	                    // treat as if there is no base config
+	                    deprecateSimple('parentLocaleUndefined',
+	                            'specified parentLocale is not defined yet. See http://momentjs.com/guides/#/warnings/parent-locale/');
 	                }
 	            }
-	            // Lenient ordinal parsing accepts just a number in addition to
-	            // number + (possibly) stuff coming from _ordinalParseLenient.
-	            this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + /\d{1,2}/.source);
-	        },
+	            locales[name] = new Locale(mergeConfigs(parentConfig, config));
 	
-	        _months : 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
-	        months : function (m) {
-	            return this._months[m.month()];
-	        },
+	            // backwards compat for now: also set the locale
+	            locale_locales__getSetGlobalLocale(name);
 	
-	        _monthsShort : 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
-	        monthsShort : function (m) {
-	            return this._monthsShort[m.month()];
-	        },
-	
-	        monthsParse : function (monthName, format, strict) {
-	            var i, mom, regex;
-	
-	            if (!this._monthsParse) {
-	                this._monthsParse = [];
-	                this._longMonthsParse = [];
-	                this._shortMonthsParse = [];
-	            }
-	
-	            for (i = 0; i < 12; i++) {
-	                // make the regex if we don't have it already
-	                mom = moment.utc([2000, i]);
-	                if (strict && !this._longMonthsParse[i]) {
-	                    this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-	                    this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-	                }
-	                if (!strict && !this._monthsParse[i]) {
-	                    regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-	                    this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-	                }
-	                // test the regex
-	                if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-	                    return i;
-	                } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-	                    return i;
-	                } else if (!strict && this._monthsParse[i].test(monthName)) {
-	                    return i;
-	                }
-	            }
-	        },
-	
-	        _weekdays : 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),
-	        weekdays : function (m) {
-	            return this._weekdays[m.day()];
-	        },
-	
-	        _weekdaysShort : 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'),
-	        weekdaysShort : function (m) {
-	            return this._weekdaysShort[m.day()];
-	        },
-	
-	        _weekdaysMin : 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'),
-	        weekdaysMin : function (m) {
-	            return this._weekdaysMin[m.day()];
-	        },
-	
-	        weekdaysParse : function (weekdayName) {
-	            var i, mom, regex;
-	
-	            if (!this._weekdaysParse) {
-	                this._weekdaysParse = [];
-	            }
-	
-	            for (i = 0; i < 7; i++) {
-	                // make the regex if we don't have it already
-	                if (!this._weekdaysParse[i]) {
-	                    mom = moment([2000, 1]).day(i);
-	                    regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-	                    this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-	                }
-	                // test the regex
-	                if (this._weekdaysParse[i].test(weekdayName)) {
-	                    return i;
-	                }
-	            }
-	        },
-	
-	        _longDateFormat : {
-	            LTS : 'h:mm:ss A',
-	            LT : 'h:mm A',
-	            L : 'MM/DD/YYYY',
-	            LL : 'MMMM D, YYYY',
-	            LLL : 'MMMM D, YYYY LT',
-	            LLLL : 'dddd, MMMM D, YYYY LT'
-	        },
-	        longDateFormat : function (key) {
-	            var output = this._longDateFormat[key];
-	            if (!output && this._longDateFormat[key.toUpperCase()]) {
-	                output = this._longDateFormat[key.toUpperCase()].replace(/MMMM|MM|DD|dddd/g, function (val) {
-	                    return val.slice(1);
-	                });
-	                this._longDateFormat[key] = output;
-	            }
-	            return output;
-	        },
-	
-	        isPM : function (input) {
-	            // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-	            // Using charAt should be more compatible.
-	            return ((input + '').toLowerCase().charAt(0) === 'p');
-	        },
-	
-	        _meridiemParse : /[ap]\.?m?\.?/i,
-	        meridiem : function (hours, minutes, isLower) {
-	            if (hours > 11) {
-	                return isLower ? 'pm' : 'PM';
-	            } else {
-	                return isLower ? 'am' : 'AM';
-	            }
-	        },
-	
-	
-	        _calendar : {
-	            sameDay : '[Today at] LT',
-	            nextDay : '[Tomorrow at] LT',
-	            nextWeek : 'dddd [at] LT',
-	            lastDay : '[Yesterday at] LT',
-	            lastWeek : '[Last] dddd [at] LT',
-	            sameElse : 'L'
-	        },
-	        calendar : function (key, mom, now) {
-	            var output = this._calendar[key];
-	            return typeof output === 'function' ? output.apply(mom, [now]) : output;
-	        },
-	
-	        _relativeTime : {
-	            future : 'in %s',
-	            past : '%s ago',
-	            s : 'a few seconds',
-	            m : 'a minute',
-	            mm : '%d minutes',
-	            h : 'an hour',
-	            hh : '%d hours',
-	            d : 'a day',
-	            dd : '%d days',
-	            M : 'a month',
-	            MM : '%d months',
-	            y : 'a year',
-	            yy : '%d years'
-	        },
-	
-	        relativeTime : function (number, withoutSuffix, string, isFuture) {
-	            var output = this._relativeTime[string];
-	            return (typeof output === 'function') ?
-	                output(number, withoutSuffix, string, isFuture) :
-	                output.replace(/%d/i, number);
-	        },
-	
-	        pastFuture : function (diff, output) {
-	            var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-	            return typeof format === 'function' ? format(output) : format.replace(/%s/i, output);
-	        },
-	
-	        ordinal : function (number) {
-	            return this._ordinal.replace('%d', number);
-	        },
-	        _ordinal : '%d',
-	        _ordinalParse : /\d{1,2}/,
-	
-	        preparse : function (string) {
-	            return string;
-	        },
-	
-	        postformat : function (string) {
-	            return string;
-	        },
-	
-	        week : function (mom) {
-	            return weekOfYear(mom, this._week.dow, this._week.doy).week;
-	        },
-	
-	        _week : {
-	            dow : 0, // Sunday is the first day of the week.
-	            doy : 6  // The week that contains Jan 1st is the first week of the year.
-	        },
-	
-	        firstDayOfWeek : function () {
-	            return this._week.dow;
-	        },
-	
-	        firstDayOfYear : function () {
-	            return this._week.doy;
-	        },
-	
-	        _invalidDate: 'Invalid date',
-	        invalidDate: function () {
-	            return this._invalidDate;
+	            return locales[name];
+	        } else {
+	            // useful for testing
+	            delete locales[name];
+	            return null;
 	        }
-	    });
-	
-	    /************************************
-	        Formatting
-	    ************************************/
-	
-	
-	    function removeFormattingTokens(input) {
-	        if (input.match(/\[[\s\S]/)) {
-	            return input.replace(/^\[|\]$/g, '');
-	        }
-	        return input.replace(/\\/g, '');
 	    }
 	
-	    function makeFormatFunction(format) {
-	        var array = format.match(formattingTokens), i, length;
+	    function updateLocale(name, config) {
+	        if (config != null) {
+	            var locale, parentConfig = baseConfig;
+	            // MERGE
+	            if (locales[name] != null) {
+	                parentConfig = locales[name]._config;
+	            }
+	            config = mergeConfigs(parentConfig, config);
+	            locale = new Locale(config);
+	            locale.parentLocale = locales[name];
+	            locales[name] = locale;
 	
-	        for (i = 0, length = array.length; i < length; i++) {
-	            if (formatTokenFunctions[array[i]]) {
-	                array[i] = formatTokenFunctions[array[i]];
-	            } else {
-	                array[i] = removeFormattingTokens(array[i]);
+	            // backwards compat for now: also set the locale
+	            locale_locales__getSetGlobalLocale(name);
+	        } else {
+	            // pass null for config to unupdate, useful for tests
+	            if (locales[name] != null) {
+	                if (locales[name].parentLocale != null) {
+	                    locales[name] = locales[name].parentLocale;
+	                } else if (locales[name] != null) {
+	                    delete locales[name];
+	                }
 	            }
 	        }
-	
-	        return function (mom) {
-	            var output = '';
-	            for (i = 0; i < length; i++) {
-	                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
-	            }
-	            return output;
-	        };
+	        return locales[name];
 	    }
 	
-	    // format date using native date object
-	    function formatMoment(m, format) {
-	        if (!m.isValid()) {
-	            return m.localeData().invalidDate();
+	    // returns locale data
+	    function locale_locales__getLocale (key) {
+	        var locale;
+	
+	        if (key && key._locale && key._locale._abbr) {
+	            key = key._locale._abbr;
 	        }
 	
-	        format = expandFormat(format, m.localeData());
-	
-	        if (!formatFunctions[format]) {
-	            formatFunctions[format] = makeFormatFunction(format);
+	        if (!key) {
+	            return globalLocale;
 	        }
 	
-	        return formatFunctions[format](m);
+	        if (!isArray(key)) {
+	            //short-circuit everything else
+	            locale = loadLocale(key);
+	            if (locale) {
+	                return locale;
+	            }
+	            key = [key];
+	        }
+	
+	        return chooseLocale(key);
 	    }
 	
-	    function expandFormat(format, locale) {
-	        var i = 5;
-	
-	        function replaceLongDateFormatTokens(input) {
-	            return locale.longDateFormat(input) || input;
-	        }
-	
-	        localFormattingTokens.lastIndex = 0;
-	        while (i >= 0 && localFormattingTokens.test(format)) {
-	            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-	            localFormattingTokens.lastIndex = 0;
-	            i -= 1;
-	        }
-	
-	        return format;
+	    function locale_locales__listLocales() {
+	        return keys(locales);
 	    }
 	
+	    function checkOverflow (m) {
+	        var overflow;
+	        var a = m._a;
 	
-	    /************************************
-	        Parsing
-	    ************************************/
+	        if (a && getParsingFlags(m).overflow === -2) {
+	            overflow =
+	                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
+	                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
+	                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
+	                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
+	                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
+	                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
+	                -1;
 	
+	            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+	                overflow = DATE;
+	            }
+	            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
+	                overflow = WEEK;
+	            }
+	            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
+	                overflow = WEEKDAY;
+	            }
 	
-	    // get the regex to find the next token
-	    function getParseRegexForToken(token, config) {
-	        var a, strict = config._strict;
-	        switch (token) {
-	        case 'Q':
-	            return parseTokenOneDigit;
-	        case 'DDDD':
-	            return parseTokenThreeDigits;
-	        case 'YYYY':
-	        case 'GGGG':
-	        case 'gggg':
-	            return strict ? parseTokenFourDigits : parseTokenOneToFourDigits;
-	        case 'Y':
-	        case 'G':
-	        case 'g':
-	            return parseTokenSignedNumber;
-	        case 'YYYYYY':
-	        case 'YYYYY':
-	        case 'GGGGG':
-	        case 'ggggg':
-	            return strict ? parseTokenSixDigits : parseTokenOneToSixDigits;
-	        case 'S':
-	            if (strict) {
-	                return parseTokenOneDigit;
+	            getParsingFlags(m).overflow = overflow;
+	        }
+	
+	        return m;
+	    }
+	
+	    // iso 8601 regex
+	    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+	    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
+	    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
+	
+	    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+	
+	    var isoDates = [
+	        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
+	        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
+	        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
+	        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
+	        ['YYYY-DDD', /\d{4}-\d{3}/],
+	        ['YYYY-MM', /\d{4}-\d\d/, false],
+	        ['YYYYYYMMDD', /[+-]\d{10}/],
+	        ['YYYYMMDD', /\d{8}/],
+	        // YYYYMM is NOT allowed by the standard
+	        ['GGGG[W]WWE', /\d{4}W\d{3}/],
+	        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
+	        ['YYYYDDD', /\d{7}/]
+	    ];
+	
+	    // iso time formats and regexes
+	    var isoTimes = [
+	        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
+	        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
+	        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
+	        ['HH:mm', /\d\d:\d\d/],
+	        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
+	        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
+	        ['HHmmss', /\d\d\d\d\d\d/],
+	        ['HHmm', /\d\d\d\d/],
+	        ['HH', /\d\d/]
+	    ];
+	
+	    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
+	
+	    // date from iso format
+	    function configFromISO(config) {
+	        var i, l,
+	            string = config._i,
+	            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
+	            allowTime, dateFormat, timeFormat, tzFormat;
+	
+	        if (match) {
+	            getParsingFlags(config).iso = true;
+	
+	            for (i = 0, l = isoDates.length; i < l; i++) {
+	                if (isoDates[i][1].exec(match[1])) {
+	                    dateFormat = isoDates[i][0];
+	                    allowTime = isoDates[i][2] !== false;
+	                    break;
+	                }
 	            }
-	            /* falls through */
-	        case 'SS':
-	            if (strict) {
-	                return parseTokenTwoDigits;
+	            if (dateFormat == null) {
+	                config._isValid = false;
+	                return;
 	            }
-	            /* falls through */
-	        case 'SSS':
-	            if (strict) {
-	                return parseTokenThreeDigits;
+	            if (match[3]) {
+	                for (i = 0, l = isoTimes.length; i < l; i++) {
+	                    if (isoTimes[i][1].exec(match[3])) {
+	                        // match[2] should be 'T' or space
+	                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
+	                        break;
+	                    }
+	                }
+	                if (timeFormat == null) {
+	                    config._isValid = false;
+	                    return;
+	                }
 	            }
-	            /* falls through */
-	        case 'DDD':
-	            return parseTokenOneToThreeDigits;
-	        case 'MMM':
-	        case 'MMMM':
-	        case 'dd':
-	        case 'ddd':
-	        case 'dddd':
-	            return parseTokenWord;
-	        case 'a':
-	        case 'A':
-	            return config._locale._meridiemParse;
-	        case 'x':
-	            return parseTokenOffsetMs;
-	        case 'X':
-	            return parseTokenTimestampMs;
-	        case 'Z':
-	        case 'ZZ':
-	            return parseTokenTimezone;
-	        case 'T':
-	            return parseTokenT;
-	        case 'SSSS':
-	            return parseTokenDigits;
-	        case 'MM':
-	        case 'DD':
-	        case 'YY':
-	        case 'GG':
-	        case 'gg':
-	        case 'HH':
-	        case 'hh':
-	        case 'mm':
-	        case 'ss':
-	        case 'ww':
-	        case 'WW':
-	            return strict ? parseTokenTwoDigits : parseTokenOneOrTwoDigits;
-	        case 'M':
-	        case 'D':
-	        case 'd':
-	        case 'H':
-	        case 'h':
-	        case 'm':
-	        case 's':
-	        case 'w':
-	        case 'W':
-	        case 'e':
-	        case 'E':
-	            return parseTokenOneOrTwoDigits;
-	        case 'Do':
-	            return strict ? config._locale._ordinalParse : config._locale._ordinalParseLenient;
-	        default :
-	            a = new RegExp(regexpEscape(unescapeFormat(token.replace('\\', '')), 'i'));
+	            if (!allowTime && timeFormat != null) {
+	                config._isValid = false;
+	                return;
+	            }
+	            if (match[4]) {
+	                if (tzRegex.exec(match[4])) {
+	                    tzFormat = 'Z';
+	                } else {
+	                    config._isValid = false;
+	                    return;
+	                }
+	            }
+	            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
+	            configFromStringAndFormat(config);
+	        } else {
+	            config._isValid = false;
+	        }
+	    }
+	
+	    // date from iso format or fallback
+	    function configFromString(config) {
+	        var matched = aspNetJsonRegex.exec(config._i);
+	
+	        if (matched !== null) {
+	            config._d = new Date(+matched[1]);
+	            return;
+	        }
+	
+	        configFromISO(config);
+	        if (config._isValid === false) {
+	            delete config._isValid;
+	            utils_hooks__hooks.createFromInputFallback(config);
+	        }
+	    }
+	
+	    utils_hooks__hooks.createFromInputFallback = deprecate(
+	        'value provided is not in a recognized ISO format. moment construction falls back to js Date(), ' +
+	        'which is not reliable across all browsers and versions. Non ISO date formats are ' +
+	        'discouraged and will be removed in an upcoming major release. Please refer to ' +
+	        'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
+	        function (config) {
+	            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+	        }
+	    );
+	
+	    // Pick the first defined of two or three arguments.
+	    function defaults(a, b, c) {
+	        if (a != null) {
 	            return a;
 	        }
-	    }
-	
-	    function utcOffsetFromString(string) {
-	        string = string || '';
-	        var possibleTzMatches = (string.match(parseTokenTimezone) || []),
-	            tzChunk = possibleTzMatches[possibleTzMatches.length - 1] || [],
-	            parts = (tzChunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
-	            minutes = +(parts[1] * 60) + toInt(parts[2]);
-	
-	        return parts[0] === '+' ? minutes : -minutes;
-	    }
-	
-	    // function to convert string input to date
-	    function addTimeToArrayFromToken(token, input, config) {
-	        var a, datePartArray = config._a;
-	
-	        switch (token) {
-	        // QUARTER
-	        case 'Q':
-	            if (input != null) {
-	                datePartArray[MONTH] = (toInt(input) - 1) * 3;
-	            }
-	            break;
-	        // MONTH
-	        case 'M' : // fall through to MM
-	        case 'MM' :
-	            if (input != null) {
-	                datePartArray[MONTH] = toInt(input) - 1;
-	            }
-	            break;
-	        case 'MMM' : // fall through to MMMM
-	        case 'MMMM' :
-	            a = config._locale.monthsParse(input, token, config._strict);
-	            // if we didn't find a month name, mark the date as invalid.
-	            if (a != null) {
-	                datePartArray[MONTH] = a;
-	            } else {
-	                config._pf.invalidMonth = input;
-	            }
-	            break;
-	        // DAY OF MONTH
-	        case 'D' : // fall through to DD
-	        case 'DD' :
-	            if (input != null) {
-	                datePartArray[DATE] = toInt(input);
-	            }
-	            break;
-	        case 'Do' :
-	            if (input != null) {
-	                datePartArray[DATE] = toInt(parseInt(
-	                            input.match(/\d{1,2}/)[0], 10));
-	            }
-	            break;
-	        // DAY OF YEAR
-	        case 'DDD' : // fall through to DDDD
-	        case 'DDDD' :
-	            if (input != null) {
-	                config._dayOfYear = toInt(input);
-	            }
-	
-	            break;
-	        // YEAR
-	        case 'YY' :
-	            datePartArray[YEAR] = moment.parseTwoDigitYear(input);
-	            break;
-	        case 'YYYY' :
-	        case 'YYYYY' :
-	        case 'YYYYYY' :
-	            datePartArray[YEAR] = toInt(input);
-	            break;
-	        // AM / PM
-	        case 'a' : // fall through to A
-	        case 'A' :
-	            config._meridiem = input;
-	            // config._isPm = config._locale.isPM(input);
-	            break;
-	        // HOUR
-	        case 'h' : // fall through to hh
-	        case 'hh' :
-	            config._pf.bigHour = true;
-	            /* falls through */
-	        case 'H' : // fall through to HH
-	        case 'HH' :
-	            datePartArray[HOUR] = toInt(input);
-	            break;
-	        // MINUTE
-	        case 'm' : // fall through to mm
-	        case 'mm' :
-	            datePartArray[MINUTE] = toInt(input);
-	            break;
-	        // SECOND
-	        case 's' : // fall through to ss
-	        case 'ss' :
-	            datePartArray[SECOND] = toInt(input);
-	            break;
-	        // MILLISECOND
-	        case 'S' :
-	        case 'SS' :
-	        case 'SSS' :
-	        case 'SSSS' :
-	            datePartArray[MILLISECOND] = toInt(('0.' + input) * 1000);
-	            break;
-	        // UNIX OFFSET (MILLISECONDS)
-	        case 'x':
-	            config._d = new Date(toInt(input));
-	            break;
-	        // UNIX TIMESTAMP WITH MS
-	        case 'X':
-	            config._d = new Date(parseFloat(input) * 1000);
-	            break;
-	        // TIMEZONE
-	        case 'Z' : // fall through to ZZ
-	        case 'ZZ' :
-	            config._useUTC = true;
-	            config._tzm = utcOffsetFromString(input);
-	            break;
-	        // WEEKDAY - human
-	        case 'dd':
-	        case 'ddd':
-	        case 'dddd':
-	            a = config._locale.weekdaysParse(input);
-	            // if we didn't get a weekday name, mark the date as invalid
-	            if (a != null) {
-	                config._w = config._w || {};
-	                config._w['d'] = a;
-	            } else {
-	                config._pf.invalidWeekday = input;
-	            }
-	            break;
-	        // WEEK, WEEK DAY - numeric
-	        case 'w':
-	        case 'ww':
-	        case 'W':
-	        case 'WW':
-	        case 'd':
-	        case 'e':
-	        case 'E':
-	            token = token.substr(0, 1);
-	            /* falls through */
-	        case 'gggg':
-	        case 'GGGG':
-	        case 'GGGGG':
-	            token = token.substr(0, 2);
-	            if (input) {
-	                config._w = config._w || {};
-	                config._w[token] = toInt(input);
-	            }
-	            break;
-	        case 'gg':
-	        case 'GG':
-	            config._w = config._w || {};
-	            config._w[token] = moment.parseTwoDigitYear(input);
+	        if (b != null) {
+	            return b;
 	        }
+	        return c;
 	    }
 	
-	    function dayOfYearFromWeekInfo(config) {
-	        var w, weekYear, week, weekday, dow, doy, temp;
-	
-	        w = config._w;
-	        if (w.GG != null || w.W != null || w.E != null) {
-	            dow = 1;
-	            doy = 4;
-	
-	            // TODO: We need to take the current isoWeekYear, but that depends on
-	            // how we interpret now (local, utc, fixed offset). So create
-	            // a now version of current config (take local/utc/offset flags, and
-	            // create now).
-	            weekYear = dfl(w.GG, config._a[YEAR], weekOfYear(moment(), 1, 4).year);
-	            week = dfl(w.W, 1);
-	            weekday = dfl(w.E, 1);
-	        } else {
-	            dow = config._locale._week.dow;
-	            doy = config._locale._week.doy;
-	
-	            weekYear = dfl(w.gg, config._a[YEAR], weekOfYear(moment(), dow, doy).year);
-	            week = dfl(w.w, 1);
-	
-	            if (w.d != null) {
-	                // weekday -- low day numbers are considered next week
-	                weekday = w.d;
-	                if (weekday < dow) {
-	                    ++week;
-	                }
-	            } else if (w.e != null) {
-	                // local weekday -- counting starts from begining of week
-	                weekday = w.e + dow;
-	            } else {
-	                // default to begining of week
-	                weekday = dow;
-	            }
+	    function currentDateArray(config) {
+	        // hooks is actually the exported moment object
+	        var nowValue = new Date(utils_hooks__hooks.now());
+	        if (config._useUTC) {
+	            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
 	        }
-	        temp = dayOfYearFromWeeks(weekYear, week, weekday, doy, dow);
-	
-	        config._a[YEAR] = temp.year;
-	        config._dayOfYear = temp.dayOfYear;
+	        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
 	    }
 	
 	    // convert an array to a date.
 	    // the array should mirror the parameters below
 	    // note: all values past the year are optional and will default to the lowest possible value.
 	    // [year, month, day , hour, minute, second, millisecond]
-	    function dateFromConfig(config) {
+	    function configFromArray (config) {
 	        var i, date, input = [], currentDate, yearToUse;
 	
 	        if (config._d) {
@@ -11076,13 +11778,13 @@
 	
 	        //if the day of the year is set, figure out what it is
 	        if (config._dayOfYear) {
-	            yearToUse = dfl(config._a[YEAR], currentDate[YEAR]);
+	            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
 	
 	            if (config._dayOfYear > daysInYear(yearToUse)) {
-	                config._pf._overflowDayOfYear = true;
+	                getParsingFlags(config)._overflowDayOfYear = true;
 	            }
 	
-	            date = makeUTCDate(yearToUse, 0, config._dayOfYear);
+	            date = createUTCDate(yearToUse, 0, config._dayOfYear);
 	            config._a[MONTH] = date.getUTCMonth();
 	            config._a[DATE] = date.getUTCDate();
 	        }
@@ -11110,7 +11812,7 @@
 	            config._a[HOUR] = 0;
 	        }
 	
-	        config._d = (config._useUTC ? makeUTCDate : makeDate).apply(null, input);
+	        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
 	        // Apply timezone offset from input. The actual utcOffset can be changed
 	        // with parseZone.
 	        if (config._tzm != null) {
@@ -11122,49 +11824,72 @@
 	        }
 	    }
 	
-	    function dateFromObject(config) {
-	        var normalizedInput;
+	    function dayOfYearFromWeekInfo(config) {
+	        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
 	
-	        if (config._d) {
-	            return;
-	        }
+	        w = config._w;
+	        if (w.GG != null || w.W != null || w.E != null) {
+	            dow = 1;
+	            doy = 4;
 	
-	        normalizedInput = normalizeObjectUnits(config._i);
-	        config._a = [
-	            normalizedInput.year,
-	            normalizedInput.month,
-	            normalizedInput.day || normalizedInput.date,
-	            normalizedInput.hour,
-	            normalizedInput.minute,
-	            normalizedInput.second,
-	            normalizedInput.millisecond
-	        ];
-	
-	        dateFromConfig(config);
-	    }
-	
-	    function currentDateArray(config) {
-	        var now = new Date();
-	        if (config._useUTC) {
-	            return [
-	                now.getUTCFullYear(),
-	                now.getUTCMonth(),
-	                now.getUTCDate()
-	            ];
+	            // TODO: We need to take the current isoWeekYear, but that depends on
+	            // how we interpret now (local, utc, fixed offset). So create
+	            // a now version of current config (take local/utc/offset flags, and
+	            // create now).
+	            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
+	            week = defaults(w.W, 1);
+	            weekday = defaults(w.E, 1);
+	            if (weekday < 1 || weekday > 7) {
+	                weekdayOverflow = true;
+	            }
 	        } else {
-	            return [now.getFullYear(), now.getMonth(), now.getDate()];
+	            dow = config._locale._week.dow;
+	            doy = config._locale._week.doy;
+	
+	            weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(local__createLocal(), dow, doy).year);
+	            week = defaults(w.w, 1);
+	
+	            if (w.d != null) {
+	                // weekday -- low day numbers are considered next week
+	                weekday = w.d;
+	                if (weekday < 0 || weekday > 6) {
+	                    weekdayOverflow = true;
+	                }
+	            } else if (w.e != null) {
+	                // local weekday -- counting starts from begining of week
+	                weekday = w.e + dow;
+	                if (w.e < 0 || w.e > 6) {
+	                    weekdayOverflow = true;
+	                }
+	            } else {
+	                // default to begining of week
+	                weekday = dow;
+	            }
+	        }
+	        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
+	            getParsingFlags(config)._overflowWeeks = true;
+	        } else if (weekdayOverflow != null) {
+	            getParsingFlags(config)._overflowWeekday = true;
+	        } else {
+	            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+	            config._a[YEAR] = temp.year;
+	            config._dayOfYear = temp.dayOfYear;
 	        }
 	    }
+	
+	    // constant that refers to the ISO standard
+	    utils_hooks__hooks.ISO_8601 = function () {};
 	
 	    // date from string and format string
-	    function makeDateFromStringAndFormat(config) {
-	        if (config._f === moment.ISO_8601) {
-	            parseISO(config);
+	    function configFromStringAndFormat(config) {
+	        // TODO: Move this to another part of the creation flow to prevent circular deps
+	        if (config._f === utils_hooks__hooks.ISO_8601) {
+	            configFromISO(config);
 	            return;
 	        }
 	
 	        config._a = [];
-	        config._pf.empty = true;
+	        getParsingFlags(config).empty = true;
 	
 	        // This array is used to make a Date, either with `new Date` or `Date.UTC`
 	        var string = '' + config._i,
@@ -11177,10 +11902,12 @@
 	        for (i = 0; i < tokens.length; i++) {
 	            token = tokens[i];
 	            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+	            // console.log('token', token, 'parsedInput', parsedInput,
+	            //         'regex', getParseRegexForToken(token, config));
 	            if (parsedInput) {
 	                skipped = string.substr(0, string.indexOf(parsedInput));
 	                if (skipped.length > 0) {
-	                    config._pf.unusedInput.push(skipped);
+	                    getParsingFlags(config).unusedInput.push(skipped);
 	                }
 	                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
 	                totalParsedInputLength += parsedInput.length;
@@ -11188,48 +11915,68 @@
 	            // don't parse if it's not a known token
 	            if (formatTokenFunctions[token]) {
 	                if (parsedInput) {
-	                    config._pf.empty = false;
+	                    getParsingFlags(config).empty = false;
 	                }
 	                else {
-	                    config._pf.unusedTokens.push(token);
+	                    getParsingFlags(config).unusedTokens.push(token);
 	                }
 	                addTimeToArrayFromToken(token, parsedInput, config);
 	            }
 	            else if (config._strict && !parsedInput) {
-	                config._pf.unusedTokens.push(token);
+	                getParsingFlags(config).unusedTokens.push(token);
 	            }
 	        }
 	
 	        // add remaining unparsed input length to the string
-	        config._pf.charsLeftOver = stringLength - totalParsedInputLength;
+	        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
 	        if (string.length > 0) {
-	            config._pf.unusedInput.push(string);
+	            getParsingFlags(config).unusedInput.push(string);
 	        }
 	
 	        // clear _12h flag if hour is <= 12
-	        if (config._pf.bigHour === true && config._a[HOUR] <= 12) {
-	            config._pf.bigHour = undefined;
+	        if (config._a[HOUR] <= 12 &&
+	            getParsingFlags(config).bigHour === true &&
+	            config._a[HOUR] > 0) {
+	            getParsingFlags(config).bigHour = undefined;
 	        }
+	
+	        getParsingFlags(config).parsedDateParts = config._a.slice(0);
+	        getParsingFlags(config).meridiem = config._meridiem;
 	        // handle meridiem
-	        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR],
-	                config._meridiem);
-	        dateFromConfig(config);
+	        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
+	
+	        configFromArray(config);
 	        checkOverflow(config);
 	    }
 	
-	    function unescapeFormat(s) {
-	        return s.replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-	            return p1 || p2 || p3 || p4;
-	        });
-	    }
 	
-	    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-	    function regexpEscape(s) {
-	        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+	    function meridiemFixWrap (locale, hour, meridiem) {
+	        var isPm;
+	
+	        if (meridiem == null) {
+	            // nothing to do
+	            return hour;
+	        }
+	        if (locale.meridiemHour != null) {
+	            return locale.meridiemHour(hour, meridiem);
+	        } else if (locale.isPM != null) {
+	            // Fallback
+	            isPm = locale.isPM(meridiem);
+	            if (isPm && hour < 12) {
+	                hour += 12;
+	            }
+	            if (!isPm && hour === 12) {
+	                hour = 0;
+	            }
+	            return hour;
+	        } else {
+	            // this is not supposed to happen
+	            return hour;
+	        }
 	    }
 	
 	    // date from string and array of format strings
-	    function makeDateFromStringAndArray(config) {
+	    function configFromStringAndArray(config) {
 	        var tempConfig,
 	            bestMoment,
 	
@@ -11238,7 +11985,7 @@
 	            currentScore;
 	
 	        if (config._f.length === 0) {
-	            config._pf.invalidFormat = true;
+	            getParsingFlags(config).invalidFormat = true;
 	            config._d = new Date(NaN);
 	            return;
 	        }
@@ -11249,21 +11996,20 @@
 	            if (config._useUTC != null) {
 	                tempConfig._useUTC = config._useUTC;
 	            }
-	            tempConfig._pf = defaultParsingFlags();
 	            tempConfig._f = config._f[i];
-	            makeDateFromStringAndFormat(tempConfig);
+	            configFromStringAndFormat(tempConfig);
 	
-	            if (!isValid(tempConfig)) {
+	            if (!valid__isValid(tempConfig)) {
 	                continue;
 	            }
 	
 	            // if there is any input that was not parsed add a penalty for that format
-	            currentScore += tempConfig._pf.charsLeftOver;
+	            currentScore += getParsingFlags(tempConfig).charsLeftOver;
 	
 	            //or tokens
-	            currentScore += tempConfig._pf.unusedTokens.length * 10;
+	            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
 	
-	            tempConfig._pf.score = currentScore;
+	            getParsingFlags(tempConfig).score = currentScore;
 	
 	            if (scoreToBeat == null || currentScore < scoreToBeat) {
 	                scoreToBeat = currentScore;
@@ -11274,230 +12020,21 @@
 	        extend(config, bestMoment || tempConfig);
 	    }
 	
-	    // date from iso format
-	    function parseISO(config) {
-	        var i, l,
-	            string = config._i,
-	            match = isoRegex.exec(string);
-	
-	        if (match) {
-	            config._pf.iso = true;
-	            for (i = 0, l = isoDates.length; i < l; i++) {
-	                if (isoDates[i][1].exec(string)) {
-	                    // match[5] should be 'T' or undefined
-	                    config._f = isoDates[i][0] + (match[6] || ' ');
-	                    break;
-	                }
-	            }
-	            for (i = 0, l = isoTimes.length; i < l; i++) {
-	                if (isoTimes[i][1].exec(string)) {
-	                    config._f += isoTimes[i][0];
-	                    break;
-	                }
-	            }
-	            if (string.match(parseTokenTimezone)) {
-	                config._f += 'Z';
-	            }
-	            makeDateFromStringAndFormat(config);
-	        } else {
-	            config._isValid = false;
+	    function configFromObject(config) {
+	        if (config._d) {
+	            return;
 	        }
+	
+	        var i = normalizeObjectUnits(config._i);
+	        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
+	            return obj && parseInt(obj, 10);
+	        });
+	
+	        configFromArray(config);
 	    }
 	
-	    // date from iso format or fallback
-	    function makeDateFromString(config) {
-	        parseISO(config);
-	        if (config._isValid === false) {
-	            delete config._isValid;
-	            moment.createFromInputFallback(config);
-	        }
-	    }
-	
-	    function map(arr, fn) {
-	        var res = [], i;
-	        for (i = 0; i < arr.length; ++i) {
-	            res.push(fn(arr[i], i));
-	        }
-	        return res;
-	    }
-	
-	    function makeDateFromInput(config) {
-	        var input = config._i, matched;
-	        if (input === undefined) {
-	            config._d = new Date();
-	        } else if (isDate(input)) {
-	            config._d = new Date(+input);
-	        } else if ((matched = aspNetJsonRegex.exec(input)) !== null) {
-	            config._d = new Date(+matched[1]);
-	        } else if (typeof input === 'string') {
-	            makeDateFromString(config);
-	        } else if (isArray(input)) {
-	            config._a = map(input.slice(0), function (obj) {
-	                return parseInt(obj, 10);
-	            });
-	            dateFromConfig(config);
-	        } else if (typeof(input) === 'object') {
-	            dateFromObject(config);
-	        } else if (typeof(input) === 'number') {
-	            // from milliseconds
-	            config._d = new Date(input);
-	        } else {
-	            moment.createFromInputFallback(config);
-	        }
-	    }
-	
-	    function makeDate(y, m, d, h, M, s, ms) {
-	        //can't just apply() to create a date:
-	        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
-	        var date = new Date(y, m, d, h, M, s, ms);
-	
-	        //the date constructor doesn't accept years < 1970
-	        if (y < 1970) {
-	            date.setFullYear(y);
-	        }
-	        return date;
-	    }
-	
-	    function makeUTCDate(y) {
-	        var date = new Date(Date.UTC.apply(null, arguments));
-	        if (y < 1970) {
-	            date.setUTCFullYear(y);
-	        }
-	        return date;
-	    }
-	
-	    function parseWeekday(input, locale) {
-	        if (typeof input === 'string') {
-	            if (!isNaN(input)) {
-	                input = parseInt(input, 10);
-	            }
-	            else {
-	                input = locale.weekdaysParse(input);
-	                if (typeof input !== 'number') {
-	                    return null;
-	                }
-	            }
-	        }
-	        return input;
-	    }
-	
-	    /************************************
-	        Relative Time
-	    ************************************/
-	
-	
-	    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-	    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-	        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
-	    }
-	
-	    function relativeTime(posNegDuration, withoutSuffix, locale) {
-	        var duration = moment.duration(posNegDuration).abs(),
-	            seconds = round(duration.as('s')),
-	            minutes = round(duration.as('m')),
-	            hours = round(duration.as('h')),
-	            days = round(duration.as('d')),
-	            months = round(duration.as('M')),
-	            years = round(duration.as('y')),
-	
-	            args = seconds < relativeTimeThresholds.s && ['s', seconds] ||
-	                minutes === 1 && ['m'] ||
-	                minutes < relativeTimeThresholds.m && ['mm', minutes] ||
-	                hours === 1 && ['h'] ||
-	                hours < relativeTimeThresholds.h && ['hh', hours] ||
-	                days === 1 && ['d'] ||
-	                days < relativeTimeThresholds.d && ['dd', days] ||
-	                months === 1 && ['M'] ||
-	                months < relativeTimeThresholds.M && ['MM', months] ||
-	                years === 1 && ['y'] || ['yy', years];
-	
-	        args[2] = withoutSuffix;
-	        args[3] = +posNegDuration > 0;
-	        args[4] = locale;
-	        return substituteTimeAgo.apply({}, args);
-	    }
-	
-	
-	    /************************************
-	        Week of Year
-	    ************************************/
-	
-	
-	    // firstDayOfWeek       0 = sun, 6 = sat
-	    //                      the day of the week that starts the week
-	    //                      (usually sunday or monday)
-	    // firstDayOfWeekOfYear 0 = sun, 6 = sat
-	    //                      the first week is the week that contains the first
-	    //                      of this day of the week
-	    //                      (eg. ISO weeks use thursday (4))
-	    function weekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
-	        var end = firstDayOfWeekOfYear - firstDayOfWeek,
-	            daysToDayOfWeek = firstDayOfWeekOfYear - mom.day(),
-	            adjustedMoment;
-	
-	
-	        if (daysToDayOfWeek > end) {
-	            daysToDayOfWeek -= 7;
-	        }
-	
-	        if (daysToDayOfWeek < end - 7) {
-	            daysToDayOfWeek += 7;
-	        }
-	
-	        adjustedMoment = moment(mom).add(daysToDayOfWeek, 'd');
-	        return {
-	            week: Math.ceil(adjustedMoment.dayOfYear() / 7),
-	            year: adjustedMoment.year()
-	        };
-	    }
-	
-	    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-	    function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
-	        var d = makeUTCDate(year, 0, 1).getUTCDay(), daysToAdd, dayOfYear;
-	
-	        d = d === 0 ? 7 : d;
-	        weekday = weekday != null ? weekday : firstDayOfWeek;
-	        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0) - (d < firstDayOfWeek ? 7 : 0);
-	        dayOfYear = 7 * (week - 1) + (weekday - firstDayOfWeek) + daysToAdd + 1;
-	
-	        return {
-	            year: dayOfYear > 0 ? year : year - 1,
-	            dayOfYear: dayOfYear > 0 ?  dayOfYear : daysInYear(year - 1) + dayOfYear
-	        };
-	    }
-	
-	    /************************************
-	        Top Level Functions
-	    ************************************/
-	
-	    function makeMoment(config) {
-	        var input = config._i,
-	            format = config._f,
-	            res;
-	
-	        config._locale = config._locale || moment.localeData(config._l);
-	
-	        if (input === null || (format === undefined && input === '')) {
-	            return moment.invalid({nullInput: true});
-	        }
-	
-	        if (typeof input === 'string') {
-	            config._i = input = config._locale.preparse(input);
-	        }
-	
-	        if (moment.isMoment(input)) {
-	            return new Moment(input, true);
-	        } else if (format) {
-	            if (isArray(format)) {
-	                makeDateFromStringAndArray(config);
-	            } else {
-	                makeDateFromStringAndFormat(config);
-	            }
-	        } else {
-	            makeDateFromInput(config);
-	        }
-	
-	        res = new Moment(config);
+	    function createFromConfig (config) {
+	        var res = new Moment(checkOverflow(prepareConfig(config)));
 	        if (res._nextDay) {
 	            // Adding is smart enough around DST
 	            res.add(1, 'd');
@@ -11507,36 +12044,111 @@
 	        return res;
 	    }
 	
-	    moment = function (input, format, locale, strict) {
-	        var c;
+	    function prepareConfig (config) {
+	        var input = config._i,
+	            format = config._f;
+	
+	        config._locale = config._locale || locale_locales__getLocale(config._l);
+	
+	        if (input === null || (format === undefined && input === '')) {
+	            return valid__createInvalid({nullInput: true});
+	        }
+	
+	        if (typeof input === 'string') {
+	            config._i = input = config._locale.preparse(input);
+	        }
+	
+	        if (isMoment(input)) {
+	            return new Moment(checkOverflow(input));
+	        } else if (isArray(format)) {
+	            configFromStringAndArray(config);
+	        } else if (isDate(input)) {
+	            config._d = input;
+	        } else if (format) {
+	            configFromStringAndFormat(config);
+	        }  else {
+	            configFromInput(config);
+	        }
+	
+	        if (!valid__isValid(config)) {
+	            config._d = null;
+	        }
+	
+	        return config;
+	    }
+	
+	    function configFromInput(config) {
+	        var input = config._i;
+	        if (input === undefined) {
+	            config._d = new Date(utils_hooks__hooks.now());
+	        } else if (isDate(input)) {
+	            config._d = new Date(input.valueOf());
+	        } else if (typeof input === 'string') {
+	            configFromString(config);
+	        } else if (isArray(input)) {
+	            config._a = map(input.slice(0), function (obj) {
+	                return parseInt(obj, 10);
+	            });
+	            configFromArray(config);
+	        } else if (typeof(input) === 'object') {
+	            configFromObject(config);
+	        } else if (typeof(input) === 'number') {
+	            // from milliseconds
+	            config._d = new Date(input);
+	        } else {
+	            utils_hooks__hooks.createFromInputFallback(config);
+	        }
+	    }
+	
+	    function createLocalOrUTC (input, format, locale, strict, isUTC) {
+	        var c = {};
 	
 	        if (typeof(locale) === 'boolean') {
 	            strict = locale;
 	            locale = undefined;
 	        }
+	
+	        if ((isObject(input) && isObjectEmpty(input)) ||
+	                (isArray(input) && input.length === 0)) {
+	            input = undefined;
+	        }
 	        // object construction must be done this way.
 	        // https://github.com/moment/moment/issues/1423
-	        c = {};
 	        c._isAMomentObject = true;
+	        c._useUTC = c._isUTC = isUTC;
+	        c._l = locale;
 	        c._i = input;
 	        c._f = format;
-	        c._l = locale;
 	        c._strict = strict;
-	        c._isUTC = false;
-	        c._pf = defaultParsingFlags();
 	
-	        return makeMoment(c);
-	    };
+	        return createFromConfig(c);
+	    }
 	
-	    moment.suppressDeprecationWarnings = false;
+	    function local__createLocal (input, format, locale, strict) {
+	        return createLocalOrUTC(input, format, locale, strict, false);
+	    }
 	
-	    moment.createFromInputFallback = deprecate(
-	        'moment construction falls back to js Date. This is ' +
-	        'discouraged and will be removed in upcoming major ' +
-	        'release. Please refer to ' +
-	        'https://github.com/moment/moment/issues/1407 for more info.',
-	        function (config) {
-	            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+	    var prototypeMin = deprecate(
+	        'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
+	        function () {
+	            var other = local__createLocal.apply(null, arguments);
+	            if (this.isValid() && other.isValid()) {
+	                return other < this ? this : other;
+	            } else {
+	                return valid__createInvalid();
+	            }
+	        }
+	    );
+	
+	    var prototypeMax = deprecate(
+	        'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
+	        function () {
+	            var other = local__createLocal.apply(null, arguments);
+	            if (this.isValid() && other.isValid()) {
+	                return other > this ? this : other;
+	            } else {
+	                return valid__createInvalid();
+	            }
 	        }
 	    );
 	
@@ -11551,72 +12163,312 @@
 	            moments = moments[0];
 	        }
 	        if (!moments.length) {
-	            return moment();
+	            return local__createLocal();
 	        }
 	        res = moments[0];
 	        for (i = 1; i < moments.length; ++i) {
-	            if (moments[i][fn](res)) {
+	            if (!moments[i].isValid() || moments[i][fn](res)) {
 	                res = moments[i];
 	            }
 	        }
 	        return res;
 	    }
 	
-	    moment.min = function () {
+	    // TODO: Use [].sort instead?
+	    function min () {
 	        var args = [].slice.call(arguments, 0);
 	
 	        return pickBy('isBefore', args);
-	    };
+	    }
 	
-	    moment.max = function () {
+	    function max () {
 	        var args = [].slice.call(arguments, 0);
 	
 	        return pickBy('isAfter', args);
+	    }
+	
+	    var now = function () {
+	        return Date.now ? Date.now() : +(new Date());
 	    };
 	
-	    // creating with utc
-	    moment.utc = function (input, format, locale, strict) {
-	        var c;
+	    function Duration (duration) {
+	        var normalizedInput = normalizeObjectUnits(duration),
+	            years = normalizedInput.year || 0,
+	            quarters = normalizedInput.quarter || 0,
+	            months = normalizedInput.month || 0,
+	            weeks = normalizedInput.week || 0,
+	            days = normalizedInput.day || 0,
+	            hours = normalizedInput.hour || 0,
+	            minutes = normalizedInput.minute || 0,
+	            seconds = normalizedInput.second || 0,
+	            milliseconds = normalizedInput.millisecond || 0;
 	
-	        if (typeof(locale) === 'boolean') {
-	            strict = locale;
-	            locale = undefined;
+	        // representation for dateAddRemove
+	        this._milliseconds = +milliseconds +
+	            seconds * 1e3 + // 1000
+	            minutes * 6e4 + // 1000 * 60
+	            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
+	        // Because of dateAddRemove treats 24 hours as different from a
+	        // day when working around DST, we need to store them separately
+	        this._days = +days +
+	            weeks * 7;
+	        // It is impossible translate months into days without knowing
+	        // which months you are are talking about, so we have to store
+	        // it separately.
+	        this._months = +months +
+	            quarters * 3 +
+	            years * 12;
+	
+	        this._data = {};
+	
+	        this._locale = locale_locales__getLocale();
+	
+	        this._bubble();
+	    }
+	
+	    function isDuration (obj) {
+	        return obj instanceof Duration;
+	    }
+	
+	    function absRound (number) {
+	        if (number < 0) {
+	            return Math.round(-1 * number) * -1;
+	        } else {
+	            return Math.round(number);
 	        }
-	        // object construction must be done this way.
-	        // https://github.com/moment/moment/issues/1423
-	        c = {};
-	        c._isAMomentObject = true;
-	        c._useUTC = true;
-	        c._isUTC = true;
-	        c._l = locale;
-	        c._i = input;
-	        c._f = format;
-	        c._strict = strict;
-	        c._pf = defaultParsingFlags();
+	    }
 	
-	        return makeMoment(c).utc();
-	    };
+	    // FORMATTING
 	
-	    // creating with unix timestamp (in seconds)
-	    moment.unix = function (input) {
-	        return moment(input * 1000);
-	    };
+	    function offset (token, separator) {
+	        addFormatToken(token, 0, 0, function () {
+	            var offset = this.utcOffset();
+	            var sign = '+';
+	            if (offset < 0) {
+	                offset = -offset;
+	                sign = '-';
+	            }
+	            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
+	        });
+	    }
 	
-	    // duration
-	    moment.duration = function (input, key) {
+	    offset('Z', ':');
+	    offset('ZZ', '');
+	
+	    // PARSING
+	
+	    addRegexToken('Z',  matchShortOffset);
+	    addRegexToken('ZZ', matchShortOffset);
+	    addParseToken(['Z', 'ZZ'], function (input, array, config) {
+	        config._useUTC = true;
+	        config._tzm = offsetFromString(matchShortOffset, input);
+	    });
+	
+	    // HELPERS
+	
+	    // timezone chunker
+	    // '+10:00' > ['10',  '00']
+	    // '-1530'  > ['-15', '30']
+	    var chunkOffset = /([\+\-]|\d\d)/gi;
+	
+	    function offsetFromString(matcher, string) {
+	        var matches = ((string || '').match(matcher) || []);
+	        var chunk   = matches[matches.length - 1] || [];
+	        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
+	        var minutes = +(parts[1] * 60) + toInt(parts[2]);
+	
+	        return parts[0] === '+' ? minutes : -minutes;
+	    }
+	
+	    // Return a moment from input, that is local/utc/zone equivalent to model.
+	    function cloneWithOffset(input, model) {
+	        var res, diff;
+	        if (model._isUTC) {
+	            res = model.clone();
+	            diff = (isMoment(input) || isDate(input) ? input.valueOf() : local__createLocal(input).valueOf()) - res.valueOf();
+	            // Use low-level api, because this fn is low-level api.
+	            res._d.setTime(res._d.valueOf() + diff);
+	            utils_hooks__hooks.updateOffset(res, false);
+	            return res;
+	        } else {
+	            return local__createLocal(input).local();
+	        }
+	    }
+	
+	    function getDateOffset (m) {
+	        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+	        // https://github.com/moment/moment/pull/1871
+	        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
+	    }
+	
+	    // HOOKS
+	
+	    // This function will be called whenever a moment is mutated.
+	    // It is intended to keep the offset in sync with the timezone.
+	    utils_hooks__hooks.updateOffset = function () {};
+	
+	    // MOMENTS
+	
+	    // keepLocalTime = true means only change the timezone, without
+	    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
+	    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
+	    // +0200, so we adjust the time as needed, to be valid.
+	    //
+	    // Keeping the time actually adds/subtracts (one hour)
+	    // from the actual represented time. That is why we call updateOffset
+	    // a second time. In case it wants us to change the offset again
+	    // _changeInProgress == true case, then we have to adjust, because
+	    // there is no such time in the given timezone.
+	    function getSetOffset (input, keepLocalTime) {
+	        var offset = this._offset || 0,
+	            localAdjust;
+	        if (!this.isValid()) {
+	            return input != null ? this : NaN;
+	        }
+	        if (input != null) {
+	            if (typeof input === 'string') {
+	                input = offsetFromString(matchShortOffset, input);
+	            } else if (Math.abs(input) < 16) {
+	                input = input * 60;
+	            }
+	            if (!this._isUTC && keepLocalTime) {
+	                localAdjust = getDateOffset(this);
+	            }
+	            this._offset = input;
+	            this._isUTC = true;
+	            if (localAdjust != null) {
+	                this.add(localAdjust, 'm');
+	            }
+	            if (offset !== input) {
+	                if (!keepLocalTime || this._changeInProgress) {
+	                    add_subtract__addSubtract(this, create__createDuration(input - offset, 'm'), 1, false);
+	                } else if (!this._changeInProgress) {
+	                    this._changeInProgress = true;
+	                    utils_hooks__hooks.updateOffset(this, true);
+	                    this._changeInProgress = null;
+	                }
+	            }
+	            return this;
+	        } else {
+	            return this._isUTC ? offset : getDateOffset(this);
+	        }
+	    }
+	
+	    function getSetZone (input, keepLocalTime) {
+	        if (input != null) {
+	            if (typeof input !== 'string') {
+	                input = -input;
+	            }
+	
+	            this.utcOffset(input, keepLocalTime);
+	
+	            return this;
+	        } else {
+	            return -this.utcOffset();
+	        }
+	    }
+	
+	    function setOffsetToUTC (keepLocalTime) {
+	        return this.utcOffset(0, keepLocalTime);
+	    }
+	
+	    function setOffsetToLocal (keepLocalTime) {
+	        if (this._isUTC) {
+	            this.utcOffset(0, keepLocalTime);
+	            this._isUTC = false;
+	
+	            if (keepLocalTime) {
+	                this.subtract(getDateOffset(this), 'm');
+	            }
+	        }
+	        return this;
+	    }
+	
+	    function setOffsetToParsedOffset () {
+	        if (this._tzm) {
+	            this.utcOffset(this._tzm);
+	        } else if (typeof this._i === 'string') {
+	            var tZone = offsetFromString(matchOffset, this._i);
+	
+	            if (tZone === 0) {
+	                this.utcOffset(0, true);
+	            } else {
+	                this.utcOffset(offsetFromString(matchOffset, this._i));
+	            }
+	        }
+	        return this;
+	    }
+	
+	    function hasAlignedHourOffset (input) {
+	        if (!this.isValid()) {
+	            return false;
+	        }
+	        input = input ? local__createLocal(input).utcOffset() : 0;
+	
+	        return (this.utcOffset() - input) % 60 === 0;
+	    }
+	
+	    function isDaylightSavingTime () {
+	        return (
+	            this.utcOffset() > this.clone().month(0).utcOffset() ||
+	            this.utcOffset() > this.clone().month(5).utcOffset()
+	        );
+	    }
+	
+	    function isDaylightSavingTimeShifted () {
+	        if (!isUndefined(this._isDSTShifted)) {
+	            return this._isDSTShifted;
+	        }
+	
+	        var c = {};
+	
+	        copyConfig(c, this);
+	        c = prepareConfig(c);
+	
+	        if (c._a) {
+	            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
+	            this._isDSTShifted = this.isValid() &&
+	                compareArrays(c._a, other.toArray()) > 0;
+	        } else {
+	            this._isDSTShifted = false;
+	        }
+	
+	        return this._isDSTShifted;
+	    }
+	
+	    function isLocal () {
+	        return this.isValid() ? !this._isUTC : false;
+	    }
+	
+	    function isUtcOffset () {
+	        return this.isValid() ? this._isUTC : false;
+	    }
+	
+	    function isUtc () {
+	        return this.isValid() ? this._isUTC && this._offset === 0 : false;
+	    }
+	
+	    // ASP.NET json date format regex
+	    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
+	
+	    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
+	    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
+	    // and further modified to allow for strings containing both week and day
+	    var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
+	
+	    function create__createDuration (input, key) {
 	        var duration = input,
 	            // matching against regexp is expensive, do it on demand
 	            match = null,
 	            sign,
 	            ret,
-	            parseIso,
 	            diffRes;
 	
-	        if (moment.isDuration(input)) {
+	        if (isDuration(input)) {
 	            duration = {
-	                ms: input._milliseconds,
-	                d: input._days,
-	                M: input._months
+	                ms : input._milliseconds,
+	                d  : input._days,
+	                M  : input._months
 	            };
 	        } else if (typeof input === 'number') {
 	            duration = {};
@@ -11625,40 +12477,31 @@
 	            } else {
 	                duration.milliseconds = input;
 	            }
-	        } else if (!!(match = aspNetTimeSpanJsonRegex.exec(input))) {
+	        } else if (!!(match = aspNetRegex.exec(input))) {
 	            sign = (match[1] === '-') ? -1 : 1;
 	            duration = {
-	                y: 0,
-	                d: toInt(match[DATE]) * sign,
-	                h: toInt(match[HOUR]) * sign,
-	                m: toInt(match[MINUTE]) * sign,
-	                s: toInt(match[SECOND]) * sign,
-	                ms: toInt(match[MILLISECOND]) * sign
+	                y  : 0,
+	                d  : toInt(match[DATE])                         * sign,
+	                h  : toInt(match[HOUR])                         * sign,
+	                m  : toInt(match[MINUTE])                       * sign,
+	                s  : toInt(match[SECOND])                       * sign,
+	                ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
 	            };
-	        } else if (!!(match = isoDurationRegex.exec(input))) {
+	        } else if (!!(match = isoRegex.exec(input))) {
 	            sign = (match[1] === '-') ? -1 : 1;
-	            parseIso = function (inp) {
-	                // We'd normally use ~~inp for this, but unfortunately it also
-	                // converts floats to ints.
-	                // inp may be undefined, so careful calling replace on it.
-	                var res = inp && parseFloat(inp.replace(',', '.'));
-	                // apply sign while we're at it
-	                return (isNaN(res) ? 0 : res) * sign;
-	            };
 	            duration = {
-	                y: parseIso(match[2]),
-	                M: parseIso(match[3]),
-	                d: parseIso(match[4]),
-	                h: parseIso(match[5]),
-	                m: parseIso(match[6]),
-	                s: parseIso(match[7]),
-	                w: parseIso(match[8])
+	                y : parseIso(match[2], sign),
+	                M : parseIso(match[3], sign),
+	                w : parseIso(match[4], sign),
+	                d : parseIso(match[5], sign),
+	                h : parseIso(match[6], sign),
+	                m : parseIso(match[7], sign),
+	                s : parseIso(match[8], sign)
 	            };
 	        } else if (duration == null) {// checks for null or undefined
 	            duration = {};
-	        } else if (typeof duration === 'object' &&
-	                ('from' in duration || 'to' in duration)) {
-	            diffRes = momentsDifference(moment(duration.from), moment(duration.to));
+	        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
+	            diffRes = momentsDifference(local__createLocal(duration.from), local__createLocal(duration.to));
 	
 	            duration = {};
 	            duration.ms = diffRes.milliseconds;
@@ -11667,336 +12510,337 @@
 	
 	        ret = new Duration(duration);
 	
-	        if (moment.isDuration(input) && hasOwnProp(input, '_locale')) {
+	        if (isDuration(input) && hasOwnProp(input, '_locale')) {
 	            ret._locale = input._locale;
 	        }
 	
 	        return ret;
-	    };
-	
-	    // version number
-	    moment.version = VERSION;
-	
-	    // default format
-	    moment.defaultFormat = isoFormat;
-	
-	    // constant that refers to the ISO standard
-	    moment.ISO_8601 = function () {};
-	
-	    // Plugins that add properties should also add the key here (null value),
-	    // so we can properly clone ourselves.
-	    moment.momentProperties = momentProperties;
-	
-	    // This function will be called whenever a moment is mutated.
-	    // It is intended to keep the offset in sync with the timezone.
-	    moment.updateOffset = function () {};
-	
-	    // This function allows you to set a threshold for relative time strings
-	    moment.relativeTimeThreshold = function (threshold, limit) {
-	        if (relativeTimeThresholds[threshold] === undefined) {
-	            return false;
-	        }
-	        if (limit === undefined) {
-	            return relativeTimeThresholds[threshold];
-	        }
-	        relativeTimeThresholds[threshold] = limit;
-	        return true;
-	    };
-	
-	    moment.lang = deprecate(
-	        'moment.lang is deprecated. Use moment.locale instead.',
-	        function (key, value) {
-	            return moment.locale(key, value);
-	        }
-	    );
-	
-	    // This function will load locale and then set the global locale.  If
-	    // no arguments are passed in, it will simply return the current global
-	    // locale key.
-	    moment.locale = function (key, values) {
-	        var data;
-	        if (key) {
-	            if (typeof(values) !== 'undefined') {
-	                data = moment.defineLocale(key, values);
-	            }
-	            else {
-	                data = moment.localeData(key);
-	            }
-	
-	            if (data) {
-	                moment.duration._locale = moment._locale = data;
-	            }
-	        }
-	
-	        return moment._locale._abbr;
-	    };
-	
-	    moment.defineLocale = function (name, values) {
-	        if (values !== null) {
-	            values.abbr = name;
-	            if (!locales[name]) {
-	                locales[name] = new Locale();
-	            }
-	            locales[name].set(values);
-	
-	            // backwards compat for now: also set the locale
-	            moment.locale(name);
-	
-	            return locales[name];
-	        } else {
-	            // useful for testing
-	            delete locales[name];
-	            return null;
-	        }
-	    };
-	
-	    moment.langData = deprecate(
-	        'moment.langData is deprecated. Use moment.localeData instead.',
-	        function (key) {
-	            return moment.localeData(key);
-	        }
-	    );
-	
-	    // returns locale data
-	    moment.localeData = function (key) {
-	        var locale;
-	
-	        if (key && key._locale && key._locale._abbr) {
-	            key = key._locale._abbr;
-	        }
-	
-	        if (!key) {
-	            return moment._locale;
-	        }
-	
-	        if (!isArray(key)) {
-	            //short-circuit everything else
-	            locale = loadLocale(key);
-	            if (locale) {
-	                return locale;
-	            }
-	            key = [key];
-	        }
-	
-	        return chooseLocale(key);
-	    };
-	
-	    // compare moment object
-	    moment.isMoment = function (obj) {
-	        return obj instanceof Moment ||
-	            (obj != null && hasOwnProp(obj, '_isAMomentObject'));
-	    };
-	
-	    // for typechecking Duration objects
-	    moment.isDuration = function (obj) {
-	        return obj instanceof Duration;
-	    };
-	
-	    for (i = lists.length - 1; i >= 0; --i) {
-	        makeList(lists[i]);
 	    }
 	
-	    moment.normalizeUnits = function (units) {
-	        return normalizeUnits(units);
-	    };
+	    create__createDuration.fn = Duration.prototype;
 	
-	    moment.invalid = function (flags) {
-	        var m = moment.utc(NaN);
-	        if (flags != null) {
-	            extend(m._pf, flags);
+	    function parseIso (inp, sign) {
+	        // We'd normally use ~~inp for this, but unfortunately it also
+	        // converts floats to ints.
+	        // inp may be undefined, so careful calling replace on it.
+	        var res = inp && parseFloat(inp.replace(',', '.'));
+	        // apply sign while we're at it
+	        return (isNaN(res) ? 0 : res) * sign;
+	    }
+	
+	    function positiveMomentsDifference(base, other) {
+	        var res = {milliseconds: 0, months: 0};
+	
+	        res.months = other.month() - base.month() +
+	            (other.year() - base.year()) * 12;
+	        if (base.clone().add(res.months, 'M').isAfter(other)) {
+	            --res.months;
 	        }
-	        else {
-	            m._pf.userInvalidated = true;
+	
+	        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
+	
+	        return res;
+	    }
+	
+	    function momentsDifference(base, other) {
+	        var res;
+	        if (!(base.isValid() && other.isValid())) {
+	            return {milliseconds: 0, months: 0};
 	        }
 	
-	        return m;
-	    };
+	        other = cloneWithOffset(other, base);
+	        if (base.isBefore(other)) {
+	            res = positiveMomentsDifference(base, other);
+	        } else {
+	            res = positiveMomentsDifference(other, base);
+	            res.milliseconds = -res.milliseconds;
+	            res.months = -res.months;
+	        }
 	
-	    moment.parseZone = function () {
-	        return moment.apply(null, arguments).parseZone();
-	    };
+	        return res;
+	    }
 	
-	    moment.parseTwoDigitYear = function (input) {
-	        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
-	    };
-	
-	    moment.isDate = isDate;
-	
-	    /************************************
-	        Moment Prototype
-	    ************************************/
-	
-	
-	    extend(moment.fn = Moment.prototype, {
-	
-	        clone : function () {
-	            return moment(this);
-	        },
-	
-	        valueOf : function () {
-	            return +this._d - ((this._offset || 0) * 60000);
-	        },
-	
-	        unix : function () {
-	            return Math.floor(+this / 1000);
-	        },
-	
-	        toString : function () {
-	            return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-	        },
-	
-	        toDate : function () {
-	            return this._offset ? new Date(+this) : this._d;
-	        },
-	
-	        toISOString : function () {
-	            var m = moment(this).utc();
-	            if (0 < m.year() && m.year() <= 9999) {
-	                if ('function' === typeof Date.prototype.toISOString) {
-	                    // native implementation is ~50x faster, use it when we can
-	                    return this.toDate().toISOString();
-	                } else {
-	                    return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-	                }
-	            } else {
-	                return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-	            }
-	        },
-	
-	        toArray : function () {
-	            var m = this;
-	            return [
-	                m.year(),
-	                m.month(),
-	                m.date(),
-	                m.hours(),
-	                m.minutes(),
-	                m.seconds(),
-	                m.milliseconds()
-	            ];
-	        },
-	
-	        isValid : function () {
-	            return isValid(this);
-	        },
-	
-	        isDSTShifted : function () {
-	            if (this._a) {
-	                return this.isValid() && compareArrays(this._a, (this._isUTC ? moment.utc(this._a) : moment(this._a)).toArray()) > 0;
+	    // TODO: remove 'name' arg after deprecation is removed
+	    function createAdder(direction, name) {
+	        return function (val, period) {
+	            var dur, tmp;
+	            //invert the arguments, but complain about it
+	            if (period !== null && !isNaN(+period)) {
+	                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
+	                'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
+	                tmp = val; val = period; period = tmp;
 	            }
 	
+	            val = typeof val === 'string' ? +val : val;
+	            dur = create__createDuration(val, period);
+	            add_subtract__addSubtract(this, dur, direction);
+	            return this;
+	        };
+	    }
+	
+	    function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
+	        var milliseconds = duration._milliseconds,
+	            days = absRound(duration._days),
+	            months = absRound(duration._months);
+	
+	        if (!mom.isValid()) {
+	            // No op
+	            return;
+	        }
+	
+	        updateOffset = updateOffset == null ? true : updateOffset;
+	
+	        if (milliseconds) {
+	            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
+	        }
+	        if (days) {
+	            get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
+	        }
+	        if (months) {
+	            setMonth(mom, get_set__get(mom, 'Month') + months * isAdding);
+	        }
+	        if (updateOffset) {
+	            utils_hooks__hooks.updateOffset(mom, days || months);
+	        }
+	    }
+	
+	    var add_subtract__add      = createAdder(1, 'add');
+	    var add_subtract__subtract = createAdder(-1, 'subtract');
+	
+	    function getCalendarFormat(myMoment, now) {
+	        var diff = myMoment.diff(now, 'days', true);
+	        return diff < -6 ? 'sameElse' :
+	                diff < -1 ? 'lastWeek' :
+	                diff < 0 ? 'lastDay' :
+	                diff < 1 ? 'sameDay' :
+	                diff < 2 ? 'nextDay' :
+	                diff < 7 ? 'nextWeek' : 'sameElse';
+	    }
+	
+	    function moment_calendar__calendar (time, formats) {
+	        // We want to compare the start of today, vs this.
+	        // Getting start-of-today depends on whether we're local/utc/offset or not.
+	        var now = time || local__createLocal(),
+	            sod = cloneWithOffset(now, this).startOf('day'),
+	            format = utils_hooks__hooks.calendarFormat(this, sod) || 'sameElse';
+	
+	        var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
+	
+	        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
+	    }
+	
+	    function clone () {
+	        return new Moment(this);
+	    }
+	
+	    function isAfter (input, units) {
+	        var localInput = isMoment(input) ? input : local__createLocal(input);
+	        if (!(this.isValid() && localInput.isValid())) {
 	            return false;
-	        },
+	        }
+	        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+	        if (units === 'millisecond') {
+	            return this.valueOf() > localInput.valueOf();
+	        } else {
+	            return localInput.valueOf() < this.clone().startOf(units).valueOf();
+	        }
+	    }
 	
-	        parsingFlags : function () {
-	            return extend({}, this._pf);
-	        },
+	    function isBefore (input, units) {
+	        var localInput = isMoment(input) ? input : local__createLocal(input);
+	        if (!(this.isValid() && localInput.isValid())) {
+	            return false;
+	        }
+	        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+	        if (units === 'millisecond') {
+	            return this.valueOf() < localInput.valueOf();
+	        } else {
+	            return this.clone().endOf(units).valueOf() < localInput.valueOf();
+	        }
+	    }
 	
-	        invalidAt: function () {
-	            return this._pf.overflow;
-	        },
+	    function isBetween (from, to, units, inclusivity) {
+	        inclusivity = inclusivity || '()';
+	        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
+	            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+	    }
 	
-	        utc : function (keepLocalTime) {
-	            return this.utcOffset(0, keepLocalTime);
-	        },
+	    function isSame (input, units) {
+	        var localInput = isMoment(input) ? input : local__createLocal(input),
+	            inputMs;
+	        if (!(this.isValid() && localInput.isValid())) {
+	            return false;
+	        }
+	        units = normalizeUnits(units || 'millisecond');
+	        if (units === 'millisecond') {
+	            return this.valueOf() === localInput.valueOf();
+	        } else {
+	            inputMs = localInput.valueOf();
+	            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
+	        }
+	    }
 	
-	        local : function (keepLocalTime) {
-	            if (this._isUTC) {
-	                this.utcOffset(0, keepLocalTime);
-	                this._isUTC = false;
+	    function isSameOrAfter (input, units) {
+	        return this.isSame(input, units) || this.isAfter(input,units);
+	    }
 	
-	                if (keepLocalTime) {
-	                    this.subtract(this._dateUtcOffset(), 'm');
-	                }
+	    function isSameOrBefore (input, units) {
+	        return this.isSame(input, units) || this.isBefore(input,units);
+	    }
+	
+	    function diff (input, units, asFloat) {
+	        var that,
+	            zoneDelta,
+	            delta, output;
+	
+	        if (!this.isValid()) {
+	            return NaN;
+	        }
+	
+	        that = cloneWithOffset(input, this);
+	
+	        if (!that.isValid()) {
+	            return NaN;
+	        }
+	
+	        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
+	
+	        units = normalizeUnits(units);
+	
+	        if (units === 'year' || units === 'month' || units === 'quarter') {
+	            output = monthDiff(this, that);
+	            if (units === 'quarter') {
+	                output = output / 3;
+	            } else if (units === 'year') {
+	                output = output / 12;
+	            }
+	        } else {
+	            delta = this - that;
+	            output = units === 'second' ? delta / 1e3 : // 1000
+	                units === 'minute' ? delta / 6e4 : // 1000 * 60
+	                units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
+	                units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
+	                units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
+	                delta;
+	        }
+	        return asFloat ? output : absFloor(output);
+	    }
+	
+	    function monthDiff (a, b) {
+	        // difference in months
+	        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
+	            // b is in (anchor - 1 month, anchor + 1 month)
+	            anchor = a.clone().add(wholeMonthDiff, 'months'),
+	            anchor2, adjust;
+	
+	        if (b - anchor < 0) {
+	            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
+	            // linear across the month
+	            adjust = (b - anchor) / (anchor - anchor2);
+	        } else {
+	            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
+	            // linear across the month
+	            adjust = (b - anchor) / (anchor2 - anchor);
+	        }
+	
+	        //check for negative zero, return zero if negative zero
+	        return -(wholeMonthDiff + adjust) || 0;
+	    }
+	
+	    utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+	    utils_hooks__hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
+	
+	    function toString () {
+	        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+	    }
+	
+	    function moment_format__toISOString () {
+	        var m = this.clone().utc();
+	        if (0 < m.year() && m.year() <= 9999) {
+	            if (isFunction(Date.prototype.toISOString)) {
+	                // native implementation is ~50x faster, use it when we can
+	                return this.toDate().toISOString();
+	            } else {
+	                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+	            }
+	        } else {
+	            return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+	        }
+	    }
+	
+	    function format (inputString) {
+	        if (!inputString) {
+	            inputString = this.isUtc() ? utils_hooks__hooks.defaultFormatUtc : utils_hooks__hooks.defaultFormat;
+	        }
+	        var output = formatMoment(this, inputString);
+	        return this.localeData().postformat(output);
+	    }
+	
+	    function from (time, withoutSuffix) {
+	        if (this.isValid() &&
+	                ((isMoment(time) && time.isValid()) ||
+	                 local__createLocal(time).isValid())) {
+	            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
+	        } else {
+	            return this.localeData().invalidDate();
+	        }
+	    }
+	
+	    function fromNow (withoutSuffix) {
+	        return this.from(local__createLocal(), withoutSuffix);
+	    }
+	
+	    function to (time, withoutSuffix) {
+	        if (this.isValid() &&
+	                ((isMoment(time) && time.isValid()) ||
+	                 local__createLocal(time).isValid())) {
+	            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+	        } else {
+	            return this.localeData().invalidDate();
+	        }
+	    }
+	
+	    function toNow (withoutSuffix) {
+	        return this.to(local__createLocal(), withoutSuffix);
+	    }
+	
+	    // If passed a locale key, it will set the locale for this
+	    // instance.  Otherwise, it will return the locale configuration
+	    // variables for this instance.
+	    function locale (key) {
+	        var newLocaleData;
+	
+	        if (key === undefined) {
+	            return this._locale._abbr;
+	        } else {
+	            newLocaleData = locale_locales__getLocale(key);
+	            if (newLocaleData != null) {
+	                this._locale = newLocaleData;
 	            }
 	            return this;
-	        },
+	        }
+	    }
 	
-	        format : function (inputString) {
-	            var output = formatMoment(this, inputString || moment.defaultFormat);
-	            return this.localeData().postformat(output);
-	        },
-	
-	        add : createAdder(1, 'add'),
-	
-	        subtract : createAdder(-1, 'subtract'),
-	
-	        diff : function (input, units, asFloat) {
-	            var that = makeAs(input, this),
-	                zoneDiff = (that.utcOffset() - this.utcOffset()) * 6e4,
-	                anchor, diff, output, daysAdjust;
-	
-	            units = normalizeUnits(units);
-	
-	            if (units === 'year' || units === 'month' || units === 'quarter') {
-	                output = monthDiff(this, that);
-	                if (units === 'quarter') {
-	                    output = output / 3;
-	                } else if (units === 'year') {
-	                    output = output / 12;
-	                }
+	    var lang = deprecate(
+	        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
+	        function (key) {
+	            if (key === undefined) {
+	                return this.localeData();
 	            } else {
-	                diff = this - that;
-	                output = units === 'second' ? diff / 1e3 : // 1000
-	                    units === 'minute' ? diff / 6e4 : // 1000 * 60
-	                    units === 'hour' ? diff / 36e5 : // 1000 * 60 * 60
-	                    units === 'day' ? (diff - zoneDiff) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-	                    units === 'week' ? (diff - zoneDiff) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-	                    diff;
+	                return this.locale(key);
 	            }
-	            return asFloat ? output : absRound(output);
-	        },
+	        }
+	    );
 	
-	        from : function (time, withoutSuffix) {
-	            return moment.duration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-	        },
+	    function localeData () {
+	        return this._locale;
+	    }
 	
-	        fromNow : function (withoutSuffix) {
-	            return this.from(moment(), withoutSuffix);
-	        },
-	
-	        calendar : function (time) {
-	            // We want to compare the start of today, vs this.
-	            // Getting start-of-today depends on whether we're locat/utc/offset
-	            // or not.
-	            var now = time || moment(),
-	                sod = makeAs(now, this).startOf('day'),
-	                diff = this.diff(sod, 'days', true),
-	                format = diff < -6 ? 'sameElse' :
-	                    diff < -1 ? 'lastWeek' :
-	                    diff < 0 ? 'lastDay' :
-	                    diff < 1 ? 'sameDay' :
-	                    diff < 2 ? 'nextDay' :
-	                    diff < 7 ? 'nextWeek' : 'sameElse';
-	            return this.format(this.localeData().calendar(format, this, moment(now)));
-	        },
-	
-	        isLeapYear : function () {
-	            return isLeapYear(this.year());
-	        },
-	
-	        isDST : function () {
-	            return (this.utcOffset() > this.clone().month(0).utcOffset() ||
-	                this.utcOffset() > this.clone().month(5).utcOffset());
-	        },
-	
-	        day : function (input) {
-	            var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-	            if (input != null) {
-	                input = parseWeekday(input, this.localeData());
-	                return this.add(input - day, 'd');
-	            } else {
-	                return day;
-	            }
-	        },
-	
-	        month : makeAccessor('Month', true),
-	
-	        startOf : function (units) {
-	            units = normalizeUnits(units);
-	            // the following switch intentionally omits break keywords
-	            // to utilize falling through the cases.
-	            switch (units) {
+	    function startOf (units) {
+	        units = normalizeUnits(units);
+	        // the following switch intentionally omits break keywords
+	        // to utilize falling through the cases.
+	        switch (units) {
 	            case 'year':
 	                this.month(0);
 	                /* falls through */
@@ -12007,6 +12851,7 @@
 	            case 'week':
 	            case 'isoWeek':
 	            case 'day':
+	            case 'date':
 	                this.hours(0);
 	                /* falls through */
 	            case 'hour':
@@ -12017,615 +12862,639 @@
 	                /* falls through */
 	            case 'second':
 	                this.milliseconds(0);
-	                /* falls through */
-	            }
-	
-	            // weeks are a special case
-	            if (units === 'week') {
-	                this.weekday(0);
-	            } else if (units === 'isoWeek') {
-	                this.isoWeekday(1);
-	            }
-	
-	            // quarters are also special
-	            if (units === 'quarter') {
-	                this.month(Math.floor(this.month() / 3) * 3);
-	            }
-	
-	            return this;
-	        },
-	
-	        endOf: function (units) {
-	            units = normalizeUnits(units);
-	            if (units === undefined || units === 'millisecond') {
-	                return this;
-	            }
-	            return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
-	        },
-	
-	        isAfter: function (input, units) {
-	            var inputMs;
-	            units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
-	            if (units === 'millisecond') {
-	                input = moment.isMoment(input) ? input : moment(input);
-	                return +this > +input;
-	            } else {
-	                inputMs = moment.isMoment(input) ? +input : +moment(input);
-	                return inputMs < +this.clone().startOf(units);
-	            }
-	        },
-	
-	        isBefore: function (input, units) {
-	            var inputMs;
-	            units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
-	            if (units === 'millisecond') {
-	                input = moment.isMoment(input) ? input : moment(input);
-	                return +this < +input;
-	            } else {
-	                inputMs = moment.isMoment(input) ? +input : +moment(input);
-	                return +this.clone().endOf(units) < inputMs;
-	            }
-	        },
-	
-	        isBetween: function (from, to, units) {
-	            return this.isAfter(from, units) && this.isBefore(to, units);
-	        },
-	
-	        isSame: function (input, units) {
-	            var inputMs;
-	            units = normalizeUnits(units || 'millisecond');
-	            if (units === 'millisecond') {
-	                input = moment.isMoment(input) ? input : moment(input);
-	                return +this === +input;
-	            } else {
-	                inputMs = +moment(input);
-	                return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
-	            }
-	        },
-	
-	        min: deprecate(
-	                 'moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
-	                 function (other) {
-	                     other = moment.apply(null, arguments);
-	                     return other < this ? this : other;
-	                 }
-	         ),
-	
-	        max: deprecate(
-	                'moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
-	                function (other) {
-	                    other = moment.apply(null, arguments);
-	                    return other > this ? this : other;
-	                }
-	        ),
-	
-	        zone : deprecate(
-	                'moment().zone is deprecated, use moment().utcOffset instead. ' +
-	                'https://github.com/moment/moment/issues/1779',
-	                function (input, keepLocalTime) {
-	                    if (input != null) {
-	                        if (typeof input !== 'string') {
-	                            input = -input;
-	                        }
-	
-	                        this.utcOffset(input, keepLocalTime);
-	
-	                        return this;
-	                    } else {
-	                        return -this.utcOffset();
-	                    }
-	                }
-	        ),
-	
-	        // keepLocalTime = true means only change the timezone, without
-	        // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-	        // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-	        // +0200, so we adjust the time as needed, to be valid.
-	        //
-	        // Keeping the time actually adds/subtracts (one hour)
-	        // from the actual represented time. That is why we call updateOffset
-	        // a second time. In case it wants us to change the offset again
-	        // _changeInProgress == true case, then we have to adjust, because
-	        // there is no such time in the given timezone.
-	        utcOffset : function (input, keepLocalTime) {
-	            var offset = this._offset || 0,
-	                localAdjust;
-	            if (input != null) {
-	                if (typeof input === 'string') {
-	                    input = utcOffsetFromString(input);
-	                }
-	                if (Math.abs(input) < 16) {
-	                    input = input * 60;
-	                }
-	                if (!this._isUTC && keepLocalTime) {
-	                    localAdjust = this._dateUtcOffset();
-	                }
-	                this._offset = input;
-	                this._isUTC = true;
-	                if (localAdjust != null) {
-	                    this.add(localAdjust, 'm');
-	                }
-	                if (offset !== input) {
-	                    if (!keepLocalTime || this._changeInProgress) {
-	                        addOrSubtractDurationFromMoment(this,
-	                                moment.duration(input - offset, 'm'), 1, false);
-	                    } else if (!this._changeInProgress) {
-	                        this._changeInProgress = true;
-	                        moment.updateOffset(this, true);
-	                        this._changeInProgress = null;
-	                    }
-	                }
-	
-	                return this;
-	            } else {
-	                return this._isUTC ? offset : this._dateUtcOffset();
-	            }
-	        },
-	
-	        isLocal : function () {
-	            return !this._isUTC;
-	        },
-	
-	        isUtcOffset : function () {
-	            return this._isUTC;
-	        },
-	
-	        isUtc : function () {
-	            return this._isUTC && this._offset === 0;
-	        },
-	
-	        zoneAbbr : function () {
-	            return this._isUTC ? 'UTC' : '';
-	        },
-	
-	        zoneName : function () {
-	            return this._isUTC ? 'Coordinated Universal Time' : '';
-	        },
-	
-	        parseZone : function () {
-	            if (this._tzm) {
-	                this.utcOffset(this._tzm);
-	            } else if (typeof this._i === 'string') {
-	                this.utcOffset(utcOffsetFromString(this._i));
-	            }
-	            return this;
-	        },
-	
-	        hasAlignedHourOffset : function (input) {
-	            if (!input) {
-	                input = 0;
-	            }
-	            else {
-	                input = moment(input).utcOffset();
-	            }
-	
-	            return (this.utcOffset() - input) % 60 === 0;
-	        },
-	
-	        daysInMonth : function () {
-	            return daysInMonth(this.year(), this.month());
-	        },
-	
-	        dayOfYear : function (input) {
-	            var dayOfYear = round((moment(this).startOf('day') - moment(this).startOf('year')) / 864e5) + 1;
-	            return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
-	        },
-	
-	        quarter : function (input) {
-	            return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-	        },
-	
-	        weekYear : function (input) {
-	            var year = weekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year;
-	            return input == null ? year : this.add((input - year), 'y');
-	        },
-	
-	        isoWeekYear : function (input) {
-	            var year = weekOfYear(this, 1, 4).year;
-	            return input == null ? year : this.add((input - year), 'y');
-	        },
-	
-	        week : function (input) {
-	            var week = this.localeData().week(this);
-	            return input == null ? week : this.add((input - week) * 7, 'd');
-	        },
-	
-	        isoWeek : function (input) {
-	            var week = weekOfYear(this, 1, 4).week;
-	            return input == null ? week : this.add((input - week) * 7, 'd');
-	        },
-	
-	        weekday : function (input) {
-	            var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-	            return input == null ? weekday : this.add(input - weekday, 'd');
-	        },
-	
-	        isoWeekday : function (input) {
-	            // behaves the same as moment#day except
-	            // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-	            // as a setter, sunday should belong to the previous week.
-	            return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
-	        },
-	
-	        isoWeeksInYear : function () {
-	            return weeksInYear(this.year(), 1, 4);
-	        },
-	
-	        weeksInYear : function () {
-	            var weekInfo = this.localeData()._week;
-	            return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-	        },
-	
-	        get : function (units) {
-	            units = normalizeUnits(units);
-	            return this[units]();
-	        },
-	
-	        set : function (units, value) {
-	            var unit;
-	            if (typeof units === 'object') {
-	                for (unit in units) {
-	                    this.set(unit, units[unit]);
-	                }
-	            }
-	            else {
-	                units = normalizeUnits(units);
-	                if (typeof this[units] === 'function') {
-	                    this[units](value);
-	                }
-	            }
-	            return this;
-	        },
-	
-	        // If passed a locale key, it will set the locale for this
-	        // instance.  Otherwise, it will return the locale configuration
-	        // variables for this instance.
-	        locale : function (key) {
-	            var newLocaleData;
-	
-	            if (key === undefined) {
-	                return this._locale._abbr;
-	            } else {
-	                newLocaleData = moment.localeData(key);
-	                if (newLocaleData != null) {
-	                    this._locale = newLocaleData;
-	                }
-	                return this;
-	            }
-	        },
-	
-	        lang : deprecate(
-	            'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-	            function (key) {
-	                if (key === undefined) {
-	                    return this.localeData();
-	                } else {
-	                    return this.locale(key);
-	                }
-	            }
-	        ),
-	
-	        localeData : function () {
-	            return this._locale;
-	        },
-	
-	        _dateUtcOffset : function () {
-	            // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-	            // https://github.com/moment/moment/pull/1871
-	            return -Math.round(this._d.getTimezoneOffset() / 15) * 15;
 	        }
 	
+	        // weeks are a special case
+	        if (units === 'week') {
+	            this.weekday(0);
+	        }
+	        if (units === 'isoWeek') {
+	            this.isoWeekday(1);
+	        }
+	
+	        // quarters are also special
+	        if (units === 'quarter') {
+	            this.month(Math.floor(this.month() / 3) * 3);
+	        }
+	
+	        return this;
+	    }
+	
+	    function endOf (units) {
+	        units = normalizeUnits(units);
+	        if (units === undefined || units === 'millisecond') {
+	            return this;
+	        }
+	
+	        // 'date' is an alias for 'day', so it should be considered as such.
+	        if (units === 'date') {
+	            units = 'day';
+	        }
+	
+	        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
+	    }
+	
+	    function to_type__valueOf () {
+	        return this._d.valueOf() - ((this._offset || 0) * 60000);
+	    }
+	
+	    function unix () {
+	        return Math.floor(this.valueOf() / 1000);
+	    }
+	
+	    function toDate () {
+	        return new Date(this.valueOf());
+	    }
+	
+	    function toArray () {
+	        var m = this;
+	        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
+	    }
+	
+	    function toObject () {
+	        var m = this;
+	        return {
+	            years: m.year(),
+	            months: m.month(),
+	            date: m.date(),
+	            hours: m.hours(),
+	            minutes: m.minutes(),
+	            seconds: m.seconds(),
+	            milliseconds: m.milliseconds()
+	        };
+	    }
+	
+	    function toJSON () {
+	        // new Date(NaN).toJSON() === null
+	        return this.isValid() ? this.toISOString() : null;
+	    }
+	
+	    function moment_valid__isValid () {
+	        return valid__isValid(this);
+	    }
+	
+	    function parsingFlags () {
+	        return extend({}, getParsingFlags(this));
+	    }
+	
+	    function invalidAt () {
+	        return getParsingFlags(this).overflow;
+	    }
+	
+	    function creationData() {
+	        return {
+	            input: this._i,
+	            format: this._f,
+	            locale: this._locale,
+	            isUTC: this._isUTC,
+	            strict: this._strict
+	        };
+	    }
+	
+	    // FORMATTING
+	
+	    addFormatToken(0, ['gg', 2], 0, function () {
+	        return this.weekYear() % 100;
 	    });
 	
-	    function rawMonthSetter(mom, value) {
-	        var dayOfMonth;
+	    addFormatToken(0, ['GG', 2], 0, function () {
+	        return this.isoWeekYear() % 100;
+	    });
 	
-	        // TODO: Move this out of here!
-	        if (typeof value === 'string') {
-	            value = mom.localeData().monthsParse(value);
-	            // TODO: Another silent failure?
-	            if (typeof value !== 'number') {
-	                return mom;
-	            }
-	        }
-	
-	        dayOfMonth = Math.min(mom.date(),
-	                daysInMonth(mom.year(), value));
-	        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
-	        return mom;
+	    function addWeekYearFormatToken (token, getter) {
+	        addFormatToken(0, [token, token.length], 0, getter);
 	    }
 	
-	    function rawGetter(mom, unit) {
-	        return mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]();
+	    addWeekYearFormatToken('gggg',     'weekYear');
+	    addWeekYearFormatToken('ggggg',    'weekYear');
+	    addWeekYearFormatToken('GGGG',  'isoWeekYear');
+	    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
+	
+	    // ALIASES
+	
+	    addUnitAlias('weekYear', 'gg');
+	    addUnitAlias('isoWeekYear', 'GG');
+	
+	    // PRIORITY
+	
+	    addUnitPriority('weekYear', 1);
+	    addUnitPriority('isoWeekYear', 1);
+	
+	
+	    // PARSING
+	
+	    addRegexToken('G',      matchSigned);
+	    addRegexToken('g',      matchSigned);
+	    addRegexToken('GG',     match1to2, match2);
+	    addRegexToken('gg',     match1to2, match2);
+	    addRegexToken('GGGG',   match1to4, match4);
+	    addRegexToken('gggg',   match1to4, match4);
+	    addRegexToken('GGGGG',  match1to6, match6);
+	    addRegexToken('ggggg',  match1to6, match6);
+	
+	    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
+	        week[token.substr(0, 2)] = toInt(input);
+	    });
+	
+	    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
+	        week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
+	    });
+	
+	    // MOMENTS
+	
+	    function getSetWeekYear (input) {
+	        return getSetWeekYearHelper.call(this,
+	                input,
+	                this.week(),
+	                this.weekday(),
+	                this.localeData()._week.dow,
+	                this.localeData()._week.doy);
 	    }
 	
-	    function rawSetter(mom, unit, value) {
-	        if (unit === 'Month') {
-	            return rawMonthSetter(mom, value);
+	    function getSetISOWeekYear (input) {
+	        return getSetWeekYearHelper.call(this,
+	                input, this.isoWeek(), this.isoWeekday(), 1, 4);
+	    }
+	
+	    function getISOWeeksInYear () {
+	        return weeksInYear(this.year(), 1, 4);
+	    }
+	
+	    function getWeeksInYear () {
+	        var weekInfo = this.localeData()._week;
+	        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
+	    }
+	
+	    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
+	        var weeksTarget;
+	        if (input == null) {
+	            return weekOfYear(this, dow, doy).year;
 	        } else {
-	            return mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+	            weeksTarget = weeksInYear(input, dow, doy);
+	            if (week > weeksTarget) {
+	                week = weeksTarget;
+	            }
+	            return setWeekAll.call(this, input, week, weekday, dow, doy);
 	        }
 	    }
 	
-	    function makeAccessor(unit, keepTime) {
-	        return function (value) {
-	            if (value != null) {
-	                rawSetter(this, unit, value);
-	                moment.updateOffset(this, keepTime);
-	                return this;
-	            } else {
-	                return rawGetter(this, unit);
-	            }
-	        };
+	    function setWeekAll(weekYear, week, weekday, dow, doy) {
+	        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
+	            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+	
+	        this.year(date.getUTCFullYear());
+	        this.month(date.getUTCMonth());
+	        this.date(date.getUTCDate());
+	        return this;
 	    }
 	
-	    moment.fn.millisecond = moment.fn.milliseconds = makeAccessor('Milliseconds', false);
-	    moment.fn.second = moment.fn.seconds = makeAccessor('Seconds', false);
-	    moment.fn.minute = moment.fn.minutes = makeAccessor('Minutes', false);
-	    // Setting the hour should keep the time, because the user explicitly
-	    // specified which hour he wants. So trying to maintain the same hour (in
-	    // a new timezone) makes sense. Adding/subtracting hours does not follow
-	    // this rule.
-	    moment.fn.hour = moment.fn.hours = makeAccessor('Hours', true);
-	    // moment.fn.month is defined separately
-	    moment.fn.date = makeAccessor('Date', true);
-	    moment.fn.dates = deprecate('dates accessor is deprecated. Use date instead.', makeAccessor('Date', true));
-	    moment.fn.year = makeAccessor('FullYear', true);
-	    moment.fn.years = deprecate('years accessor is deprecated. Use year instead.', makeAccessor('FullYear', true));
+	    // FORMATTING
 	
-	    // add plural methods
-	    moment.fn.days = moment.fn.day;
-	    moment.fn.months = moment.fn.month;
-	    moment.fn.weeks = moment.fn.week;
-	    moment.fn.isoWeeks = moment.fn.isoWeek;
-	    moment.fn.quarters = moment.fn.quarter;
+	    addFormatToken('Q', 0, 'Qo', 'quarter');
 	
-	    // add aliased format methods
-	    moment.fn.toJSON = moment.fn.toISOString;
+	    // ALIASES
 	
-	    // alias isUtc for dev-friendliness
-	    moment.fn.isUTC = moment.fn.isUtc;
+	    addUnitAlias('quarter', 'Q');
 	
-	    /************************************
-	        Duration Prototype
-	    ************************************/
+	    // PRIORITY
 	
+	    addUnitPriority('quarter', 7);
 	
-	    function daysToYears (days) {
-	        // 400 years have 146097 days (taking into account leap year rules)
-	        return days * 400 / 146097;
-	    }
+	    // PARSING
 	
-	    function yearsToDays (years) {
-	        // years * 365 + absRound(years / 4) -
-	        //     absRound(years / 100) + absRound(years / 400);
-	        return years * 146097 / 400;
-	    }
-	
-	    extend(moment.duration.fn = Duration.prototype, {
-	
-	        _bubble : function () {
-	            var milliseconds = this._milliseconds,
-	                days = this._days,
-	                months = this._months,
-	                data = this._data,
-	                seconds, minutes, hours, years = 0;
-	
-	            // The following code bubbles up values, see the tests for
-	            // examples of what that means.
-	            data.milliseconds = milliseconds % 1000;
-	
-	            seconds = absRound(milliseconds / 1000);
-	            data.seconds = seconds % 60;
-	
-	            minutes = absRound(seconds / 60);
-	            data.minutes = minutes % 60;
-	
-	            hours = absRound(minutes / 60);
-	            data.hours = hours % 24;
-	
-	            days += absRound(hours / 24);
-	
-	            // Accurately convert days to years, assume start from year 0.
-	            years = absRound(daysToYears(days));
-	            days -= absRound(yearsToDays(years));
-	
-	            // 30 days to a month
-	            // TODO (iskren): Use anchor date (like 1st Jan) to compute this.
-	            months += absRound(days / 30);
-	            days %= 30;
-	
-	            // 12 months -> 1 year
-	            years += absRound(months / 12);
-	            months %= 12;
-	
-	            data.days = days;
-	            data.months = months;
-	            data.years = years;
-	        },
-	
-	        abs : function () {
-	            this._milliseconds = Math.abs(this._milliseconds);
-	            this._days = Math.abs(this._days);
-	            this._months = Math.abs(this._months);
-	
-	            this._data.milliseconds = Math.abs(this._data.milliseconds);
-	            this._data.seconds = Math.abs(this._data.seconds);
-	            this._data.minutes = Math.abs(this._data.minutes);
-	            this._data.hours = Math.abs(this._data.hours);
-	            this._data.months = Math.abs(this._data.months);
-	            this._data.years = Math.abs(this._data.years);
-	
-	            return this;
-	        },
-	
-	        weeks : function () {
-	            return absRound(this.days() / 7);
-	        },
-	
-	        valueOf : function () {
-	            return this._milliseconds +
-	              this._days * 864e5 +
-	              (this._months % 12) * 2592e6 +
-	              toInt(this._months / 12) * 31536e6;
-	        },
-	
-	        humanize : function (withSuffix) {
-	            var output = relativeTime(this, !withSuffix, this.localeData());
-	
-	            if (withSuffix) {
-	                output = this.localeData().pastFuture(+this, output);
-	            }
-	
-	            return this.localeData().postformat(output);
-	        },
-	
-	        add : function (input, val) {
-	            // supports only 2.0-style add(1, 's') or add(moment)
-	            var dur = moment.duration(input, val);
-	
-	            this._milliseconds += dur._milliseconds;
-	            this._days += dur._days;
-	            this._months += dur._months;
-	
-	            this._bubble();
-	
-	            return this;
-	        },
-	
-	        subtract : function (input, val) {
-	            var dur = moment.duration(input, val);
-	
-	            this._milliseconds -= dur._milliseconds;
-	            this._days -= dur._days;
-	            this._months -= dur._months;
-	
-	            this._bubble();
-	
-	            return this;
-	        },
-	
-	        get : function (units) {
-	            units = normalizeUnits(units);
-	            return this[units.toLowerCase() + 's']();
-	        },
-	
-	        as : function (units) {
-	            var days, months;
-	            units = normalizeUnits(units);
-	
-	            if (units === 'month' || units === 'year') {
-	                days = this._days + this._milliseconds / 864e5;
-	                months = this._months + daysToYears(days) * 12;
-	                return units === 'month' ? months : months / 12;
-	            } else {
-	                // handle milliseconds separately because of floating point math errors (issue #1867)
-	                days = this._days + Math.round(yearsToDays(this._months / 12));
-	                switch (units) {
-	                    case 'week': return days / 7 + this._milliseconds / 6048e5;
-	                    case 'day': return days + this._milliseconds / 864e5;
-	                    case 'hour': return days * 24 + this._milliseconds / 36e5;
-	                    case 'minute': return days * 24 * 60 + this._milliseconds / 6e4;
-	                    case 'second': return days * 24 * 60 * 60 + this._milliseconds / 1000;
-	                    // Math.floor prevents floating point math errors here
-	                    case 'millisecond': return Math.floor(days * 24 * 60 * 60 * 1000) + this._milliseconds;
-	                    default: throw new Error('Unknown unit ' + units);
-	                }
-	            }
-	        },
-	
-	        lang : moment.fn.lang,
-	        locale : moment.fn.locale,
-	
-	        toIsoString : deprecate(
-	            'toIsoString() is deprecated. Please use toISOString() instead ' +
-	            '(notice the capitals)',
-	            function () {
-	                return this.toISOString();
-	            }
-	        ),
-	
-	        toISOString : function () {
-	            // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-	            var years = Math.abs(this.years()),
-	                months = Math.abs(this.months()),
-	                days = Math.abs(this.days()),
-	                hours = Math.abs(this.hours()),
-	                minutes = Math.abs(this.minutes()),
-	                seconds = Math.abs(this.seconds() + this.milliseconds() / 1000);
-	
-	            if (!this.asSeconds()) {
-	                // this is the same as C#'s (Noda) and python (isodate)...
-	                // but not other JS (goog.date)
-	                return 'P0D';
-	            }
-	
-	            return (this.asSeconds() < 0 ? '-' : '') +
-	                'P' +
-	                (years ? years + 'Y' : '') +
-	                (months ? months + 'M' : '') +
-	                (days ? days + 'D' : '') +
-	                ((hours || minutes || seconds) ? 'T' : '') +
-	                (hours ? hours + 'H' : '') +
-	                (minutes ? minutes + 'M' : '') +
-	                (seconds ? seconds + 'S' : '');
-	        },
-	
-	        localeData : function () {
-	            return this._locale;
-	        },
-	
-	        toJSON : function () {
-	            return this.toISOString();
-	        }
+	    addRegexToken('Q', match1);
+	    addParseToken('Q', function (input, array) {
+	        array[MONTH] = (toInt(input) - 1) * 3;
 	    });
 	
-	    moment.duration.fn.toString = moment.duration.fn.toISOString;
+	    // MOMENTS
 	
-	    function makeDurationGetter(name) {
-	        moment.duration.fn[name] = function () {
-	            return this._data[name];
-	        };
+	    function getSetQuarter (input) {
+	        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
 	    }
 	
-	    for (i in unitMillisecondFactors) {
-	        if (hasOwnProp(unitMillisecondFactors, i)) {
-	            makeDurationGetter(i.toLowerCase());
+	    // FORMATTING
+	
+	    addFormatToken('D', ['DD', 2], 'Do', 'date');
+	
+	    // ALIASES
+	
+	    addUnitAlias('date', 'D');
+	
+	    // PRIOROITY
+	    addUnitPriority('date', 9);
+	
+	    // PARSING
+	
+	    addRegexToken('D',  match1to2);
+	    addRegexToken('DD', match1to2, match2);
+	    addRegexToken('Do', function (isStrict, locale) {
+	        return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
+	    });
+	
+	    addParseToken(['D', 'DD'], DATE);
+	    addParseToken('Do', function (input, array) {
+	        array[DATE] = toInt(input.match(match1to2)[0], 10);
+	    });
+	
+	    // MOMENTS
+	
+	    var getSetDayOfMonth = makeGetSet('Date', true);
+	
+	    // FORMATTING
+	
+	    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+	
+	    // ALIASES
+	
+	    addUnitAlias('dayOfYear', 'DDD');
+	
+	    // PRIORITY
+	    addUnitPriority('dayOfYear', 4);
+	
+	    // PARSING
+	
+	    addRegexToken('DDD',  match1to3);
+	    addRegexToken('DDDD', match3);
+	    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
+	        config._dayOfYear = toInt(input);
+	    });
+	
+	    // HELPERS
+	
+	    // MOMENTS
+	
+	    function getSetDayOfYear (input) {
+	        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
+	        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+	    }
+	
+	    // FORMATTING
+	
+	    addFormatToken('m', ['mm', 2], 0, 'minute');
+	
+	    // ALIASES
+	
+	    addUnitAlias('minute', 'm');
+	
+	    // PRIORITY
+	
+	    addUnitPriority('minute', 14);
+	
+	    // PARSING
+	
+	    addRegexToken('m',  match1to2);
+	    addRegexToken('mm', match1to2, match2);
+	    addParseToken(['m', 'mm'], MINUTE);
+	
+	    // MOMENTS
+	
+	    var getSetMinute = makeGetSet('Minutes', false);
+	
+	    // FORMATTING
+	
+	    addFormatToken('s', ['ss', 2], 0, 'second');
+	
+	    // ALIASES
+	
+	    addUnitAlias('second', 's');
+	
+	    // PRIORITY
+	
+	    addUnitPriority('second', 15);
+	
+	    // PARSING
+	
+	    addRegexToken('s',  match1to2);
+	    addRegexToken('ss', match1to2, match2);
+	    addParseToken(['s', 'ss'], SECOND);
+	
+	    // MOMENTS
+	
+	    var getSetSecond = makeGetSet('Seconds', false);
+	
+	    // FORMATTING
+	
+	    addFormatToken('S', 0, 0, function () {
+	        return ~~(this.millisecond() / 100);
+	    });
+	
+	    addFormatToken(0, ['SS', 2], 0, function () {
+	        return ~~(this.millisecond() / 10);
+	    });
+	
+	    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
+	    addFormatToken(0, ['SSSS', 4], 0, function () {
+	        return this.millisecond() * 10;
+	    });
+	    addFormatToken(0, ['SSSSS', 5], 0, function () {
+	        return this.millisecond() * 100;
+	    });
+	    addFormatToken(0, ['SSSSSS', 6], 0, function () {
+	        return this.millisecond() * 1000;
+	    });
+	    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
+	        return this.millisecond() * 10000;
+	    });
+	    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
+	        return this.millisecond() * 100000;
+	    });
+	    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
+	        return this.millisecond() * 1000000;
+	    });
+	
+	
+	    // ALIASES
+	
+	    addUnitAlias('millisecond', 'ms');
+	
+	    // PRIORITY
+	
+	    addUnitPriority('millisecond', 16);
+	
+	    // PARSING
+	
+	    addRegexToken('S',    match1to3, match1);
+	    addRegexToken('SS',   match1to3, match2);
+	    addRegexToken('SSS',  match1to3, match3);
+	
+	    var token;
+	    for (token = 'SSSS'; token.length <= 9; token += 'S') {
+	        addRegexToken(token, matchUnsigned);
+	    }
+	
+	    function parseMs(input, array) {
+	        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+	    }
+	
+	    for (token = 'S'; token.length <= 9; token += 'S') {
+	        addParseToken(token, parseMs);
+	    }
+	    // MOMENTS
+	
+	    var getSetMillisecond = makeGetSet('Milliseconds', false);
+	
+	    // FORMATTING
+	
+	    addFormatToken('z',  0, 0, 'zoneAbbr');
+	    addFormatToken('zz', 0, 0, 'zoneName');
+	
+	    // MOMENTS
+	
+	    function getZoneAbbr () {
+	        return this._isUTC ? 'UTC' : '';
+	    }
+	
+	    function getZoneName () {
+	        return this._isUTC ? 'Coordinated Universal Time' : '';
+	    }
+	
+	    var momentPrototype__proto = Moment.prototype;
+	
+	    momentPrototype__proto.add               = add_subtract__add;
+	    momentPrototype__proto.calendar          = moment_calendar__calendar;
+	    momentPrototype__proto.clone             = clone;
+	    momentPrototype__proto.diff              = diff;
+	    momentPrototype__proto.endOf             = endOf;
+	    momentPrototype__proto.format            = format;
+	    momentPrototype__proto.from              = from;
+	    momentPrototype__proto.fromNow           = fromNow;
+	    momentPrototype__proto.to                = to;
+	    momentPrototype__proto.toNow             = toNow;
+	    momentPrototype__proto.get               = stringGet;
+	    momentPrototype__proto.invalidAt         = invalidAt;
+	    momentPrototype__proto.isAfter           = isAfter;
+	    momentPrototype__proto.isBefore          = isBefore;
+	    momentPrototype__proto.isBetween         = isBetween;
+	    momentPrototype__proto.isSame            = isSame;
+	    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
+	    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
+	    momentPrototype__proto.isValid           = moment_valid__isValid;
+	    momentPrototype__proto.lang              = lang;
+	    momentPrototype__proto.locale            = locale;
+	    momentPrototype__proto.localeData        = localeData;
+	    momentPrototype__proto.max               = prototypeMax;
+	    momentPrototype__proto.min               = prototypeMin;
+	    momentPrototype__proto.parsingFlags      = parsingFlags;
+	    momentPrototype__proto.set               = stringSet;
+	    momentPrototype__proto.startOf           = startOf;
+	    momentPrototype__proto.subtract          = add_subtract__subtract;
+	    momentPrototype__proto.toArray           = toArray;
+	    momentPrototype__proto.toObject          = toObject;
+	    momentPrototype__proto.toDate            = toDate;
+	    momentPrototype__proto.toISOString       = moment_format__toISOString;
+	    momentPrototype__proto.toJSON            = toJSON;
+	    momentPrototype__proto.toString          = toString;
+	    momentPrototype__proto.unix              = unix;
+	    momentPrototype__proto.valueOf           = to_type__valueOf;
+	    momentPrototype__proto.creationData      = creationData;
+	
+	    // Year
+	    momentPrototype__proto.year       = getSetYear;
+	    momentPrototype__proto.isLeapYear = getIsLeapYear;
+	
+	    // Week Year
+	    momentPrototype__proto.weekYear    = getSetWeekYear;
+	    momentPrototype__proto.isoWeekYear = getSetISOWeekYear;
+	
+	    // Quarter
+	    momentPrototype__proto.quarter = momentPrototype__proto.quarters = getSetQuarter;
+	
+	    // Month
+	    momentPrototype__proto.month       = getSetMonth;
+	    momentPrototype__proto.daysInMonth = getDaysInMonth;
+	
+	    // Week
+	    momentPrototype__proto.week           = momentPrototype__proto.weeks        = getSetWeek;
+	    momentPrototype__proto.isoWeek        = momentPrototype__proto.isoWeeks     = getSetISOWeek;
+	    momentPrototype__proto.weeksInYear    = getWeeksInYear;
+	    momentPrototype__proto.isoWeeksInYear = getISOWeeksInYear;
+	
+	    // Day
+	    momentPrototype__proto.date       = getSetDayOfMonth;
+	    momentPrototype__proto.day        = momentPrototype__proto.days             = getSetDayOfWeek;
+	    momentPrototype__proto.weekday    = getSetLocaleDayOfWeek;
+	    momentPrototype__proto.isoWeekday = getSetISODayOfWeek;
+	    momentPrototype__proto.dayOfYear  = getSetDayOfYear;
+	
+	    // Hour
+	    momentPrototype__proto.hour = momentPrototype__proto.hours = getSetHour;
+	
+	    // Minute
+	    momentPrototype__proto.minute = momentPrototype__proto.minutes = getSetMinute;
+	
+	    // Second
+	    momentPrototype__proto.second = momentPrototype__proto.seconds = getSetSecond;
+	
+	    // Millisecond
+	    momentPrototype__proto.millisecond = momentPrototype__proto.milliseconds = getSetMillisecond;
+	
+	    // Offset
+	    momentPrototype__proto.utcOffset            = getSetOffset;
+	    momentPrototype__proto.utc                  = setOffsetToUTC;
+	    momentPrototype__proto.local                = setOffsetToLocal;
+	    momentPrototype__proto.parseZone            = setOffsetToParsedOffset;
+	    momentPrototype__proto.hasAlignedHourOffset = hasAlignedHourOffset;
+	    momentPrototype__proto.isDST                = isDaylightSavingTime;
+	    momentPrototype__proto.isLocal              = isLocal;
+	    momentPrototype__proto.isUtcOffset          = isUtcOffset;
+	    momentPrototype__proto.isUtc                = isUtc;
+	    momentPrototype__proto.isUTC                = isUtc;
+	
+	    // Timezone
+	    momentPrototype__proto.zoneAbbr = getZoneAbbr;
+	    momentPrototype__proto.zoneName = getZoneName;
+	
+	    // Deprecations
+	    momentPrototype__proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
+	    momentPrototype__proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
+	    momentPrototype__proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
+	    momentPrototype__proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
+	    momentPrototype__proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
+	
+	    var momentPrototype = momentPrototype__proto;
+	
+	    function moment__createUnix (input) {
+	        return local__createLocal(input * 1000);
+	    }
+	
+	    function moment__createInZone () {
+	        return local__createLocal.apply(null, arguments).parseZone();
+	    }
+	
+	    function preParsePostFormat (string) {
+	        return string;
+	    }
+	
+	    var prototype__proto = Locale.prototype;
+	
+	    prototype__proto.calendar        = locale_calendar__calendar;
+	    prototype__proto.longDateFormat  = longDateFormat;
+	    prototype__proto.invalidDate     = invalidDate;
+	    prototype__proto.ordinal         = ordinal;
+	    prototype__proto.preparse        = preParsePostFormat;
+	    prototype__proto.postformat      = preParsePostFormat;
+	    prototype__proto.relativeTime    = relative__relativeTime;
+	    prototype__proto.pastFuture      = pastFuture;
+	    prototype__proto.set             = locale_set__set;
+	
+	    // Month
+	    prototype__proto.months            =        localeMonths;
+	    prototype__proto.monthsShort       =        localeMonthsShort;
+	    prototype__proto.monthsParse       =        localeMonthsParse;
+	    prototype__proto.monthsRegex       = monthsRegex;
+	    prototype__proto.monthsShortRegex  = monthsShortRegex;
+	
+	    // Week
+	    prototype__proto.week = localeWeek;
+	    prototype__proto.firstDayOfYear = localeFirstDayOfYear;
+	    prototype__proto.firstDayOfWeek = localeFirstDayOfWeek;
+	
+	    // Day of Week
+	    prototype__proto.weekdays       =        localeWeekdays;
+	    prototype__proto.weekdaysMin    =        localeWeekdaysMin;
+	    prototype__proto.weekdaysShort  =        localeWeekdaysShort;
+	    prototype__proto.weekdaysParse  =        localeWeekdaysParse;
+	
+	    prototype__proto.weekdaysRegex       =        weekdaysRegex;
+	    prototype__proto.weekdaysShortRegex  =        weekdaysShortRegex;
+	    prototype__proto.weekdaysMinRegex    =        weekdaysMinRegex;
+	
+	    // Hours
+	    prototype__proto.isPM = localeIsPM;
+	    prototype__proto.meridiem = localeMeridiem;
+	
+	    function lists__get (format, index, field, setter) {
+	        var locale = locale_locales__getLocale();
+	        var utc = create_utc__createUTC().set(setter, index);
+	        return locale[field](utc, format);
+	    }
+	
+	    function listMonthsImpl (format, index, field) {
+	        if (typeof format === 'number') {
+	            index = format;
+	            format = undefined;
 	        }
+	
+	        format = format || '';
+	
+	        if (index != null) {
+	            return lists__get(format, index, field, 'month');
+	        }
+	
+	        var i;
+	        var out = [];
+	        for (i = 0; i < 12; i++) {
+	            out[i] = lists__get(format, i, field, 'month');
+	        }
+	        return out;
 	    }
 	
-	    moment.duration.fn.asMilliseconds = function () {
-	        return this.as('ms');
-	    };
-	    moment.duration.fn.asSeconds = function () {
-	        return this.as('s');
-	    };
-	    moment.duration.fn.asMinutes = function () {
-	        return this.as('m');
-	    };
-	    moment.duration.fn.asHours = function () {
-	        return this.as('h');
-	    };
-	    moment.duration.fn.asDays = function () {
-	        return this.as('d');
-	    };
-	    moment.duration.fn.asWeeks = function () {
-	        return this.as('weeks');
-	    };
-	    moment.duration.fn.asMonths = function () {
-	        return this.as('M');
-	    };
-	    moment.duration.fn.asYears = function () {
-	        return this.as('y');
-	    };
+	    // ()
+	    // (5)
+	    // (fmt, 5)
+	    // (fmt)
+	    // (true)
+	    // (true, 5)
+	    // (true, fmt, 5)
+	    // (true, fmt)
+	    function listWeekdaysImpl (localeSorted, format, index, field) {
+	        if (typeof localeSorted === 'boolean') {
+	            if (typeof format === 'number') {
+	                index = format;
+	                format = undefined;
+	            }
 	
-	    /************************************
-	        Default Locale
-	    ************************************/
+	            format = format || '';
+	        } else {
+	            format = localeSorted;
+	            index = format;
+	            localeSorted = false;
 	
+	            if (typeof format === 'number') {
+	                index = format;
+	                format = undefined;
+	            }
 	
-	    // Set default locale, other locale will inherit from English.
-	    moment.locale('en', {
+	            format = format || '';
+	        }
+	
+	        var locale = locale_locales__getLocale(),
+	            shift = localeSorted ? locale._week.dow : 0;
+	
+	        if (index != null) {
+	            return lists__get(format, (index + shift) % 7, field, 'day');
+	        }
+	
+	        var i;
+	        var out = [];
+	        for (i = 0; i < 7; i++) {
+	            out[i] = lists__get(format, (i + shift) % 7, field, 'day');
+	        }
+	        return out;
+	    }
+	
+	    function lists__listMonths (format, index) {
+	        return listMonthsImpl(format, index, 'months');
+	    }
+	
+	    function lists__listMonthsShort (format, index) {
+	        return listMonthsImpl(format, index, 'monthsShort');
+	    }
+	
+	    function lists__listWeekdays (localeSorted, format, index) {
+	        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
+	    }
+	
+	    function lists__listWeekdaysShort (localeSorted, format, index) {
+	        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
+	    }
+	
+	    function lists__listWeekdaysMin (localeSorted, format, index) {
+	        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
+	    }
+	
+	    locale_locales__getSetGlobalLocale('en', {
 	        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
 	        ordinal : function (number) {
 	            var b = number % 10,
@@ -12637,52 +13506,6840 @@
 	        }
 	    });
 	
-	    /* EMBED_LOCALES */
+	    // Side effect imports
+	    utils_hooks__hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', locale_locales__getSetGlobalLocale);
+	    utils_hooks__hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', locale_locales__getLocale);
 	
-	    /************************************
-	        Exposing Moment
-	    ************************************/
+	    var mathAbs = Math.abs;
 	
-	    function makeGlobal(shouldDeprecate) {
-	        /*global ender:false */
-	        if (typeof ender !== 'undefined') {
-	            return;
-	        }
-	        oldGlobalMoment = globalScope.moment;
-	        if (shouldDeprecate) {
-	            globalScope.moment = deprecate(
-	                    'Accessing Moment through the global scope is ' +
-	                    'deprecated, and will be removed in an upcoming ' +
-	                    'release.',
-	                    moment);
+	    function duration_abs__abs () {
+	        var data           = this._data;
+	
+	        this._milliseconds = mathAbs(this._milliseconds);
+	        this._days         = mathAbs(this._days);
+	        this._months       = mathAbs(this._months);
+	
+	        data.milliseconds  = mathAbs(data.milliseconds);
+	        data.seconds       = mathAbs(data.seconds);
+	        data.minutes       = mathAbs(data.minutes);
+	        data.hours         = mathAbs(data.hours);
+	        data.months        = mathAbs(data.months);
+	        data.years         = mathAbs(data.years);
+	
+	        return this;
+	    }
+	
+	    function duration_add_subtract__addSubtract (duration, input, value, direction) {
+	        var other = create__createDuration(input, value);
+	
+	        duration._milliseconds += direction * other._milliseconds;
+	        duration._days         += direction * other._days;
+	        duration._months       += direction * other._months;
+	
+	        return duration._bubble();
+	    }
+	
+	    // supports only 2.0-style add(1, 's') or add(duration)
+	    function duration_add_subtract__add (input, value) {
+	        return duration_add_subtract__addSubtract(this, input, value, 1);
+	    }
+	
+	    // supports only 2.0-style subtract(1, 's') or subtract(duration)
+	    function duration_add_subtract__subtract (input, value) {
+	        return duration_add_subtract__addSubtract(this, input, value, -1);
+	    }
+	
+	    function absCeil (number) {
+	        if (number < 0) {
+	            return Math.floor(number);
 	        } else {
-	            globalScope.moment = moment;
+	            return Math.ceil(number);
 	        }
 	    }
 	
-	    // CommonJS module is defined
-	    if (hasModule) {
-	        module.exports = moment;
-	    } else if (true) {
-	        !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, module) {
-	            if (module.config && module.config() && module.config().noGlobal === true) {
-	                // release the global variable
-	                globalScope.moment = oldGlobalMoment;
-	            }
+	    function bubble () {
+	        var milliseconds = this._milliseconds;
+	        var days         = this._days;
+	        var months       = this._months;
+	        var data         = this._data;
+	        var seconds, minutes, hours, years, monthsFromDays;
 	
-	            return moment;
-	        }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	        makeGlobal(true);
-	    } else {
-	        makeGlobal();
+	        // if we have a mix of positive and negative values, bubble down first
+	        // check: https://github.com/moment/moment/issues/2166
+	        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
+	                (milliseconds <= 0 && days <= 0 && months <= 0))) {
+	            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
+	            days = 0;
+	            months = 0;
+	        }
+	
+	        // The following code bubbles up values, see the tests for
+	        // examples of what that means.
+	        data.milliseconds = milliseconds % 1000;
+	
+	        seconds           = absFloor(milliseconds / 1000);
+	        data.seconds      = seconds % 60;
+	
+	        minutes           = absFloor(seconds / 60);
+	        data.minutes      = minutes % 60;
+	
+	        hours             = absFloor(minutes / 60);
+	        data.hours        = hours % 24;
+	
+	        days += absFloor(hours / 24);
+	
+	        // convert days to months
+	        monthsFromDays = absFloor(daysToMonths(days));
+	        months += monthsFromDays;
+	        days -= absCeil(monthsToDays(monthsFromDays));
+	
+	        // 12 months -> 1 year
+	        years = absFloor(months / 12);
+	        months %= 12;
+	
+	        data.days   = days;
+	        data.months = months;
+	        data.years  = years;
+	
+	        return this;
 	    }
-	}).call(this);
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10)(module)))
+	    function daysToMonths (days) {
+	        // 400 years have 146097 days (taking into account leap year rules)
+	        // 400 years have 12 months === 4800
+	        return days * 4800 / 146097;
+	    }
+	
+	    function monthsToDays (months) {
+	        // the reverse of daysToMonths
+	        return months * 146097 / 4800;
+	    }
+	
+	    function as (units) {
+	        var days;
+	        var months;
+	        var milliseconds = this._milliseconds;
+	
+	        units = normalizeUnits(units);
+	
+	        if (units === 'month' || units === 'year') {
+	            days   = this._days   + milliseconds / 864e5;
+	            months = this._months + daysToMonths(days);
+	            return units === 'month' ? months : months / 12;
+	        } else {
+	            // handle milliseconds separately because of floating point math errors (issue #1867)
+	            days = this._days + Math.round(monthsToDays(this._months));
+	            switch (units) {
+	                case 'week'   : return days / 7     + milliseconds / 6048e5;
+	                case 'day'    : return days         + milliseconds / 864e5;
+	                case 'hour'   : return days * 24    + milliseconds / 36e5;
+	                case 'minute' : return days * 1440  + milliseconds / 6e4;
+	                case 'second' : return days * 86400 + milliseconds / 1000;
+	                // Math.floor prevents floating point math errors here
+	                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
+	                default: throw new Error('Unknown unit ' + units);
+	            }
+	        }
+	    }
+	
+	    // TODO: Use this.as('ms')?
+	    function duration_as__valueOf () {
+	        return (
+	            this._milliseconds +
+	            this._days * 864e5 +
+	            (this._months % 12) * 2592e6 +
+	            toInt(this._months / 12) * 31536e6
+	        );
+	    }
+	
+	    function makeAs (alias) {
+	        return function () {
+	            return this.as(alias);
+	        };
+	    }
+	
+	    var asMilliseconds = makeAs('ms');
+	    var asSeconds      = makeAs('s');
+	    var asMinutes      = makeAs('m');
+	    var asHours        = makeAs('h');
+	    var asDays         = makeAs('d');
+	    var asWeeks        = makeAs('w');
+	    var asMonths       = makeAs('M');
+	    var asYears        = makeAs('y');
+	
+	    function duration_get__get (units) {
+	        units = normalizeUnits(units);
+	        return this[units + 's']();
+	    }
+	
+	    function makeGetter(name) {
+	        return function () {
+	            return this._data[name];
+	        };
+	    }
+	
+	    var milliseconds = makeGetter('milliseconds');
+	    var seconds      = makeGetter('seconds');
+	    var minutes      = makeGetter('minutes');
+	    var hours        = makeGetter('hours');
+	    var days         = makeGetter('days');
+	    var months       = makeGetter('months');
+	    var years        = makeGetter('years');
+	
+	    function weeks () {
+	        return absFloor(this.days() / 7);
+	    }
+	
+	    var round = Math.round;
+	    var thresholds = {
+	        s: 45,  // seconds to minute
+	        m: 45,  // minutes to hour
+	        h: 22,  // hours to day
+	        d: 26,  // days to month
+	        M: 11   // months to year
+	    };
+	
+	    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
+	    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
+	        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+	    }
+	
+	    function duration_humanize__relativeTime (posNegDuration, withoutSuffix, locale) {
+	        var duration = create__createDuration(posNegDuration).abs();
+	        var seconds  = round(duration.as('s'));
+	        var minutes  = round(duration.as('m'));
+	        var hours    = round(duration.as('h'));
+	        var days     = round(duration.as('d'));
+	        var months   = round(duration.as('M'));
+	        var years    = round(duration.as('y'));
+	
+	        var a = seconds < thresholds.s && ['s', seconds]  ||
+	                minutes <= 1           && ['m']           ||
+	                minutes < thresholds.m && ['mm', minutes] ||
+	                hours   <= 1           && ['h']           ||
+	                hours   < thresholds.h && ['hh', hours]   ||
+	                days    <= 1           && ['d']           ||
+	                days    < thresholds.d && ['dd', days]    ||
+	                months  <= 1           && ['M']           ||
+	                months  < thresholds.M && ['MM', months]  ||
+	                years   <= 1           && ['y']           || ['yy', years];
+	
+	        a[2] = withoutSuffix;
+	        a[3] = +posNegDuration > 0;
+	        a[4] = locale;
+	        return substituteTimeAgo.apply(null, a);
+	    }
+	
+	    // This function allows you to set the rounding function for relative time strings
+	    function duration_humanize__getSetRelativeTimeRounding (roundingFunction) {
+	        if (roundingFunction === undefined) {
+	            return round;
+	        }
+	        if (typeof(roundingFunction) === 'function') {
+	            round = roundingFunction;
+	            return true;
+	        }
+	        return false;
+	    }
+	
+	    // This function allows you to set a threshold for relative time strings
+	    function duration_humanize__getSetRelativeTimeThreshold (threshold, limit) {
+	        if (thresholds[threshold] === undefined) {
+	            return false;
+	        }
+	        if (limit === undefined) {
+	            return thresholds[threshold];
+	        }
+	        thresholds[threshold] = limit;
+	        return true;
+	    }
+	
+	    function humanize (withSuffix) {
+	        var locale = this.localeData();
+	        var output = duration_humanize__relativeTime(this, !withSuffix, locale);
+	
+	        if (withSuffix) {
+	            output = locale.pastFuture(+this, output);
+	        }
+	
+	        return locale.postformat(output);
+	    }
+	
+	    var iso_string__abs = Math.abs;
+	
+	    function iso_string__toISOString() {
+	        // for ISO strings we do not use the normal bubbling rules:
+	        //  * milliseconds bubble up until they become hours
+	        //  * days do not bubble at all
+	        //  * months bubble up until they become years
+	        // This is because there is no context-free conversion between hours and days
+	        // (think of clock changes)
+	        // and also not between days and months (28-31 days per month)
+	        var seconds = iso_string__abs(this._milliseconds) / 1000;
+	        var days         = iso_string__abs(this._days);
+	        var months       = iso_string__abs(this._months);
+	        var minutes, hours, years;
+	
+	        // 3600 seconds -> 60 minutes -> 1 hour
+	        minutes           = absFloor(seconds / 60);
+	        hours             = absFloor(minutes / 60);
+	        seconds %= 60;
+	        minutes %= 60;
+	
+	        // 12 months -> 1 year
+	        years  = absFloor(months / 12);
+	        months %= 12;
+	
+	
+	        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+	        var Y = years;
+	        var M = months;
+	        var D = days;
+	        var h = hours;
+	        var m = minutes;
+	        var s = seconds;
+	        var total = this.asSeconds();
+	
+	        if (!total) {
+	            // this is the same as C#'s (Noda) and python (isodate)...
+	            // but not other JS (goog.date)
+	            return 'P0D';
+	        }
+	
+	        return (total < 0 ? '-' : '') +
+	            'P' +
+	            (Y ? Y + 'Y' : '') +
+	            (M ? M + 'M' : '') +
+	            (D ? D + 'D' : '') +
+	            ((h || m || s) ? 'T' : '') +
+	            (h ? h + 'H' : '') +
+	            (m ? m + 'M' : '') +
+	            (s ? s + 'S' : '');
+	    }
+	
+	    var duration_prototype__proto = Duration.prototype;
+	
+	    duration_prototype__proto.abs            = duration_abs__abs;
+	    duration_prototype__proto.add            = duration_add_subtract__add;
+	    duration_prototype__proto.subtract       = duration_add_subtract__subtract;
+	    duration_prototype__proto.as             = as;
+	    duration_prototype__proto.asMilliseconds = asMilliseconds;
+	    duration_prototype__proto.asSeconds      = asSeconds;
+	    duration_prototype__proto.asMinutes      = asMinutes;
+	    duration_prototype__proto.asHours        = asHours;
+	    duration_prototype__proto.asDays         = asDays;
+	    duration_prototype__proto.asWeeks        = asWeeks;
+	    duration_prototype__proto.asMonths       = asMonths;
+	    duration_prototype__proto.asYears        = asYears;
+	    duration_prototype__proto.valueOf        = duration_as__valueOf;
+	    duration_prototype__proto._bubble        = bubble;
+	    duration_prototype__proto.get            = duration_get__get;
+	    duration_prototype__proto.milliseconds   = milliseconds;
+	    duration_prototype__proto.seconds        = seconds;
+	    duration_prototype__proto.minutes        = minutes;
+	    duration_prototype__proto.hours          = hours;
+	    duration_prototype__proto.days           = days;
+	    duration_prototype__proto.weeks          = weeks;
+	    duration_prototype__proto.months         = months;
+	    duration_prototype__proto.years          = years;
+	    duration_prototype__proto.humanize       = humanize;
+	    duration_prototype__proto.toISOString    = iso_string__toISOString;
+	    duration_prototype__proto.toString       = iso_string__toISOString;
+	    duration_prototype__proto.toJSON         = iso_string__toISOString;
+	    duration_prototype__proto.locale         = locale;
+	    duration_prototype__proto.localeData     = localeData;
+	
+	    // Deprecations
+	    duration_prototype__proto.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', iso_string__toISOString);
+	    duration_prototype__proto.lang = lang;
+	
+	    // Side effect imports
+	
+	    // FORMATTING
+	
+	    addFormatToken('X', 0, 0, 'unix');
+	    addFormatToken('x', 0, 0, 'valueOf');
+	
+	    // PARSING
+	
+	    addRegexToken('x', matchSigned);
+	    addRegexToken('X', matchTimestamp);
+	    addParseToken('X', function (input, array, config) {
+	        config._d = new Date(parseFloat(input, 10) * 1000);
+	    });
+	    addParseToken('x', function (input, array, config) {
+	        config._d = new Date(toInt(input));
+	    });
+	
+	    // Side effect imports
+	
+	
+	    utils_hooks__hooks.version = '2.15.2';
+	
+	    setHookCallback(local__createLocal);
+	
+	    utils_hooks__hooks.fn                    = momentPrototype;
+	    utils_hooks__hooks.min                   = min;
+	    utils_hooks__hooks.max                   = max;
+	    utils_hooks__hooks.now                   = now;
+	    utils_hooks__hooks.utc                   = create_utc__createUTC;
+	    utils_hooks__hooks.unix                  = moment__createUnix;
+	    utils_hooks__hooks.months                = lists__listMonths;
+	    utils_hooks__hooks.isDate                = isDate;
+	    utils_hooks__hooks.locale                = locale_locales__getSetGlobalLocale;
+	    utils_hooks__hooks.invalid               = valid__createInvalid;
+	    utils_hooks__hooks.duration              = create__createDuration;
+	    utils_hooks__hooks.isMoment              = isMoment;
+	    utils_hooks__hooks.weekdays              = lists__listWeekdays;
+	    utils_hooks__hooks.parseZone             = moment__createInZone;
+	    utils_hooks__hooks.localeData            = locale_locales__getLocale;
+	    utils_hooks__hooks.isDuration            = isDuration;
+	    utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
+	    utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
+	    utils_hooks__hooks.defineLocale          = defineLocale;
+	    utils_hooks__hooks.updateLocale          = updateLocale;
+	    utils_hooks__hooks.locales               = locale_locales__listLocales;
+	    utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
+	    utils_hooks__hooks.normalizeUnits        = normalizeUnits;
+	    utils_hooks__hooks.relativeTimeRounding = duration_humanize__getSetRelativeTimeRounding;
+	    utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
+	    utils_hooks__hooks.calendarFormat        = getCalendarFormat;
+	    utils_hooks__hooks.prototype             = momentPrototype;
+	
+	    var _moment = utils_hooks__hooks;
+	
+	    return _moment;
+	
+	}));
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window, document */
+	
+	'use strict';
+	
+	var _utils = __webpack_require__(6);
+	
+	var _chartviz = __webpack_require__(7);
+	
+	var _loader = __webpack_require__(10);
+	
+	var _plugin = __webpack_require__(14);
+	
+	var d3 = __webpack_require__(2);
+	
+	var nv = __webpack_require__(27);
+	
+	function readySetGo(callback) {
+	  document.addEventListener('DOMContentLoaded', callback);
+	}
+	
+	window.plotqi = window.plotqi || {};
+	window.plotqi.ready = readySetGo;
+	window.plotqi.load = _loader.loadReports;
+	window.plotqi.BaseRenderingPlugin = _plugin.BaseRenderingPlugin;
+	
+	// Calling semantics:
+	//  <script type="text/javascript">
+	//    (function () {
+	//      // break if no reasonable ES5 support:
+	//      if (!Array.prototype.forEach || !Object.create) {
+	//        alert('Your browser does not support this application.');
+	//        return;
+	//      }
+	//      // add any integration-specific custom plugins:
+	//      window.plotqi.ADDITIONAL_PLUGINS.push(MyCustomPlugin);
+	//      window.plotqi.ready(window.plotqi.load);
+	//    }());
+	//  </script>
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	exports.urlArgs = urlArgs;
+	exports.parseDate = parseDate;
+	exports.range = range;
+	exports.geometricBatch = geometricBatch;
+	exports.forReportJSON = forReportJSON;
+	exports.d3textWrap = d3textWrap;
+	exports.trendlineSlopeIntercept = trendlineSlopeIntercept;
+	exports.fittedTrendline = fittedTrendline;
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var moment = __webpack_require__(3);
+	var d3 = __webpack_require__(2);
+	var document = window.document;
+	
+	// singleton app style element:
+	var styleEl = document.createElement('style');
+	document.head.appendChild(styleEl);
+	var styleSheet = styleEl.sheet;
+	
+	exports.styleSheet = styleSheet;
+	var DEFAULT_COLORS = ['#393960', '#8AA9C9', '#5F9EA0', '#9370DB', '#4682B4', '#2E8B57', '#FF7F50', '#FFD700', '#DA70D6', '#008080', '#FF1493', '#6A5ACD', '#708090', '#FF6347', '#66CDAA', '#F08080'];
+	
+	exports.DEFAULT_COLORS = DEFAULT_COLORS;
+	// uuid function via http://stackoverflow.com/a/2117523/835961
+	var uuid4_tmpl = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+	var uuid4 = function uuid4() {
+	  return uuid4_tmpl.replace(/[xy]/g, function (c) {
+	    var r = Math.random() * 16 | 0,
+	        v = c == 'x' ? r : r & 0x3 | 0x8;
+	    return v.toString(16);
+	  });
+	};
+	
+	exports.uuid4 = uuid4;
+	
+	function urlArgs() {
+	  var qs = window.location.search.slice(1),
+	      pair = function pair(part) {
+	    return part.split('=');
+	  },
+	      pairs = qs.split('&').map(pair),
+	      result = {};
+	  pairs.forEach(function (_ref) {
+	    var _ref2 = _slicedToArray(_ref, 2);
+	
+	    var key = _ref2[0];
+	    var value = _ref2[1];
+	
+	    result[key] = value;
+	  });
+	  return result;
+	}
+	
+	function parseDate(spec, useMoment) {
+	  /** parse date specification/stamp, strictly ISO 8601 if string, and assume
+	   *  any naive timestamp should be treated as UTC.  Returns Date if
+	   *  not useMoment, else returns moment object.
+	   */
+	  var m,
+	      getUTC = function getUTC(stamp) {
+	    return moment.utc(stamp, moment.ISO_8601);
+	  },
+	      getLocal = function getLocal(stamp) {
+	    return moment(stamp, moment.ISO_8601);
+	  },
+	      isNaive = function isNaive(datestamp) {
+	    var timePart = datestamp.slice(11);
+	    if (datestamp.length === 10) {
+	      return true; // date only, no time
+	    }
+	    if (datestamp.slice(-1) === 'Z') {
+	      return false; // not naive, explicit UTC
+	    }
+	    if (timePart.indexOf('+') !== -1 || timePart.indexOf('-') !== -1) {
+	      return false; // TZ offset
+	    }
+	    return true;
+	  };
+	  if (typeof spec === 'string') {
+	    m = isNaive(spec) ? getUTC(spec) : getLocal(spec);
+	  } else {
+	    m = moment.utc(spec);
+	  }
+	  return !!useMoment ? m : m.toDate();
+	}
+	
+	function range() {
+	  /** range() mimics python range() function */
+	  var args = arguments,
+	      stop = args.length > 1 ? args[1] : args[0],
+	      start = args.length > 1 ? args[0] : 0,
+	      step = args.length > 2 ? args[2] : 1,
+	      result = [],
+	      i;
+	  if (step === 0) {
+	    throw new RangeError('range() step argument must not be zero');
+	  }
+	  for (i = start; step > 0 ? i < stop : i > stop; i += step) {
+	    result.push(i);
+	  }
+	  return result;
+	}
+	
+	function geometricBatch(length) {
+	  var r = [],
+	      size = 1,
+	      pos = 0;
+	  while (size <= length) {
+	    r.push([pos, Math.min(size, length - pos)]);
+	    pos = pos + size;
+	    size += size; // 1, 2, 4, 8, 16, 32,...N
+	  }
+	  return r;
+	}
+	
+	function forReportJSON(jsonFile, callback) {
+	  d3.json(jsonFile, function (input) {
+	    /** given JSON where charts and data-points may be key/value pairs in 
+	      * JSON Arrays, normalize to simple Arrays of objects.
+	      */
+	    var kv2data = function kv2data(_ref3) {
+	      var _ref32 = _slicedToArray(_ref3, 2);
+	
+	      var k = _ref32[0];
+	      var v = _ref32[1];
+	      return v;
+	    },
+	        // key/value pair array to data/value object
+	    data = input instanceof Array ? input.map(kv2data) : [input],
+	        normalizeSeriesData = function normalizeSeriesData(s) {
+	      return s.data = s.data.map(kv2data);
+	    };
+	    data.forEach(function (chart) {
+	      return chart.series.forEach(normalizeSeriesData);
+	    });
+	    callback(data);
+	  });
+	}
+	
+	// Taken from an upcoming version of d3, heavily altered to suit UPIQ:
+	function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, ignorePadding) {
+	
+	  paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
+	  paddingTopBottom = (paddingTopBottom != null ? paddingTopBottom : 5) - 2; //Default padding (5px), remove 2 pixels because of the borders
+	  var maxWidth = width; //I store the tooltip max width
+	  width = ignorePadding ? width : width - paddingRightLeft * 2; //Take the padding into account
+	
+	  var arrLineCreatedCount = [];
+	  text.each(function () {
+	    var text = d3.select(this),
+	        words = text.text().split(' ').reverse(),
+	        word,
+	        line = [],
+	        lineNumber = 0,
+	        lineHeight = 1.2,
+	        //Ems
+	    y = parseFloat(text.attr("y")),
+	        dy = parseFloat(text.attr("dy")),
+	        createdLineCount = 1,
+	        //Total line created count
+	    textAlign = text.style('text-anchor') || 'start'; //'start' by default (start, middle, end, inherit)
+	
+	    //Clean the data in case <text> does not define those values
+	    if (isNaN(dy)) dy = 0; //Default padding (0em) : the 'dy' attribute on the first <tspan> _must_ be identical to the 'dy' specified on the <text> element, or start at '0em' if undefined
+	
+	    y = +(null === y ? paddingTopBottom : y);
+	
+	    var tspan = text.text(null).append("tspan").attr("x", paddingRightLeft).attr("dy", dy + "em");
+	    while (!!(word = words.pop())) {
+	      line.push(word);
+	      tspan.text(line.join(" "));
+	      if (tspan.node().getComputedTextLength() > width && line.length > 1) {
+	        line.pop();
+	        tspan.text(line.join(" "));
+	        line = [word];
+	        tspan = text.append("tspan").attr("x", paddingRightLeft).attr("dy", lineHeight + dy + "em").text(word);
+	        ++createdLineCount;
+	      }
+	    }
+	
+	    arrLineCreatedCount.push(createdLineCount); //Store the line count in the array
+	  });
+	  return arrLineCreatedCount;
+	}
+	
+	var ColorTool = (function () {
+	  function ColorTool() {
+	    _classCallCheck(this, ColorTool);
+	  }
+	
+	  /** simple linear regression as slope-intercept for trendline: */
+	
+	  _createClass(ColorTool, null, [{
+	    key: 'upScale8',
+	    value: function upScale8(v) {
+	      if (v < 0 || v > 1) {
+	        throw new RangeError('Color channel ratio value must be between 0-1.');
+	      }
+	      return Math.round(v * 255);
+	    }
+	  }, {
+	    key: 'downScale8',
+	    value: function downScale8(v) {
+	      /** downscale 8-bit channel integer value to decimal number between 0-1. */
+	      if (v < 0 || v > 255) {
+	        throw new RangeError('Color channel value must be between 0-255.');
+	      }
+	      return Math.round(v) / 255.0;
+	    }
+	  }, {
+	    key: 'normalizeColor',
+	    value: function normalizeColor(color) {
+	      /** normalizes vs potential 3-digit hex shorthand color, via rules
+	        * described in CSS speficication:
+	        * http://www.w3.org/TR/CSS21/syndata.html#color-units
+	        */
+	      var two = function two(s, n) {
+	        return new Array(2 + 1).join(s);
+	      },
+	          expandHex = function expandHex(s) {
+	        return two(s[1]) + two(s[2]) + two(s[3]);
+	      },
+	          isHex = function isHex(s) {
+	        return s[0] === '#';
+	      };
+	      if (!isHex(color)) {
+	        return color;
+	      }
+	      return color.length === 7 ? color : '#' + expandHex(color);
+	    }
+	  }, {
+	    key: 'rgb',
+	    value: function rgb(color) {
+	      /** return array of R, G, B colors for hexidecimal color code */
+	      var _c = ColorTool.normalizeColor(color),
+	          r = parseInt(_c.slice(1, 3), 16),
+	          g = parseInt(_c.slice(3, 5), 16),
+	          b = parseInt(_c.slice(5, 7), 16);
+	      return [r, g, b];
+	    }
+	  }, {
+	    key: 'rgb2hex',
+	    value: function rgb2hex(rgb) {
+	      /** take r, g, b as array of 8-bit values per channel, return hex */
+	      var pad2 = function pad2(v) {
+	        return v.length < 2 ? '0' + v : v;
+	      },
+	          channelHex = function channelHex(v) {
+	        return pad2(v.toString(16));
+	      };
+	      return '#' + rgb.map(channelHex).join('');
+	    }
+	  }, {
+	    key: 'rgb2hsv',
+	    value: function rgb2hsv(color, useHSL) {
+	      /** 24-bit rgb to h, s, v color array, roughly based on algorithm
+	        * descriptions from:
+	        *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
+	        *   http://www.cs.rit.edu/~ncs/color/t_convert.html
+	        */
+	      var rescale = ColorTool.downScale8;
+	      var baseRGB = color instanceof Array ? color : ColorTool.rgb(color);
+	      var rgb = baseRGB.map(rescale); // [0-255]->[0-1]
+	      var min = Math.min.apply(null, rgb);
+	      var max = Math.max.apply(null, rgb);
+	      var chroma = max - min;
+	      var isBlack = max === 0;
+	      var isGray = chroma === 0;
+	
+	      var _rgb = _slicedToArray(rgb, 3);
+	
+	      var r = _rgb[0];
+	      var g = _rgb[1];
+	      var b = _rgb[2];
+	      var v = max; // in HSV, largest component is value (unlike HSI/HSL)
+	      var h;var s;var l;
+	      // Black & grayscale are special cases:
+	      if (isBlack || isGray) {
+	        // HSV for gray can be any point on cube with value equal to max
+	        return [0, 0, v]; // saturation === 0 is sentinel for grayscale
+	      }
+	      s = chroma / v; // S_HSV
+	      if (r === max) {
+	        // red is brightest component, hue between yellow->magenta
+	        h = (g - b) / chroma;
+	      } else if (g === max) {
+	        // green is brightest component, hue between cyan->yellow
+	        h = 2 + (b - r) / chroma;
+	      } else {
+	        // blue is brightest component, hue between magenta->cyan
+	        h = 4 + (r - g) / chroma;
+	      }
+	      h *= 60; // convert by 60 degrees
+	      if (h < 0) {
+	        h += 360;
+	      }
+	      if (!useHSL) {
+	        // HSV:
+	        return [h, s, v];
+	      }
+	      // HSL:
+	      l = 0.5 * (max + min);
+	      s = chroma / (1 - Math.abs(2 * l - 1)); // S_HSL
+	      return [h, s, l];
+	    }
+	  }, {
+	    key: 'rgb2hsl',
+	    value: function rgb2hsl(color) {
+	      return ColorTool.rgb2hsv(color, true); // force HSL
+	    }
+	  }, {
+	    key: 'hsv2rgb',
+	    value: function hsv2rgb(hsv, useHex, useHSL) {
+	      /** hsv Array to 24-bit RGB color, roughly based on algorithm descriptions
+	       * from:
+	       *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
+	       *   http://www.cs.rit.edu/~ncs/color/t_convert.html
+	       */
+	      var r;var g;var b;
+	      var rgb;
+	
+	      var _hsv = _slicedToArray(hsv, 3);
+	
+	      var h = _hsv[0];
+	      var s = _hsv[1];
+	      var v = _hsv[2];
+	      var l = v; // IFF useHSL, third argument is actually lightness
+	      var isGray = v === 0 || s === 0; // zero-v is black, zero-s is gray
+	      var rescale = ColorTool.upScale8;
+	      var hPrime = h / 60.0; // determine
+	      var chroma = !!useHSL ? (1 - Math.abs(2 * l - 1)) * s : v * s;
+	      var r1;var g1;var b1;var x;var pos;var m;
+	      if (!(hsv instanceof Array)) {
+	        throw new TypeError('Invalid HSV value, must be Array.');
+	      }
+	      useHex = useHex === undefined ? true : false; // default returns hex
+	      if (isGray) {
+	        // set all R,G,B channels to equal value
+	        r = v;
+	        g = v;
+	        b = v;
+	      } else {
+	          // color, working off "pizza slices" in the chromacity plane:
+	          x = chroma * (1 - Math.abs(hPrime % 2 - 1));
+	          pos = Math.floor(hPrime); // region on the chromaticity plane/hexagon
+	          switch (pos) {
+	            case 0:
+	              r1 = chroma;
+	              g1 = x;
+	              b1 = 0;
+	
+	              break;
+	            case 1:
+	              r1 = x;
+	              g1 = chroma;
+	              b1 = 0;
+	
+	              break;
+	            case 2:
+	              r1 = 0;
+	              g1 = chroma;
+	              b1 = x;
+	
+	              break;
+	            case 3:
+	              r1 = 0;
+	              g1 = x;
+	              b1 = chroma;
+	
+	              break;
+	            case 4:
+	              r1 = x;
+	              g1 = 0;
+	              b1 = chroma;
+	
+	              break;
+	            default:
+	              r1 = chroma;
+	              g1 = 0;
+	              b1 = x;
+	
+	              break;
+	          }
+	          m = !!useHSL ? l - 0.5 * chroma : v - chroma;
+	          r = r1 + m;
+	          g = g1 + m;
+	          b = b1 + m;
+	        }
+	      rgb = [r, g, b].map(rescale);
+	      return useHex ? ColorTool.rgb2hex(rgb) : rgb;
+	    }
+	  }, {
+	    key: 'hsl2rgb',
+	    value: function hsl2rgb(hsl, useHex) {
+	      return ColorTool.hsv2rgb(hsl, useHex, true); // force HSL->RGB
+	    }
+	  }, {
+	    key: 'colorShift',
+	    value: function colorShift(color, multiplier, deltaFn) {
+	      /** shift lightness up or down by multiplier using delta function */
+	
+	      var _ColorTool$rgb2hsl = ColorTool.rgb2hsl(color);
+	
+	      var _ColorTool$rgb2hsl2 = _slicedToArray(_ColorTool$rgb2hsl, 3);
+	
+	      var h = _ColorTool$rgb2hsl2[0];
+	      var s = _ColorTool$rgb2hsl2[1];
+	      var l = _ColorTool$rgb2hsl2[2];
+	      var delta = deltaFn(l);
+	      var rgb;
+	      multiplier = multiplier === undefined ? 0.2 : multiplier;
+	      if (multiplier < 0 || multiplier > 1) {
+	        throw new RangeError('multipler must be >= 0, <= 1');
+	      }
+	      return ColorTool.hsl2rgb([h, s, l + delta * multiplier]);
+	    }
+	  }, {
+	    key: 'lighten',
+	    value: function lighten(color, multiplier) {
+	      return ColorTool.colorShift(color, multiplier, function (l) {
+	        return 1 - l;
+	      });
+	    }
+	  }, {
+	    key: 'darken',
+	    value: function darken(color, multiplier) {
+	      return ColorTool.colorShift(color, multiplier, function (l) {
+	        return -1 * l;
+	      });
+	    }
+	  }, {
+	    key: 'isDark',
+	    value: function isDark(color) {
+	      return ColorTool.rgb2hsl(color)[2] < 0.5; // lightness < 50%
+	    }
+	  }, {
+	    key: 'isLight',
+	    value: function isLight(color) {
+	      return ColorTool.rgb2hsl(color)[2] >= 0.5; // lightness >= 50%
+	    }
+	  }]);
+	
+	  return ColorTool;
+	})();
+	
+	exports.ColorTool = ColorTool;
+	
+	function trendlineSlopeIntercept(points) {
+	  /**
+	    * Given an array of data point pairs (each an array of x,y values)
+	    * returns two item array of slope and y-intercept [m, b] for y = mx + b
+	    * that can be used by callers in constructing a trendline.
+	    * Uses least-squares method:
+	    *   http://en.wikipedia.org/wiki/Simple_linear_regression
+	    * Caveats:
+	    *  * Does not return or calculate R-squared value.
+	    *  * Favors functional code readability at cost of repeated iteration.
+	    */
+	  var square = function square(a) {
+	    return a * a;
+	  },
+	      sum = function sum(sequence) {
+	    return sequence.reduce(function (a, b) {
+	      return a + b;
+	    }, 0);
+	  },
+	      pairProduct = function pairProduct(pair) {
+	    return pair[0] * pair[1];
+	  },
+	      n = points.length,
+	      xValues = points.map(function (point) {
+	    return point[0];
+	  }),
+	      yValues = points.map(function (point) {
+	    return point[1];
+	  }),
+	      sumX = sum(xValues),
+	      // ∑ x
+	  sumY = sum(yValues),
+	      // ∑ y
+	  sumXY = sum(points.map(pairProduct)),
+	      // ∑ xy
+	  sumX2 = sum(xValues.map(square)),
+	      // ∑ x²
+	  variance = sumX2 - square(sumX) / n,
+	      // Sxx = ∑x² - (∑x)² / n
+	  covariance = sumXY - sumX * sumY / n,
+	      // Sxy = ∑xy - (∑x * ∑y) / n
+	  slope = covariance / variance,
+	      // m = Sxy / Sxx
+	  // y-intercept is average y-value over slope minus average x-value
+	  intercept = sumY / n - slope * sumX / n; // b = (∑y / n) - m(∑x / n)
+	  return [slope, intercept];
+	}
+	
+	function fittedTrendline(points, domain, range) {
+	  /** Given points, domain, and range, returns coordinates for a line in
+	    * object form (keys of x1, y1, x2, y2) for line to be drawn left-to-right
+	    */
+	
+	  var _trendlineSlopeIntercept = trendlineSlopeIntercept(points);
+	
+	  var _trendlineSlopeIntercept2 = _slicedToArray(_trendlineSlopeIntercept, 2);
+	
+	  var slope = _trendlineSlopeIntercept2[0];
+	  var intercept = _trendlineSlopeIntercept2[1];
+	  var solveForY = function solveForY(x) {
+	    return slope * x + intercept;
+	  }; // y = mx + b
+	  var solveForX = function solveForX(y) {
+	    return (y - intercept) / slope;
+	  };
+	  var _range = _slicedToArray(range, 2);
+	
+	  var minY = _range[0];
+	  // x = (y - b) / m
+	  var maxY = _range[1];
+	
+	  var _domain = _slicedToArray(domain, 2);
+	
+	  var minX = _domain[0];
+	  var maxX = _domain[1];
+	  var decline = slope < 0;
+	  var r = {};
+	  r.x1 = solveForX(decline ? maxY : minY); // left-most x...
+	  r.x1 = r.x1 < minX ? minX : r.x1; // ...that is in bound box
+	  r.y1 = solveForY(r.x1);
+	  r.x2 = solveForX(decline ? minY : maxY); // right-most x...
+	  r.x2 = r.x2 > maxX ? maxX : r.x2; // ...that is in bound box
+	  r.y2 = solveForY(r.x2);
+	  r.slope = slope;
+	  return r;
+	}
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require */
+	
+	'use strict'; /*jshint -W097 */
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	exports.Chart = Chart;
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _classvizEs6Js = __webpack_require__(8);
+	
+	var _utilsEs6Js = __webpack_require__(6);
+	
+	var _schemavizEs6Js = __webpack_require__(9);
+	
+	var dataSym = Symbol();
+	var d3 = __webpack_require__(2);
+	
+	var moment = __webpack_require__(3);
+	
+	// Map between uu.chart frequency and d3.time interval name, multiplier:
+	var INTERVALS = {
+	  daily: [1, 'day'],
+	  weekly: [1, 'week'],
+	  monthly: [1, 'month'],
+	  yearly: [1, 'year'],
+	  quarterly: [3, 'month']
+	};
+	
+	var DataPoint = (function (_Klass) {
+	  _inherits(DataPoint, _Klass);
+	
+	  function DataPoint(obj) {
+	    _classCallCheck(this, DataPoint);
+	
+	    obj = obj || { key: '[none]' };
+	    obj.schema = obj.schema || _schemavizEs6Js.dataPointSchema;
+	    _get(Object.getPrototypeOf(DataPoint.prototype), 'constructor', this).call(this, obj);
+	  }
+	
+	  return DataPoint;
+	})(_classvizEs6Js.Klass);
+	
+	exports.DataPoint = DataPoint;
+	
+	var TimeDataPoint = (function (_DataPoint) {
+	  _inherits(TimeDataPoint, _DataPoint);
+	
+	  function TimeDataPoint(obj) {
+	    _classCallCheck(this, TimeDataPoint);
+	
+	    obj = obj || { key: new Date() };
+	    obj.schema = obj.schema || _schemavizEs6Js.timeDataPointSchema;
+	    _get(Object.getPrototypeOf(TimeDataPoint.prototype), 'constructor', this).call(this, obj);
+	  }
+	
+	  return TimeDataPoint;
+	})(DataPoint);
+	
+	exports.TimeDataPoint = TimeDataPoint;
+	
+	var DataSeries = (function (_Klass2) {
+	  _inherits(DataSeries, _Klass2);
+	
+	  function DataSeries(obj) {
+	    _classCallCheck(this, DataSeries);
+	
+	    var localprops = ['color'];
+	    obj = obj || {};
+	    obj.schema = obj.schema || _schemavizEs6Js.dataSeriesSchema;
+	    _get(Object.getPrototypeOf(DataSeries.prototype), 'constructor', this).call(this, obj, localprops);
+	    this.data = obj.data || [];
+	    this._color = obj.color || null;
+	    this.position = 0; // default, may be overwritten by chart managing this
+	  }
+	
+	  _createClass(DataSeries, [{
+	    key: 'data',
+	    get: function get() {
+	      return this[dataSym];
+	    },
+	    set: function set(d) {
+	      var data = d3.map();
+	      d.sort(function (a, b) {
+	        return a.key > b.key ? 1 : -1;
+	      }).filter(function (v, i) {
+	        return i === 0 || v.key != d[i - 1].key;
+	      }).map(function (point) {
+	        return new DataPoint(point);
+	      }).forEach(function (point) {
+	        return data.set(point.key, point);
+	      });
+	      this[dataSym] = data;
+	    }
+	  }, {
+	    key: 'color',
+	    get: function get() {
+	      var explicitColor = this._color,
+	          pos = !explicitColor ? this.position : null,
+	          defaultColor = _utilsEs6Js.DEFAULT_COLORS[pos] || '#999999',
+	          color = explicitColor !== 'auto' ? explicitColor : defaultColor;
+	      return color;
+	    },
+	    set: function set(v) {
+	      this._color = v;
+	    }
+	  }, {
+	    key: 'range',
+	    get: function get() {
+	      return d3.extent(this.data.values(), function (d) {
+	        return d.value;
+	      }) || [-Infinity, Infinity];
+	    }
+	  }]);
+	
+	  return DataSeries;
+	})(_classvizEs6Js.Klass);
+	
+	exports.DataSeries = DataSeries;
+	
+	var TimeDataSeries = (function (_DataSeries) {
+	  _inherits(TimeDataSeries, _DataSeries);
+	
+	  function TimeDataSeries(obj, context) {
+	    _classCallCheck(this, TimeDataSeries);
+	
+	    obj = obj || {};
+	    obj.schema = obj.schema || _schemavizEs6Js.timeDataSeriesSchema;
+	    _get(Object.getPrototypeOf(TimeDataSeries.prototype), 'constructor', this).call(this, obj);
+	    this.data = obj.data || [];
+	    this.context = context;
+	  }
+	
+	  _createClass(TimeDataSeries, [{
+	    key: 'rawData',
+	    value: function rawData() {
+	      /** uncropped all data for series */
+	      return this[dataSym];
+	    }
+	  }, {
+	    key: 'color',
+	    get: function get() {
+	      var explicitColor = this._color,
+	          pos = !explicitColor ? this.position : null,
+	          color = explicitColor ? explicitColor : _utilsEs6Js.DEFAULT_COLORS[pos];
+	      return color;
+	    },
+	    set: function set(v) {
+	      this._color = v;
+	    }
+	  }, {
+	    key: 'data',
+	    get: function get() {
+	      /** return data filtered to be within any meaningful domain crop */
+	      var raw = this.rawData();
+	
+	      var _croppedDomain = _slicedToArray(this.croppedDomain, 2);
+	
+	      var min = _croppedDomain[0];
+	      var max = _croppedDomain[1];
+	      var result = raw;
+	      if (this.context.auto_crop) {
+	        result = d3.map();
+	        raw.values().forEach(function (point) {
+	          if (point.key >= min && point.key <= max) {
+	            result.set(point.key.valueOf(), point);
+	          }
+	        });
+	      }
+	      return result;
+	    },
+	    set: function set(d) {
+	      var data = d3.map();
+	      d.sort(function (a, b) {
+	        return a.key > b.key ? 1 : -1;
+	      }).filter(function (v, i) {
+	        return i === 0 || v.key.toString() != d[i - 1].key.toString();
+	      }).map(function (point) {
+	        return new TimeDataPoint(point);
+	      }).forEach(function (point) {
+	        return data.set(point.key.valueOf(), point);
+	      });
+	      this[dataSym] = data;
+	    }
+	  }, {
+	    key: 'domain',
+	    get: function get() {
+	      var min = moment.min.apply(moment, _toConsumableArray(this.data.values().map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      var max = moment.max.apply(moment, _toConsumableArray(this.data.values().map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      return [min, max];
+	    }
+	  }, {
+	    key: 'croppedDomain',
+	    get: function get() {
+	      /** crop empty, crop deliberately excluded if plot opts for auto_crop */
+	      var autoCrop = this.context.auto_crop,
+	          start = this.context.start,
+	          end = this.context.end,
+	          data = this.rawData().values().filter(function (point) {
+	        return point.value != null;
+	      }).filter(function (point) {
+	        return autoCrop && start ? point.key >= start : true;
+	      }).filter(function (point) {
+	        return autoCrop && end ? point.key <= end : true;
+	      });
+	      var min = moment.min.apply(moment, _toConsumableArray(data.map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      var max = moment.max.apply(moment, _toConsumableArray(data.map(function (d) {
+	        return (0, _utilsEs6Js.parseDate)(d.key, true);
+	      }))).toDate();
+	      return [min, max];
+	    }
+	  }]);
+	
+	  return TimeDataSeries;
+	})(DataSeries);
+	
+	exports.TimeDataSeries = TimeDataSeries;
+	
+	var MultiSeriesChart = (function (_Klass3) {
+	  _inherits(MultiSeriesChart, _Klass3);
+	
+	  function MultiSeriesChart(obj) {
+	    _classCallCheck(this, MultiSeriesChart);
+	
+	    obj = obj || {};
+	    obj.schema = obj.schema || _schemavizEs6Js.multiSeriesChartSchema;
+	    _get(Object.getPrototypeOf(MultiSeriesChart.prototype), 'constructor', this).call(this, obj);
+	    this.series = obj.series || [];
+	  }
+	
+	  _createClass(MultiSeriesChart, [{
+	    key: 'fittedTrendline',
+	    value: function fittedTrendline(series) {
+	      /** fitted trendline for series in context of this chart's domain/range */
+	      var allData = series.data.values(),
+	          data = allData.filter(function (d) {
+	        return d.value !== null;
+	      }).map(function (d) {
+	        return [d.key.valueOf(), d.value];
+	      }),
+	          domain = this.domain.map(function (d) {
+	        return d.valueOf();
+	      }),
+	          line = (0, _utilsEs6Js.fittedTrendline)(data, domain, this.range);
+	      line.trend_width = series.trend_width || 2;
+	      line.trend_color = series.trend_color || series.color || '#999';
+	      line.point_count = series.data.size();
+	      return line;
+	    }
+	  }, {
+	    key: 'showLabels',
+	    value: function showLabels(series) {
+	      var showDefault = this.point_labels === 'show' ? 'show' : 'omit',
+	          behavior = series.point_labels || 'defer',
+	          visible = behavior === 'defer' ? showDefault : behavior;
+	      return visible === 'show';
+	    }
+	  }, {
+	    key: 'series',
+	    get: function get() {
+	      return this[dataSym];
+	    },
+	    set: function set(s) {
+	      this[dataSym] = s.map(function (serum) {
+	        return new DataSeries(serum);
+	      });
+	    }
+	  }, {
+	    key: 'range',
+	    get: function get() {
+	      var rMin = this.range_min,
+	          rMax = this.range_max,
+	          fMin = function fMin(_ref) {
+	        var _ref2 = _slicedToArray(_ref, 2);
+	
+	        var min = _ref2[0];
+	        var max = _ref2[1];
+	        return min;
+	      },
+	          fMax = function fMax(_ref3) {
+	        var _ref32 = _slicedToArray(_ref3, 2);
+	
+	        var min = _ref32[0];
+	        var max = _ref32[1];
+	        return max;
+	      };
+	      if (rMin != null && rMax != null) {
+	        // both specified explicitly:
+	        return [rMin, rMax];
+	      }
+	      var ranges = this.series.map(function (serum) {
+	        return serum.range;
+	      });
+	      return [rMin != null ? rMin : d3.min(ranges, fMin), rMax != null ? rMax : d3.max(ranges, fMax)];
+	    }
+	  }, {
+	    key: 'keys',
+	    get: function get() {
+	      var data = this.series.map(function (serum) {
+	        return serum.data;
+	      }).map(function (point) {
+	        return point.values();
+	      });
+	      data = d3.merge(data);
+	      return data.map(function (point) {
+	        return point.key;
+	      });
+	    }
+	  }]);
+	
+	  return MultiSeriesChart;
+	})(_classvizEs6Js.Klass);
+	
+	exports.MultiSeriesChart = MultiSeriesChart;
+	
+	var TimeSeriesChart = (function (_MultiSeriesChart) {
+	  _inherits(TimeSeriesChart, _MultiSeriesChart);
+	
+	  function TimeSeriesChart(obj) {
+	    _classCallCheck(this, TimeSeriesChart);
+	
+	    obj = obj || {};
+	    obj.schema = obj.schema || _schemavizEs6Js.timeSeriesChartSchema;
+	    _get(Object.getPrototypeOf(TimeSeriesChart.prototype), 'constructor', this).call(this, obj);
+	    this.series = obj.series || [];
+	  }
+	
+	  _createClass(TimeSeriesChart, [{
+	    key: 'allDates',
+	    value: function allDates() {
+	      var result = [],
+	          found = [],
+	          series = this.series,
+	          autoCrop = this.auto_crop,
+	          domain = this.domain,
+	          rightSide = domain[1].valueOf(),
+	          sortfn = function sortfn(a, b) {
+	        return a.toISOString() > b.toISOString() ? 1 : -1;
+	      };
+	      if (!this._uniqueDates) {
+	        series.forEach(function (s) {
+	          var points = s.data.values();
+	          points.map(function (datapoint) {
+	            return datapoint.key;
+	          }).forEach(function (key) {
+	            var ms = key.valueOf();
+	            if (!isNaN(key) && found.indexOf(ms) === -1) {
+	              if (autoCrop && key.valueOf() <= rightSide || !autoCrop) {
+	                result.push(key);
+	                found.push(ms);
+	              }
+	            }
+	          });
+	        }, this);
+	        result.sort(sortfn); // lexical sort by ISO8601===chronological
+	        this._uniqueDates = result;
+	      }
+	      return this._uniqueDates; // may be cached after 1st call
+	    }
+	
+	    /**
+	     * axisLabels(): returns array of key/value objects for date, x-axis label,
+	     * prefering explicitly specified label for date if provided, otherwise
+	     * falling back to generated date label.
+	     */
+	  }, {
+	    key: 'axisLabels',
+	    value: function axisLabels() {
+	      var dataKeys = this.allDates(),
+	          labels = [];
+	      return dataKeys.map(this.axisLabel, this);
+	    }
+	  }, {
+	    key: 'dateFormat',
+	    value: function dateFormat(key) {
+	      var interval = INTERVALS[this.frequency][1],
+	          defaultFn = function defaultFn(d) {
+	        return (0, _utilsEs6Js.parseDate)(d, true).format('M/D/YYYY');
+	      },
+	          fn = interval === 'month' ? d3.time.format.utc('%b %Y') : defaultFn;
+	      return fn((0, _utilsEs6Js.parseDate)(key));
+	    }
+	
+	    // Given date key, return object with key, associated x-axis Label
+	    // should return empty string for any date not in data.
+	  }, {
+	    key: 'axisLabel',
+	    value: function axisLabel(key) {
+	      var _this = this;
+	
+	      var dateKey = (0, _utilsEs6Js.parseDate)(key),
+	          // as Date
+	      dateValue = dateKey.valueOf(),
+	          // ms
+	      stamp = function stamp(d) {
+	        return (0, _utilsEs6Js.parseDate)(d).toISOString().split('T')[0];
+	      },
+	          generated = function generated(d) {
+	        return { key: d, label: _this.dateFormat(dateKey) };
+	      },
+	          configured = function configured(d, ds) {
+	        return { key: d, label: _this.labels[ds] };
+	      },
+	          dateStamp = stamp(dateKey),
+	          considered = this.allDates().map(function (d) {
+	        return d.valueOf();
+	      });
+	      if (this.labels.hasOwnProperty(dateStamp)) {
+	        return configured(dateKey, dateStamp);
+	      }
+	      if (considered.indexOf(dateValue) !== -1) {
+	        return generated(dateKey);
+	      }
+	      return { key: dateKey, label: '' };
+	    }
+	  }, {
+	    key: 'series',
+	    get: function get() {
+	      return this[dataSym];
+	    },
+	    set: function set(s) {
+	      var _this2 = this;
+	
+	      this[dataSym] = s.map(function (serum) {
+	        return new TimeDataSeries(serum, _this2);
+	      });
+	      this[dataSym].map(function (series, index) {
+	        series.position = index;
+	      }, this);
+	    }
+	  }, {
+	    key: 'domain',
+	    get: function get() {
+	      var _this3 = this;
+	
+	      var domainGetter = function domainGetter(s) {
+	        return _this3.auto_crop ? s.croppedDomain : s.domain;
+	      },
+	          seriesDomains,
+	          explicitStart = this.start,
+	          explicitEnd = this.end,
+	          timeStep = INTERVALS[this.frequency][0],
+	          interval = INTERVALS[this.frequency][1],
+	          quarterly = interval === 'month' && timeStep === 3,
+	          intervalName = quarterly ? 'quarter' : interval,
+	          ceiling = function ceiling(d) {
+	        return moment.utc(d).endOf(intervalName).toDate();
+	      },
+	          floor = function floor(d) {
+	        return moment.utc(d).startOf(intervalName).toDate();
+	      };
+	      if (explicitStart && explicitEnd) {
+	        return [d3.time.day.floor(explicitStart), d3.time.day.ceil(explicitEnd)];
+	      }
+	      seriesDomains = this.series.map(domainGetter);
+	      // normalizing (floor/ceil) getters: start, end; favor explicit to computed
+	      function getStart() {
+	        return d3.time.day.utc.floor(explicitStart || moment.min.apply(moment, _toConsumableArray(seriesDomains.map(function (_ref4) {
+	          var _ref42 = _slicedToArray(_ref4, 2);
+	
+	          var min = _ref42[0];
+	          var max = _ref42[1];
+	          return moment.utc(min);
+	        }))).toDate());
+	      }
+	      function getEnd() {
+	        return ceiling(explicitEnd ? moment.utc(explicitEnd).endOf('day').toDate() : null || moment.max.apply(moment, _toConsumableArray(seriesDomains.map(function (_ref5) {
+	          var _ref52 = _slicedToArray(_ref5, 2);
+	
+	          var min = _ref52[0];
+	          var max = _ref52[1];
+	          return moment.utc(max);
+	        }))).toDate());
+	      }
+	      return [getStart(), getEnd()];
+	    }
+	  }]);
+	
+	  return TimeSeriesChart;
+	})(MultiSeriesChart);
+	
+	exports.TimeSeriesChart = TimeSeriesChart;
+	
+	function Chart(data) {
+	  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require */
+	
+	'use strict'; /*jshint -W097 */
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	exports.schematize = schematize;
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var moment = __webpack_require__(3);
+	
+	var Schema = function Schema() {
+	  _classCallCheck(this, Schema);
+	};
+	
+	exports.Schema = Schema;
+	
+	function schematize(fields, schema) {
+	  var fieldset = [];
+	  Object.getOwnPropertyNames(fields).forEach(function (field) {
+	    fieldset.push(new Field(field, this[field]));
+	  }, fields);
+	  fieldset.forEach(function (field) {
+	    Object.defineProperty(schema, field.name, {
+	      enumerable: true,
+	      configurable: true,
+	      value: field
+	    });
+	  });
+	  return schema;
+	}
+	
+	var Field = (function () {
+	  function Field(name, descriptor) {
+	    _classCallCheck(this, Field);
+	
+	    if (name == null) throw new Error('Field must be named');
+	    descriptor = descriptor || {};
+	    // field name, REQUIRED:
+	    this.name = name;
+	    // label for the field:
+	    this.title = descriptor.title;
+	    // field description / doc (may be used in form-hints):
+	    this.description = descriptor.description;
+	    // constrain to specific type, either a class or type (string):
+	    this.type = descriptor.type;
+	    // constrain field to specific set of values:
+	    this.vocabulary = descriptor.vocabulary;
+	    // constraint is callback function which validates, normalizes; the field
+	    // is bound such that 'this' inside the constraint callback is the field:
+	    this.constraint = descriptor.constraint;
+	    // is field required? true/false:
+	    this.required = descriptor.required || false;
+	    // default value for getter:
+	    this.defaultValue = descriptor.defaultValue;
+	  }
+	
+	  _createClass(Field, [{
+	    key: 'validate',
+	    value: function validate(value, obj) {
+	      var normalized = value,
+	          constraint = this.constraint;
+	      obj = obj || {};
+	
+	      if (value != null) {
+	        normalized = value;
+	        if (constraint) {
+	          normalized = constraint.call(this, value, obj) || value;
+	        }
+	      }
+	
+	      if (this.type && normalized != null) {
+	        if (typeof this.type === 'string') {
+	          if (typeof normalized !== this.type) {
+	            throw new ValidationTypeError(this, typeof normalized, 'Expected type: [' + this.type + ']');
+	          }
+	        } else if (typeof this.type === 'function') {
+	          if (!(normalized instanceof this.type)) {
+	            throw new ValidationTypeError(this, typeof normalized, 'Expected type: [' + this.type + ']');
+	          }
+	        }
+	      }
+	
+	      if (this.required && normalized == null) {
+	        if (this.defaultValue != null) {
+	          normalized = this.defaultValue;
+	        } else {
+	          throw new ValidationError(this, normalized, 'Required fields cannot be null');
+	        }
+	      }
+	
+	      if (this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
+	        if (this.required || normalized !== null) {
+	          throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
+	        }
+	      }
+	
+	      return normalized;
+	    }
+	  }]);
+	
+	  return Field;
+	})();
+	
+	exports.Field = Field;
+	
+	var ValidationError = (function (_Error) {
+	  _inherits(ValidationError, _Error);
+	
+	  function ValidationError(field, value, msg) {
+	    _classCallCheck(this, ValidationError);
+	
+	    _get(Object.getPrototypeOf(ValidationError.prototype), 'constructor', this).call(this);
+	    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationError';
+	  }
+	
+	  return ValidationError;
+	})(Error);
+	
+	exports.ValidationError = ValidationError;
+	
+	var ValidationTypeError = (function (_TypeError) {
+	  _inherits(ValidationTypeError, _TypeError);
+	
+	  function ValidationTypeError(field, type, msg) {
+	    _classCallCheck(this, ValidationTypeError);
+	
+	    _get(Object.getPrototypeOf(ValidationTypeError.prototype), 'constructor', this).call(this);
+	    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationTypeError';
+	  }
+	
+	  return ValidationTypeError;
+	})(TypeError);
+	
+	exports.ValidationTypeError = ValidationTypeError;
+	
+	var Klass = function Klass(obj, localprops) {
+	  _classCallCheck(this, Klass);
+	
+	  obj = obj || {};
+	  var schema = obj.schema || schematize(obj, {});
+	  this.schema = schema;
+	  function descriptor(field, o) {
+	    var value;
+	    return {
+	      enumerable: true,
+	      configurable: true,
+	      get: function get() {
+	        if (field.required && value == null) {
+	          return field.defaultValue; // stored value is null or undef
+	        }
+	        return value;
+	      },
+	      set: function set(v) {
+	        value = field.validate(v, o);
+	      }
+	    };
+	  }
+	  Object.keys(schema).forEach(function (field) {
+	    var fieldname = schema[field].name;
+	    if ((localprops || []).indexOf(fieldname) !== -1) {
+	      return; // do not use schema property descriptor for this field
+	    }
+	    Object.defineProperty(this, fieldname, descriptor(schema[field], this));
+	  }, this);
+	
+	  Object.keys(schema).forEach(function (k) {
+	    this[k] = obj[k];
+	  }, this);
+	};
+	
+	exports.Klass = Klass;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _classvizEs6Js = __webpack_require__(8);
+	
+	var _utilsEs6Js = __webpack_require__(6);
+	
+	function dateTypeConstraint(value) {
+	  var m = (0, _utilsEs6Js.parseDate)(value, true);
+	  if (!m.isValid()) return null;
+	  return m.toDate();
+	}
+	
+	var DataPointSchema = (function (_Schema) {
+	  _inherits(DataPointSchema, _Schema);
+	
+	  function DataPointSchema() {
+	    _classCallCheck(this, DataPointSchema);
+	
+	    _get(Object.getPrototypeOf(DataPointSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
+	      key: {
+	        title: 'Data point key',
+	        type: 'string',
+	        required: true
+	      },
+	      value: {
+	        title: 'Data point value',
+	        type: 'number',
+	        required: false // null value means explicitly N/A for key
+	      },
+	      title: {
+	        title: 'Descriptive label (for key)',
+	        type: 'string',
+	        required: false
+	      },
+	      valueLabel: {
+	        title: 'Value label',
+	        description: 'May be used for N= labels for denominator value',
+	        type: 'string',
+	        required: false
+	      },
+	      note: {
+	        title: 'Data point note',
+	        description: 'Descriptive note, used in interactive features',
+	        type: 'string',
+	        defaultValue: ''
+	      },
+	      uri: {
+	        title: 'Data point URI',
+	        description: 'Link to data source for point',
+	        type: 'string',
+	        required: false
+	      }
+	    }, this);
+	  }
+	
+	  return DataPointSchema;
+	})(_classvizEs6Js.Schema);
+	
+	exports.DataPointSchema = DataPointSchema;
+	var dataPointSchema = new DataPointSchema();
+	
+	exports.dataPointSchema = dataPointSchema;
+	
+	var TimeDataPointSchema = (function (_DataPointSchema) {
+	  _inherits(TimeDataPointSchema, _DataPointSchema);
+	
+	  function TimeDataPointSchema() {
+	    _classCallCheck(this, TimeDataPointSchema);
+	
+	    _get(Object.getPrototypeOf(TimeDataPointSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
+	      key: {
+	        title: 'Date key',
+	        description: 'Time series data point key (Date value); ' + 'should be naive dates stored as localtime.',
+	        type: Date,
+	        required: true,
+	        constraint: dateTypeConstraint
+	      }
+	    }, this);
+	  }
+	
+	  return TimeDataPointSchema;
+	})(DataPointSchema);
+	
+	exports.TimeDataPointSchema = TimeDataPointSchema;
+	var timeDataPointSchema = new TimeDataPointSchema();
+	
+	exports.timeDataPointSchema = timeDataPointSchema;
+	
+	var DataSeriesSchema = (function (_Schema2) {
+	  _inherits(DataSeriesSchema, _Schema2);
+	
+	  function DataSeriesSchema() {
+	    _classCallCheck(this, DataSeriesSchema);
+	
+	    _get(Object.getPrototypeOf(DataSeriesSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
+	      title: {
+	        title: 'Series title',
+	        description: 'Series/line name or title',
+	        type: 'string',
+	        required: false
+	      },
+	      description: {
+	        title: 'Series description',
+	        description: 'Descriptive text metadata about series, often' + 'is empty or unused',
+	        type: 'string',
+	        required: false
+	      },
+	      line_width: {
+	        title: 'Line width',
+	        description: 'Line width (in relative px units) Considered ' + 'in line plots only, ignored otherwise.',
+	        type: 'number',
+	        required: false,
+	        defaultValue: 2.0
+	      },
+	      color: {
+	        title: 'Line/bar color',
+	        description: 'Primary series color name or HTML color code; ' + 'if unspecified ("Auto" default), defer to ' + 'automatic default color palette choices.',
+	        type: 'string',
+	        defaultValue: 'auto',
+	        required: false
+	      },
+	      marker_color: {
+	        title: 'Point marker fill color',
+	        description: 'Data point marker color name or code; ' + 'if unspecified ("Auto" default), defer to ' + 'match the line/bar color.',
+	        type: 'string',
+	        defaultValue: "Auto",
+	        required: false
+	      },
+	      marker_size: {
+	        title: 'Marker size',
+	        description: 'Marker size (in relative px units) Considered ' + 'in line plots only, ignored otherwise.',
+	        type: 'number',
+	        required: false,
+	        defaultValue: 9.0
+	      },
+	      marker_width: {
+	        title: 'Marker stroke width',
+	        description: 'Marker stroke width (in relative px units) ' + 'Considered in line plots only, ignored ' + 'otherwise.  Currently only used for marker ' + 'style/shape that is not filled.',
+	        type: 'number',
+	        required: false,
+	        defaultValue: 2.0
+	      },
+	      marker_style: {
+	        title: 'Marker shape style',
+	        description: 'Marker shape, selected from enumerated ' + 'vocabulary of allowable choices.',
+	        type: 'string',
+	        constraint: function constraint(value, obj) {
+	          if (value === 'filledCircle') {
+	            obj.filled = true;
+	            return 'circle';
+	          }
+	          if (value === 'filledSquare') {
+	            obj.filled = true;
+	            return 'square';
+	          }
+	          if (value === 'filledDiamond') {
+	            obj.filled = true;
+	            return 'diamond';
+	          }
+	        },
+	        vocabulary: ['x', 'diamond', 'circle', 'square', 'cross', 'plus', 'dash', 'triangle-up', 'triangle-down'],
+	        required: false,
+	        defaultValue: 'square'
+	      },
+	      show_trend: {
+	        title: 'Show trend line?',
+	        type: 'boolean',
+	        defaultValue: false
+	      },
+	      trend_width: {
+	        title: 'Trend line width, if applicable',
+	        type: 'number',
+	        defaultValue: 2.0
+	      },
+	      trend_color: {
+	        title: 'Trend line color, if applicable',
+	        description: 'Trend line color name or code; ' + 'if unspecified ("Auto" default), defer to ' + 'match the line/bar color.',
+	        type: 'string',
+	        defaultValue: "Auto"
+	      },
+	      point_labels: {
+	        title: 'Show point labels?',
+	        description: 'Show labels above each marker for data value? ' + 'The default value of defer obeys plot-wide ' + 'setting, where show/omit explicitly do as ' + 'described.',
+	        type: 'string',
+	        vocabulary: ['defer', 'omit', 'show'],
+	        defaultValue: 'defer'
+	      },
+	      display_format: {
+	        title: 'Display format for y values',
+	        description: 'Standard formatting string',
+	        type: 'string',
+	        defaultValue: '%%.%if'
+	      }
+	    }, this);
+	  }
+	
+	  return DataSeriesSchema;
+	})(_classvizEs6Js.Schema);
+	
+	exports.DataSeriesSchema = DataSeriesSchema;
+	var dataSeriesSchema = new DataSeriesSchema();
+	
+	exports.dataSeriesSchema = dataSeriesSchema;
+	
+	var TimeDataSeriesSchema = (function (_DataSeriesSchema) {
+	  _inherits(TimeDataSeriesSchema, _DataSeriesSchema);
+	
+	  function TimeDataSeriesSchema() {
+	    _classCallCheck(this, TimeDataSeriesSchema);
+	
+	    _get(Object.getPrototypeOf(TimeDataSeriesSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
+	      break_lines: {
+	        title: 'Break lines?',
+	        description: 'When a value is missing for name or date on the ' + 'X axis, should the line be broken/discontinuous ' + 'such that no line runs through the empty/null ' + 'value?  This defaults to true, which means that ' + 'no line will run from adjacent values through the ' + 'missing value.  For purposes of tabular legend, ' + 'any value without a data-source should render "--" ' + 'and any null value (specifying N/A or NaN value) ' + 'should display as N/A.  At future date, we may ' + 'wish to add other options for this case, such as ' + 'drawing a dotted-line through the N/A period that ' + 'breaks continuity of contiguous points.  Ideally, ' + 'any such rendering behavior avoids depending on a ' + 'fixed frequency for a time-series plot.',
+	        type: 'string',
+	        constraint: function constraint(value) {
+	          if (typeof value === 'boolean') return value ? 'dashed' : 'solid';
+	        },
+	        vocabulary: ['hidden', 'solid', 'dashed'],
+	        defaultValue: 'dashed'
+	      }
+	    }, this);
+	  }
+	
+	  return TimeDataSeriesSchema;
+	})(DataSeriesSchema);
+	
+	exports.TimeDataSeriesSchema = TimeDataSeriesSchema;
+	var timeDataSeriesSchema = new TimeDataSeriesSchema();
+	
+	exports.timeDataSeriesSchema = timeDataSeriesSchema;
+	
+	var MultiSeriesChartSchema = (function (_Schema3) {
+	  _inherits(MultiSeriesChartSchema, _Schema3);
+	
+	  function MultiSeriesChartSchema() {
+	    _classCallCheck(this, MultiSeriesChartSchema);
+	
+	    _get(Object.getPrototypeOf(MultiSeriesChartSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
+	      // Identifiction: shortname and uid
+	      name: {
+	        title: 'Short name',
+	        description: 'Short name of plot, unique only to report it ' + 'is contained within, usually descriptive, ' + 'like a filename; often transformed from ' + 'title.  May be present in JSON, but usually ' + 'is not preferred for identification or ' + 'data binding vs. UID; may be used in URL ' + 'construction, but in itself does not contain ' + 'full context or URI.',
+	        type: 'string',
+	        required: false
+	      },
+	      uid: {
+	        title: 'UID',
+	        description: 'UUID (hexidecimal representation) of chart, ' + 'based on UUID of chart content in Teamspace ' + 'CMS system.  May or may not be in canonical ' + 'RFC 4122 format (with dashes) or unfieled ' + 'hexidecimal format (usually, no dashes).',
+	        type: 'string',
+	        required: false
+	      },
+	      url: {
+	        title: 'Chart URL',
+	        description: 'Base URL to chart content',
+	        type: 'string',
+	        required: false
+	      },
+	      // Basic metadata -- may be rendered in template in HTML source
+	      //                   rendered by server, if it is included in
+	      //                   DOM this way, plotting application may
+	      //                   choose to re-plot it, if necessary?
+	      //                   Current (Sept. 2014) implementation is
+	      //                   *ignoring* title, description even though
+	      //                   they are provided in JSON.
+	      title: {
+	        title: 'Title',
+	        description: 'Data collection name or title; may be ' + 'displayed in legend.',
+	        type: 'string',
+	        required: false
+	      },
+	      description: {
+	        title: 'Description',
+	        description: 'Textual description of the data collection.',
+	        type: 'string',
+	        required: false
+	      },
+	      info: {
+	        title: 'Informative notes / caption',
+	        description: 'This allows any rich text and may contain ' + 'free-form notes about this chart; displayed ' + 'in report output.  NOTE: this is NOT included ' + 'in JSON as of September 2014, and is instead ' + 'rendered server-side in template -- it may be ' + 'included in future JSON feeds.',
+	        type: 'string',
+	        required: false
+	      },
+	      // Type of plot:
+	      chart_type: {
+	        title: 'Chart type',
+	        description: 'Type of chart to display (line or bar).',
+	        type: 'string',
+	        vocabulary: ['line', 'bar'],
+	        defaultValue: 'line',
+	        required: true
+	      },
+	      // Plot sizing: favor aspect_ratio over height, if provided
+	      width: {
+	        title: 'Width',
+	        description: 'Display width of chart, including Y-axis ' + 'labels, grid, and legend (if applicable) in ' + 'units configured.',
+	        type: 'number',
+	        defaultValue: '100',
+	        required: true
+	      },
+	      width_units: {
+	        title: 'Units of width',
+	        description: '',
+	        type: 'string',
+	        defaultValue: '%',
+	        required: true
+	      },
+	      height: {
+	        title: 'Height',
+	        description: 'Display height of chart in units configured ' + '(either as percentage of width, or in pixels) ' + ' -- used when aspect_ratio not specified.',
+	        type: 'number',
+	        defaultValue: '50',
+	        required: true
+	      },
+	      height_units: {
+	        title: 'Units of height',
+	        description: 'Ignore unless aspect ratio not provided or ' + 'value of height_units is % or px.',
+	        type: 'string',
+	        defaultValue: '2:1', // prefer aspect_ratio field to this
+	        required: true
+	      },
+	      aspect_ratio: {
+	        title: 'Aspect ratio',
+	        description: 'Preferred ratio of width to height, should ' + 'control height of containing div, if present.',
+	        type: Array,
+	        required: false,
+	        constraint: function constraint(value) {
+	          // validate that value is indeed a two-item Array of num.
+	          if (value.length !== 2) throw new _classvizEs6Js.ValidationError(this, value, 'Aspect ratio must be a two element Array');
+	          if (typeof value[0] !== 'number' || typeof value[1] !== 'number') throw new _classvizEs6Js.ValidationTypeError(this, typeof value[0] + ' ' + typeof value[1], 'Both elements of aspect ratio must be numbers');
+	        }
+	      },
+	      range_min: {
+	        title: 'Range minimum',
+	        description: 'Minimum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
+	        type: 'number',
+	        required: false
+	      },
+	      range_max: {
+	        title: 'Range maximum',
+	        description: 'Maximum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
+	        type: 'number',
+	        required: false
+	      },
+	      units: {
+	        title: 'Units',
+	        description: 'Common set of units of measure for the data ' + 'series in this collection.  If the units for ' + 'series are not shared, then define respective ' + 'units on the series themselves. May be ' + 'displayed as part of Y-axis label using a ' + 'parenthetical notation of both units and ' + 'y_label are provided.',
+	        type: 'string',
+	        required: false
+	      },
+	      y_label: {
+	        title: 'Y axis label',
+	        description: 'Primary Y-Axis label/title (descriptive); ' + 'this is often omitted since axis is often ' + 'self-describing (especially when units are ' + 'percentages).  If omitted, do not allocate ' + 'space in plot for label. If included, ' + 'render text at 90-degree rotation ' + '(counter-clockwise, with text bottom-to-top).',
+	        type: 'string',
+	        defaultValue: '',
+	        required: false
+	      },
+	      // Goal line: value (if defined), color:
+	      goal: {
+	        title: 'Goal',
+	        description: 'Common goal value as decimal number.  If each ' + 'series has different respective goals, edit ' + 'those goals on each series.  If goal is ' + 'undefined or null, omit display of goal line.',
+	        type: 'number',
+	        required: false
+	      },
+	      goal_color: {
+	        title: 'Goal-line color',
+	        description: 'If omitted, color will be selected from ' + 'defaults.',
+	        type: 'string',
+	        defaultValue: "Auto",
+	        required: false
+	      },
+	      // Legend configuration:
+	      legend_placement: {
+	        title: 'Legend placement',
+	        description: 'Where to place legend in relationship to the ' + 'grid. Note: the legend is disabled for less ' + 'than two series/line unless the tabular ' + 'legend is selected.',
+	        type: 'string',
+	        vocabulary: ['tabular', // (def) aligned value table below grid
+	        'outside', // outside grid, next most common
+	        'inside' // inside grid, rarely used
+	        ],
+	        defaultValue: 'outside',
+	        required: false
+	      },
+	      legend_location: {
+	        title: 'Legend location',
+	        description: 'Select a directional position for legend. ' + 'This setting is ignored if either the tabular ' + 'legend placement is selected or if the legend ' + 'is hidden (for less than two series). ' + 'Available choices are cardinal directions, ' + 'which is a hold-over from how jqPlot idioms.',
+	        type: 'string',
+	        vocabulary: ['n', // top
+	        'e', // right of grid, vertical align at middle
+	        'w', // left of grid, vertical align at middle //DEPRECATED
+	        's', // bottom, below plot //DEPRECATED
+	        'nw', // left of grid, top-aligned //DEPRECATED
+	        'ne', // right of grid, top-aligned
+	        'sw', // left of grid, bottom-aligned //DEPRECATED
+	        'se' // right of grid, bottom-aligned
+	        ],
+	        defaultValue: 'e',
+	        required: false
+	      },
+	      // X-axis (title label):
+	      x_label: {
+	        title: 'X axis label',
+	        description: 'Label for X-axis, optional.',
+	        type: 'string',
+	        defaultValue: '',
+	        required: false
+	      },
+	      // misc:
+	      css: {
+	        title: 'Chart styles',
+	        description: 'CSS stylesheet rules for chart (optional).',
+	        type: 'string',
+	        required: false
+	      },
+	      point_labels: {
+	        title: 'Show point labels?',
+	        description: 'Show labels above data-point markers?  This ' + 'may be overridden on individual lines/series. ' + 'If omitted, the usual assumption is that ' + 'a viewer in a browser must hover over a ' + 'point to see its value, and click for detail. ' + 'The primary usability question with this is ' + 'what to do with overlapping values from two ' + 'lines, which is why we omit usually (or have ' + 'an idiom of displaying just labels for the ' + 'first/primary line on the plot, not plot-wide.',
+	        type: 'string',
+	        vocabulary: ['show', 'omit'],
+	        defaultValue: 'omit',
+	        required: true
+	      }
+	    }, this);
+	  }
+	
+	  return MultiSeriesChartSchema;
+	})(_classvizEs6Js.Schema);
+	
+	exports.MultiSeriesChartSchema = MultiSeriesChartSchema;
+	var multiSeriesChartSchema = new MultiSeriesChartSchema();
+	
+	exports.multiSeriesChartSchema = multiSeriesChartSchema;
+	
+	var TimeSeriesChartSchema = (function (_MultiSeriesChartSchema) {
+	  _inherits(TimeSeriesChartSchema, _MultiSeriesChartSchema);
+	
+	  function TimeSeriesChartSchema() {
+	    _classCallCheck(this, TimeSeriesChartSchema);
+	
+	    _get(Object.getPrototypeOf(TimeSeriesChartSchema.prototype), 'constructor', this).call(this);
+	    (0, _classvizEs6Js.schematize)({
+	      frequency: {
+	        title: 'Frequency',
+	        description: 'Frequncy between periods of reporting that ' + 'the plot visualizes.  May be used as cue for ' + 'handling the default date-label choices, ' + 'where month names are often stand-ins for ' + 'an exemplar date value for the month, e.g. ' + '2014-06-01 may be represented as "Jun 2014". ',
+	        type: 'string',
+	        vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly', 'daily'],
+	        defaultValue: 'monthly',
+	        required: false
+	      },
+	      start: {
+	        title: 'Start date',
+	        description: 'Explicit start date; optional.  If an ' + 'explicit start date is not provided, one ' + 'should be computed from earliest value in ' + 'provided data.',
+	        type: Date,
+	        constraint: function constraint(value, obj) {
+	          value = dateTypeConstraint(value);
+	          return value;
+	        },
+	        required: false
+	      },
+	      end: {
+	        title: 'End date',
+	        description: 'Explicit end date; optional.  If an ' + 'explicit end date is not provided, one ' + 'should be computed from latest value in ' + 'provided data.',
+	        type: Date,
+	        constraint: function constraint(value, obj) {
+	          value = dateTypeConstraint(value);
+	          return value;
+	        },
+	        required: false
+	      },
+	      labels: {
+	        title: 'Date labels',
+	        description: 'Date label overrides, used for X-axis labels. ' + 'if ommitted in whole or in part, use a ' + 'default MM/DD/YYYY format for dates. Is an ' + 'untyped object value used as key/vaule pair; ' + 'keys are ISO 8601 date stamps, values labels; ' + 'example: http://snag.gy/D1zjx.jpg',
+	        type: Object,
+	        constraint: function constraint(value) {
+	          // validate the object key/value pairs:
+	          Object.keys(value).forEach(function (k) {
+	            var v = value[k];
+	            if (!(0, _utilsEs6Js.parseDate)(k, true).isValid()) throw new _classvizEs6Js.ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
+	            if (typeof v !== 'string') throw new _classvizEs6Js.ValidationTypeError(this, typeof v, 'Labels must be strings');
+	          }, this);
+	        },
+	        required: false
+	      },
+	      auto_crop: {
+	        title: 'Auto-crop data?',
+	        description: 'If data contains sequential null values (incomplete ' + 'or no data calculable) on the right-hand of a ' + 'time-series plot, should that right-hand side ' + 'be cropped to only show the latest meaningful ' + 'data?  The default is to crop automatically.',
+	        type: 'boolean',
+	        defaultValue: true,
+	        required: false
+	      }
+	    }, this);
+	  }
+	
+	  return TimeSeriesChartSchema;
+	})(MultiSeriesChartSchema);
+	
+	exports.TimeSeriesChartSchema = TimeSeriesChartSchema;
+	var timeSeriesChartSchema = new TimeSeriesChartSchema();
+	exports.timeSeriesChartSchema = timeSeriesChartSchema;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.chartLoader = chartLoader;
+	exports.loadReport = loadReport;
+	exports.loadReports = loadReports;
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	var _timeSeriesPlot = __webpack_require__(11);
+	
+	var _utils = __webpack_require__(6);
+	
+	var _chartviz = __webpack_require__(7);
+	
+	var d3 = __webpack_require__(2);
+	
+	var INTERACT = true; // default
+	
+	function batchURLs(base, spec, total) {
+	  var cacheBust = 'cache_bust=' + Math.floor(Math.random() * Math.pow(10, 8)),
+	      _bSpec = function _bSpec(pair) {
+	    return 'b_size=' + pair[1] + '&b_start=' + pair[0];
+	  },
+	      _qs = function _qs(pair) {
+	    return _bSpec(pair) + '&' + cacheBust;
+	  },
+	      _url = function _url(pair) {
+	    return base + '?' + _qs(pair);
+	  };
+	  if (spec === 'geometric') {
+	    return (0, _utils.geometricBatch)(total).map(_url);
+	  }
+	  return [base + '?' + cacheBust]; // default is all reports in one url fetch
+	}
+	
+	function chartLoader(node, data, opts) {
+	  var interactive, plotter;
+	  opts = opts || {};
+	  // Factory function for chart loader, creates plotter adapter and
+	  // returns its bound update() method as callback for async/queued load
+	  if (opts.interactive === undefined) {
+	    opts.interactive = INTERACT;
+	  }
+	  // construct adapter
+	  plotter = new _timeSeriesPlot.TimeSeriesPlotter(node, data, opts);
+	  // return bound callback
+	  return plotter.update.bind(plotter);
+	}
+	
+	function loadReportBatched(container, url, opts, keyFn) {
+	  /** Given container, base URL to JSON, options, get size of total
+	    * for all plots in report, load batches on respective data receipt.
+	    */
+	
+	  function size() {
+	    if (typeof opts.size === 'number') {
+	      return opts.size;
+	    }
+	    return container.selectAll('div.plotdiv').size();
+	  }
+	
+	  function divFor(uid) {
+	    var _prefix = (opts.prefix || 'plot') + '-',
+	        divId = _prefix + uid,
+	        plotDiv = container.select('#' + divId);
+	    if (!plotDiv.size()) {
+	      plotDiv = container.append('div').classed('plotdiv', true).attr('id', divId);
+	    }
+	    return plotDiv;
+	  }
+	
+	  var chartIds = [],
+	      uniqueChart = function uniqueChart(c) {
+	    return chartIds.indexOf(c.uid) === -1;
+	  },
+	      processChart = function processChart(chart) {
+	    divFor(chart.uid).call(function (plotDiv) {
+	      return chartLoader(plotDiv, chart, opts)();
+	    });
+	  },
+	      plotCount = size();
+	
+	  window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotCount;
+	
+	  batchURLs(url, opts.batching, plotCount).forEach(function (url) {
+	    (0, _utils.forReportJSON)(url, function (charts) {
+	      // improbable chance of race condition across de-dupe next 2 lines
+	      // but likelihood and impact thereof not a practical issue:
+	      charts = charts.filter(uniqueChart).map(function (graph) {
+	        return new _chartviz.Chart(graph);
+	      });
+	      chartIds.push.apply(chartIds, _toConsumableArray(charts.map(function (c) {
+	        return c.uid;
+	      })));
+	      charts.forEach(processChart);
+	    });
+	  });
+	}
+	
+	function loadReport(container, url, opts) {
+	  opts = opts || {};
+	
+	  function divKey(d, i) {
+	    /** key function for d3 to use existing plot wrapper divs rendered into
+	      * HTML by external system (e.g. server-side template) in update selection.
+	      */
+	    var exists = this instanceof window.HTMLElement,
+	        _prefix = (opts.prefix || 'plot') + '-',
+	        uid = exists ? this.getAttribute('id').replace(_prefix, '') : null;
+	    return uid || (d ? d.uid : null);
+	  }
+	
+	  // If batched, as we cannot stream and do d3 data-join - process one-by-one:
+	  if (opts.batching === 'geometric') {
+	    loadReportBatched(container, url, opts, divKey);
+	    return;
+	  }
+	
+	  // non-batched, still use batchURLs just to get single cache-busting URL:
+	  url = batchURLs(url, 'all', opts)[0];
+	
+	  (0, _utils.forReportJSON)(url, function (charts) {
+	    var plotDivs;
+	    charts = charts.map(function (graph) {
+	      return new _chartviz.Chart(graph);
+	    });
+	    plotDivs = container.selectAll('div.plotdiv').data(charts, divKey);
+	    // Update selection for any (if applicable) existing plot DIVs,
+	    //  -- this favors order set in HTML source over JSON:
+	    plotDivs.each(function (d, i) {
+	      var plotDiv = d3.select(this);
+	      chartLoader(plotDiv, d, opts)();
+	    });
+	    window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotDivs.size();
+	    // Enter selection to add remaining plot DIVs as needed:
+	    plotDivs.enter().append('div').classed('plotdiv', true).attr({
+	      id: function id(chart) {
+	        return opts.prefix + '-' + chart.uid;
+	      }
+	    }).each(function (d, i) {
+	      var plotDiv = d3.select(this);
+	      chartLoader(plotDiv, d, opts)();
+	    });
+	  });
+	}
+	
+	function loadReports(opts) {
+	  var pageArgs = (0, _utils.urlArgs)(),
+	      safeInt = function safeInt(v) {
+	    v = parseInt(v, 10);
+	    return !isNaN(v) ? v : null;
+	  },
+	      hash = window.location.hash;
+	  // default options
+	  opts = opts || {};
+	  opts.interactive = opts.interactive || 'true';
+	  opts.prefix = opts.prefix || 'plot';
+	  // initial page layout may come from options, querystring, or hash
+	  opts.layout = opts.layout || pageArgs.layout || 'normal';
+	  if (hash) {
+	    opts.layout = hash === '#compact' ? 'compact' : opts.layout;
+	    opts.layout = hash === '#standard' ? 'normal' : opts.layout;
+	  }
+	  // column count only applicable to compact mode:
+	  opts.columns = opts.columns || pageArgs.columns || 4;
+	  // Let the HTML drive what gets loaded: any element that contains
+	  // class of 'report-core' and 'data-report-json' should get
+	  // loaded with the URL listed in data-report-json.
+	  d3.select('.report-core').each(function (d, i) {
+	    var container = d3.select(this),
+	        url = container.attr('data-report-json'),
+	        layout = container.attr('data-report-layout'),
+	        size = parseInt(container.attr('data-report-size'), 10),
+	        reportOptions = Object.create(opts);
+	    reportOptions.prefix = container.attr('data-report-prefix') || opts.prefix;
+	    reportOptions.layout = container.attr('data-report-layout') || opts.layout;
+	    reportOptions.columns = safeInt(container.attr('data-report-columns') || opts.columns);
+	    reportOptions.batching = container.attr('data-report-batch-step') || 'all';
+	    reportOptions.size = isNaN(size) ? null : size;
+	    loadReport(container, url, reportOptions);
+	  });
+	}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _vendorDebounce = __webpack_require__(12);
+	
+	var _tabularLegendRenderer = __webpack_require__(13);
+	
+	var _pointLabelsRenderer = __webpack_require__(15);
+	
+	var _trendLineRenderer = __webpack_require__(16);
+	
+	var _goalLineRenderer = __webpack_require__(17);
+	
+	var _breakLines = __webpack_require__(18);
+	
+	var _axisTitles = __webpack_require__(20);
+	
+	var _xTickLabels = __webpack_require__(21);
+	
+	var _basicLegend = __webpack_require__(22);
+	
+	var _hover = __webpack_require__(23);
+	
+	var _click = __webpack_require__(24);
+	
+	var _compact = __webpack_require__(26);
+	
+	// Set up namespace:
+	var moment = __webpack_require__(3);
+	var d3 = __webpack_require__(2);
+	var nv = __webpack_require__(27);
+	window.plotqi = window.plotqi || {};
+	
+	// Global list of plotters, may be used by plugins or external:
+	window.plotqi.plotters = [];
+	
+	// Integration plugins, may be appended to core/stock plugins (late-binding):
+	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
+	
+	// Core plugins:
+	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
+	
+	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
+	var INTERVALS = {
+	  daily: [1, 'day'],
+	  weekly: [1, 'monday'],
+	  monthly: [1, 'month'],
+	  yearly: [1, 'year'],
+	  quarterly: [3, 'month']
+	};
+	
+	// Weekdays, needed vocab for d3 intervals:
+	var WEEKDAYS = moment.weekdays().map(function (v) {
+	  return v.toLowerCase();
+	});
+	
+	// Class names:
+	var SVG_CLASSNAME = 'upiq-chart chart-svg';
+	
+	// Line chart selectors:
+	var SEL_LINECHART = '.nv-wrap.nv-lineChart';
+	var SEL_LINESWRAP = ' .nv-linesWrap';
+	var LINESWRAP_CLASSNAME = 'nv-linesWrap';
+	var SEL_SCATTERWRAP = '.nv-wrap.nv-line .nv-scatterWrap';
+	var SEL_LINEGROUPS = SEL_SCATTERWRAP + ' .nv-wrap.nv-scatter .nv-groups';
+	var SEL_LINEGROUP = SEL_LINEGROUPS + ' .nv-group';
+	var SEL_MARKER = SEL_LINEGROUPS + ' path.nv-point';
+	// Bar chart selectors:
+	var SEL_BARCHART = '.nv-wrap.nv-multiBarWithLegend';
+	var SEL_BARWRAP = ' .nv-barsWrap';
+	var BARWRAP_CLASSNAME = 'nv-barsWrap';
+	var SEL_BAR = SEL_BARWRAP + ' .nv-wrap.nv-multibar .nv-groups rect.nv-bar';
+	// Generic selectors:
+	var SEL_CHARTSVG = '.chart-svg';
+	
+	// registration of custom marker symbols for NVD3 1.7.x+
+	nv.utils.symbolMap.set('x', function (specifiedSize) {
+	  var size = Math.sqrt(specifiedSize) * 1.8;
+	  return 'M' + -size / 2 + ',' + -size / 2 + 'l' + size + ',' + size + 'm0,' + -size + 'l' + -size + ',' + size;
+	});
+	
+	nv.utils.symbolMap.set('plus', function (specifiedSize) {
+	  var size = Math.sqrt(specifiedSize) * 1.8;
+	  return 'M0,0' + 'l0,' + size + 'm' + -size / 2 + ',' + -(size / 2) + 'l' + size + ',0';
+	});
+	
+	var TimeSeriesPlotter = (function () {
+	  // multi-adapter of D3-wrapped dom element (chart div) context and plot data
+	
+	  function TimeSeriesPlotter(plotDiv, data, opts) {
+	    _classCallCheck(this, TimeSeriesPlotter);
+	
+	    this.options = this.getOptions(opts);
+	    this.plotDiv = plotDiv; // DOM (d3) node (outer plot div)
+	    this.data = data; // TimeSeriesChart object
+	    this._loadConfig();
+	    // State to be created or re-created later, by this.render():
+	    this.chart = null; // will be NVD3 chart obj
+	    this.plotCore = null; // will be plot core inner div
+	    this.svg = null; // will be svg inside the plot core div
+	    // Interactive mode?
+	    this._initPlugins();
+	    // Completion flag may be used by onComplete() of plugins or external:
+	    this.complete = false;
+	    // make global reference available in plotqi namespace for plotter(s):
+	    window.plotqi.plotters.push(this);
+	  }
+	
+	  _createClass(TimeSeriesPlotter, [{
+	    key: 'getOptions',
+	    value: function getOptions(o) {
+	      /** get options and/or load initial defaults */
+	      o = Object.create(o) || {};
+	      // interactive mode:
+	      o.interactive = o.interactive === undefined ? true : o.interactive;
+	      // Check for whether plot will be contained inside a compact layout:
+	      o.compact = o.layout === 'compact';
+	      // tiny mode (may be overridden by sizePlot during preRender (<165px),
+	      // may be true/false, undefined, or 'disabled':
+	      o.tiny = o.tiny === undefined ? false : o.tiny;
+	      // small mode usually auto-configured in preRender (<400px):
+	      o.small = o.small === undefined ? false : o.small;
+	      // prefix:
+	      o.prefix = o.prefix || 'plot';
+	      return o;
+	    }
+	  }, {
+	    key: '_intervalConfig',
+	    value: function _intervalConfig() {
+	      var freq = this.data.frequency,
+	          base = INTERVALS[freq || 'monthly'],
+	          weekly = freq === 'weekly',
+	          interval = base,
+	          firstDate;
+	      if (weekly && this.data.series && this.data.series[0].data.size()) {
+	        // d3 forces funny dance with weekly, must specify day of week;
+	        // otherwise, nvd3 will choke.
+	        firstDate = moment.utc(this.data.series[0].data.values()[0].key);
+	        // day of week, lower-case as interval for d3:
+	        interval[1] = firstDate.locale('en-us').format('dddd').toLowerCase();
+	      }
+	      return interval;
+	    }
+	  }, {
+	    key: '_loadConfig',
+	    value: function _loadConfig() {
+	      var _this = this;
+	
+	      var interval = this._intervalConfig(),
+	          domain = this.data.domain,
+	          dValue = function dValue(x) {
+	        return x.valueOf();
+	      },
+	          type = this.data.chart_type || 'line',
+	          isLine = type === 'line',
+	
+	      // right-side padding typically zero because last datapoint is
+	      // beginning of period, and domain bounds are to end of period;
+	      // in such case zero padded intervals is still effectively one.
+	      rightSidePadding = 0,
+	          leftSidePadding = isLine ? -1 : 0;
+	      // initial values:
+	      this.baseFontSize = 14; // px
+	      // chart type:
+	      this.type = type;
+	      // whether plot is relative (not fixed-px) width:
+	      this.relativeWidth = this.data.width_units == '%';
+	      // Weekdays, used only for weekly freq/interval:
+	      this.weekdays = WEEKDAYS;
+	      // intverval bits:
+	      this.timeStep = interval[0];
+	      this.interval = interval[1];
+	      this.d3Interval = d3.time[this.interval].utc;
+	      // pad left/right with 0-1 periods of space:
+	      domain = [this.timeOffset(domain[0], leftSidePadding), this.timeOffset(domain[1], rightSidePadding)];
+	      this.domain = domain;
+	      // time range function:
+	      this.timeRange = function (start, end) {
+	        return _this.d3Interval.range(start, end, _this.timeStep);
+	      };
+	      // tick values:
+	      this.tickVals = this.timeRange(domain[0], this.timeOffset(domain[1], +1)).map(dValue);
+	      // plot domain for bar chart is continouous, but not for bar chart, which
+	      // is merely sorted/discrete; therefore bar chart xDomain needs to
+	      // include all values:
+	      this.xDomain = isLine ? domain.map(dValue) : this.tickVals;
+	      // NVD3 selectors contingent on plot type:
+	      this.nvType = isLine ? SEL_LINECHART : SEL_BARCHART;
+	      this.wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
+	    }
+	  }, {
+	    key: '_allPlugins',
+	    value: function _allPlugins() {
+	      var core = window.plotqi.RENDERING_PLUGINS,
+	          additional = window.plotqi.ADDITIONAL_PLUGINS;
+	      return core.concat(additional);
+	    }
+	  }, {
+	    key: '_initPlugins',
+	    value: function _initPlugins() {
+	      // init plugins for later use by respective hookable methods
+	      this.plugins = [];
+	      this._allPlugins().forEach(function (klass) {
+	        var adapter = new klass(this); // plugin adapts this plotter core
+	        this.plugins.push(adapter);
+	      }, this);
+	    }
+	  }, {
+	    key: 'pluginName',
+	    value: function pluginName(p) {
+	      /** plugin name: __name__ string stable post-minification, constructor name
+	        * not guranteed safe, so only used as fallback.
+	        */
+	      return p.__name__ || p.constructor.name;
+	    }
+	  }, {
+	    key: 'pluginEnabled',
+	    value: function pluginEnabled(name) {
+	      var _this2 = this;
+	
+	      /** return true if plugin singleton instance by name is enabled */
+	      var plugin = this.plugins.filter(function (p) {
+	        return _this2.pluginName(p) === name;
+	      })[0];
+	      return plugin && plugin.enabled;
+	    }
+	  }, {
+	    key: 'getPlugin',
+	    value: function getPlugin(name) {
+	      var _this3 = this;
+	
+	      /** get plugin by name */
+	      var plugin = this.plugins.filter(function (p) {
+	        return _this3.pluginName(p) === name;
+	      })[0];
+	      return plugin;
+	    }
+	  }, {
+	    key: 'computedInterval',
+	    value: function computedInterval(value) {
+	      /** Given maximum possible value, infer a display maximum, interval.
+	        * Returns two-value array of max, interval.
+	        */
+	      var n,
+	          n_max = 0,
+	          interval,
+	          m = Math;
+	      // boundary check:
+	      if (value <= 0 || value === Infinity) return [100, 20]; // safety
+	      // normal inference:
+	      for (n = 1; n_max < value; n++) {
+	        n_max = 10 * m.max(1, m.pow(10, m.floor((n - 1) / 5))) * (n % 5 || 5);
+	        interval = [0, 1].indexOf(n % 5) !== -1 ? n_max / 5 : n_max / (n % 5);
+	      }
+	      return [n_max, interval];
+	    }
+	  }, {
+	    key: '_configAxes',
+	    value: function _configAxes() {
+	      var _this4 = this;
+	
+	      var range = this.data.range,
+	          chart = this.chart,
+	          labelFn = function labelFn(d) {
+	        return _this4.data.axisLabel(d).label;
+	      },
+	          tabular = this.data.legend_placement === 'tabular',
+	          dFormat = function dFormat(d) {
+	        return moment.utc(d).format('YYYY-MM-DD');
+	      },
+	          yTickVals = function yTickVals(n) {
+	        var out = [],
+	            interval = (range[1] - range[0]) / n,
+	            inferred,
+	            i;
+	        if (range[0] === range[1] && range[1] <= 100) {
+	          // e.g. range of [0,0] causes problem interval, infinite loop
+	          range = [0, 100];
+	          interval = 20;
+	        }
+	        if (range[1] > 100 && !_this4.data.range_max) {
+	          inferred = _this4.computedInterval(range[1]);
+	          range = [0, inferred[0]];
+	          interval = inferred[1];
+	        }
+	        for (i = range[0]; i <= range[1]; i += interval) {
+	          out.push(i);
+	        }
+	        return out;
+	      };
+	      // x-axis tick lines should be rendered, even if default CSS makes them
+	      // invisible, but labels should not be rendered by nvd3, so we have
+	      // function yeilding empty string always.
+	      chart.xAxis.tickFormat(function () {
+	        return '';
+	      });
+	      chart.xAxis.tickValues(this.tickVals);
+	      // y-axis:
+	      chart.yAxis.tickFormat(d3.format(',.0f')).tickValues(yTickVals(range[1] < 5 ? Math.ceil(range[1]) : 5)).showMaxMin(false).tickPadding(6);
+	      chart.xDomain(this.xDomain).yDomain(range);
+	    }
+	  }, {
+	    key: 'timeOffset',
+	    value: function timeOffset(date, n) {
+	      /** n can be +/- integer for direction, number of intervals to offset */
+	      var weekly = this.weekdays.indexOf(this.interval) !== -1,
+	          interval = weekly ? 'week' : this.interval;
+	      return moment.utc(date).add(n * this.timeStep, interval).toDate();
+	    }
+	  }, {
+	    key: '_margins',
+	    value: function _margins() {
+	      /** make default margins for plot */
+	      return { top: 10, bottom: 5, left: 40, right: 10 };
+	    }
+	  }, {
+	    key: 'nvChartFactory',
+	    value: function nvChartFactory() {
+	      var _this5 = this;
+	
+	      // factory for appropriate chart function to be used by
+	      // d3 selection.call() or transition.call()
+	      var m = nv.models,
+	          type = this.data.chart_type || 'line',
+	          factory = type === 'line' ? m.lineChart : m.multiBarChart,
+	          chart = factory(),
+	          markerSize = function markerSize(d) {
+	        return (d.size || 8) * Math.pow(_this5.plotWidth / 320, 2);
+	      };
+	      chart.id(this.data.uid).showLegend(false) // do not use nvd3 for legends
+	      .tooltips(false);
+	      if (type === 'line') {
+	        chart.useInteractiveGuideline(false).pointSize(markerSize).interactive(false);
+	      }
+	      if (type === 'bar') {
+	        chart.showControls(false).groupSpacing(0.3).reduceXTicks(false);
+	      }
+	      return chart;
+	    }
+	  }, {
+	    key: 'yformat',
+	    value: function yformat(y) {
+	      return typeof y === 'number' ? d3.format(',.1f')(y) : 'N/A';
+	    }
+	  }, {
+	    key: 'allSeries',
+	    value: function allSeries() {
+	      var input = this.data,
+	          keys = this.timeRange(input.domain[0], this.timeOffset(input.domain[1], +2)),
+	
+	      // transform fn for series model to plot semantics:
+	      _transform = function _transform(series, index) {
+	        var plotType = this.type,
+	            obj = {
+	          key: series.position,
+	          color: series.color,
+	          values: [],
+	          format: d3.format(series.display_format)
+	        };
+	        if (plotType === 'line') {
+	          obj.incomplete = series.break_lines;
+	          obj.thickness = series.line_width || 2.0;
+	          obj.markerThickness = series.marker_width || 2.0;
+	        }
+	        keys.map(function (k) {
+	          return k.valueOf();
+	        }).forEach(function (key) {
+	          var datapoint = series.data.get(key),
+	              value,
+	              info;
+	          if (series.data.has(key)) {
+	            value = datapoint.value;
+	            info = {
+	              x: moment.utc(datapoint.key).valueOf(),
+	              y: !!value || value === 0 ? value : NaN,
+	              note: datapoint.note,
+	              title: datapoint.title,
+	              uri: datapoint.uri,
+	              seriesIndex: index
+	            };
+	            if (plotType === 'line') {
+	              info.size = series.marker_size;
+	              info.shape = series.marker_style;
+	            }
+	            obj.values.push(info);
+	          } else if (plotType === 'line') {
+	            obj.values.push({
+	              x: moment.utc(key).valueOf()
+	            });
+	          }
+	        });
+	        return obj;
+	      };
+	      return input.series.map(_transform, this);
+	    }
+	  }, {
+	    key: '_updateLineDetail',
+	    value: function _updateLineDetail() {
+	      var lineGroups = this.svg.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group'),
+	          relStrokeWidthFactor = 0.25 + this.gridWidth() / 600;
+	      lineGroups.style('stroke-dasharray', function (d) {
+	        return d.dashed ? '5 5' : 'none';
+	      }).style('stroke-width', function (d) {
+	        return (d.thickness || 2) * relStrokeWidthFactor;
+	      });
+	    }
+	  }, {
+	    key: '_updateMarkerDetail',
+	    value: function _updateMarkerDetail() {
+	      /** resize markers: d3 pointSize will draw paths of appropriate size,
+	        *      but will not scale stroke accordingly, we do this after
+	        *      initial rendering.
+	        */
+	      var relStrokeWidthFactor = 1 + this.plotWidth / 640,
+	          thickness = function thickness(d) {
+	        return (d.markerThickness || 2) * relStrokeWidthFactor;
+	      };
+	      this.svg.selectAll('.nv-point').style({
+	        'stroke-width': function strokeWidth(d) {
+	          return '' + thickness(d) + 'px';
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'sizePlot',
+	    value: function sizePlot() {
+	      var data = this.data,
+	          width = +data.width || 100,
+	          units = data.width_units || '%',
+	          aspect = data.aspect_ratio,
+	          // [w,h]
+	      hasRatio = aspect && aspect.length === 2,
+	          ratio = hasRatio ? aspect[1] / aspect[0] : undefined,
+	          // h / w
+	      relHeight = !hasRatio && data.height_units === '%',
+	          widthSpec = '' + width + units,
+	          clientWidth,
+	          minHeight = 160,
+	          minFontSize = 9,
+	          // px
+	      computedHeight;
+	      // plot core div is 100% width of outer:
+	      this.plotCore.style('width', '100%');
+	      // and outer is as wide as specified:
+	      this.plotDiv.style('width', widthSpec);
+	      if (!data.series.length) {
+	        // minimal height, placeholder text:
+	        this.plotCore.style('height', '15px');
+	        this.plotCore.html('<em>No series data yet provided for plot.</em>');
+	        return;
+	      }
+	      clientWidth = this.plotCore[0][0].clientWidth;
+	      if (!hasRatio && data.height_units === 'px') {
+	        // fixed pixel (absolute) height is specified:
+	        computedHeight = data.height;
+	      } else {
+	        if (relHeight && data.height) {
+	          // height relative to width, but no specified aspect ratio
+	          ratio = data.height / 100.0; // pct to ratio
+	        }
+	        // use explicitly provided or just-computed aspect ratio:
+	        computedHeight = Math.round(ratio * clientWidth);
+	      }
+	      // check computed vs. min:
+	      computedHeight = Math.max(minHeight, computedHeight);
+	      this.plotCore.style('height', '' + computedHeight + 'px');
+	      // save width, height of plotCore for reference by rendering:
+	      this.plotWidth = clientWidth;
+	      this.plotHeight = computedHeight;
+	      // set base font size on svg element:
+	      this.baseFontSize = Math.max(minFontSize, Math.floor(clientWidth / 45 * 2) / 2.0 // rounded to 0.5px
+	      );
+	      // plot width flags: if sufficiently small, auto-set the 'tiny' flag:
+	      if (this.options.tiny !== 'disabled' && this.plotWidth < 165) {
+	        this.options.tiny = true;
+	      } else if (this.plotWidth >= 165) {
+	        this.options.tiny = false;
+	      }
+	      // plot width flags: if sufficiently small, auto-set the 'small' flag:
+	      this.options.small = this.plotWidth < 400;
+	    }
+	  }, {
+	    key: 'clear',
+	    value: function clear() {
+	      /** stable clear: respect existing non-plotCore content */
+	      if (this.plotCore && this.plotCore.size()) {
+	        this.plotCore.remove();
+	      }
+	    }
+	  }, {
+	    key: 'displayMetadata',
+	    value: function displayMetadata() {
+	      var plotTitle = this.plotDiv.selectAll('.plot-title').data([null]),
+	          plotDesc = this.plotDiv.selectAll('.plot-description').data([null]),
+	          plotInfo = this.plotDiv.selectAll('.plot-info').data([null]);
+	      plotTitle.enter().append('h3').classed('plot-title', true);
+	      plotTitle.text(this.data.title || '');
+	      plotDesc.enter().append('p').classed('plot-description', true);
+	      plotDesc.text(this.data.description || '');
+	      plotInfo.enter().append('div').classed('plot-info', true);
+	    }
+	  }, {
+	    key: 'preRender',
+	    value: function preRender() {
+	      /** prepare the chart div context for rendering */
+	      var chart;
+	      // - Set margins:
+	      this.margins = this._margins();
+	      // - Set metadata:
+	      this.displayMetadata();
+	      // - Clear existing (core plot) content:
+	      this.clear();
+	      // - Create inner (core) div, insert before any end-matter/plot-info:
+	      this.plotCore = this.plotDiv.insert('div', '.plot-info').classed('chart-div', true).style({
+	        'postion': 'relative'
+	      });
+	      // - Size div elements according to specifications:
+	      this.sizePlot();
+	      // - Add empty svg
+	      this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
+	      this.svg.outerNode = this.plotDiv;
+	      // - set core groups in this.svg:
+	      this.abovePlotGroup = this.svg.append('g').classed('upiq-above-plot', true);
+	      this.plotGroup = this.svg.append('g').classed('upiq-plot', true);
+	      // - set initial base styles on plotCore element that will be inherited:
+	      this.plotCore.style({
+	        'font-size': '' + this.baseFontSize + 'px'
+	      });
+	      // - Add singleton 'defs' to svg:
+	      this.svg.append('defs');
+	      // - create an NVD3 chart object that will be returned:
+	      this.chart = this.nvChartFactory();
+	      // - get scales from chart, set for use by plotter, plugins:
+	      // -- xScale may be oridinal or linear:
+	      this.xScale = this.chart.xScale();
+	      // -- yScale:
+	      this.yScale = this.chart.yScale();
+	      // - Bind plugin svg, scales for plugins, call any plugins pre-render
+	      this.plugins.forEach(function (plugin) {
+	        if (typeof plugin.preRender === 'function') {
+	          plugin.preRender();
+	        }
+	      }, this);
+	      // - Set chart positioning: width, height, margins:
+	      this.chart.width(this.plotWidth); // width before margins
+	      this.chart.height(this.plotHeight); // height before margins
+	      this.chart.margin(this.margins); // margins around exterior of grid
+	    }
+	  }, {
+	    key: '_grid',
+	    value: function _grid() {
+	      var barSel = '.nv-multiBarWithLegend .nv-x',
+	          lineSel = '.nv-lineChart g rect',
+	          sGrid = this.type === 'bar' ? barSel : lineSel;
+	      return this.svg.select(sGrid).node();
+	    }
+	  }, {
+	    key: 'gridWidth',
+	    value: function gridWidth() {
+	      var grid = this._grid();
+	      return !!grid ? grid.getBoundingClientRect().width : 0;
+	    }
+	  }, {
+	    key: 'gridHeight',
+	    value: function gridHeight() {
+	      var grid = this._grid();
+	      return !!grid ? grid.getBoundingClientRect().height : 0;
+	    }
+	  }, {
+	    key: 'updateRenderingPlugins',
+	    value: function updateRenderingPlugins() {
+	      /** update rendering plugins, in order */
+	      this.plugins.forEach(function (plugin) {
+	        plugin.update();
+	      }, this);
+	    }
+	  }, {
+	    key: 'setTimeScale',
+	    value: function setTimeScale() {
+	      // if xScale is ordinal, we need a (continuous) time-scale equivalent for
+	      var sDomain = this.xScale.domain();
+	      var sRange = this.xScale.range();
+	
+	      sRange = [sRange[0], sRange.slice(-1)[0]];
+	      sDomain = [sDomain[0], sDomain.slice(-1)[0]];
+	      // get an initial scale for proportions
+	      this.timeScale = d3.time.scale().domain(sDomain).range(sRange);
+	      // if plot type is bar, we need to extend the scale domain/range so that
+	      // we accommodate about 1 total period of left/right padding used by nvd3:
+	      if (this.type === 'bar') {
+	        sDomain[1] = this.timeOffset(sDomain[1], +1);
+	        sRange[1] = this.timeScale(sDomain[1]);
+	      }
+	      // use adjusted domain, range
+	      this.timeScale.domain(sDomain).range(sRange);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var data = this.allSeries(),
+	          sDomain,
+	          sRange;
+	      this.preRender();
+	      // now that we have chart, configure axes:
+	      this._configAxes();
+	      // Bind data to selection, call this.chart function in context
+	      // data-aware selection:
+	      this.plotGroup.datum(data).call(this.chart);
+	      // after this binding, we have x scales with concrete domain/range, but
+	      // for bar charts, we may need carefully constructed time-scale:
+	      this.setTimeScale();
+	      if (this.type === 'line') {
+	        // update line detail (e.g. dashes, thickness):
+	        this._updateLineDetail();
+	        this._updateMarkerDetail();
+	      }
+	      // Rendering plugins, in order:
+	      this.updateRenderingPlugins();
+	      return this.chart;
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      /** load interactive features from plugins, as applicable, if this
+	        * is enabled (this.options.interactive === true).
+	        */
+	      if (!this.options.interactive) return;
+	      this.plugins.forEach(function (plugin) {
+	        plugin.loadInteractiveFeatures();
+	      }, this);
+	    }
+	  }, {
+	    key: 'highlightX',
+	    value: function highlightX(key) {
+	      /** given date key, highlight any tick line associated with that key */
+	      var value = key ? key.valueOf() : null,
+	          tickLines = this.svg.select('g.nv-x').selectAll('g.tick'),
+	          tick = tickLines[0].filter(function (l) {
+	        return d3.select(l).data() == value;
+	      });
+	      d3.select(tick[0]).classed('selected', true);
+	    }
+	  }, {
+	    key: 'clearHighlights',
+	    value: function clearHighlights() {
+	      var tickLines = this.svg.select('g.nv-x').selectAll('g.tick');
+	      tickLines.classed('selected', false);
+	    }
+	  }, {
+	    key: 'reorderSeries',
+	    value: function reorderSeries() {
+	      /** DOM order is stacking/painting order; reversing puts the top-most
+	        * and front-most line in all series at the top of the drawing, with
+	        * subsequent (and assumed of lesser importance) lines are painted 
+	        * underneath.
+	        */
+	      var indexes = (0, _utils.range)(this.data.series.length);
+	      indexes.reverse();
+	      indexes.forEach(function (i) {
+	        var selector = '.nv-series-' + i,
+	            selection = this.plotGroup.selectAll(selector);
+	        selection[0].forEach(function (el) {
+	          el.parentNode.appendChild(el);
+	        });
+	      }, this);
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      var abovePlot = this.abovePlotGroup,
+	          _size = function _size(el) {
+	        return el.getBoundingClientRect().height;
+	      },
+	          sizers,
+	          adjustHeight;
+	      // - Re-order series that NVD3 draws, if line chart:
+	      if (this.type === 'line') {
+	        this.reorderSeries();
+	      }
+	      // - per-plugin adjustments
+	      this.plugins.forEach(function (plugin) {
+	        plugin.postRender();
+	      }, this);
+	      // - general adjustments
+	      // -- positioning adjustment to accommodate height of this.abovePlotGroup
+	      //    which may be adjusted by plugins (e.g. a top legend); note this
+	      //    adjusts the total plotCore height irrespective of aspect-ratio set
+	      //    in this.sizePlot() -- note: plugins must have a rect.sizing element,
+	      //    within their output, as introspection of box model for group
+	      //    elements is unreliable.
+	      sizers = abovePlot.selectAll('.sizing');
+	      if (sizers.size()) {
+	        adjustHeight = sizers[0].map(_size).reduce(function (a, b) {
+	          return a + b;
+	        }, 0);
+	      }
+	      if (adjustHeight) {
+	        this.plotGroup.attr({
+	          transform: 'translate(0, ' + adjustHeight + ')'
+	        });
+	        this.plotHeight += adjustHeight;
+	        this.plotCore.style({
+	          height: this.plotHeight + 'px'
+	        });
+	      }
+	      // - Mark as complete:
+	      this.complete = true;
+	      // - per-plugin on-complete notifiers:
+	      this.plugins.forEach(function (plugin) {
+	        plugin.onComplete();
+	      }, this);
+	    }
+	  }, {
+	    key: 'refresh',
+	    value: function refresh() {
+	      this.render();
+	      this.loadInteractiveFeatures();
+	      this.postRender();
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      // rendering stuff:
+	      this.refresh();
+	      if (this.relativeWidth) {
+	        window.addEventListener('resize', (0, _vendorDebounce.debounce)(this.refresh.bind(this), 500, false));
+	      }
+	    }
+	  }]);
+	
+	  return TimeSeriesPlotter;
+	})();
+
+	exports.TimeSeriesPlotter = TimeSeriesPlotter;
+	// use by plugins:
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	//Taken from Underscore, licensed under the MIT license
+	//Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	//Full MIT copyright notice can be found in the project root
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.debounce = debounce;
+	
+	function debounce(func, wait, immediate) {
+	  var timeout;
+	  return function () {
+	    var context = this,
+	        args = arguments;
+	    var later = function later() {
+	      timeout = null;
+	      if (!immediate) func.apply(context, args);
+	    };
+	    var callNow = immediate && !timeout;
+	    window.clearTimeout(timeout);
+	    timeout = window.setTimeout(later, wait);
+	    if (callNow) func.apply(context, args);
+	  };
+	}
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _plugin = __webpack_require__(14);
+	
+	var d3 = __webpack_require__(2);
+	var moment = __webpack_require__(3);
+	
+	var LEGEND_CLASS = 'upiq-legend';
+	var SEL_LEGEND = 'g.' + LEGEND_CLASS;
+	
+	var TabularLegendRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(TabularLegendRenderer, _BaseRenderingPlugin);
+	
+	  function TabularLegendRenderer(plotter) {
+	    _classCallCheck(this, TabularLegendRenderer);
+	
+	    _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), 'constructor', this).call(this, plotter);
+	    this.__name__ = 'TabularLegendRenderer';
+	    this.legendGroup = null; // will be set by this.makeLegendGroup
+	    this.leftPad = 5;
+	    this.legPad = 10;
+	    // cell padding (within cells === margin of text), all unitx px
+	    this.cellPadding = { // all units px
+	      top: 1,
+	      bottom: 1,
+	      left: 1,
+	      right: 1
+	    };
+	    // row padding (around cells === margin of cells), all units px
+	    this.rowPadding = { // all units px
+	      top: 1,
+	      bottom: 1,
+	      left: 1,
+	      right: 1
+	    };
+	  }
+	
+	  _createClass(TabularLegendRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      var smallFormat;
+	      _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), 'preRender', this).call(this);
+	      smallFormat = this.plotter.plotWidth < 320 || this.plotter.options.tiny;
+	      this.enabled = this.useTabularLegend() && !smallFormat;
+	      // If rel-width & tabular legend: dynamic size for left margin, min 80px
+	      if (this.enabled) {
+	        this.margins.bottom = 100; // default
+	        this.margins.left = Math.max(80, Math.floor(this.plotter.plotWidth * 0.2));
+	      }
+	    }
+	  }, {
+	    key: 'prepare',
+	    value: function prepare() {
+	      /** prepare must be called after nvd3 render because we create a 
+	        * time scale from scale domain/range, which are not set initially
+	        * during preRender.
+	        */
+	      var xScale = this.plotter.xScale,
+	
+	      /*
+	      timeScale = d3.time.scale()
+	        .domain(xScale.domain())
+	        .range(xScale.range()),
+	      */
+	      tickVals = this.plotter.tickVals;
+	      // force continuous scale in case of oridinal scale via bar chart:
+	      this.xScale = this.plotter.timeScale;
+	      this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
+	      // column width interval based on sample of first data column, scaled:
+	      this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
+	      this.yMin = this.plotter.yScale(this.data.range[0]);
+	    }
+	  }, {
+	    key: 'clear',
+	    value: function clear() {
+	      // since we cannot use selection.html('') in SVG DOM (no innerHTML), we
+	      // cannot empty, and must remove the legend group, which will be re-added
+	      // in this.render().
+	      this.unloadInteractiveFeatures();
+	      this.plotGroup.selectAll(SEL_LEGEND).remove();
+	    }
+	  }, {
+	    key: 'makeLegendGroup',
+	    value: function makeLegendGroup() {
+	      var legendGroup = this.plotGroup.selectAll(SEL_LEGEND).data([this.data.series]),
+	          legendEnterSelection = legendGroup.enter().append('g').classed(LEGEND_CLASS, true);
+	      this.legendGroup = this.plotGroup.select(SEL_LEGEND);
+	    }
+	  }, {
+	    key: 'setLegendMargins',
+	    value: function setLegendMargins() {
+	      var margins = this.margins,
+	          yTop = this.yMin + margins.top + this.legPad;
+	      this.legendGroup.attr({
+	        transform: 'translate(' + this.leftPad + ', ' + yTop + ')'
+	      });
+	    }
+	  }, {
+	    key: 'makeRow',
+	    value: function makeRow(rowStyle) {
+	      /** make row group and bagkground rect */
+	      var row = this.legendGroup.append('g').classed('upiq-legend-row', true),
+	          rowBgRect = row.selectAll('rect').data([null]).enter().append('rect').classed('upiq-legend-table-row-bg', true);
+	      if (rowStyle.className) {
+	        row.classed(rowStyle.className, true);
+	      }
+	      rowBgRect.attr({
+	        height: 15, // initial height
+	        width: this.xMax + (this.margins.left - this.leftPad),
+	        'fill-opacity': rowStyle['fill-opacity'] || '1.0',
+	        fill: rowStyle.fill || '#999'
+	      });
+	      return row;
+	    }
+	  }, {
+	    key: 'fitRow',
+	    value: function fitRow(row) {
+	      var textHeight = d3.max(row.selectAll('text.upiq-legend-cell-text')[0].map(function (element) {
+	        return element.getBoundingClientRect().height;
+	      })),
+	          cellPadding = this.cellPadding,
+	          rowPadding = this.rowPadding,
+	          cellHeight = textHeight + cellPadding.top + cellPadding.bottom,
+	          rowHeight = cellHeight + rowPadding.top + rowPadding.bottom,
+	          rowBgRect = row.select('rect.upiq-legend-table-row-bg');
+	      // TODO GET MAX HEIGHT
+	      rowBgRect.attr({
+	        height: rowHeight,
+	        width: this.xMax + (this.margins.left - this.leftPad)
+	      });
+	      return rowHeight;
+	    }
+	  }, {
+	    key: 'drawCells',
+	    value: function drawCells(row, cellData, cellStyle) {
+	      var xOffset = this.margins.left,
+	          cellGroupClass = 'upiq-legend-table-cell',
+	          selectCellGroup = 'g.' + cellGroupClass,
+	          rowHeight = 30,
+	          textHeight,
+	          cellHeight,
+	          cellPadding = this.cellPadding,
+	          cellID = function cellID(d) {
+	        return 'cell-' + (0, _utils.uuid4)();
+	      },
+	          minTextSize = 4,
+	          computedTextSize = this.plotter.baseFontSize * 0.65,
+	          defaultTextSize = Math.max(computedTextSize, minTextSize),
+	          // px
+	      textWeight = defaultTextSize > 8 ? 'bold' : 'normal';
+	
+	      // adjust text size for bold/non-bold:
+	      defaultTextSize *= textWeight === 'bold' ? 1.0 : 1.1;
+	
+	      row.selectAll(selectCellGroup).data(cellData).enter().append('g').classed(cellGroupClass, true).attr({
+	        'data-timestamp': function dataTimestamp(d) {
+	          return d.stamp;
+	        },
+	        transform: function transform(cellPosition) {
+	          return 'translate(' + cellPosition.x + ', ' + cellPosition.y + ')';
+	        }
+	      }).each(function (d, i) {
+	        var cellGroup = d3.select(this);
+	        if (d.className) {
+	          cellGroup.classed(d.className, true);
+	        }
+	      });
+	
+	      // make defs for group, then add a clip path with rect same as cell bg
+	      row.selectAll(selectCellGroup).append('defs').append('clipPath').classed('groupClip', true) // see note [1] below
+	      .attr({
+	        id: cellID
+	      }).append('rect').attr({
+	        x: 0,
+	        y: 0,
+	        width: function width(cellPosition) {
+	          return cellPosition.width + 2;
+	        },
+	        height: rowHeight });
+	
+	      /* NOTE [1]: webkit/blink selector bug makes it impossible to select
+	       *            clipPath element or any other camelCase element by tagName;
+	       *            thus we must use a class attribute.
+	       *
+	       *  Appears to be long-standing bug with no resolution for clients we
+	       *  must support, so this workaround is here for a good long while...
+	       *
+	       *  Ref: 
+	       *  https://code.google.com/p/chromium/issues/detail?id=237435
+	       *  https://bugs.webkit.org/show_bug.cgi?id=83438
+	       *
+	       */
+	
+	      // initial, will be sized to fit...
+	      row.selectAll(selectCellGroup).attr({
+	        'clip-path': function clipPath() {
+	          var cellGroup = d3.select(this),
+	              cPath = cellGroup.select('defs .groupClip');
+	          return 'url(#' + cPath.attr('id') + ')';
+	        }
+	      });
+	
+	      // make bg rects in each group, with width
+	      row.selectAll(selectCellGroup).append('rect').classed('upiq-legend-table-cell-bg', true).attr({
+	        x: 0,
+	        y: 0,
+	        width: function width(cellPosition) {
+	          return cellPosition.width;
+	        },
+	        height: rowHeight, // initial, will be sized to fit...
+	        fill: cellStyle.fill || '#d0e9d9',
+	        'fill-opacity': cellStyle['fill-opacity'] || '1.0',
+	        stroke: cellStyle.stroke
+	      });
+	
+	      // make text elements, centered:
+	      row.selectAll(selectCellGroup).each(function (data, i) {
+	        var group = d3.select(this);
+	        group.append('text').classed('upiq-legend-cell-text', true).classed('noValue', function (d) {
+	          return d.text === '--';
+	        }).classed('nullValue', function (d) {
+	          return d.text === 'N/A';
+	        }).text(function (d) {
+	          return d.text;
+	        }).call(_utils.d3textWrap, data.width, 0).attr({
+	          x: 0,
+	          y: cellPadding.top,
+	          lengthAdjust: 'spacingAndGlyphs',
+	          height: rowHeight
+	        }).style({
+	          'text-anchor': 'middle',
+	          'font-family': 'Arial',
+	          'font-weight': textWeight,
+	          'font-size': function fontSize(d) {
+	            var subtle = d.text === 'N/A' || d.text === '--',
+	                size = subtle ? defaultTextSize * 0.8 : defaultTextSize;
+	            return '' + size + 'px';
+	          },
+	          'fill': function fill(d) {
+	            return d.color || cellStyle.textColor || '#000';
+	          }
+	        }).selectAll('tspan').attr({
+	          x: data.width / 2.0,
+	          dy: '' + defaultTextSize + 'px',
+	          lengthAdjust: 'spacingAndGlyphs'
+	        });
+	      });
+	
+	      textHeight = d3.max(row.selectAll('text.upiq-legend-cell-text')[0].map(function (element) {
+	        return element.getBoundingClientRect().height;
+	      }));
+	
+	      cellHeight = textHeight + cellPadding.top + cellPadding.bottom;
+	
+	      // set height of cell bg rect and the clipping path rect
+	      // (must select by classname, due to blink/webkit bug, see note [1] above)
+	      row.selectAll('.upiq-legend-table-cell-bg, .groupClip rect').attr({
+	        height: cellHeight
+	      });
+	
+	      // dynamically size text length to fit cells, IFF too wide:
+	      row.selectAll('text, tspan')[0].forEach(function (element) {
+	        var selected = d3.select(element),
+	            desiredWidth = selected.datum().width * 1.05,
+	            bRect = element.getBoundingClientRect(),
+	            widthForgiveness = desiredWidth < 16 ? 1.6 : 1.25,
+	            textWidth = bRect.width;
+	        if (textWidth > desiredWidth * widthForgiveness) {
+	          selected.attr({
+	            textLength: desiredWidth
+	          });
+	        }
+	        if (element.tagName === 'text' && textHeight > bRect.height * 1.7) {
+	          // other cells are multi-line, and this is likely single-line:
+	          selected.attr({
+	            y: textHeight > bRect.height ? textHeight / 4.0 : 1
+	          });
+	        }
+	      }, this);
+	
+	      // transparent opacity for bg of legend label (first) cell:
+	      d3.select(row.selectAll('.upiq-legend-table-cell-bg')[0][0]).attr({
+	        'fill-opacity': 0.0
+	      });
+	
+	      d3.select(row.selectAll('.upiq-legend-cell-text')[0][0]).attr({
+	        textLength: null
+	      }).style({
+	        'font-size': '' + defaultTextSize * 0.9 + 'px'
+	      });
+	    }
+	  }, {
+	    key: 'renderLegendRow',
+	    value: function renderLegendRow(cellData, rowStyle, cellStyle) {
+	      var row = this.makeRow(rowStyle || {}),
+	          rowHeight;
+	      this.drawCells(row, cellData, cellStyle);
+	      rowHeight = this.fitRow(row);
+	      return [row, rowHeight];
+	    }
+	  }, {
+	    key: 'rowCellData',
+	    value: function rowCellData(textGetter) {
+	      /** return Array of cellInfo objects each containing content and computed
+	       *      scaled layout/position data for row cells; text content is
+	       *      obtained by calling textGetter with a key (usually date); this
+	       *      iterates through all periods in plot using specified frequency,
+	       *      thus creating cells for 
+	       *
+	       *      Constraint: textGetter function must return an empty string if
+	       *      there is no text for the period/key; textGetter may also return
+	       *      strings such as 'N/A' for sentinel values depending upon what is
+	       *      appropriate.
+	       *
+	       *      This function should be usable to obtain basic cell positioning
+	       *      and content for both header and content rows.
+	       */
+	      if (typeof textGetter !== 'function') {
+	        throw new Error('rowCellData not passed textGetter function');
+	      }
+	
+	      var _data$domain = _slicedToArray(this.data.domain, 2);
+	
+	      var start = _data$domain[0];
+	      var end = _data$domain[1];
+	      var timePeriods = this.plotter.timeRange(start, end);
+	      var timeStep = this.plotter.timeStep;
+	      var timeScale = this.xScale;
+	      var firstWidth = null; // set once in first run of closure below
+	      var scaleDomain = timeScale.domain();
+	      var barChart = this.plotter.type === 'bar';
+	      var leftPadBar = Math.floor(timeScale.range().slice(-1)[0] / 200.0);
+	      var groupSpacing = barChart ? this.plotter.chart.groupSpacing() : 0.0;
+	      var padDenominator = 2 + groupSpacing * 0.2;
+	      var additionalPad = this.plotter.type === 'line' ? 0 : (timeScale(this.plotter.timeOffset(scaleDomain[0], +0.875).valueOf()) - timeScale(scaleDomain[0])) / padDenominator;
+	      var xOffset = Math.round(this.margins.left + additionalPad);
+	      var dataStart = this.data.domain[0];
+	      var defInterval = this.plotter.interval;
+	      var quarterly = this.plotter.interval === 'month' && timeStep === 3;
+	      var weekly = this.plotter.weekdays.indexOf(this.plotter.interval) !== -1;
+	      var interval = quarterly ? 'quarter' : weekly ? 'week' : defInterval;
+	      var cellInfo = timePeriods.map(function (d) {
+	        var periodStart = d,
+	            periodEnd = moment.utc(d).endOf(interval).toDate(),
+	            startX = Math.round(timeScale(periodStart.valueOf())),
+	            endX = Math.round(timeScale(periodEnd.valueOf())),
+	            rectWidth = Math.round(endX - startX),
+	            groupLeft = Math.round(timeScale(d.valueOf()) - 5);
+	        firstWidth = firstWidth || rectWidth;
+	        groupLeft = Math.round(groupLeft - firstWidth / 2.0);
+	        groupLeft -= barChart ? leftPadBar : 0;
+	        return {
+	          key: d,
+	          width: rectWidth - 2,
+	          x: xOffset + groupLeft,
+	          y: 0,
+	          stamp: d.toISOString(),
+	          text: textGetter(d) || ''
+	        };
+	      }, this);
+	      return cellInfo;
+	    }
+	  }, {
+	    key: 'headerTableData',
+	    value: function headerTableData() {
+	      /** return Array of cellInfo objects each containing content and computed
+	       *      scaled layout/position data for column headings (axis labels).
+	       */
+	      var data = this.data,
+	          axisTitle = this.data.x_label,
+	          legendLabelCell = {
+	        x: 5,
+	        y: 0,
+	        width: this.plotter.margins.left - 10,
+	        color: '#aaa',
+	        className: 'upiq-legend-xaxis-title',
+	        text: axisTitle ? axisTitle + ' →' : ''
+	      },
+	          textGetter = function textGetter(d) {
+	        return data.axisLabel(d).label || '';
+	      };
+	      return [legendLabelCell].concat(this.rowCellData(textGetter));
+	    }
+	  }, {
+	    key: 'seriesRowData',
+	    value: function seriesRowData(series) {
+	      var baseData = series.data,
+	          // d3.map (pseudo-ES6-Map) of DataPoint
+	      infoMap = {},
+	          // ms (implicitly cast) key/name to datapoint
+	      noValue = '--',
+	          legendLabelCell = {
+	        x: 5,
+	        y: 0,
+	        width: this.plotter.margins.left - 10,
+	        className: 'upiq-legend-series-title',
+	        text: series.title
+	      },
+	          textGetter = function textGetter(d) {
+	        var ms = d.valueOf(),
+	            format = function format(v) {
+	          return v === null ? 'N/A' : d3.format(',.1f')(v);
+	        },
+	            text;
+	        if (Object.keys(infoMap).indexOf(ms.toString()) === -1) {
+	          return noValue;
+	        }
+	        return format(infoMap[ms].value);
+	      };
+	      baseData.forEach(function (key, point) {
+	        infoMap[key] = point;
+	      }, this);
+	      return [legendLabelCell].concat(this.rowCellData(textGetter));
+	    }
+	  }, {
+	    key: 'renderLegendRows',
+	    value: function renderLegendRows() {
+	      var headerData = this.headerTableData(),
+	          color = _utils.ColorTool,
+	          headerRowStyle = {
+	        fill: '#eee',
+	        'fill-opacity': '0.5',
+	        className: 'upiq-legend-header-row'
+	      },
+	          headerCellStyle = {
+	        fill: '#eee',
+	        'fill-opacity': '0',
+	        textColor: '#666'
+	      },
+	          baseRowStyle = {
+	        fill: '#cccccc'
+	      },
+	          baseCellStyle = {
+	        fill: '#ffffff',
+	        textColor: '#000'
+	      },
+	          top = 0,
+	          row,
+	          rowHeight;
+	
+	      var _renderLegendRow = this.renderLegendRow(headerData, headerRowStyle, headerCellStyle);
+	
+	      var _renderLegendRow2 = _slicedToArray(_renderLegendRow, 2);
+	
+	      row = _renderLegendRow2[0];
+	      rowHeight = _renderLegendRow2[1];
+	
+	      row.attr({
+	        transform: 'translate(0,' + top + ')'
+	      });
+	      top += rowHeight;
+	      this.data.series.forEach(function (series) {
+	        var rowData = this.seriesRowData(series),
+	            cellBgColor = color.lighten(series.color, 0.2),
+	            firstCellColor = series.color,
+	            textColor = color.isDark(cellBgColor) ? '#fff' : '#000',
+	            rowStyle = Object.create(baseRowStyle),
+	            cellStyle = Object.create(baseCellStyle),
+	            row,
+	            rowHeight;
+	        rowStyle.fill = series.color;
+	        cellStyle.fill = cellBgColor;
+	        cellStyle.textColor = textColor;
+	        cellStyle.first = Object.create(cellStyle); // clone base, 1st col
+	        cellStyle.first.fill = firstCellColor; // ...override bgcolor
+	
+	        var _renderLegendRow3 = this.renderLegendRow(rowData, rowStyle, cellStyle);
+	
+	        var _renderLegendRow32 = _slicedToArray(_renderLegendRow3, 2);
+	
+	        row = _renderLegendRow32[0];
+	        rowHeight = _renderLegendRow32[1];
+	
+	        row.attr({
+	          transform: 'translate(0,' + top + ')'
+	        });
+	        top += rowHeight;
+	      }, this);
+	    }
+	  }, {
+	    key: 'unloadInteractiveFeatures',
+	    value: function unloadInteractiveFeatures() {
+	      /** called by this.clear(), should clear event handling before re-render */
+	    }
+	  }, {
+	    key: 'columnCells',
+	    value: function columnCells(key) {
+	      var rows = this.legendGroup.selectAll('g.upiq-legend-row'),
+	          columnCells = [];
+	      rows.each(function (d, i) {
+	        var row = d3.select(this),
+	            cells = row.selectAll('.upiq-legend-table-cell'),
+	            result = cells[0].filter(function (cell) {
+	          var data = d3.select(cell).data()[0];
+	          return data && data.key && data.key.valueOf() == key.valueOf();
+	        });
+	        columnCells.push(result[0]);
+	      });
+	      return columnCells;
+	    }
+	  }, {
+	    key: 'highlightColumn',
+	    value: function highlightColumn(key) {
+	      var cells = d3.selectAll(this.columnCells(key));
+	      cells.classed('col-highlighted', true);
+	    }
+	  }, {
+	    key: 'clearHighlights',
+	    value: function clearHighlights() {
+	      var cells = this.legendGroup.selectAll('.upiq-legend-table-cell');
+	      cells.classed('col-highlighted', false);
+	    }
+	  }, {
+	    key: 'coordinateEvent',
+	    value: function coordinateEvent(cell, plugin) {
+	      /* coordinate with hover or click plugins, such that hovering or clicking
+	       * in tabular legend has effect on data-point hover/click.
+	       */
+	      var data = cell.data()[0],
+	          key = data ? data.key : null,
+	          tableRow,
+	          seriesIndex,
+	          series;
+	      if (key) {
+	        tableRow = cell[0][0].parentNode;
+	        seriesIndex = this.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
+	        series = this.data.series[seriesIndex];
+	        if (series) {
+	          data = series.data.get(key.valueOf());
+	          if (data) {
+	            data.x = data.key.valueOf();
+	            data.y = data.value;
+	            if (data.y !== null) {
+	              plugin.showOverlay(null, data, series);
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      var self = this,
+	          click = this.plotter.getPlugin('PointClickPlugin'),
+	          hover = self.plotter.getPlugin('PointHoverPlugin'),
+	          table = this.svg.select('g.upiq-legend'),
+	          sCell = 'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text',
+	          cells = this.svg.selectAll(sCell),
+	          cellKey = function cellKey(cell) {
+	        return (cell.data()[0] || {}).key || null;
+	      },
+	          getCell = function getCell(_x4) {
+	        var _again2 = true;
+	
+	        _function2: while (_again2) {
+	          var target = _x4;
+	          _again2 = false;
+	
+	          var parent = target.parentNode,
+	              pClass = parent.getAttribute('class') || '',
+	              isCell = pClass.indexOf('upiq-legend-table-cell') !== -1;
+	          if (isCell) {
+	            return parent;
+	          }
+	          if (parent.tagName === 'svg') {
+	            return null; // prevent inf recurse
+	          }
+	          _x4 = parent;
+	          _again2 = true;
+	          parent = pClass = isCell = undefined;
+	          continue _function2;
+	        }
+	      };
+	      if (!this.enabled) return;
+	      // hover behavior:
+	      table.on('mouseover', function (d, i) {
+	        var rawTarget = d3.event.target,
+	            targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
+	            key;
+	        if (targetCell) {
+	          key = cellKey(targetCell);
+	          if (key) {
+	            if (hover) {
+	              hover.clearOverlays();
+	              self.coordinateEvent(targetCell, hover);
+	            }
+	            self.highlightColumn(key);
+	            self.plotter.highlightX(key); // highlight X tick
+	          }
+	        }
+	      }).on('mouseout', function (d, i) {
+	        if (hover) {
+	          hover.clearOverlays();
+	        }
+	        self.clearHighlights();
+	        self.plotter.clearHighlights();
+	      });
+	      // click behavior:
+	      if (click) {
+	        table.on('click', function (d, i) {
+	          var rawTarget = d3.event.target,
+	              targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
+	              key;
+	          if (targetCell) {
+	            key = cellKey(targetCell);
+	            if (key) {
+	              self.coordinateEvent(targetCell, click);
+	            }
+	          }
+	        });
+	      }
+	    }
+	  }, {
+	    key: '_dailyPostFixups',
+	    value: function _dailyPostFixups() {
+	      var rows = this.legendGroup.selectAll('g.upiq-legend-row');
+	      rows.each(function (d, i) {
+	        var row = d3.select(this);
+	        row.selectAll('g text.noValue').each(function (d, j) {
+	          var cell = d3.select(d3.select(this).node().parentNode);
+	          cell.remove();
+	        });
+	      });
+	    }
+	  }, {
+	    key: '_postRender',
+	    value: function _postRender() {
+	      // adjustments as needed after rendering other bits
+	      var table = this.plotGroup.select(SEL_LEGEND),
+	          rows = this.plotGroup.selectAll('upiq-legend-table-row'),
+	          tableHeight = table[0][0].getBoundingClientRect().height,
+	          gridHeight = this.plotter.gridHeight(),
+	          intermediarySpacing = (this.margins.top || 10) + 10,
+	          tableOrigin = gridHeight + intermediarySpacing,
+	          plotHeight = tableHeight + gridHeight + intermediarySpacing,
+	          plotBottomMargin = 15;
+	      // size plotCore div with enough space for legend:
+	      this.plotCore.style({
+	        height: '' + plotHeight + 'px'
+	      });
+	      table.attr({
+	        transform: 'translate(5, ' + tableOrigin + ')'
+	      });
+	      if (this.plotter.interval === 'day') {
+	        this._dailyPostFixups();
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.prepare();
+	      this.makeLegendGroup();
+	      this.renderLegendRows();
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      if (this.enabled) {
+	        // post-render adjustments (e.g. position fully rendered table)
+	        this._postRender();
+	      }
+	    }
+	  }, {
+	    key: 'useTabularLegend',
+	    value: function useTabularLegend() {
+	      return this.data.legend_placement === 'tabular';
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      if (!this.enabled) {
+	        return; // plugin not applicable to plot
+	      }
+	      this.clear();
+	      this.render();
+	    }
+	  }]);
+	
+	  return TabularLegendRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.TabularLegendRenderer = TabularLegendRenderer;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var BaseRenderingPlugin = (function () {
+	  function BaseRenderingPlugin(plotter) {
+	    _classCallCheck(this, BaseRenderingPlugin);
+	
+	    this.plotter = plotter;
+	    this.data = plotter.data;
+	    this.plotDiv = plotter.plotDiv;
+	    this.plotCore = plotter.plotCore;
+	    // Note: plotter.svg, scales may be undefined on the plotter at the
+	    //        time of plugin construction; preRender() should re-bind always
+	    this.svg = plotter.svg;
+	    this.xScale = plotter.xScale;
+	    this.yScale = plotter.yScale;
+	    this.enabled = true; // default for all plugins
+	  }
+	
+	  _createClass(BaseRenderingPlugin, [{
+	    key: "preRender",
+	    value: function preRender() {
+	      /** hook to be called after plotter.preRender, for things like plot
+	        * plot size or margin adjustment
+	        */
+	      this.plotCore = this.plotter.plotCore;
+	      this.svg = this.plotter.svg;
+	      this.plotGroup = this.plotter.plotGroup;
+	      this.abovePlotGroup = this.plotter.abovePlotGroup;
+	      this.xScale = this.plotter.xScale;
+	      this.yScale = this.plotter.yScale;
+	      this.margins = this.plotter.margins;
+	    }
+	  }, {
+	    key: "clear",
+	    value: function clear() {}
+	  }, {
+	    key: "prepare",
+	    value: function prepare() {
+	      /** optionally called by render() of a plugin, for late-initialized
+	        * stuff that needs to be done before core rendering, but after the
+	        * core NVD3 chart is rendered (things that cannot be done in preRender).
+	        */
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      this.prepare();
+	    }
+	  }, {
+	    key: "loadInteractiveFeatures",
+	    value: function loadInteractiveFeatures() {
+	      /** to be called only when relevant, called after rendering is complete;
+	        * plugins must unwind any event handling in their clear() method if
+	        * they create interactive features.  This will not be called when 
+	        * core plotter is not in an interactive mode.
+	        */
+	    }
+	  }, {
+	    key: "postRender",
+	    value: function postRender() {
+	      /** post-render hook for after-rendering adjustments */
+	    }
+	  }, {
+	    key: "onComplete",
+	    value: function onComplete() {
+	      /** hook for after completion, should be used sparingly for idemopotent
+	        * actions/notification: ideally should not modify state of plot.
+	        */
+	    }
+	  }, {
+	    key: "update",
+	    value: function update() {
+	      this.clear();
+	      this.render();
+	    }
+	  }]);
+	
+	  return BaseRenderingPlugin;
+	})();
+
+	exports.BaseRenderingPlugin = BaseRenderingPlugin;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _plugin = __webpack_require__(14);
+	
+	var d3 = __webpack_require__(2);
+	var moment = __webpack_require__(3);
+	
+	var PointLabelsRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(PointLabelsRenderer, _BaseRenderingPlugin);
+	
+	  function PointLabelsRenderer(plotter) {
+	    _classCallCheck(this, PointLabelsRenderer);
+	
+	    _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), 'constructor', this).call(this, plotter);
+	  }
+	
+	  _createClass(PointLabelsRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), 'preRender', this).call(this);
+	      /** after div is sized, we need to possibly adjust for label headroom */
+	      if (this._needsLabelHeadroom()) {
+	        this.margins.top = 5 + Math.floor(this.plotter.plotHeight / 15);
+	      }
+	    }
+	  }, {
+	    key: '_needsLabelHeadroom',
+	    value: function _needsLabelHeadroom() {
+	      var data = this.data,
+	          considered = data.series.filter(data.showLabels, data),
+	          highValued = function highValued(series) {
+	        var values = [];
+	        series.data.forEach(function (k, point) {
+	          values.push(point.value || 0);
+	        });
+	        return Math.max.apply(null, values) > 90;
+	      };
+	      considered = considered.filter(highValued);
+	      return !!considered.length; // high-val labeled series gets room
+	    }
+	  }, {
+	    key: 'scalePoint',
+	    value: function scalePoint(info) {
+	      /** return scaled point (plain) object */
+	      var point = info[0],
+	          series = info[1],
+	          scaled = Object.create(point),
+	          // wrap with orig point as proto
+	      timeStep = this.plotter.timeStep,
+	          defInterval = this.plotter.interval,
+	          quarterly = defInterval === 'month' && timeStep === 3,
+	          weekly = this.plotter.weekdays.indexOf(defInterval) !== -1,
+	          interval = quarterly ? 'quarter' : weekly ? 'week' : defInterval,
+	          x = point.key.valueOf(),
+	          periodEnd = moment.utc(x).endOf(interval).toDate(),
+	          endX = Math.round(this.xScale(periodEnd.valueOf())),
+	          width = endX - Math.round(this.xScale(x)),
+	          barWidth = width / this.data.series.length,
+	          barOffset = series.position * barWidth * 0.65 + barWidth * 0.35,
+	          y = point.value;
+	      scaled.x = this.xScale(x);
+	      scaled.y = this.yScale(y);
+	      if (this.plotter.data.chart_type === 'bar') {
+	        scaled.x += barOffset;
+	      }
+	      // default x2, y2 as label coordinate (default is used by bar chart, and
+	      // is above the marker data x,y):
+	      scaled.x2 = scaled.x + 5;
+	      scaled.y2 = scaled.y - Math.floor(this.plotter.plotWidth / 90);
+	      return scaled;
+	    }
+	  }, {
+	    key: 'lineSlope',
+	    value: function lineSlope(pointA, pointB) {
+	      /** slope between pointA and pointB, where points have attrs x, y */
+	      var rise, run;
+	      if (pointA === null || pointB === null) {
+	        // constant slope: in effect means horizontal tangent line for any
+	        // point that has no previous, next points in series.
+	        return 0;
+	      }
+	      rise = (pointB.y - pointA.y) * -1; // *-1 compensates for svg origin@top
+	      run = pointB.x - pointA.x;
+	      return rise / run;
+	    }
+	  }, {
+	    key: 'pointAngles',
+	    value: function pointAngles(point, prev, next) {
+	      /** 
+	        * return array of: tangent line angle, perpendiculat angle, and
+	        * inflection angle
+	        */
+	      var slope = this.lineSlope,
+	          slopeA = prev === null ? slope(point, next) : slope(prev, point),
+	          slopeB = next === null ? slope(prev, point) : slope(point, next),
+	          avgSlope = (slopeA + slopeB) / 2.0,
+	          perpendicularSlope = -1 / avgSlope,
+	          tanLnAngle = Math.atan(avgSlope),
+	          positioningAngle = Math.atan(perpendicularSlope),
+	          inflectionAngle = Math.PI - Math.abs(Math.atan(slopeB)) - Math.abs(Math.atan(slopeA));
+	      return [tanLnAngle, positioningAngle, inflectionAngle];
+	    }
+	  }, {
+	    key: 'scaledPoints',
+	    value: function scaledPoints(series) {
+	      var points = [],
+	          scaledPoints = [],
+	          gridZero = this.plotter.gridHeight() + this.margins.top,
+	          textSize = this.plotter.baseFontSize * 0.75;
+	      series.data.forEach(function (k, point) {
+	        if (point.value !== null) {
+	          points.push([point, series]);
+	        }
+	      }); // map to Array of points, filtering out null-valued
+	      scaledPoints = points.map(this.scalePoint, this);
+	      if (this.plotter.type === 'line') {
+	        scaledPoints.forEach(function (point, idx, arr) {
+	          /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
+	            * line to point, which should look better than simply displaying
+	            * above a point marker (insofar as chances of text overlapping
+	            * line-drawing for same series are minimized).
+	            */
+	          var prev = idx === 0 ? null : arr[idx - 1];
+	          var next = idx === arr.length - 1 ? null : arr[idx + 1];
+	
+	          var _pointAngles = this.pointAngles(point, prev, next);
+	
+	          var _pointAngles2 = _slicedToArray(_pointAngles, 3);
+	
+	          var tanAngle = _pointAngles2[0];
+	          var posAngle = _pointAngles2[1];
+	          //tanLnSlope = this.tangentLineSlope(point, prev, next),
+	          //perpendicularSlope = -1 / tanLnSlope,
+	
+	          var inflectionAngle = _pointAngles2[2];
+	          // angle multipler, *-1 if acute angle:
+	          var acute = inflectionAngle < Math.PI / 2;
+	          var downward = prev && next && prev.y < point.y && next.y < point.y;
+	          var mult = acute && downward ? -1 : 1;
+	          // text is wider than tall, so perceived hypotenuse difference
+	          // from marker to text should be shorter when tanLnSlope is
+	          // less than 1 (45°):
+	          var textAbove = !downward && Math.abs(tanAngle) < Math.PI / 4;
+	          var baseDistance = textAbove ? 60 : 52;
+	          var distanceDenominator = downward && acute ? 33 : baseDistance;
+	          // ideal hypotenuse distance:
+	          var c = Math.floor(this.plotter.plotWidth / distanceDenominator);
+	          // opposite leg, delta for Y
+	          var a = mult * c * Math.sin(posAngle);
+	          // adjacent leg, delta for X
+	          var b = mult * c * Math.cos(posAngle);
+	          // if tangent line has negative slope (going down left-to-right)
+	          // then we want to multiply a,b each by -1
+	          if (tanAngle < 0) {
+	            b *= -1;
+	            a *= -1;
+	          }
+	          point.x2 = point.x - b;
+	          point.y2 = point.y + a;
+	          if (point.y2 > gridZero || point.y2 < 0) {
+	            point.hidden = true;
+	          } else if (point.y2 > gridZero - textSize * 2) {
+	            point.y2 = point.y - a;
+	          }
+	        }, this);
+	      }
+	      return scaledPoints;
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.plotGroup.selectAll('g.upiq-point-labels').data([null]),
+	          gridOffsetX = this.margins.left,
+	          gridOffsetY = this.margins.top;
+	      group.enter().append('g').classed('upiq-point-labels', true).attr({
+	        transform: 'translate(' + gridOffsetX + ', ' + gridOffsetY + ')'
+	      });
+	      return group;
+	    }
+	  }, {
+	    key: 'renderPoint',
+	    value: function renderPoint(point, seriesGroup, series) {
+	      var format = function format(v) {
+	        return v === null ? '' : d3.format(',.1f')(v);
+	      },
+	          seriesIdx = series.position,
+	          color = series.color,
+	          ct = _utils.ColorTool,
+	          yOffset = Math.floor(this.plotter.plotWidth / 60);
+	      // empty label? no element!
+	      if (point.value === null) {
+	        return;
+	      }
+	      // adjust color lighter or darker to contrast with line:
+	      color = ct.isDark(color) ? ct.lighten(color, 0.5) : ct.darken(color, 0.5);
+	      seriesGroup.append('text').classed('upiq-point-label point-label-' + seriesIdx, true).attr({
+	        'text-anchor': 'middle',
+	        x: point.x2,
+	        y: point.y2
+	      }).style({
+	        fill: color
+	      }).text(format(point.value));
+	    }
+	  }, {
+	    key: 'renderSeries',
+	    value: function renderSeries(series, group) {
+	      var _this = this;
+	
+	      var scaledPoints = this.scaledPoints(series),
+	          seriesGroup = group.append('g').classed('upiq-series-labels', true);
+	      seriesGroup.attr({
+	        fill: series.color,
+	        'font-family': 'Arial Narrow',
+	        'font-size': '75%' // % of this.plotter.baseFontSize implied
+	      }).style({
+	        fill: series.color
+	      });
+	      scaledPoints.filter(function (p) {
+	        return p.hidden !== true;
+	      }).forEach(function (p) {
+	        return _this.renderPoint(p, seriesGroup, series);
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      var considered = this.data.series.filter(function (s) {
+	        return _this2.data.showLabels(s);
+	      }),
+	          group = this.mkGroup(),
+	          tickVals = this.plotter.tickVals;
+	      // force continuous scale in case of oridinal scale via bar chart:
+	      this.xScale = this.plotter.timeScale;
+	      this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
+	      // column width interval based on sample of first data column, scaled:
+	      this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
+	      if (this.plotter.options.tiny) return;
+	      considered.forEach(function (series) {
+	        this.renderSeries(series, group);
+	      }, this);
+	    }
+	  }]);
+	
+	  return PointLabelsRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.PointLabelsRenderer = PointLabelsRenderer;
+	//positioningAngle = Math.atan(perpendicularSlope),
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var d3 = __webpack_require__(2);
+	var moment = __webpack_require__(3);
+	
+	var TrendLineRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(TrendLineRenderer, _BaseRenderingPlugin);
+	
+	  function TrendLineRenderer(plotter) {
+	    _classCallCheck(this, TrendLineRenderer);
+	
+	    _get(Object.getPrototypeOf(TrendLineRenderer.prototype), 'constructor', this).call(this, plotter);
+	    // blacklist trident from mid-markers, due to bug:
+	    //  http://stackoverflow.com/a/21727740/835961
+	    this.showMarkers = window.navigator.userAgent.indexOf('Trident') === -1;
+	  }
+	
+	  _createClass(TrendLineRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(TrendLineRenderer.prototype), 'preRender', this).call(this);
+	      this.plotWidth = this.plotter.plotWidth;
+	    }
+	  }, {
+	    key: 'scaleTrendLine',
+	    value: function scaleTrendLine(line) {
+	      /** given line coodinates in unscaled x1,y1,x2,y2 (object), return
+	        * object with scaled respective coordinate values.
+	        */
+	      var r = {
+	        x1: this.plotter.timeScale(line.x1),
+	        y1: this.yScale(line.y1),
+	        x2: this.plotter.timeScale(line.x2),
+	        y2: this.yScale(line.y2),
+	        trend_color: line.trend_color,
+	        trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
+	      },
+	          decline = r.y1 > r.y2;
+	      // slope on normal axis, not top-down SVG coordinate system:
+	      r.slope = -1 * (r.y2 - r.y1) / (r.x2 - r.x1);
+	      r.slope = decline ? -1 * r.slope : r.slope;
+	      return r;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
+	
+	      var considered = this.data.series.filter(function (s) {
+	        return !!s.show_trend;
+	      }),
+	          lines = considered.map(function (s) {
+	        return _this.data.fittedTrendline(s);
+	      }, this),
+	          scaledLines = lines.map(this.scaleTrendLine, this),
+	          firstLine = scaledLines.length ? scaledLines[0] : null,
+	          slope = firstLine ? firstLine.slope : 0,
+	          markerRotation = -1 * Math.atan(slope) * (180 / Math.PI),
+	          gridOffsetX = this.margins.left,
+	          gridOffsetY = this.margins.top,
+	          lineFn = d3.svg.line().x(function (d) {
+	        return d.x;
+	      }).y(function (d) {
+	        return d.y;
+	      }).interpolate('linear'),
+	          midMarkers = this.showMarkers,
+	          group;
+	      if (!considered) {
+	        return; // no trendlines!
+	      }
+	
+	      group = this.plotGroup.append('g').classed('upiq-trendlines', true).attr({
+	        transform: 'translate(' + gridOffsetX + ', ' + gridOffsetY + ')',
+	        opacity: '0.5'
+	      });
+	
+	      scaledLines.forEach(function (line, idx) {
+	        var markerCount = Math.floor((line.point_count || 12) / 2),
+	            data = [],
+	            x1 = line.x1,
+	            y1 = line.y1,
+	            x2 = line.x2,
+	            y2 = line.y2,
+	            rise = y2 - y1,
+	            run = x2 - x1,
+	            slope = rise / run,
+	            markerRotation = Math.atan(slope) * (180 / Math.PI);
+	
+	        this.plotGroup.select('defs').append('marker').attr({
+	          id: 'trendmarker-' + idx,
+	          viewBox: '0 0 10 10',
+	          markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+	          markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+	          orient: markerRotation,
+	          refX: 0,
+	          refY: 5
+	        }).append('path').attr({
+	          d: 'M 0 0 L 10 5 L 0 10 L 0 0 Z',
+	          fill: line.trend_color,
+	          opacity: 0.5
+	        });
+	
+	        data.push({ x: x1, y: y1 });
+	        d3.range(1, markerCount + 1).forEach(function (i) {
+	          data.push({
+	            x: x2 - run * i / markerCount,
+	            y: y2 - rise * i / markerCount
+	          });
+	        });
+	        data.push({ x: x2, y: y2 });
+	        group.append('path').attr({
+	          d: lineFn(data),
+	          stroke: line.trend_color,
+	          'stroke-width': line.trend_width,
+	          'marker-mid': midMarkers ? 'url(#trendmarker-' + idx + ')' : undefined,
+	          fill: 'none'
+	        });
+	      }, this);
+	    }
+	  }]);
+	
+	  return TrendLineRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.TrendLineRenderer = TrendLineRenderer;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _utils = __webpack_require__(6);
+	
+	var _plugin = __webpack_require__(14);
+	
+	// classname and selector globals:
+	var d3 = __webpack_require__(2);
+	var moment = __webpack_require__(3);
+	
+	var LINESWRAP_CLASSNAME = 'nv-linesWrap',
+	    BARWRAP_CLASSNAME = 'nv-barsWrap';
+	
+	var GoalLineRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(GoalLineRenderer, _BaseRenderingPlugin);
+	
+	  function GoalLineRenderer(plotter) {
+	    _classCallCheck(this, GoalLineRenderer);
+	
+	    _get(Object.getPrototypeOf(GoalLineRenderer.prototype), 'constructor', this).call(this, plotter);
+	    this.group = null;
+	  }
+	
+	  _createClass(GoalLineRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(GoalLineRenderer.prototype), 'preRender', this).call(this);
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var baseGroup = this.svg.select(this.plotter.nvType + ' > g'),
+	          group = baseGroup.select('g.nvd3.nv-distribution'),
+	          type = this.data.chart_type || 'line',
+	          isLine = type === 'line',
+	          wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
+	      if (group.empty()) {
+	        group = baseGroup.insert('g', '.' + wrapType).classed('nvd3 nv-distribution', true);
+	      }
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var goalValue = this.data.goal,
+	          hasGoal = !!goalValue,
+	          goalColor = this.data.goal_color || '#ff0000',
+	          timeScale = this.plotter.timeScale,
+	          xMax = timeScale(timeScale.domain()[1].valueOf()),
+	          yPos = Math.floor(this.yScale(goalValue)),
+	          goal,
+	          line,
+	          text;
+	      if (!hasGoal) return;
+	      this.mkGroup();
+	      // JOIN goal group (contains line, text) selection to singular null-data
+	      goal = this.group.selectAll('g.nv-dist.nv-goal').data([null]);
+	      // enter JOIN, set group to use goal color, add line, config coords:
+	      line = goal.enter().append('g').attr('class', 'nv-dist nv-goal').style('stroke', goalColor).append('line').classed('nv-goal-line', true).attr({
+	        x1: 0,
+	        y1: yPos,
+	        x2: xMax,
+	        y2: yPos
+	      });
+	      // add text with explicit coordinates
+	      text = goal.append('text').classed('nv-goal-lbl', true).text('Goal: ' + goalValue).style({
+	        fill: goalColor
+	      }).attr({
+	        'text-anchor': 'start',
+	        'fill-opacity': 0, // can be overridden in CSS
+	        'x': 3,
+	        'y': yPos - 3
+	      });
+	    }
+	  }, {
+	    key: 'clear',
+	    value: function clear() {
+	      if (this.group) {
+	        this.group.remove();
+	      }
+	    }
+	  }]);
+	
+	  return GoalLineRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.GoalLineRenderer = GoalLineRenderer;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	// https://goo.gl/RAfPKC
+	
+	var _plugin = __webpack_require__(14);
+	
+	var _utils = __webpack_require__(6);
+	
+	var pathSegPolyfill = __webpack_require__(19);
+	var ContinuityLinesPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(ContinuityLinesPlugin, _BaseRenderingPlugin);
+	
+	  function ContinuityLinesPlugin() {
+	    _classCallCheck(this, ContinuityLinesPlugin);
+	
+	    _get(Object.getPrototypeOf(ContinuityLinesPlugin.prototype), 'constructor', this).apply(this, arguments);
+	  }
+	
+	  _createClass(ContinuityLinesPlugin, [{
+	    key: 'extractPathLineSegments',
+	    value: function extractPathLineSegments(data) {
+	      /** parse SVG path data stream into Array or segments */
+	      var moveToInstruction = /[Mm]/,
+	          lineToInstruction = /[Ll]/,
+	          splitLine = function splitLine(v) {
+	        return v.split(lineToInstruction);
+	      },
+	
+	      //isLine = v => (splitLine(v).length > 1),
+	      isLine = function isLine(v) {
+	        return v !== '';
+	      },
+	          commaSplit = function commaSplit(v) {
+	        return v.split(',');
+	      },
+	          mkPoint = function mkPoint(v) {
+	        var _commaSplit = commaSplit(v);
+	
+	        var _commaSplit2 = _slicedToArray(_commaSplit, 2);
+	
+	        var x = _commaSplit2[0];
+	        var y = _commaSplit2[1];
+	
+	        return {
+	          x: x,
+	          y: y
+	        };
+	      },
+	          toPoints = function toPoints(segment) {
+	        return splitLine(segment).map(mkPoint);
+	      },
+	          segments = data.split(moveToInstruction).filter(isLine).map(toPoints);
+	      return segments;
+	    }
+	  }, {
+	    key: 'missingLines',
+	    value: function missingLines(data) {
+	      /** given an Array of line segments in a path, return missing connector
+	        * lines as SVG path data, if and only if appropriate (otherwise, '').
+	        */
+	      var pathData = '';
+	      if (data.length < 2) return pathData; // no segments need connection
+	      data.forEach(function (segment, idx) {
+	        var next = data[idx + 1],
+	            pointA,
+	            pointB;
+	        if (next === undefined) return; // end of sequence
+	        pointA = segment.slice(-1).pop();
+	        pointB = next[0];
+	        pathData += 'M' + pointA.x + ',' + pointA.y + 'L' + pointB.x + ',' + pointB.y;
+	      }, this);
+	      return pathData;
+	    }
+	  }, {
+	    key: 'renderMissing',
+	    value: function renderMissing(group, missing, behavior, series) {
+	      var useDashes = behavior === 'dashed',
+	          path = group.append('path').attr({
+	        d: missing
+	      }).classed('nv-line upiq-continuation-line', true);
+	      if (useDashes) {
+	        path.style({
+	          'stroke-dasharray': '4 4',
+	          stroke: _utils.ColorTool.lighten(series.color, 0.33)
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'adjustLines',
+	    value: function adjustLines(series) {
+	      var idx = series.position,
+	          classname = 'nv-series-' + idx,
+	          baseSel = '.nv-linesWrap g.nv-line .nv-groups .nv-group.' + classname,
+	          baseGroup = this.svg.select(baseSel),
+	          path = baseGroup.select('path.nv-line'),
+	          segList = path[0][0].pathSegList,
+	          segLen = segList.numberOfItems,
+	          segments = [],
+	          data,
+	          missing,
+	          i,
+	          behavior = series.break_lines; // either 'solid' or 'dashed'
+	      for (i = 0; i < segLen; i++) {
+	        segments.push(segList.getItem(i));
+	      }
+	      data = this.extractPathLineSegments(segments.map(function (s) {
+	        return '' + s.pathSegTypeAsLetter + s.x + ',' + s.y;
+	      }, this).join(''));
+	      missing = this.missingLines(data);
+	      if (missing) {
+	        this.renderMissing(baseGroup, missing, behavior, series);
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
+	
+	      var considered = this.data.series.filter(function (s) {
+	        return s.break_lines !== 'hidden';
+	      });
+	      if (this.plotter.type !== 'line') return;
+	      considered.forEach(function (series) {
+	        return _this.adjustLines(series);
+	      });
+	    }
+	  }]);
+	
+	  return ContinuityLinesPlugin;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.ContinuityLinesPlugin = ContinuityLinesPlugin;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	// SVGPathSeg API polyfill
+	// https://github.com/progers/pathseg
+	//
+	// This is a drop-in replacement for the SVGPathSeg and SVGPathSegList APIs that were removed from
+	// SVG2 (https://lists.w3.org/Archives/Public/www-svg/2015Jun/0044.html), including the latest spec
+	// changes which were implemented in Firefox 43 and Chrome 46.
+	
+	(function() { "use strict";
+	    if (!("SVGPathSeg" in window)) {
+	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGPathSeg
+	        window.SVGPathSeg = function(type, typeAsLetter, owningPathSegList) {
+	            this.pathSegType = type;
+	            this.pathSegTypeAsLetter = typeAsLetter;
+	            this._owningPathSegList = owningPathSegList;
+	        }
+	
+	        SVGPathSeg.prototype.classname = "SVGPathSeg";
+	
+	        SVGPathSeg.PATHSEG_UNKNOWN = 0;
+	        SVGPathSeg.PATHSEG_CLOSEPATH = 1;
+	        SVGPathSeg.PATHSEG_MOVETO_ABS = 2;
+	        SVGPathSeg.PATHSEG_MOVETO_REL = 3;
+	        SVGPathSeg.PATHSEG_LINETO_ABS = 4;
+	        SVGPathSeg.PATHSEG_LINETO_REL = 5;
+	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS = 6;
+	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL = 7;
+	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS = 8;
+	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL = 9;
+	        SVGPathSeg.PATHSEG_ARC_ABS = 10;
+	        SVGPathSeg.PATHSEG_ARC_REL = 11;
+	        SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS = 12;
+	        SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL = 13;
+	        SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS = 14;
+	        SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL = 15;
+	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS = 16;
+	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL = 17;
+	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS = 18;
+	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL = 19;
+	
+	        // Notify owning PathSegList on any changes so they can be synchronized back to the path element.
+	        SVGPathSeg.prototype._segmentChanged = function() {
+	            if (this._owningPathSegList)
+	                this._owningPathSegList.segmentChanged(this);
+	        }
+	
+	        window.SVGPathSegClosePath = function(owningPathSegList) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CLOSEPATH, "z", owningPathSegList);
+	        }
+	        SVGPathSegClosePath.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegClosePath.prototype.toString = function() { return "[object SVGPathSegClosePath]"; }
+	        SVGPathSegClosePath.prototype._asPathString = function() { return this.pathSegTypeAsLetter; }
+	        SVGPathSegClosePath.prototype.clone = function() { return new SVGPathSegClosePath(undefined); }
+	
+	        window.SVGPathSegMovetoAbs = function(owningPathSegList, x, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_MOVETO_ABS, "M", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	        }
+	        SVGPathSegMovetoAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegMovetoAbs.prototype.toString = function() { return "[object SVGPathSegMovetoAbs]"; }
+	        SVGPathSegMovetoAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
+	        SVGPathSegMovetoAbs.prototype.clone = function() { return new SVGPathSegMovetoAbs(undefined, this._x, this._y); }
+	        Object.defineProperty(SVGPathSegMovetoAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegMovetoAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegMovetoRel = function(owningPathSegList, x, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_MOVETO_REL, "m", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	        }
+	        SVGPathSegMovetoRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegMovetoRel.prototype.toString = function() { return "[object SVGPathSegMovetoRel]"; }
+	        SVGPathSegMovetoRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
+	        SVGPathSegMovetoRel.prototype.clone = function() { return new SVGPathSegMovetoRel(undefined, this._x, this._y); }
+	        Object.defineProperty(SVGPathSegMovetoRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegMovetoRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegLinetoAbs = function(owningPathSegList, x, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_ABS, "L", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	        }
+	        SVGPathSegLinetoAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegLinetoAbs.prototype.toString = function() { return "[object SVGPathSegLinetoAbs]"; }
+	        SVGPathSegLinetoAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
+	        SVGPathSegLinetoAbs.prototype.clone = function() { return new SVGPathSegLinetoAbs(undefined, this._x, this._y); }
+	        Object.defineProperty(SVGPathSegLinetoAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegLinetoAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegLinetoRel = function(owningPathSegList, x, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_REL, "l", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	        }
+	        SVGPathSegLinetoRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegLinetoRel.prototype.toString = function() { return "[object SVGPathSegLinetoRel]"; }
+	        SVGPathSegLinetoRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
+	        SVGPathSegLinetoRel.prototype.clone = function() { return new SVGPathSegLinetoRel(undefined, this._x, this._y); }
+	        Object.defineProperty(SVGPathSegLinetoRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegLinetoRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoCubicAbs = function(owningPathSegList, x, y, x1, y1, x2, y2) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS, "C", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._x1 = x1;
+	            this._y1 = y1;
+	            this._x2 = x2;
+	            this._y2 = y2;
+	        }
+	        SVGPathSegCurvetoCubicAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoCubicAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicAbs]"; }
+	        SVGPathSegCurvetoCubicAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoCubicAbs.prototype.clone = function() { return new SVGPathSegCurvetoCubicAbs(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2); }
+	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoCubicRel = function(owningPathSegList, x, y, x1, y1, x2, y2) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL, "c", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._x1 = x1;
+	            this._y1 = y1;
+	            this._x2 = x2;
+	            this._y2 = y2;
+	        }
+	        SVGPathSegCurvetoCubicRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoCubicRel.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicRel]"; }
+	        SVGPathSegCurvetoCubicRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoCubicRel.prototype.clone = function() { return new SVGPathSegCurvetoCubicRel(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2); }
+	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoQuadraticAbs = function(owningPathSegList, x, y, x1, y1) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS, "Q", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._x1 = x1;
+	            this._y1 = y1;
+	        }
+	        SVGPathSegCurvetoQuadraticAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoQuadraticAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticAbs]"; }
+	        SVGPathSegCurvetoQuadraticAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoQuadraticAbs.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticAbs(undefined, this._x, this._y, this._x1, this._y1); }
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoQuadraticRel = function(owningPathSegList, x, y, x1, y1) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL, "q", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._x1 = x1;
+	            this._y1 = y1;
+	        }
+	        SVGPathSegCurvetoQuadraticRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoQuadraticRel.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticRel]"; }
+	        SVGPathSegCurvetoQuadraticRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoQuadraticRel.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticRel(undefined, this._x, this._y, this._x1, this._y1); }
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegArcAbs = function(owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_ARC_ABS, "A", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._r1 = r1;
+	            this._r2 = r2;
+	            this._angle = angle;
+	            this._largeArcFlag = largeArcFlag;
+	            this._sweepFlag = sweepFlag;
+	        }
+	        SVGPathSegArcAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegArcAbs.prototype.toString = function() { return "[object SVGPathSegArcAbs]"; }
+	        SVGPathSegArcAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y; }
+	        SVGPathSegArcAbs.prototype.clone = function() { return new SVGPathSegArcAbs(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag); }
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "r1", { get: function() { return this._r1; }, set: function(r1) { this._r1 = r1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "r2", { get: function() { return this._r2; }, set: function(r2) { this._r2 = r2; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "angle", { get: function() { return this._angle; }, set: function(angle) { this._angle = angle; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "largeArcFlag", { get: function() { return this._largeArcFlag; }, set: function(largeArcFlag) { this._largeArcFlag = largeArcFlag; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcAbs.prototype, "sweepFlag", { get: function() { return this._sweepFlag; }, set: function(sweepFlag) { this._sweepFlag = sweepFlag; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegArcRel = function(owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_ARC_REL, "a", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._r1 = r1;
+	            this._r2 = r2;
+	            this._angle = angle;
+	            this._largeArcFlag = largeArcFlag;
+	            this._sweepFlag = sweepFlag;
+	        }
+	        SVGPathSegArcRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegArcRel.prototype.toString = function() { return "[object SVGPathSegArcRel]"; }
+	        SVGPathSegArcRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y; }
+	        SVGPathSegArcRel.prototype.clone = function() { return new SVGPathSegArcRel(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag); }
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "r1", { get: function() { return this._r1; }, set: function(r1) { this._r1 = r1; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "r2", { get: function() { return this._r2; }, set: function(r2) { this._r2 = r2; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "angle", { get: function() { return this._angle; }, set: function(angle) { this._angle = angle; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "largeArcFlag", { get: function() { return this._largeArcFlag; }, set: function(largeArcFlag) { this._largeArcFlag = largeArcFlag; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegArcRel.prototype, "sweepFlag", { get: function() { return this._sweepFlag; }, set: function(sweepFlag) { this._sweepFlag = sweepFlag; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegLinetoHorizontalAbs = function(owningPathSegList, x) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS, "H", owningPathSegList);
+	            this._x = x;
+	        }
+	        SVGPathSegLinetoHorizontalAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegLinetoHorizontalAbs.prototype.toString = function() { return "[object SVGPathSegLinetoHorizontalAbs]"; }
+	        SVGPathSegLinetoHorizontalAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x; }
+	        SVGPathSegLinetoHorizontalAbs.prototype.clone = function() { return new SVGPathSegLinetoHorizontalAbs(undefined, this._x); }
+	        Object.defineProperty(SVGPathSegLinetoHorizontalAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegLinetoHorizontalRel = function(owningPathSegList, x) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL, "h", owningPathSegList);
+	            this._x = x;
+	        }
+	        SVGPathSegLinetoHorizontalRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegLinetoHorizontalRel.prototype.toString = function() { return "[object SVGPathSegLinetoHorizontalRel]"; }
+	        SVGPathSegLinetoHorizontalRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x; }
+	        SVGPathSegLinetoHorizontalRel.prototype.clone = function() { return new SVGPathSegLinetoHorizontalRel(undefined, this._x); }
+	        Object.defineProperty(SVGPathSegLinetoHorizontalRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegLinetoVerticalAbs = function(owningPathSegList, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS, "V", owningPathSegList);
+	            this._y = y;
+	        }
+	        SVGPathSegLinetoVerticalAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegLinetoVerticalAbs.prototype.toString = function() { return "[object SVGPathSegLinetoVerticalAbs]"; }
+	        SVGPathSegLinetoVerticalAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._y; }
+	        SVGPathSegLinetoVerticalAbs.prototype.clone = function() { return new SVGPathSegLinetoVerticalAbs(undefined, this._y); }
+	        Object.defineProperty(SVGPathSegLinetoVerticalAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegLinetoVerticalRel = function(owningPathSegList, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL, "v", owningPathSegList);
+	            this._y = y;
+	        }
+	        SVGPathSegLinetoVerticalRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegLinetoVerticalRel.prototype.toString = function() { return "[object SVGPathSegLinetoVerticalRel]"; }
+	        SVGPathSegLinetoVerticalRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._y; }
+	        SVGPathSegLinetoVerticalRel.prototype.clone = function() { return new SVGPathSegLinetoVerticalRel(undefined, this._y); }
+	        Object.defineProperty(SVGPathSegLinetoVerticalRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoCubicSmoothAbs = function(owningPathSegList, x, y, x2, y2) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS, "S", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._x2 = x2;
+	            this._y2 = y2;
+	        }
+	        SVGPathSegCurvetoCubicSmoothAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoCubicSmoothAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicSmoothAbs]"; }
+	        SVGPathSegCurvetoCubicSmoothAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoCubicSmoothAbs.prototype.clone = function() { return new SVGPathSegCurvetoCubicSmoothAbs(undefined, this._x, this._y, this._x2, this._y2); }
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoCubicSmoothRel = function(owningPathSegList, x, y, x2, y2) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL, "s", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	            this._x2 = x2;
+	            this._y2 = y2;
+	        }
+	        SVGPathSegCurvetoCubicSmoothRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoCubicSmoothRel.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicSmoothRel]"; }
+	        SVGPathSegCurvetoCubicSmoothRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoCubicSmoothRel.prototype.clone = function() { return new SVGPathSegCurvetoCubicSmoothRel(undefined, this._x, this._y, this._x2, this._y2); }
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoQuadraticSmoothAbs = function(owningPathSegList, x, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS, "T", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	        }
+	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticSmoothAbs]"; }
+	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticSmoothAbs(undefined, this._x, this._y); }
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        window.SVGPathSegCurvetoQuadraticSmoothRel = function(owningPathSegList, x, y) {
+	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL, "t", owningPathSegList);
+	            this._x = x;
+	            this._y = y;
+	        }
+	        SVGPathSegCurvetoQuadraticSmoothRel.prototype = Object.create(SVGPathSeg.prototype);
+	        SVGPathSegCurvetoQuadraticSmoothRel.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticSmoothRel]"; }
+	        SVGPathSegCurvetoQuadraticSmoothRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
+	        SVGPathSegCurvetoQuadraticSmoothRel.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticSmoothRel(undefined, this._x, this._y); }
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
+	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
+	
+	        // Add createSVGPathSeg* functions to SVGPathElement.
+	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGPathElement.
+	        SVGPathElement.prototype.createSVGPathSegClosePath = function() { return new SVGPathSegClosePath(undefined); }
+	        SVGPathElement.prototype.createSVGPathSegMovetoAbs = function(x, y) { return new SVGPathSegMovetoAbs(undefined, x, y); }
+	        SVGPathElement.prototype.createSVGPathSegMovetoRel = function(x, y) { return new SVGPathSegMovetoRel(undefined, x, y); }
+	        SVGPathElement.prototype.createSVGPathSegLinetoAbs = function(x, y) { return new SVGPathSegLinetoAbs(undefined, x, y); }
+	        SVGPathElement.prototype.createSVGPathSegLinetoRel = function(x, y) { return new SVGPathSegLinetoRel(undefined, x, y); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicAbs = function(x, y, x1, y1, x2, y2) { return new SVGPathSegCurvetoCubicAbs(undefined, x, y, x1, y1, x2, y2); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicRel = function(x, y, x1, y1, x2, y2) { return new SVGPathSegCurvetoCubicRel(undefined, x, y, x1, y1, x2, y2); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticAbs = function(x, y, x1, y1) { return new SVGPathSegCurvetoQuadraticAbs(undefined, x, y, x1, y1); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticRel = function(x, y, x1, y1) { return new SVGPathSegCurvetoQuadraticRel(undefined, x, y, x1, y1); }
+	        SVGPathElement.prototype.createSVGPathSegArcAbs = function(x, y, r1, r2, angle, largeArcFlag, sweepFlag) { return new SVGPathSegArcAbs(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag); }
+	        SVGPathElement.prototype.createSVGPathSegArcRel = function(x, y, r1, r2, angle, largeArcFlag, sweepFlag) { return new SVGPathSegArcRel(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag); }
+	        SVGPathElement.prototype.createSVGPathSegLinetoHorizontalAbs = function(x) { return new SVGPathSegLinetoHorizontalAbs(undefined, x); }
+	        SVGPathElement.prototype.createSVGPathSegLinetoHorizontalRel = function(x) { return new SVGPathSegLinetoHorizontalRel(undefined, x); }
+	        SVGPathElement.prototype.createSVGPathSegLinetoVerticalAbs = function(y) { return new SVGPathSegLinetoVerticalAbs(undefined, y); }
+	        SVGPathElement.prototype.createSVGPathSegLinetoVerticalRel = function(y) { return new SVGPathSegLinetoVerticalRel(undefined, y); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothAbs = function(x, y, x2, y2) { return new SVGPathSegCurvetoCubicSmoothAbs(undefined, x, y, x2, y2); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothRel = function(x, y, x2, y2) { return new SVGPathSegCurvetoCubicSmoothRel(undefined, x, y, x2, y2); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothAbs = function(x, y) { return new SVGPathSegCurvetoQuadraticSmoothAbs(undefined, x, y); }
+	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothRel = function(x, y) { return new SVGPathSegCurvetoQuadraticSmoothRel(undefined, x, y); }
+	    }
+	
+	    if (!("SVGPathSegList" in window)) {
+	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGPathSegList
+	        window.SVGPathSegList = function(pathElement) {
+	            this._pathElement = pathElement;
+	            this._list = this._parsePath(this._pathElement.getAttribute("d"));
+	
+	            // Use a MutationObserver to catch changes to the path's "d" attribute.
+	            this._mutationObserverConfig = { "attributes": true, "attributeFilter": ["d"] };
+	            this._pathElementMutationObserver = new MutationObserver(this._updateListFromPathMutations.bind(this));
+	            this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
+	        }
+	
+	        SVGPathSegList.prototype.classname = "SVGPathSegList";
+	
+	        Object.defineProperty(SVGPathSegList.prototype, "numberOfItems", {
+	            get: function() {
+	                this._checkPathSynchronizedToList();
+	                return this._list.length;
+	            },
+	            enumerable: true
+	        });
+	
+	        // Add the pathSegList accessors to SVGPathElement.
+	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGAnimatedPathData
+	        Object.defineProperty(SVGPathElement.prototype, "pathSegList", {
+	            get: function() {
+	                if (!this._pathSegList)
+	                    this._pathSegList = new SVGPathSegList(this);
+	                return this._pathSegList;
+	            },
+	            enumerable: true
+	        });
+	        // FIXME: The following are not implemented and simply return SVGPathElement.pathSegList.
+	        Object.defineProperty(SVGPathElement.prototype, "normalizedPathSegList", { get: function() { return this.pathSegList; }, enumerable: true });
+	        Object.defineProperty(SVGPathElement.prototype, "animatedPathSegList", { get: function() { return this.pathSegList; }, enumerable: true });
+	        Object.defineProperty(SVGPathElement.prototype, "animatedNormalizedPathSegList", { get: function() { return this.pathSegList; }, enumerable: true });
+	
+	        // Process any pending mutations to the path element and update the list as needed.
+	        // This should be the first call of all public functions and is needed because
+	        // MutationObservers are not synchronous so we can have pending asynchronous mutations.
+	        SVGPathSegList.prototype._checkPathSynchronizedToList = function() {
+	            this._updateListFromPathMutations(this._pathElementMutationObserver.takeRecords());
+	        }
+	
+	        SVGPathSegList.prototype._updateListFromPathMutations = function(mutationRecords) {
+	            if (!this._pathElement)
+	                return;
+	            var hasPathMutations = false;
+	            mutationRecords.forEach(function(record) {
+	                if (record.attributeName == "d")
+	                    hasPathMutations = true;
+	            });
+	            if (hasPathMutations)
+	                this._list = this._parsePath(this._pathElement.getAttribute("d"));
+	        }
+	
+	        // Serialize the list and update the path's 'd' attribute.
+	        SVGPathSegList.prototype._writeListToPath = function() {
+	            this._pathElementMutationObserver.disconnect();
+	            this._pathElement.setAttribute("d", SVGPathSegList._pathSegArrayAsString(this._list));
+	            this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
+	        }
+	
+	        // When a path segment changes the list needs to be synchronized back to the path element.
+	        SVGPathSegList.prototype.segmentChanged = function(pathSeg) {
+	            this._writeListToPath();
+	        }
+	
+	        SVGPathSegList.prototype.clear = function() {
+	            this._checkPathSynchronizedToList();
+	
+	            this._list.forEach(function(pathSeg) {
+	                pathSeg._owningPathSegList = null;
+	            });
+	            this._list = [];
+	            this._writeListToPath();
+	        }
+	
+	        SVGPathSegList.prototype.initialize = function(newItem) {
+	            this._checkPathSynchronizedToList();
+	
+	            this._list = [newItem];
+	            newItem._owningPathSegList = this;
+	            this._writeListToPath();
+	            return newItem;
+	        }
+	
+	        SVGPathSegList.prototype._checkValidIndex = function(index) {
+	            if (isNaN(index) || index < 0 || index >= this.numberOfItems)
+	                throw "INDEX_SIZE_ERR";
+	        }
+	
+	        SVGPathSegList.prototype.getItem = function(index) {
+	            this._checkPathSynchronizedToList();
+	
+	            this._checkValidIndex(index);
+	            return this._list[index];
+	        }
+	
+	        SVGPathSegList.prototype.insertItemBefore = function(newItem, index) {
+	            this._checkPathSynchronizedToList();
+	
+	            // Spec: If the index is greater than or equal to numberOfItems, then the new item is appended to the end of the list.
+	            if (index > this.numberOfItems)
+	                index = this.numberOfItems;
+	            if (newItem._owningPathSegList) {
+	                // SVG2 spec says to make a copy.
+	                newItem = newItem.clone();
+	            }
+	            this._list.splice(index, 0, newItem);
+	            newItem._owningPathSegList = this;
+	            this._writeListToPath();
+	            return newItem;
+	        }
+	
+	        SVGPathSegList.prototype.replaceItem = function(newItem, index) {
+	            this._checkPathSynchronizedToList();
+	
+	            if (newItem._owningPathSegList) {
+	                // SVG2 spec says to make a copy.
+	                newItem = newItem.clone();
+	            }
+	            this._checkValidIndex(index);
+	            this._list[index] = newItem;
+	            newItem._owningPathSegList = this;
+	            this._writeListToPath();
+	            return newItem;
+	        }
+	
+	        SVGPathSegList.prototype.removeItem = function(index) {
+	            this._checkPathSynchronizedToList();
+	
+	            this._checkValidIndex(index);
+	            var item = this._list[index];
+	            this._list.splice(index, 1);
+	            this._writeListToPath();
+	            return item;
+	        }
+	
+	        SVGPathSegList.prototype.appendItem = function(newItem) {
+	            this._checkPathSynchronizedToList();
+	
+	            if (newItem._owningPathSegList) {
+	                // SVG2 spec says to make a copy.
+	                newItem = newItem.clone();
+	            }
+	            this._list.push(newItem);
+	            newItem._owningPathSegList = this;
+	            // TODO: Optimize this to just append to the existing attribute.
+	            this._writeListToPath();
+	            return newItem;
+	        }
+	
+	        SVGPathSegList._pathSegArrayAsString = function(pathSegArray) {
+	            var string = "";
+	            var first = true;
+	            pathSegArray.forEach(function(pathSeg) {
+	                if (first) {
+	                    first = false;
+	                    string += pathSeg._asPathString();
+	                } else {
+	                    string += " " + pathSeg._asPathString();
+	                }
+	            });
+	            return string;
+	        }
+	
+	        // This closely follows SVGPathParser::parsePath from Source/core/svg/SVGPathParser.cpp.
+	        SVGPathSegList.prototype._parsePath = function(string) {
+	            if (!string || string.length == 0)
+	                return [];
+	
+	            var owningPathSegList = this;
+	
+	            var Builder = function() {
+	                this.pathSegList = [];
+	            }
+	
+	            Builder.prototype.appendSegment = function(pathSeg) {
+	                this.pathSegList.push(pathSeg);
+	            }
+	
+	            var Source = function(string) {
+	                this._string = string;
+	                this._currentIndex = 0;
+	                this._endIndex = this._string.length;
+	                this._previousCommand = SVGPathSeg.PATHSEG_UNKNOWN;
+	
+	                this._skipOptionalSpaces();
+	            }
+	
+	            Source.prototype._isCurrentSpace = function() {
+	                var character = this._string[this._currentIndex];
+	                return character <= " " && (character == " " || character == "\n" || character == "\t" || character == "\r" || character == "\f");
+	            }
+	
+	            Source.prototype._skipOptionalSpaces = function() {
+	                while (this._currentIndex < this._endIndex && this._isCurrentSpace())
+	                    this._currentIndex++;
+	                return this._currentIndex < this._endIndex;
+	            }
+	
+	            Source.prototype._skipOptionalSpacesOrDelimiter = function() {
+	                if (this._currentIndex < this._endIndex && !this._isCurrentSpace() && this._string.charAt(this._currentIndex) != ",")
+	                    return false;
+	                if (this._skipOptionalSpaces()) {
+	                    if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ",") {
+	                        this._currentIndex++;
+	                        this._skipOptionalSpaces();
+	                    }
+	                }
+	                return this._currentIndex < this._endIndex;
+	            }
+	
+	            Source.prototype.hasMoreData = function() {
+	                return this._currentIndex < this._endIndex;
+	            }
+	
+	            Source.prototype.peekSegmentType = function() {
+	                var lookahead = this._string[this._currentIndex];
+	                return this._pathSegTypeFromChar(lookahead);
+	            }
+	
+	            Source.prototype._pathSegTypeFromChar = function(lookahead) {
+	                switch (lookahead) {
+	                case "Z":
+	                case "z":
+	                    return SVGPathSeg.PATHSEG_CLOSEPATH;
+	                case "M":
+	                    return SVGPathSeg.PATHSEG_MOVETO_ABS;
+	                case "m":
+	                    return SVGPathSeg.PATHSEG_MOVETO_REL;
+	                case "L":
+	                    return SVGPathSeg.PATHSEG_LINETO_ABS;
+	                case "l":
+	                    return SVGPathSeg.PATHSEG_LINETO_REL;
+	                case "C":
+	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS;
+	                case "c":
+	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL;
+	                case "Q":
+	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS;
+	                case "q":
+	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL;
+	                case "A":
+	                    return SVGPathSeg.PATHSEG_ARC_ABS;
+	                case "a":
+	                    return SVGPathSeg.PATHSEG_ARC_REL;
+	                case "H":
+	                    return SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS;
+	                case "h":
+	                    return SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL;
+	                case "V":
+	                    return SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS;
+	                case "v":
+	                    return SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL;
+	                case "S":
+	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS;
+	                case "s":
+	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL;
+	                case "T":
+	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS;
+	                case "t":
+	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL;
+	                default:
+	                    return SVGPathSeg.PATHSEG_UNKNOWN;
+	                }
+	            }
+	
+	            Source.prototype._nextCommandHelper = function(lookahead, previousCommand) {
+	                // Check for remaining coordinates in the current command.
+	                if ((lookahead == "+" || lookahead == "-" || lookahead == "." || (lookahead >= "0" && lookahead <= "9")) && previousCommand != SVGPathSeg.PATHSEG_CLOSEPATH) {
+	                    if (previousCommand == SVGPathSeg.PATHSEG_MOVETO_ABS)
+	                        return SVGPathSeg.PATHSEG_LINETO_ABS;
+	                    if (previousCommand == SVGPathSeg.PATHSEG_MOVETO_REL)
+	                        return SVGPathSeg.PATHSEG_LINETO_REL;
+	                    return previousCommand;
+	                }
+	                return SVGPathSeg.PATHSEG_UNKNOWN;
+	            }
+	
+	            Source.prototype.initialCommandIsMoveTo = function() {
+	                // If the path is empty it is still valid, so return true.
+	                if (!this.hasMoreData())
+	                    return true;
+	                var command = this.peekSegmentType();
+	                // Path must start with moveTo.
+	                return command == SVGPathSeg.PATHSEG_MOVETO_ABS || command == SVGPathSeg.PATHSEG_MOVETO_REL;
+	            }
+	
+	            // Parse a number from an SVG path. This very closely follows genericParseNumber(...) from Source/core/svg/SVGParserUtilities.cpp.
+	            // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-PathDataBNF
+	            Source.prototype._parseNumber = function() {
+	                var exponent = 0;
+	                var integer = 0;
+	                var frac = 1;
+	                var decimal = 0;
+	                var sign = 1;
+	                var expsign = 1;
+	
+	                var startIndex = this._currentIndex;
+	
+	                this._skipOptionalSpaces();
+	
+	                // Read the sign.
+	                if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "+")
+	                    this._currentIndex++;
+	                else if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "-") {
+	                    this._currentIndex++;
+	                    sign = -1;
+	                }
+	
+	                if (this._currentIndex == this._endIndex || ((this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") && this._string.charAt(this._currentIndex) != "."))
+	                    // The first character of a number must be one of [0-9+-.].
+	                    return undefined;
+	
+	                // Read the integer part, build right-to-left.
+	                var startIntPartIndex = this._currentIndex;
+	                while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9")
+	                    this._currentIndex++; // Advance to first non-digit.
+	
+	                if (this._currentIndex != startIntPartIndex) {
+	                    var scanIntPartIndex = this._currentIndex - 1;
+	                    var multiplier = 1;
+	                    while (scanIntPartIndex >= startIntPartIndex) {
+	                        integer += multiplier * (this._string.charAt(scanIntPartIndex--) - "0");
+	                        multiplier *= 10;
+	                    }
+	                }
+	
+	                // Read the decimals.
+	                if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ".") {
+	                    this._currentIndex++;
+	
+	                    // There must be a least one digit following the .
+	                    if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9")
+	                        return undefined;
+	                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9")
+	                        decimal += (this._string.charAt(this._currentIndex++) - "0") * (frac *= 0.1);
+	                }
+	
+	                // Read the exponent part.
+	                if (this._currentIndex != startIndex && this._currentIndex + 1 < this._endIndex && (this._string.charAt(this._currentIndex) == "e" || this._string.charAt(this._currentIndex) == "E") && (this._string.charAt(this._currentIndex + 1) != "x" && this._string.charAt(this._currentIndex + 1) != "m")) {
+	                    this._currentIndex++;
+	
+	                    // Read the sign of the exponent.
+	                    if (this._string.charAt(this._currentIndex) == "+") {
+	                        this._currentIndex++;
+	                    } else if (this._string.charAt(this._currentIndex) == "-") {
+	                        this._currentIndex++;
+	                        expsign = -1;
+	                    }
+	
+	                    // There must be an exponent.
+	                    if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9")
+	                        return undefined;
+	
+	                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
+	                        exponent *= 10;
+	                        exponent += (this._string.charAt(this._currentIndex) - "0");
+	                        this._currentIndex++;
+	                    }
+	                }
+	
+	                var number = integer + decimal;
+	                number *= sign;
+	
+	                if (exponent)
+	                    number *= Math.pow(10, expsign * exponent);
+	
+	                if (startIndex == this._currentIndex)
+	                    return undefined;
+	
+	                this._skipOptionalSpacesOrDelimiter();
+	
+	                return number;
+	            }
+	
+	            Source.prototype._parseArcFlag = function() {
+	                if (this._currentIndex >= this._endIndex)
+	                    return undefined;
+	                var flag = false;
+	                var flagChar = this._string.charAt(this._currentIndex++);
+	                if (flagChar == "0")
+	                    flag = false;
+	                else if (flagChar == "1")
+	                    flag = true;
+	                else
+	                    return undefined;
+	
+	                this._skipOptionalSpacesOrDelimiter();
+	                return flag;
+	            }
+	
+	            Source.prototype.parseSegment = function() {
+	                var lookahead = this._string[this._currentIndex];
+	                var command = this._pathSegTypeFromChar(lookahead);
+	                if (command == SVGPathSeg.PATHSEG_UNKNOWN) {
+	                    // Possibly an implicit command. Not allowed if this is the first command.
+	                    if (this._previousCommand == SVGPathSeg.PATHSEG_UNKNOWN)
+	                        return null;
+	                    command = this._nextCommandHelper(lookahead, this._previousCommand);
+	                    if (command == SVGPathSeg.PATHSEG_UNKNOWN)
+	                        return null;
+	                } else {
+	                    this._currentIndex++;
+	                }
+	
+	                this._previousCommand = command;
+	
+	                switch (command) {
+	                case SVGPathSeg.PATHSEG_MOVETO_REL:
+	                    return new SVGPathSegMovetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
+	                case SVGPathSeg.PATHSEG_MOVETO_ABS:
+	                    return new SVGPathSegMovetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
+	                case SVGPathSeg.PATHSEG_LINETO_REL:
+	                    return new SVGPathSegLinetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
+	                case SVGPathSeg.PATHSEG_LINETO_ABS:
+	                    return new SVGPathSegLinetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
+	                case SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL:
+	                    return new SVGPathSegLinetoHorizontalRel(owningPathSegList, this._parseNumber());
+	                case SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS:
+	                    return new SVGPathSegLinetoHorizontalAbs(owningPathSegList, this._parseNumber());
+	                case SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL:
+	                    return new SVGPathSegLinetoVerticalRel(owningPathSegList, this._parseNumber());
+	                case SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS:
+	                    return new SVGPathSegLinetoVerticalAbs(owningPathSegList, this._parseNumber());
+	                case SVGPathSeg.PATHSEG_CLOSEPATH:
+	                    this._skipOptionalSpaces();
+	                    return new SVGPathSegClosePath(owningPathSegList);
+	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL:
+	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegCurvetoCubicRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
+	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS:
+	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegCurvetoCubicAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
+	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL:
+	                    var points = {x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegCurvetoCubicSmoothRel(owningPathSegList, points.x, points.y, points.x2, points.y2);
+	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS:
+	                    var points = {x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegCurvetoCubicSmoothAbs(owningPathSegList, points.x, points.y, points.x2, points.y2);
+	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL:
+	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegCurvetoQuadraticRel(owningPathSegList, points.x, points.y, points.x1, points.y1);
+	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS:
+	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegCurvetoQuadraticAbs(owningPathSegList, points.x, points.y, points.x1, points.y1);
+	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL:
+	                    return new SVGPathSegCurvetoQuadraticSmoothRel(owningPathSegList, this._parseNumber(), this._parseNumber());
+	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS:
+	                    return new SVGPathSegCurvetoQuadraticSmoothAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
+	                case SVGPathSeg.PATHSEG_ARC_REL:
+	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegArcRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
+	                case SVGPathSeg.PATHSEG_ARC_ABS:
+	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber()};
+	                    return new SVGPathSegArcAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
+	                default:
+	                    throw "Unknown path seg type."
+	                }
+	            }
+	
+	            var builder = new Builder();
+	            var source = new Source(string);
+	
+	            if (!source.initialCommandIsMoveTo())
+	                return [];
+	            while (source.hasMoreData()) {
+	                var pathSeg = source.parseSegment();
+	                if (!pathSeg)
+	                    return [];
+	                builder.appendSegment(pathSeg);
+	            }
+	
+	            return builder.pathSegList;
+	        }
+	    }
+	}());
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var AxisTitleRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(AxisTitleRenderer, _BaseRenderingPlugin);
+	
+	  function AxisTitleRenderer() {
+	    _classCallCheck(this, AxisTitleRenderer);
+	
+	    _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), 'constructor', this).apply(this, arguments);
+	  }
+	
+	  _createClass(AxisTitleRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      var minMargin = Math.floor(this.plotter.baseFontSize * 4);
+	      _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), 'preRender', this).call(this);
+	      this.titleX = this.data.x_label || '';
+	      this.titleY = this.data.y_label || '';
+	      this.hasLabels = !!this.titleX || !!this.titleY;
+	      this.superTiny = this.plotter.options.tiny;
+	      // adjust room for each (in margins):
+	      if (this.titleY && this.margins.left < minMargin && !this.superTiny) {
+	        this.margins.left = minMargin;
+	      }
+	      if (this.titleX && !this.superTiny) {
+	        this.margins.bottom += this.plotter.baseFontSize * 1.2;
+	      }
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.plotGroup.selectAll('g.upiq-axis-titles').data([null]);
+	      group.enter().append('g').classed('upiq-axis-titles', true);
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'renderX',
+	    value: function renderX() {
+	      var tabularLegend = this.data.legend_placement === 'tabular',
+	          topMargin = this.margins.top,
+	          x = Math.floor(this.plotter.gridWidth() / 2.0) + this.margins.left + 5,
+	          y = this.plotter.plotHeight - 5,
+	          element;
+	      if (tabularLegend) {
+	        return;
+	      }
+	      element = this.group.append('text').classed('x-title', true).text(this.titleX).style({
+	        'font-family': 'Arial',
+	        'text-anchor': 'middle'
+	      }).attr({
+	        transform: 'translate(' + x + ',' + y + ')'
+	      });
+	    }
+	  }, {
+	    key: 'renderY',
+	    value: function renderY() {
+	      var element = this.group.append('text').classed('y-title', true),
+	          topMargin = this.margins.top,
+	          x = this.plotter.baseFontSize + 5,
+	          y = Math.floor(this.plotter.gridHeight() / 2.0) + topMargin;
+	      element.text(this.titleY).style({
+	        'font-family': 'Arial',
+	        'text-anchor': 'middle'
+	      }).attr({
+	        transform: 'translate(' + x + ',' + y + ') rotate(-90)'
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.hasLabels) {
+	        return; // no labels to render
+	      }
+	      this.mkGroup();
+	      if (this.titleX) {
+	        this.renderX();
+	      }
+	      if (this.titleY && !this.superTiny) {
+	        this.renderY();
+	      }
+	    }
+	  }]);
+	
+	  return AxisTitleRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.AxisTitleRenderer = AxisTitleRenderer;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var XTickLabelsRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(XTickLabelsRenderer, _BaseRenderingPlugin);
+	
+	  function XTickLabelsRenderer(plotter) {
+	    _classCallCheck(this, XTickLabelsRenderer);
+	
+	    _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'constructor', this).call(this, plotter);
+	    this.type = this.plotter.type;
+	  }
+	
+	  _createClass(XTickLabelsRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'preRender', this).call(this);
+	      this.tiny = this.plotter.options.tiny;
+	      this.enabled = this.data.legend_placement !== 'tabular' || this.tiny;
+	      if (!this.enabled) return;
+	      this.angle = this.type === 'bar' || this.plotter.plotWidth < 360 ? 90 : 45;
+	      this.angleRadians = Math.PI / 180 * this.angle;
+	      this.relSize = this.type === 'bar' ? 0.8 : 0.9;
+	      this.labels = this.data.axisLabels();
+	      this.height = this.labelHeight();
+	      this.margins.bottom += this.height;
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.plotGroup.selectAll('g.upiq-x-tick-labels').data([null]),
+	          isBar = this.type === 'bar',
+	          linePlotFontSize = this.plotter.plotWidth < 200 ? '75%' : '90%',
+	          tickVals = this.plotter.tickVals,
+	          columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
+	          padLeft = this.type === 'bar' ? Math.floor(columnWidth / 2) + 1 : 5,
+	          groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
+	      group.enter().append('g').classed('upiq-x-tick-labels', true).style({
+	        'font-size': this.type === 'bar' ? '80%' : linePlotFontSize
+	      }).attr({
+	        transform: 'translate(' + padLeft + ', ' + groupTop + ')'
+	      });
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'labelHeight',
+	    value: function labelHeight() {
+	      /* y-height of largest-length label */
+	      var maxLabel = Math.max.apply(null, this.labels.map(function (v) {
+	        return v.label.length;
+	      })),
+	          fontSize = this.plotter.baseFontSize * this.relSize,
+	          multiplier = 0.5875,
+	          estimatedPx = fontSize * (maxLabel + 2) * multiplier,
+	          heightNeeded = Math.floor(estimatedPx * Math.sin(this.angleRadians));
+	      return heightNeeded;
+	    }
+	  }, {
+	    key: 'drawLabel',
+	    value: function drawLabel(info) {
+	      var x = Math.floor(this.scale(info.key) + this.margins.left),
+	          y = 5,
+	          angle = -1 * this.angle;
+	      this.group.append('text').text(info.label).style({
+	        'text-anchor': 'end'
+	      }).attr({
+	        x: x,
+	        y: y,
+	        transform: 'rotate(' + angle + ' ' + x + ' ' + y + ')'
+	      });
+	    }
+	  }, {
+	    key: 'drawLabels',
+	    value: function drawLabels() {
+	      var _this = this;
+	
+	      /** draw labels */
+	      this.labels.forEach(function (info) {
+	        return _this.drawLabel(info);
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this.scale = this.plotter.timeScale;
+	      this.mkGroup();
+	      this.drawLabels();
+	    }
+	  }]);
+	
+	  return XTickLabelsRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.XTickLabelsRenderer = XTickLabelsRenderer;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var _utils = __webpack_require__(6);
+	
+	var d3 = __webpack_require__(2);
+	
+	var BasicLegendRenderer = (function (_BaseRenderingPlugin) {
+	  _inherits(BasicLegendRenderer, _BaseRenderingPlugin);
+	
+	  function BasicLegendRenderer(plotter) {
+	    _classCallCheck(this, BasicLegendRenderer);
+	
+	    _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'constructor', this).call(this, plotter);
+	    this.all_locations = ['e', 'n']; // 'east' is really northeast...
+	  }
+	
+	  _createClass(BasicLegendRenderer, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'preRender', this).call(this);
+	      this.placement = this.data.legend_placement;
+	      this.smallPlot = this.plotter.options.small;
+	      this.tiny = this.plotter.options.tiny;
+	      this.loc = this._location();
+	      this.enabled = this._enabled();
+	      if (this.enabled) {
+	        this.initialPositioning();
+	      }
+	      this.rowMax = this.tiny ? 1 : this.smallPlot ? 2 : 4;
+	      this.textSize = this.plotter.baseFontSize * (this.tiny ? 0.9 : 0.8);
+	      if (this.data.series.length > 4 && !this.smallPlot && !this.tiny) {
+	        this.textSize *= 0.8;
+	      }
+	    }
+	  }, {
+	    key: 'initialPositioning',
+	    value: function initialPositioning() {
+	      /** set width, height;
+	        * adjust margins and if needed positioning of plot relative to legend
+	        */
+	      var loc = this.loc,
+	          isTop = this.loc === 'n',
+	          tiny = this.tiny,
+	          plotWidth = this.plotter.plotWidth,
+	          legendHeight = isTop ? 30 : this.plotter.plotHeight,
+	          gridLeft = this.plotter.margins.left,
+	          topWidth = plotWidth - (tiny ? 10 : gridLeft) - this.margins.right,
+	          legendWidth = isTop ? topWidth : Math.floor(plotWidth * 0.2),
+	          legendMargin = Math.floor(0.01 * plotWidth),
+	          gridRight = plotWidth - legendWidth - legendMargin;
+	      this.width = legendWidth - 1;
+	      this.left = isTop ? gridLeft : gridRight + legendMargin;
+	      this.top = isTop ? 1 : this.plotter.margins.top - 1;
+	      this.height = legendHeight - this.top - 1;
+	      if (!isTop) {
+	        this.margins.right = this.width + legendMargin + 2;
+	      }
+	    }
+	  }, {
+	    key: '_enabled',
+	    value: function _enabled() {
+	      var nonTabularPlacement = this.placement && this.placement !== 'tabular',
+	          multiSeries = this.data.series.length > 1;
+	      if (this.plotter.options.tiny || this.plotter.plotWidth < 320) {
+	        nonTabularPlacement = true;
+	      }
+	      return nonTabularPlacement && this.loc !== null && multiSeries;
+	    }
+	  }, {
+	    key: '_location',
+	    value: function _location() {
+	      var specifiedLocation = this.data.legend_location,
+	          unsupported = this.all_locations.indexOf(specifiedLocation) === -1,
+	          plotWidth = this.plotter.plotWidth,
+	          loc = unsupported ? 'e' : specifiedLocation;
+	      if (!specifiedLocation) return null; // no legend
+	      return this.smallPlot ? 'n' : loc;
+	    }
+	  }, {
+	    key: '_legendOrigin',
+	    value: function _legendOrigin() {
+	      var left = this.plotter.options.tiny ? 10 : this.left;
+	      return [left, this.top]; // x,y
+	    }
+	  }, {
+	    key: 'container',
+	    value: function container() {
+	      /** outermost container for the legend */
+	      return this.loc === 'n' ? this.abovePlotGroup : this.plotGroup;
+	    }
+	  }, {
+	    key: 'mkGroup',
+	    value: function mkGroup() {
+	      var group = this.container().selectAll('g.upiq-basic-legend').data([null]);
+	
+	      var _legendOrigin2 = this._legendOrigin();
+	
+	      var _legendOrigin22 = _slicedToArray(_legendOrigin2, 2);
+	
+	      var x = _legendOrigin22[0];
+	      var y = _legendOrigin22[1];
+	
+	      group.enter().append('g').classed('upiq-basic-legend', true).attr({
+	        transform: 'translate(' + x + ', ' + y + ')'
+	      });
+	      this.group = group;
+	    }
+	  }, {
+	    key: 'drawBgRect',
+	    value: function drawBgRect() {
+	      this.group.append('rect').classed('legend-bg', true).attr({
+	        height: this.height,
+	        width: Math.floor(this.width),
+	        'fill': '#fff',
+	        'fill-opacity': 0,
+	        'stroke-opacity': 0
+	      }).style({
+	        'stroke-width': '0.175%',
+	        'stroke': '#999'
+	      });
+	    }
+	  }, {
+	    key: 'mkElementGroup',
+	    value: function mkElementGroup(idx, padding) {
+	      var isTop = this.loc === 'n',
+	          rowIdx = isTop ? Math.floor(idx / this.rowMax) : idx,
+	          leftPadding = isTop ? 0 : padding,
+	          rowPos = isTop ? idx % this.rowMax : idx,
+	          left = (isTop ? rowPos * this.itemWidth : 0) + leftPadding,
+	          rowTop = rowIdx * 30,
+	          group = this.group.append('g').classed('upiq-legend-series', true).attr({
+	        transform: 'translate(' + left + ', ' + rowTop + ')'
+	      });
+	      return group;
+	    }
+	  }, {
+	    key: 'drawElement',
+	    value: function drawElement(series) {
+	      var color = series.color,
+	          label = series.title,
+	          tiny = this.tiny,
+	          padding = Math.floor(this.plotter.plotWidth * (tiny ? 0.1 : 0.01)),
+	          innerPadding = Math.floor(padding / 2),
+	          idx = series.position,
+	          group = this.mkElementGroup(idx, padding),
+	          groupY = 0 + (this.loc === 'n' ? 1 : idx) * this.textSize,
+	          colorBoxSize = Math.floor(this.plotter.plotWidth / (tiny ? 20 : 45)),
+	          textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
+	          text;
+	      // draw background rectangle (transparent by default, used for sizing)
+	      group.append('rect').classed('legend-series-bg', true).attr({
+	        x: 0,
+	        y: 0,
+	        width: this.itemWidth,
+	        height: 30
+	      }).style({
+	        stroke: '#aaa',
+	        'stroke-width': '0.2%',
+	        'fill': '#fff',
+	        'fill-opacity': 0,
+	        'stroke-opacity': 0
+	      });
+	      // draw color swatch for series:
+	      group.append('rect').classed('legend-series-color', true).attr({
+	        x: innerPadding,
+	        y: groupY,
+	        width: colorBoxSize,
+	        height: colorBoxSize * (tiny ? 2 : 1)
+	      }).style({
+	        fill: color
+	      });
+	      // draw label for series
+	      group.append('g').attr({
+	        transform: 'translate(' + (colorBoxSize + innerPadding * 2) + ' ' + groupY + ')'
+	      }).append('text').attr({
+	        x: 0,
+	        y: 0,
+	        'font-size': this.textSize + 'px'
+	      }).style({
+	        'dominant-baseline': 'middle'
+	      }).text(label).call(_utils.d3textWrap, textWidth, 0);
+	    }
+	  }, {
+	    key: 'drawElements',
+	    value: function drawElements() {
+	      var isTop = this.loc === 'n',
+	          itemCount = this.data.series.length,
+	          n = isTop ? this.rowMax : itemCount;
+	      this.itemWidth = Math.floor(isTop ? this.width / n : this.width * 0.9);
+	      this.data.series.forEach(function (series) {
+	        this.drawElement(series);
+	      }, this);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this.mkGroup();
+	      this.drawBgRect();
+	      this.drawElements();
+	    }
+	  }, {
+	    key: '_postRender',
+	    value: function _postRender() {
+	      var seriesGroups = this.group.selectAll('g.upiq-legend-series'),
+	          selParent = this.group[0][0],
+	          rowMax = this.rowMax,
+	          groupSelections = seriesGroups[0].map(function (group, idx) {
+	        return d3.select(group).call(function (g) {
+	          return g[0].parentNode = selParent;
+	        });
+	      }, this),
+	          numSeries = groupSelections.length,
+	          selHeight = function selHeight(e) {
+	        return e[0][0].getBoundingClientRect().height;
+	      },
+	          _height = function _height(g) {
+	        return Math.ceil(selHeight(g.select('text')) * 1.35);
+	      },
+	          _height2 = Math.max.apply(null, groupSelections.map(_height)),
+	          isTop = this.loc === 'n',
+	          margin = Math.floor(this.plotter.plotWidth / 120);
+	      // align elements within each series group:
+	      groupSelections.forEach(function (group, index) {
+	        var middle = Math.round(_height2 / 2.0);
+	        group.select('rect.legend-series-color').call(function (rect) {
+	          var rectHeight = rect[0][0].getBoundingClientRect().height,
+	              rectTop = middle - Math.floor(rectHeight / 2);
+	          rect.attr({
+	            y: rectTop
+	          });
+	        });
+	        group.select('g').call(function (textGroup) {
+	          var _d3$transform$translate = _slicedToArray(d3.transform(textGroup.attr('transform')).translate, 2);
+	
+	          var x = _d3$transform$translate[0];
+	          var y = _d3$transform$translate[1];
+	          var text = textGroup.select('text');
+	          var tHeight = text[0][0].getBoundingClientRect().height;
+	          var numSpans = text.selectAll('tspan').size();
+	          var multi = numSpans > 1;
+	          var lineHeight = Math.round(tHeight / numSpans);
+	          var multiLineOffset = middle - Math.floor((tHeight - lineHeight) / 2);
+	          var textMiddle = multi ? multiLineOffset : middle;
+	          textGroup.attr({
+	            transform: 'translate(' + x + ' ' + textMiddle + ')'
+	          });
+	        });
+	      }, this);
+	      // distribute series groups (evenly size, evenly spaced):
+	      groupSelections.forEach(function (group, index) {
+	        var rowIdx = Math.floor(index / rowMax),
+	            rowY = margin + rowIdx * _height2,
+	            yOffset = isTop ? rowY : index * _height2 + margin,
+	            xOffset = d3.transform(group.attr('transform')).translate[0],
+	            bgRect = group.select('rect.legend-series-bg');
+	        // space:
+	        group.attr({
+	          transform: 'translate(' + xOffset + ' ' + yOffset + ')'
+	        });
+	        // size: even height for background rectangles:
+	        bgRect.attr({
+	          height: _height2
+	        });
+	      }, this);
+	      // adjust height of bg rect to content
+	      this.group.select('rect.legend-bg').classed('sizing', true).attr({
+	        height: function height(d) {
+	          var numRows = Math.ceil(numSeries / rowMax);
+	          return Math.floor(_height2 * (isTop ? numRows : numSeries)) + margin * 2;
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      if (!this.enabled) {
+	        return;
+	      }
+	      this._postRender();
+	    }
+	  }]);
+	
+	  return BasicLegendRenderer;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.BasicLegendRenderer = BasicLegendRenderer;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var _utils = __webpack_require__(6);
+	
+	var d3 = __webpack_require__(2);
+	
+	var PointHoverPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(PointHoverPlugin, _BaseRenderingPlugin);
+	
+	  function PointHoverPlugin(plotter) {
+	    _classCallCheck(this, PointHoverPlugin);
+	
+	    _get(Object.getPrototypeOf(PointHoverPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.__name__ = 'PointHoverPlugin';
+	  }
+	
+	  _createClass(PointHoverPlugin, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(PointHoverPlugin.prototype), 'preRender', this).call(this);
+	      this.overlay = null; // will be set in render(), used in interactive...
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.xScale = this.plotter.timeScale;
+	      this.yScale = this.plotter.yScale;
+	    }
+	  }, {
+	    key: 'scaledCoordinates',
+	    value: function scaledCoordinates(point) {
+	      /** get stable x,y from scale+data as event clientX, etc unreliable */
+	      var x = Math.floor(this.xScale(point.x) + this.margins.left),
+	          y = Math.floor(this.yScale(point.y) + this.margins.top);
+	      return [x, y];
+	    }
+	  }, {
+	    key: 'glowMarker',
+	    value: function glowMarker(marker) {
+	      marker.classed('highlighted', true);
+	    }
+	  }, {
+	    key: 'clearGlow',
+	    value: function clearGlow() {
+	      this.svg.selectAll('path.nv-point.highlighted').classed('highlighted', false);
+	    }
+	  }, {
+	    key: 'showOverlay',
+	    value: function showOverlay(marker, dataPoint, series) {
+	      var color = _utils.ColorTool.lighten(series.color, 0.8);
+	      var borderColor = series.color;
+	
+	      var _scaledCoordinates = this.scaledCoordinates(dataPoint);
+	
+	      var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
+	
+	      var x = _scaledCoordinates2[0];
+	      var y = _scaledCoordinates2[1];
+	      var useLeft = x < this.plotter.plotWidth * 0.85;
+	      var fontSize = Math.max(10, this.plotter.baseFontSize * 0.7);
+	      var overlay;
+	      var pad;
+	      var w;
+	      // if marker is null, traverse to it:
+	      if (marker === null) {
+	        // .nv-scatterWrap .nv-groups .nv-series-0 path
+	        marker = d3.select(this.svg.selectAll('.nv-scatterWrap .nv-groups .nv-series-' + series.position + ' path.nv-point')[0].filter(function (m) {
+	          return d3.select(m).data()[0].x === dataPoint.x;
+	        })[0]);
+	      }
+	      this.glowMarker(marker);
+	      // adjust border/text color if not dark enough:
+	      if (_utils.ColorTool.isLight(borderColor)) {
+	        borderColor = _utils.ColorTool.darken(borderColor, 0.4);
+	      }
+	      // pad x, y for use in overlay, so that overlay not on top of part of pt:
+	      w = this.plotter.plotWidth;
+	      pad = Math.max(5, w * 0.02) * (this.plotter.type === 'bar' ? 1.8 : 1);
+	      x = Math.floor(useLeft ? x + pad : x);
+	      // create on-hover overlay:
+	      overlay = this.plotCore.append('div').classed('point-hover-tip', true).style({
+	        border: '0.1em solid ' + borderColor,
+	        'background-color': color,
+	        position: 'absolute',
+	        left: useLeft ? x + 'px' : undefined,
+	        right: !useLeft ? this.plotter.plotWidth - x + 'px' : undefined,
+	        top: y + 'px',
+	        'font-size': fontSize + 'px'
+	      });
+	      overlay.append('p').classed('value-info', true).style('color', borderColor).append('span').text(this.plotter.yformat(dataPoint.y));
+	      overlay.append('p').classed('click-hint', true).text('Click datapoint for details.');
+	      this.plotter.highlightX(dataPoint.x);
+	      if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
+	        this.plotter.getPlugin('TabularLegendRenderer').highlightColumn(dataPoint.x);
+	      }
+	    }
+	  }, {
+	    key: 'clearOverlays',
+	    value: function clearOverlays() {
+	      this.plotCore.selectAll('.point-hover-tip').transition(3000).style('opacity', 0).remove();
+	      this.plotter.clearHighlights();
+	      this.clearGlow();
+	      if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
+	        this.plotter.getPlugin('TabularLegendRenderer').clearHighlights();
+	      }
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      var self = this,
+	          markers = this.svg.selectAll('.nv-point, .nv-bar'),
+	          data = markers.data(),
+	          onHover = function onHover(d, i) {
+	        var marker = d3.select(this),
+	            dataPoint = marker.data()[0],
+	            series = self.data.series[dataPoint.seriesIndex];
+	        self.showOverlay(marker, dataPoint, series);
+	      },
+	          onMouseOut = function onMouseOut(d, i) {
+	        self.clearOverlays();
+	      };
+	      markers.on('mouseover', onHover).on('mouseout', onMouseOut);
+	    }
+	  }]);
+	
+	  return PointHoverPlugin;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.PointHoverPlugin = PointHoverPlugin;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var _utils = __webpack_require__(6);
+	
+	var _tinyOverlay = __webpack_require__(25);
+	
+	var d3 = __webpack_require__(2);
+	
+	var document = window.document;
+	
+	function mkHTML(series, point, color) {
+	  var wrap = d3.select(document.createElement('div')),
+	      seriesLabel = series.title,
+	      title = wrap.append('h5').text(series.title).style({
+	    'background-color': color,
+	    color: _utils.ColorTool.isLight(color) ? '#000' : '#fff'
+	  }),
+	      detail = wrap.append('dl'),
+	      fmt = d3.format(series.display_format.replace('%', ',') || ',.1f'),
+	      displayValue = fmt(point.y);
+	  // Period title (series title):
+	  detail.append('dt').classed('name', true).append('span').classed('point-title', true).text(point.title);
+	  // Display value (final computed value, formatted):
+	  detail.append('dd').classed('value', true).text( true ? displayValue : 'n/a (null)');
+	  // Note:
+	  detail.append('p').classed('note', true).text(point.note);
+	  if (point.uri) {
+	    detail.append('a').attr({
+	      href: point.uri,
+	      target: '_blank'
+	    }).text('View data source');
+	  }
+	  return wrap;
+	}
+	
+	var PointClickPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(PointClickPlugin, _BaseRenderingPlugin);
+	
+	  function PointClickPlugin(plotter) {
+	    _classCallCheck(this, PointClickPlugin);
+	
+	    _get(Object.getPrototypeOf(PointClickPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.__name__ = 'PointClickPlugin';
+	  }
+	
+	  _createClass(PointClickPlugin, [{
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(PointClickPlugin.prototype), 'preRender', this).call(this);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.xScale = this.plotter.timeScale;
+	      this.yScale = this.plotter.yScale;
+	    }
+	  }, {
+	    key: 'scaledCoordinates',
+	    value: function scaledCoordinates(point) {
+	      /** get stable x,y from scale+data as event clientX, etc unreliable */
+	      var x = Math.floor(this.xScale(point.x) + this.margins.left),
+	          y = Math.floor(this.yScale(point.y) + this.margins.top);
+	      return [x, y];
+	    }
+	  }, {
+	    key: 'showOverlay',
+	    value: function showOverlay(marker, dataPoint, series) {
+	      var color = series.color;
+	      var ct = _utils.ColorTool;
+	      var titleColor = ct.isLight(color) ? ct.darken(color) : color;
+	
+	      var _scaledCoordinates = this.scaledCoordinates(dataPoint);
+	
+	      var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
+	
+	      var x = _scaledCoordinates2[0];
+	      var y = _scaledCoordinates2[1];
+	      var useLeft = x < this.plotter.plotWidth * 0.5;
+	      var fontSize = Math.max(13, this.plotter.baseFontSize * 0.7);
+	      var html = mkHTML(series, dataPoint, titleColor).html();
+	      var overlay = new _tinyOverlay.Overlay(html, {
+	        container: this.plotCore[0][0],
+	        classname: useLeft ? 'left' : undefined,
+	        style: {
+	          left: useLeft ? x + 'px' : undefined,
+	          right: !useLeft ? this.plotter.plotWidth - x + 'px' : undefined,
+	          top: y + 'px',
+	          width: '45%',
+	          'min-width': '150px',
+	          'max-width': '300px',
+	          'font-size': fontSize + 'px',
+	          'z-index': 10000
+	        }
+	      });
+	      var pad;
+	      var w;
+	      overlay.open();
+	    }
+	  }, {
+	    key: 'loadInteractiveFeatures',
+	    value: function loadInteractiveFeatures() {
+	      var self = this,
+	          markers = this.svg.selectAll('.nv-point, .nv-bar'),
+	          data = markers.data(),
+	          onClick = function onClick(d, i) {
+	        var marker = d3.select(this),
+	            dataPoint = marker.data()[0],
+	            series = self.data.series[dataPoint.seriesIndex];
+	        self.showOverlay(marker, dataPoint, series);
+	      };
+	      markers.on('click', onClick);
+	    }
+	  }]);
+	
+	  return PointClickPlugin;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.PointClickPlugin = PointClickPlugin;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// tinyOverlay.es6.js -- a minimal JavaScript (ES6) overlay library
+	// Author: Sean Upton <sean.upton@hsc.utah.edu>
+	// (c) 2013, 2015 University of Utah / MIT-licensed, text at:
+	//          https://teamspace.upiq.org/trac/wiki/Copyright
+	
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _utils = __webpack_require__(6);
+	
+	var document = window.document;
+	
+	function toArray(v) {
+	  if (v instanceof Array) return v;
+	  if (v instanceof window.HTMLCollection || v instanceof window.NodeList) {
+	    return Array.prototype.slice.call(v, 0);
+	  }
+	  return [v];
+	}
+	
+	function attr(target, name, value) {
+	  // multi-attr
+	  if (typeof name !== 'string') {
+	    Object.keys(name).forEach(function (k) {
+	      return attr(target, k, name[k]);
+	    });
+	    return;
+	  }
+	  if (!value) return target.getAttribute(name);
+	  target.setAttribute(name, value);
+	}
+	
+	function style(target, spec, value) {
+	  var name;
+	  if (!value && spec instanceof Object) {
+	    Object.keys(spec).forEach(function (k) {
+	      return style(target, k, spec[k]);
+	    });
+	    return;
+	  }
+	  target.style.removeProperty(spec);
+	  if (value === undefined) return;
+	  target.style.setProperty(spec, value);
+	}
+	
+	function create(tagname, classname, html) {
+	  var el, id;
+	  if (tagname.indexOf('.') !== -1) {
+	    var _tagname$split = tagname.split('.');
+	
+	    var _tagname$split2 = _slicedToArray(_tagname$split, 2);
+	
+	    tagname = _tagname$split2[0];
+	    classname = _tagname$split2[1];
+	  }
+	  if (tagname.indexOf('#') !== -1) {
+	    var _tagname$split3 = tagname.split('#');
+	
+	    var _tagname$split32 = _slicedToArray(_tagname$split3, 2);
+	
+	    tagname = _tagname$split32[0];
+	    id = _tagname$split32[1];
+	  }
+	  el = document.createElement(tagname);
+	  attr(el, {
+	    id: id,
+	    'class': classname
+	  });
+	  if (html) {
+	    el.innerHTML = html;
+	  }
+	  return el;
+	}
+	
+	function toDOM(html, wrapperTag, wrapperClass) {
+	  /** make DOM object(s) from HTML snippets */
+	  var wrapper = create(wrapperTag || 'div', wrapperClass, html),
+	      children = wrapper.childNodes;
+	  if (children.length === 1) {
+	    return children[0];
+	  }
+	  return wrapper; // fallback
+	}
+	
+	var snippets = {
+	  CONTROL: String() + '<div class="olControl">' + '  <span class="olControlBtn">' + '   <a class="close" title="close">&times;</a>' + '  </span>' + '</div>'
+	};
+	
+	var Overlay = (function () {
+	  /** Overlay objects are rendered on construction, but only shown and
+	    * attached on open(), destroyed on close().
+	    */
+	
+	  function Overlay(html, options, onclose) {
+	    _classCallCheck(this, Overlay);
+	
+	    var id = (options || {}).id || (0, _utils.uuid4)(),
+	        body = document.getElementsByTagName('body')[0],
+	        inner = create('div#' + id + '.overlayInner', null, html),
+	        userClass = (options || {}).classname,
+	        classname = 'tinyOverlay' + (userClass ? ' ' + userClass : ''),
+	        overlayDiv = create('div.' + classname),
+	        control = toDOM(snippets.CONTROL);
+	    // setup instance attrs:
+	    this.id = id;
+	    this.options = options;
+	    this.container = this.options.container || document.querySelector('body');
+	    // detached overlay div element; latern will be attached/shown:
+	    this.target = overlayDiv;
+	    this.options = options || {};
+	    this.options.style = this.options.style || { width: '120px' };
+	    // Set passed styles for overlay div:
+	    style(this.target, this.options.style);
+	    // append content to outermost overlay DIV:
+	    overlayDiv.appendChild(control);
+	    overlayDiv.appendChild(inner);
+	    // Array of onclose callbacks, if provided:
+	    onclose = onclose === undefined ? [] : onclose;
+	    this.onclose = onclose instanceof Array ? onclose : [onclose];
+	  }
+	
+	  _createClass(Overlay, [{
+	    key: 'open',
+	    value: function open() {
+	      var self = this,
+	          container = this.container,
+	          otherOverlays = toArray(container.querySelectorAll('div.tinyOverlay')),
+	          closeBtn = this.target.querySelector('span.olControlBtn a.close');
+	      // destroy any other overlays on page:
+	      otherOverlays.forEach(function (n) {
+	        return n.parentNode.removeChild(n);
+	      });
+	      // append detached div to overlay:
+	      this.container.appendChild(this.target);
+	      // hookup action for close button:
+	      closeBtn.addEventListener('click', function (event) {
+	        self.close();
+	      });
+	    }
+	  }, {
+	    key: 'close',
+	    value: function close() {
+	      var _this = this;
+	
+	      this.target.parentNode.removeChild(this.target);
+	      this.onclose.forEach(function (callback) {
+	        return callback.call(_this);
+	      });
+	    }
+	  }]);
+	
+	  return Overlay;
+	})();
+
+	exports.Overlay = Overlay;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var d3 = __webpack_require__(2);
+	
+	var CompactLayoutPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(CompactLayoutPlugin, _BaseRenderingPlugin);
+	
+	  function CompactLayoutPlugin(plotter) {
+	    _classCallCheck(this, CompactLayoutPlugin);
+	
+	    _get(Object.getPrototypeOf(CompactLayoutPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.colCount = this.plotter.options.columns || 4;
+	    this.container = d3.select(this.plotter.plotDiv[0][0].parentNode);
+	  }
+	
+	  _createClass(CompactLayoutPlugin, [{
+	    key: 'isEnabled',
+	    value: function isEnabled() {
+	      return this.plotter.options.layout === 'compact';
+	    }
+	  }, {
+	    key: 'sizeColumns',
+	    value: function sizeColumns() {
+	      var padding_mult = 0.89,
+	          pct = Math.floor(100 / this.colCount * padding_mult),
+	          spec = '' + pct + '%',
+	          clientWidth;
+	      this.plotDiv.style({
+	        width: spec,
+	        float: 'left'
+	      });
+	      clientWidth = this.plotDiv[0][0].getBoundingClientRect().width;
+	      this.plotter.plotWidth = clientWidth;
+	      this.plotter.plotHeight = Math.floor(clientWidth * 0.85);
+	      this.chart.width(this.plotter.plotWidth); // width before margins
+	      this.chart.height(this.plotter.plotHeight); // height before margins
+	      this.plotter.baseFontSize = Math.max(11, Math.floor(clientWidth / 45 * 2) / 2.0);
+	      this.plotter.plotCore.style({
+	        'font-size': '' + this.plotter.baseFontSize + 'px',
+	        height: '' + this.plotter.plotHeight + 'px'
+	      });
+	    }
+	  }, {
+	    key: 'markerSize',
+	    value: function markerSize(d) {
+	      return (d.size || 8) * Math.pow(this.plotter.plotWidth / 220, 2);
+	    }
+	  }, {
+	    key: 'layoutAdjustments',
+	    value: function layoutAdjustments() {
+	      // toggle small plot:
+	      this.plotter.options.small = true;
+	      this.plotter.relativeWidth = true;
+	      this.plotter.options.tiny = true;
+	    }
+	  }, {
+	    key: 'expandAll',
+	    value: function expandAll() {
+	      window.plotqi.plotters.forEach(function (plotter) {
+	        plotter.options.layout = 'normal';
+	        plotter.options.interactive = true;
+	        plotter.refresh();
+	      });
+	    }
+	  }, {
+	    key: 'contractAll',
+	    value: function contractAll() {
+	      // first, mark state on all plotters as incomplete (needed for onComplete)
+	      window.plotqi.plotters.forEach(function (plotter) {
+	        plotter.complete = false;
+	      });
+	      // then re-render:
+	      window.plotqi.plotters.forEach(function (plotter) {
+	        plotter.options.layout = 'compact';
+	        plotter.refresh();
+	      });
+	    }
+	  }, {
+	    key: 'hookupToggle',
+	    value: function hookupToggle() {
+	      var control = d3.select('.upiq-report-control'),
+	          hasControl = !!control.size(),
+	          hookedUp = hasControl && window.plotqi.compactControlReady,
+	          alreadyCompact = this.enabled,
+	          labelStandard = 'Standard',
+	          labelCompact = 'Compact',
+	          linkText = alreadyCompact ? labelStandard : labelCompact,
+	          otherText = !alreadyCompact ? labelStandard : labelCompact,
+	          href = alreadyCompact ? '#standard' : '#compact',
+	          toggleState = alreadyCompact,
+	          self = this,
+	          link;
+	      if (hasControl && !hookedUp) {
+	        control.html('').append('span').classed('control-subtle', true).text('Layout: ');
+	        control.append('span').classed('control-current-layout', true).text(otherText);
+	        control.append('span').classed('divider', true).text(' | ');
+	        link = control.append('a').classed('upiq-compact-toggle', true).attr({
+	          href: href
+	        }).text(linkText);
+	        link.on('click', function (d, i) {
+	          var newState = !toggleState,
+	              href = newState ? '#compact' : '#standard',
+	              linkText = newState ? labelStandard : labelCompact,
+	              otherText = toggleState ? labelStandard : labelCompact,
+	              action = newState ? self.contractAll : self.expandAll;
+	          link.attr({
+	            href: href
+	          }).text(linkText);
+	          control.select('span.control-current-layout').text(otherText);
+	          toggleState = newState; // flip
+	          action();
+	        });
+	        // finally set state to avoid duplication:
+	        window.plotqi.compactControlReady = true;
+	      }
+	    }
+	  }, {
+	    key: 'preRender',
+	    value: function preRender() {
+	      _get(Object.getPrototypeOf(CompactLayoutPlugin.prototype), 'preRender', this).call(this);
+	      this.enabled = this.isEnabled();
+	      this.hookupToggle(); // hookup regardless of initial state, if div
+	      if (this.enabled) {
+	        this.chart = this.plotter.chart;
+	        // ensure container marked as compact:
+	        this.container.classed('compact', true);
+	        // Disable interactive features:
+	        this.originally_interactive = this.plotter.options.interactive || false;
+	        this.plotter.options.interactive = false;
+	        // get column css spec from count:
+	        this.sizeColumns();
+	        // other various layout adjustments:
+	        this.layoutAdjustments();
+	        // use slightly larger point markers on line than usual vs. width
+	        if (this.data.chart_type === 'line') {
+	          this.plotter.chart.pointSize(this.markerSize.bind(this));
+	        }
+	      } else {
+	        this.container.classed('compact', false);
+	      }
+	    }
+	  }, {
+	    key: 'plotClicked',
+	    value: function plotClicked() {
+	      var url = this.plotter.data.url || null;
+	      if (url) {
+	        // just open plot url in a new window
+	        window.open(url, '_blank');
+	      }
+	    }
+	  }, {
+	    key: 'postRender',
+	    value: function postRender() {
+	      var self = this;
+	      if (this.enabled && this.originally_interactive) {
+	        this.svg.on('click', function (d, i) {
+	          self.plotClicked();
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'rowPlotters',
+	    value: function rowPlotters(plotter) {
+	      var plotters = window.plotqi.plotters,
+	          plotIdx = plotters.indexOf(plotter),
+	          colCount = this.colCount,
+	          plotRow = Math.floor(plotIdx / colCount);
+	      return plotters.filter(function (p) {
+	        var idx = plotters.indexOf(p),
+	            sameRow = Math.floor(idx / colCount) === plotRow;
+	        return sameRow;
+	      });
+	    }
+	  }, {
+	    key: 'rowHeight',
+	    value: function rowHeight(plotter) {
+	      var rowPlotters = this.rowPlotters(plotter);
+	      return Math.ceil(Math.max.apply(null, rowPlotters.map(function (p) {
+	        return p.plotHeight;
+	      })));
+	    }
+	  }, {
+	    key: 'adjustHeight',
+	    value: function adjustHeight(plotter) {
+	      var title = plotter.plotDiv.select('.plot-title'),
+	          titleHeight = title[0][0].getBoundingClientRect().height,
+	          titleDifferential = this.tallestTitle - titleHeight,
+	          topLine = this.topLine;
+	      plotter.plotCore.style({
+	        'margin-top': Math.ceil(titleDifferential) + 'px'
+	      });
+	      plotter.plotHeight = this.rowHeight(plotter); //this.maxHeight;
+	      plotter.plotCore.style({
+	        height: '' + plotter.plotHeight + 'px'
+	      });
+	      plotter.svg.select('.upiq-plot').attr({
+	        transform: 'translate(0 ' + topLine + ')'
+	      });
+	    }
+	  }, {
+	    key: 'swapLegends',
+	    value: function swapLegends(plotter) {
+	      var plotHeight = plotter.plotGroup[0][0].getBoundingClientRect().height;
+	      plotter.abovePlotGroup.attr({
+	        transform: 'translate(0 ' + plotHeight + ')'
+	      });
+	      plotter.plotGroup.attr({
+	        transform: 'translate(0 0)'
+	      });
+	    }
+	  }, {
+	    key: 'allDone',
+	    value: function allDone() {
+	      var _this = this;
+	
+	      var colCount = this.colCount,
+	          container = this.container,
+	          firstOfRow = this.container.selectAll('.plotdiv').filter(function (d, i) {
+	        return i % colCount === 0 && i !== 0 ? _this : null;
+	      }),
+	          plotters = window.plotqi.plotters,
+	          maxHeight = Math.ceil(Math.max.apply(null, plotters.map(function (p) {
+	        return p.plotHeight;
+	      })));
+	      // Insert line-break div between "rows"
+	      firstOfRow.each(function (d, i) {
+	        var _this2 = this;
+	
+	        container.insert('div', function (d) {
+	          return _this2;
+	        }).classed('rowbreak', true);
+	      });
+	      // Adjust uniform height, and set main plot group to uniform position
+	      this.maxHeight = maxHeight;
+	      this.tallestTitle = Math.max.apply(null, plotters.map(function (plotter) {
+	        var title = plotter.plotDiv.select('.plot-title');
+	        return title[0][0].getBoundingClientRect().height;
+	      }));
+	      this.topLine = Math.max.apply(null, plotters.map(function (plotter) {
+	        return plotter.abovePlotGroup[0][0].getBoundingClientRect().height;
+	      }));
+	      plotters.forEach(this.adjustHeight, this);
+	      plotters.forEach(this.swapLegends, this);
+	    }
+	  }, {
+	    key: 'isDone',
+	    value: function isDone() {
+	      var plotters = window.plotqi.plotters,
+	          expected = window.plotqi.plotCount,
+	          completed = plotters.filter(function (p) {
+	        return p.complete;
+	      });
+	      return completed.length === expected;
+	    }
+	  }, {
+	    key: 'onComplete',
+	    value: function onComplete() {
+	      if (this.enabled) {
+	        if (this.isDone()) {
+	          this.allDone();
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'update',
+	    value: function update() {
+	      if (this.enabled) {
+	        this.clear();
+	        this.render();
+	      }
+	    }
+	  }]);
+	
+	  return CompactLayoutPlugin;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.CompactLayoutPlugin = CompactLayoutPlugin;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
 
 	/* nvd3 version 1.7.1(https://github.com/novus/nvd3) 2015-02-08 */
 	module.exports = (function(){
@@ -24047,6310 +31704,6 @@
 	})();
 
 
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	exports.urlArgs = urlArgs;
-	exports.parseDate = parseDate;
-	exports.range = range;
-	exports.geometricBatch = geometricBatch;
-	exports.forReportJSON = forReportJSON;
-	exports.d3textWrap = d3textWrap;
-	exports.trendlineSlopeIntercept = trendlineSlopeIntercept;
-	exports.fittedTrendline = fittedTrendline;
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var moment = __webpack_require__(4);
-	var d3 = __webpack_require__(3);
-	var document = window.document;
-	
-	// singleton app style element:
-	var styleEl = document.createElement('style');
-	document.head.appendChild(styleEl);
-	var styleSheet = styleEl.sheet;
-	
-	exports.styleSheet = styleSheet;
-	var DEFAULT_COLORS = ['#393960', '#8AA9C9', '#5F9EA0', '#9370DB', '#4682B4', '#2E8B57', '#FF7F50', '#FFD700', '#DA70D6', '#008080', '#FF1493', '#6A5ACD', '#708090', '#FF6347', '#66CDAA', '#F08080'];
-	
-	// uuid function via http://stackoverflow.com/a/2117523/835961
-	exports.DEFAULT_COLORS = DEFAULT_COLORS;
-	var uuid4_tmpl = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
-	var uuid4 = function uuid4() {
-	  return uuid4_tmpl.replace(/[xy]/g, function (c) {
-	    var r = Math.random() * 16 | 0,
-	        v = c == 'x' ? r : r & 0x3 | 0x8;
-	    return v.toString(16);
-	  });
-	};
-	
-	exports.uuid4 = uuid4;
-	
-	function urlArgs() {
-	  var qs = window.location.search.slice(1),
-	      pair = function pair(part) {
-	    return part.split('=');
-	  },
-	      pairs = qs.split('&').map(pair),
-	      result = {};
-	  pairs.forEach(function (_ref) {
-	    var _ref2 = _slicedToArray(_ref, 2);
-	
-	    var key = _ref2[0];
-	    var value = _ref2[1];
-	
-	    result[key] = value;
-	  });
-	  return result;
-	}
-	
-	function parseDate(spec, useMoment) {
-	  /** parse date specification/stamp, strictly ISO 8601 if string, and assume
-	   *  any naive timestamp should be treated as UTC.  Returns Date if
-	   *  not useMoment, else returns moment object.
-	   */
-	  var m,
-	      getUTC = function getUTC(stamp) {
-	    return moment.utc(stamp, moment.ISO_8601);
-	  },
-	      getLocal = function getLocal(stamp) {
-	    return moment(stamp, moment.ISO_8601);
-	  },
-	      isNaive = function isNaive(datestamp) {
-	    var timePart = datestamp.slice(11);
-	    if (datestamp.length === 10) {
-	      return true; // date only, no time
-	    }
-	    if (datestamp.slice(-1) === 'Z') {
-	      return false; // not naive, explicit UTC
-	    }
-	    if (timePart.indexOf('+') !== -1 || timePart.indexOf('-') !== -1) {
-	      return false; // TZ offset
-	    }
-	    return true;
-	  };
-	  if (typeof spec === 'string') {
-	    m = isNaive(spec) ? getUTC(spec) : getLocal(spec);
-	  } else {
-	    m = moment.utc(spec);
-	  }
-	  return !!useMoment ? m : m.toDate();
-	}
-	
-	function range() {
-	  /** range() mimics python range() function */
-	  var args = arguments,
-	      stop = args.length > 1 ? args[1] : args[0],
-	      start = args.length > 1 ? args[0] : 0,
-	      step = args.length > 2 ? args[2] : 1,
-	      result = [],
-	      i;
-	  if (step === 0) {
-	    throw new RangeError('range() step argument must not be zero');
-	  }
-	  for (i = start; step > 0 ? i < stop : i > stop; i += step) {
-	    result.push(i);
-	  }
-	  return result;
-	}
-	
-	function geometricBatch(length) {
-	  var r = [],
-	      size = 1,
-	      pos = 0;
-	  while (size <= length) {
-	    r.push([pos, Math.min(size, length - pos)]);
-	    pos = pos + size;
-	    size += size; // 1, 2, 4, 8, 16, 32,...N
-	  }
-	  return r;
-	}
-	
-	function forReportJSON(jsonFile, callback) {
-	  d3.json(jsonFile, function (input) {
-	    /** given JSON where charts and data-points may be key/value pairs in 
-	      * JSON Arrays, normalize to simple Arrays of objects.
-	      */
-	    var kv2data = function kv2data(_ref3) {
-	      var _ref32 = _slicedToArray(_ref3, 2);
-	
-	      var k = _ref32[0];
-	      var v = _ref32[1];
-	      return v;
-	    },
-	        // key/value pair array to data/value object
-	    data = input instanceof Array ? input.map(kv2data) : [input],
-	        normalizeSeriesData = function normalizeSeriesData(s) {
-	      return s.data = s.data.map(kv2data);
-	    };
-	    data.forEach(function (chart) {
-	      return chart.series.forEach(normalizeSeriesData);
-	    });
-	    callback(data);
-	  });
-	}
-	
-	// Taken from an upcoming version of d3, heavily altered to suit UPIQ:
-	function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, ignorePadding) {
-	
-	  paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
-	  paddingTopBottom = (paddingTopBottom != null ? paddingTopBottom : 5) - 2; //Default padding (5px), remove 2 pixels because of the borders
-	  var maxWidth = width; //I store the tooltip max width
-	  width = ignorePadding ? width : width - paddingRightLeft * 2; //Take the padding into account
-	
-	  var arrLineCreatedCount = [];
-	  text.each(function () {
-	    var text = d3.select(this),
-	        words = text.text().split(' ').reverse(),
-	        word,
-	        line = [],
-	        lineNumber = 0,
-	        lineHeight = 1.2,
-	        //Ems
-	    y = parseFloat(text.attr("y")),
-	        dy = parseFloat(text.attr("dy")),
-	        createdLineCount = 1,
-	        //Total line created count
-	    textAlign = text.style('text-anchor') || 'start'; //'start' by default (start, middle, end, inherit)
-	
-	    //Clean the data in case <text> does not define those values
-	    if (isNaN(dy)) dy = 0; //Default padding (0em) : the 'dy' attribute on the first <tspan> _must_ be identical to the 'dy' specified on the <text> element, or start at '0em' if undefined
-	
-	    y = +(null === y ? paddingTopBottom : y);
-	
-	    var tspan = text.text(null).append("tspan").attr("x", paddingRightLeft).attr("dy", dy + "em");
-	    while (!!(word = words.pop())) {
-	      line.push(word);
-	      tspan.text(line.join(" "));
-	      if (tspan.node().getComputedTextLength() > width && line.length > 1) {
-	        line.pop();
-	        tspan.text(line.join(" "));
-	        line = [word];
-	        tspan = text.append("tspan").attr("x", paddingRightLeft).attr("dy", lineHeight + dy + "em").text(word);
-	        ++createdLineCount;
-	      }
-	    }
-	
-	    arrLineCreatedCount.push(createdLineCount); //Store the line count in the array
-	  });
-	  return arrLineCreatedCount;
-	}
-	
-	var ColorTool = (function () {
-	  function ColorTool() {
-	    _classCallCheck(this, ColorTool);
-	  }
-	
-	  _createClass(ColorTool, null, [{
-	    key: 'upScale8',
-	    value: function upScale8(v) {
-	      if (v < 0 || v > 1) {
-	        throw new RangeError('Color channel ratio value must be between 0-1.');
-	      }
-	      return Math.round(v * 255);
-	    }
-	  }, {
-	    key: 'downScale8',
-	    value: function downScale8(v) {
-	      /** downscale 8-bit channel integer value to decimal number between 0-1. */
-	      if (v < 0 || v > 255) {
-	        throw new RangeError('Color channel value must be between 0-255.');
-	      }
-	      return Math.round(v) / 255.0;
-	    }
-	  }, {
-	    key: 'normalizeColor',
-	    value: function normalizeColor(color) {
-	      /** normalizes vs potential 3-digit hex shorthand color, via rules
-	        * described in CSS speficication:
-	        * http://www.w3.org/TR/CSS21/syndata.html#color-units
-	        */
-	      var two = function two(s, n) {
-	        return new Array(2 + 1).join(s);
-	      },
-	          expandHex = function expandHex(s) {
-	        return two(s[1]) + two(s[2]) + two(s[3]);
-	      },
-	          isHex = function isHex(s) {
-	        return s[0] === '#';
-	      };
-	      if (!isHex(color)) {
-	        return color;
-	      }
-	      return color.length === 7 ? color : '#' + expandHex(color);
-	    }
-	  }, {
-	    key: 'rgb',
-	    value: function rgb(color) {
-	      /** return array of R, G, B colors for hexidecimal color code */
-	      var _c = ColorTool.normalizeColor(color),
-	          r = parseInt(_c.slice(1, 3), 16),
-	          g = parseInt(_c.slice(3, 5), 16),
-	          b = parseInt(_c.slice(5, 7), 16);
-	      return [r, g, b];
-	    }
-	  }, {
-	    key: 'rgb2hex',
-	    value: function rgb2hex(rgb) {
-	      /** take r, g, b as array of 8-bit values per channel, return hex */
-	      var pad2 = function pad2(v) {
-	        return v.length < 2 ? '0' + v : v;
-	      },
-	          channelHex = function channelHex(v) {
-	        return pad2(v.toString(16));
-	      };
-	      return '#' + rgb.map(channelHex).join('');
-	    }
-	  }, {
-	    key: 'rgb2hsv',
-	    value: function rgb2hsv(color, useHSL) {
-	      /** 24-bit rgb to h, s, v color array, roughly based on algorithm
-	        * descriptions from:
-	        *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
-	        *   http://www.cs.rit.edu/~ncs/color/t_convert.html
-	        */
-	      var rescale = ColorTool.downScale8;
-	
-	      // Black & grayscale are special cases:
-	      var baseRGB = color instanceof Array ? color : ColorTool.rgb(color);
-	      var rgb = baseRGB.map(rescale); // [0-255]->[0-1]
-	      var min = Math.min.apply(null, rgb);
-	      var max = Math.max.apply(null, rgb);
-	      var chroma = max - min;
-	      var isBlack = max === 0;
-	      var isGray = chroma === 0;
-	
-	      var _rgb = _slicedToArray(rgb, 3);
-	
-	      var r = _rgb[0];
-	      var g = _rgb[1];
-	      var b = _rgb[2];
-	      var v = max; // in HSV, largest component is value (unlike HSI/HSL)
-	      var h;var s;var l;if (isBlack || isGray) {
-	        // HSV for gray can be any point on cube with value equal to max
-	        return [0, 0, v]; // saturation === 0 is sentinel for grayscale
-	      }
-	      s = chroma / v; // S_HSV
-	      if (r === max) {
-	        // red is brightest component, hue between yellow->magenta
-	        h = (g - b) / chroma;
-	      } else if (g === max) {
-	        // green is brightest component, hue between cyan->yellow
-	        h = 2 + (b - r) / chroma;
-	      } else {
-	        // blue is brightest component, hue between magenta->cyan
-	        h = 4 + (r - g) / chroma;
-	      }
-	      h *= 60; // convert by 60 degrees
-	      if (h < 0) {
-	        h += 360;
-	      }
-	      if (!useHSL) {
-	        // HSV:
-	        return [h, s, v];
-	      }
-	      // HSL:
-	      l = 0.5 * (max + min);
-	      s = chroma / (1 - Math.abs(2 * l - 1)); // S_HSL
-	      return [h, s, l];
-	    }
-	  }, {
-	    key: 'rgb2hsl',
-	    value: function rgb2hsl(color) {
-	      return ColorTool.rgb2hsv(color, true); // force HSL
-	    }
-	  }, {
-	    key: 'hsv2rgb',
-	    value: function hsv2rgb(hsv, useHex, useHSL) {
-	      /** hsv Array to 24-bit RGB color, roughly based on algorithm descriptions
-	       * from:
-	       *   http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
-	       *   http://www.cs.rit.edu/~ncs/color/t_convert.html
-	       */
-	      var r;var g;var b;
-	      var rgb;
-	
-	      var _hsv = _slicedToArray(hsv, 3);
-	
-	      var h = _hsv[0];
-	      var s = _hsv[1];
-	      var v = _hsv[2];
-	      var l = v; // IFF useHSL, third argument is actually lightness
-	      var isGray = v === 0 || s === 0; // zero-v is black, zero-s is gray
-	      var rescale = ColorTool.upScale8;
-	      var hPrime = h / 60.0; // determine
-	      var chroma = !!useHSL ? (1 - Math.abs(2 * l - 1)) * s : v * s;
-	      var r1;var g1;var b1;var x;var pos;var m;
-	      if (!(hsv instanceof Array)) {
-	        throw new TypeError('Invalid HSV value, must be Array.');
-	      }
-	      useHex = useHex === undefined ? true : false; // default returns hex
-	      if (isGray) {
-	        // set all R,G,B channels to equal value
-	        r = v;
-	        g = v;
-	        b = v;
-	      } else {
-	        // color, working off "pizza slices" in the chromacity plane:
-	        x = chroma * (1 - Math.abs(hPrime % 2 - 1));
-	        pos = Math.floor(hPrime); // region on the chromaticity plane/hexagon
-	        switch (pos) {
-	          case 0:
-	            r1 = chroma;
-	            g1 = x;
-	            b1 = 0;
-	
-	            break;
-	          case 1:
-	            r1 = x;
-	            g1 = chroma;
-	            b1 = 0;
-	
-	            break;
-	          case 2:
-	            r1 = 0;
-	            g1 = chroma;
-	            b1 = x;
-	
-	            break;
-	          case 3:
-	            r1 = 0;
-	            g1 = x;
-	            b1 = chroma;
-	
-	            break;
-	          case 4:
-	            r1 = x;
-	            g1 = 0;
-	            b1 = chroma;
-	
-	            break;
-	          default:
-	            r1 = chroma;
-	            g1 = 0;
-	            b1 = x;
-	
-	            break;
-	        }
-	        m = !!useHSL ? l - 0.5 * chroma : v - chroma;
-	        r = r1 + m;
-	        g = g1 + m;
-	        b = b1 + m;
-	      }
-	      rgb = [r, g, b].map(rescale);
-	      return useHex ? ColorTool.rgb2hex(rgb) : rgb;
-	    }
-	  }, {
-	    key: 'hsl2rgb',
-	    value: function hsl2rgb(hsl, useHex) {
-	      return ColorTool.hsv2rgb(hsl, useHex, true); // force HSL->RGB
-	    }
-	  }, {
-	    key: 'colorShift',
-	    value: function colorShift(color, multiplier, deltaFn) {
-	      var _ColorTool$rgb2hsl = ColorTool.rgb2hsl(color);
-	
-	      var _ColorTool$rgb2hsl2 = _slicedToArray(_ColorTool$rgb2hsl, 3);
-	
-	      var h = _ColorTool$rgb2hsl2[0];
-	      var s = _ColorTool$rgb2hsl2[1];
-	      var l = _ColorTool$rgb2hsl2[2];
-	      var delta = deltaFn(l);
-	      var rgb;
-	      multiplier = multiplier === undefined ? 0.2 : multiplier;
-	      if (multiplier < 0 || multiplier > 1) {
-	        throw new RangeError('multipler must be >= 0, <= 1');
-	      }
-	      return ColorTool.hsl2rgb([h, s, l + delta * multiplier]);
-	    }
-	  }, {
-	    key: 'lighten',
-	    value: function lighten(color, multiplier) {
-	      return ColorTool.colorShift(color, multiplier, function (l) {
-	        return 1 - l;
-	      });
-	    }
-	  }, {
-	    key: 'darken',
-	    value: function darken(color, multiplier) {
-	      return ColorTool.colorShift(color, multiplier, function (l) {
-	        return -1 * l;
-	      });
-	    }
-	  }, {
-	    key: 'isDark',
-	    value: function isDark(color) {
-	      return ColorTool.rgb2hsl(color)[2] < 0.5; // lightness < 50%
-	    }
-	  }, {
-	    key: 'isLight',
-	    value: function isLight(color) {
-	      return ColorTool.rgb2hsl(color)[2] >= 0.5; // lightness >= 50%
-	    }
-	  }]);
-	
-	  return ColorTool;
-	})()
-	
-	/** simple linear regression as slope-intercept for trendline: */
-	
-	;
-	
-	exports.ColorTool = ColorTool;
-	
-	function trendlineSlopeIntercept(points) {
-	  /**
-	    * Given an array of data point pairs (each an array of x,y values)
-	    * returns two item array of slope and y-intercept [m, b] for y = mx + b
-	    * that can be used by callers in constructing a trendline.
-	    * Uses least-squares method:
-	    *   http://en.wikipedia.org/wiki/Simple_linear_regression
-	    * Caveats:
-	    *  * Does not return or calculate R-squared value.
-	    *  * Favors functional code readability at cost of repeated iteration.
-	    */
-	  var square = function square(a) {
-	    return a * a;
-	  },
-	      sum = function sum(sequence) {
-	    return sequence.reduce(function (a, b) {
-	      return a + b;
-	    }, 0);
-	  },
-	      pairProduct = function pairProduct(pair) {
-	    return pair[0] * pair[1];
-	  },
-	      n = points.length,
-	      xValues = points.map(function (point) {
-	    return point[0];
-	  }),
-	      yValues = points.map(function (point) {
-	    return point[1];
-	  }),
-	      sumX = sum(xValues),
-	      // ∑ x
-	  sumY = sum(yValues),
-	      // ∑ y
-	  sumXY = sum(points.map(pairProduct)),
-	      // ∑ xy
-	  sumX2 = sum(xValues.map(square)),
-	      // ∑ x²
-	  variance = sumX2 - square(sumX) / n,
-	      // Sxx = ∑x² - (∑x)² / n
-	  covariance = sumXY - sumX * sumY / n,
-	      // Sxy = ∑xy - (∑x * ∑y) / n
-	  slope = covariance / variance,
-	      // m = Sxy / Sxx
-	  // y-intercept is average y-value over slope minus average x-value
-	  intercept = sumY / n - slope * sumX / n; // b = (∑y / n) - m(∑x / n)
-	  return [slope, intercept];
-	}
-	
-	function fittedTrendline(points, domain, range) {
-	  var _trendlineSlopeIntercept = trendlineSlopeIntercept(points);
-	
-	  var _trendlineSlopeIntercept2 = _slicedToArray(_trendlineSlopeIntercept, 2);
-	
-	  var slope = _trendlineSlopeIntercept2[0];
-	  var intercept = _trendlineSlopeIntercept2[1];
-	  var solveForY = function solveForY(x) {
-	    return slope * x + intercept;
-	  }; // y = mx + b
-	  var solveForX = function solveForX(y) {
-	    return (y - intercept) / slope;
-	  };
-	  var _range = _slicedToArray(range, 2);
-	
-	  var minY = _range[0];
-	
-	  var maxY = _range[1];
-	
-	  var _domain = _slicedToArray(domain, 2);
-	
-	  var minX = _domain[0];
-	  var maxX = _domain[1];
-	  var decline = slope < 0;
-	  var r = {};
-	  r.x1 = solveForX(decline ? maxY : minY); // left-most x...
-	  r.x1 = r.x1 < minX ? minX : r.x1; // ...that is in bound box
-	  r.y1 = solveForY(r.x1);
-	  r.x2 = solveForX(decline ? minY : maxY); // right-most x...
-	  r.x2 = r.x2 > maxX ? maxX : r.x2; // ...that is in bound box
-	  r.y2 = solveForY(r.x2);
-	  r.slope = slope;
-	  return r;
-	}
-	
-	/** shift lightness up or down by multiplier using delta function */
-
-	/** Given points, domain, and range, returns coordinates for a line in
-	  * object form (keys of x1, y1, x2, y2) for line to be drawn left-to-right
-	  */
-	// x = (y - b) / m
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require */
-	
-	'use strict'; /*jshint -W097 */
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	exports.Chart = Chart;
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _classvizEs6Js = __webpack_require__(11);
-	
-	var _utilsEs6Js = __webpack_require__(6);
-	
-	var _schemavizEs6Js = __webpack_require__(12);
-	
-	var dataSym = Symbol();
-	var d3 = __webpack_require__(3);
-	
-	var moment = __webpack_require__(4);
-	
-	// Map between uu.chart frequency and d3.time interval name, multiplier:
-	var INTERVALS = {
-	  daily: [1, 'day'],
-	  weekly: [1, 'week'],
-	  monthly: [1, 'month'],
-	  yearly: [1, 'year'],
-	  quarterly: [3, 'month']
-	};
-	
-	var DataPoint = (function (_Klass) {
-	  _inherits(DataPoint, _Klass);
-	
-	  function DataPoint(obj) {
-	    _classCallCheck(this, DataPoint);
-	
-	    obj = obj || { key: '[none]' };
-	    obj.schema = obj.schema || _schemavizEs6Js.dataPointSchema;
-	    _get(Object.getPrototypeOf(DataPoint.prototype), 'constructor', this).call(this, obj);
-	  }
-	
-	  return DataPoint;
-	})(_classvizEs6Js.Klass);
-	
-	exports.DataPoint = DataPoint;
-	
-	var TimeDataPoint = (function (_DataPoint) {
-	  _inherits(TimeDataPoint, _DataPoint);
-	
-	  function TimeDataPoint(obj) {
-	    _classCallCheck(this, TimeDataPoint);
-	
-	    obj = obj || { key: new Date() };
-	    obj.schema = obj.schema || _schemavizEs6Js.timeDataPointSchema;
-	    _get(Object.getPrototypeOf(TimeDataPoint.prototype), 'constructor', this).call(this, obj);
-	  }
-	
-	  return TimeDataPoint;
-	})(DataPoint);
-	
-	exports.TimeDataPoint = TimeDataPoint;
-	
-	var DataSeries = (function (_Klass2) {
-	  _inherits(DataSeries, _Klass2);
-	
-	  function DataSeries(obj) {
-	    _classCallCheck(this, DataSeries);
-	
-	    var localprops = ['color'];
-	    obj = obj || {};
-	    obj.schema = obj.schema || _schemavizEs6Js.dataSeriesSchema;
-	    _get(Object.getPrototypeOf(DataSeries.prototype), 'constructor', this).call(this, obj, localprops);
-	    this.data = obj.data || [];
-	    this._color = obj.color || null;
-	    this.position = 0; // default, may be overwritten by chart managing this
-	  }
-	
-	  _createClass(DataSeries, [{
-	    key: 'data',
-	    get: function get() {
-	      return this[dataSym];
-	    },
-	    set: function set(d) {
-	      var data = d3.map();
-	      d.sort(function (a, b) {
-	        return a.key > b.key ? 1 : -1;
-	      }).filter(function (v, i) {
-	        return i === 0 || v.key != d[i - 1].key;
-	      }).map(function (datum) {
-	        return new DataPoint(datum);
-	      }).forEach(function (datum) {
-	        return data.set(datum.key, datum);
-	      });
-	      this[dataSym] = data;
-	    }
-	  }, {
-	    key: 'color',
-	    get: function get() {
-	      var explicitColor = this._color,
-	          pos = !explicitColor ? this.position : null,
-	          defaultColor = _utilsEs6Js.DEFAULT_COLORS[pos] || '#999999',
-	          color = explicitColor !== 'auto' ? explicitColor : defaultColor;
-	      return color;
-	    },
-	    set: function set(v) {
-	      this._color = v;
-	    }
-	  }, {
-	    key: 'range',
-	    get: function get() {
-	      return d3.extent(this.data.values(), function (d) {
-	        return d.value;
-	      }) || [-Infinity, Infinity];
-	    }
-	  }]);
-	
-	  return DataSeries;
-	})(_classvizEs6Js.Klass);
-	
-	exports.DataSeries = DataSeries;
-	
-	var TimeDataSeries = (function (_DataSeries) {
-	  _inherits(TimeDataSeries, _DataSeries);
-	
-	  function TimeDataSeries(obj) {
-	    _classCallCheck(this, TimeDataSeries);
-	
-	    obj = obj || {};
-	    obj.schema = obj.schema || _schemavizEs6Js.timeDataSeriesSchema;
-	    _get(Object.getPrototypeOf(TimeDataSeries.prototype), 'constructor', this).call(this, obj);
-	    this.data = obj.data || [];
-	  }
-	
-	  _createClass(TimeDataSeries, [{
-	    key: 'color',
-	    get: function get() {
-	      var explicitColor = this._color,
-	          pos = !explicitColor ? this.position : null,
-	          color = explicitColor ? explicitColor : _utilsEs6Js.DEFAULT_COLORS[pos];
-	      return color;
-	    },
-	    set: function set(v) {
-	      this._color = v;
-	    }
-	  }, {
-	    key: 'data',
-	    get: function get() {
-	      return this[dataSym];
-	    },
-	    set: function set(d) {
-	      var data = d3.map();
-	      d.sort(function (a, b) {
-	        return a.key > b.key ? 1 : -1;
-	      }).filter(function (v, i) {
-	        return i === 0 || v.key.toString() != d[i - 1].key.toString();
-	      }).map(function (datum) {
-	        return new TimeDataPoint(datum);
-	      }).forEach(function (datum) {
-	        return data.set(datum.key.valueOf(), datum);
-	      });
-	      this[dataSym] = data;
-	    }
-	  }, {
-	    key: 'domain',
-	    get: function get() {
-	      var min = moment.min.apply(moment, _toConsumableArray(this.data.values().map(function (d) {
-	        return (0, _utilsEs6Js.parseDate)(d.key, true);
-	      }))).toDate();
-	      var max = moment.max.apply(moment, _toConsumableArray(this.data.values().map(function (d) {
-	        return (0, _utilsEs6Js.parseDate)(d.key, true);
-	      }))).toDate();
-	      return [min, max];
-	    }
-	  }, {
-	    key: 'croppedDomain',
-	    get: function get() {
-	      var data = this.data.values().filter(function (datum) {
-	        return datum.value != null;
-	      });
-	      var min = moment.min.apply(moment, _toConsumableArray(data.map(function (d) {
-	        return (0, _utilsEs6Js.parseDate)(d.key, true);
-	      }))).toDate();
-	      var max = moment.max.apply(moment, _toConsumableArray(data.map(function (d) {
-	        return (0, _utilsEs6Js.parseDate)(d.key, true);
-	      }))).toDate();
-	      return [min, max];
-	    }
-	  }]);
-	
-	  return TimeDataSeries;
-	})(DataSeries);
-	
-	exports.TimeDataSeries = TimeDataSeries;
-	
-	var MultiSeriesChart = (function (_Klass3) {
-	  _inherits(MultiSeriesChart, _Klass3);
-	
-	  function MultiSeriesChart(obj) {
-	    _classCallCheck(this, MultiSeriesChart);
-	
-	    obj = obj || {};
-	    obj.schema = obj.schema || _schemavizEs6Js.multiSeriesChartSchema;
-	    _get(Object.getPrototypeOf(MultiSeriesChart.prototype), 'constructor', this).call(this, obj);
-	    this.series = obj.series || [];
-	  }
-	
-	  _createClass(MultiSeriesChart, [{
-	    key: 'fittedTrendline',
-	    value: function fittedTrendline(series) {
-	      /** fitted trendline for series in context of this chart's domain/range */
-	      var allData = series.data.values(),
-	          data = allData.filter(function (d) {
-	        return d.value !== null;
-	      }).map(function (d) {
-	        return [d.key.valueOf(), d.value];
-	      }),
-	          domain = this.domain.map(function (d) {
-	        return d.valueOf();
-	      }),
-	          line = (0, _utilsEs6Js.fittedTrendline)(data, domain, this.range);
-	      line.trend_width = series.trend_width || 2;
-	      line.trend_color = series.trend_color || series.color || '#999';
-	      line.point_count = series.data.size();
-	      return line;
-	    }
-	  }, {
-	    key: 'showLabels',
-	    value: function showLabels(series) {
-	      var showDefault = this.point_labels === 'show' ? 'show' : 'omit',
-	          behavior = series.point_labels || 'defer',
-	          visible = behavior === 'defer' ? showDefault : behavior;
-	      return visible === 'show';
-	    }
-	  }, {
-	    key: 'series',
-	    get: function get() {
-	      return this[dataSym];
-	    },
-	    set: function set(s) {
-	      this[dataSym] = s.map(function (serum) {
-	        return new DataSeries(serum);
-	      });
-	    }
-	  }, {
-	    key: 'range',
-	    get: function get() {
-	      var rMin = this.range_min,
-	          rMax = this.range_max,
-	          fMin = function fMin(_ref) {
-	        var _ref2 = _slicedToArray(_ref, 2);
-	
-	        var min = _ref2[0];
-	        var max = _ref2[1];
-	        return min;
-	      },
-	          fMax = function fMax(_ref3) {
-	        var _ref32 = _slicedToArray(_ref3, 2);
-	
-	        var min = _ref32[0];
-	        var max = _ref32[1];
-	        return max;
-	      };
-	      if (rMin != null && rMax != null) {
-	        // both specified explicitly:
-	        return [rMin, rMax];
-	      }
-	      var ranges = this.series.map(function (serum) {
-	        return serum.range;
-	      });
-	      return [rMin != null ? rMin : d3.min(ranges, fMin), rMax != null ? rMax : d3.max(ranges, fMax)];
-	    }
-	  }, {
-	    key: 'keys',
-	    get: function get() {
-	      var data = this.series.map(function (serum) {
-	        return serum.data;
-	      }).map(function (datum) {
-	        return datum.values();
-	      });
-	      data = d3.merge(data);
-	      return data.map(function (datum) {
-	        return datum.key;
-	      });
-	    }
-	  }]);
-	
-	  return MultiSeriesChart;
-	})(_classvizEs6Js.Klass);
-	
-	exports.MultiSeriesChart = MultiSeriesChart;
-	
-	var TimeSeriesChart = (function (_MultiSeriesChart) {
-	  _inherits(TimeSeriesChart, _MultiSeriesChart);
-	
-	  function TimeSeriesChart(obj) {
-	    _classCallCheck(this, TimeSeriesChart);
-	
-	    obj = obj || {};
-	    obj.schema = obj.schema || _schemavizEs6Js.timeSeriesChartSchema;
-	    _get(Object.getPrototypeOf(TimeSeriesChart.prototype), 'constructor', this).call(this, obj);
-	    this.series = obj.series || [];
-	  }
-	
-	  _createClass(TimeSeriesChart, [{
-	    key: 'allDates',
-	    value: function allDates() {
-	      var result = [],
-	          found = [],
-	          series = this.series,
-	          autoCrop = this.auto_crop,
-	          domain = this.domain,
-	          rightSide = domain[1].valueOf(),
-	          sortfn = function sortfn(a, b) {
-	        return a.toISOString() > b.toISOString() ? 1 : -1;
-	      };
-	      if (!this._uniqueDates) {
-	        series.forEach(function (s) {
-	          var points = s.data.values();
-	          points.map(function (datapoint) {
-	            return datapoint.key;
-	          }).forEach(function (key) {
-	            var ms = key.valueOf();
-	            if (!isNaN(key) && found.indexOf(ms) === -1) {
-	              if (autoCrop && key.valueOf() <= rightSide || !autoCrop) {
-	                result.push(key);
-	                found.push(ms);
-	              }
-	            }
-	          });
-	        }, this);
-	        result.sort(sortfn); // lexical sort by ISO8601===chronological
-	        this._uniqueDates = result;
-	      }
-	      return this._uniqueDates; // may be cached after 1st call
-	    }
-	
-	    /**
-	     * axisLabels(): returns array of key/value objects for date, x-axis label,
-	     * prefering explicitly specified label for date if provided, otherwise
-	     * falling back to generated date label.
-	     */
-	  }, {
-	    key: 'axisLabels',
-	    value: function axisLabels() {
-	      var dataKeys = this.allDates(),
-	          labels = [];
-	      return dataKeys.map(this.axisLabel, this);
-	    }
-	  }, {
-	    key: 'dateFormat',
-	    value: function dateFormat(key) {
-	      var interval = INTERVALS[this.frequency][1],
-	          defaultFn = function defaultFn(d) {
-	        return (0, _utilsEs6Js.parseDate)(d, true).format('M/D/YYYY');
-	      },
-	          fn = interval === 'month' ? d3.time.format.utc('%b %Y') : defaultFn;
-	      return fn((0, _utilsEs6Js.parseDate)(key));
-	    }
-	
-	    // Given date key, return object with key, associated x-axis Label
-	    // should return empty string for any date not in data.
-	  }, {
-	    key: 'axisLabel',
-	    value: function axisLabel(key) {
-	      var _this = this;
-	
-	      var dateKey = (0, _utilsEs6Js.parseDate)(key),
-	          // as Date
-	      dateValue = dateKey.valueOf(),
-	          // ms
-	      stamp = function stamp(d) {
-	        return (0, _utilsEs6Js.parseDate)(d).toISOString().split('T')[0];
-	      },
-	          generated = function generated(d) {
-	        return { key: d, label: _this.dateFormat(dateKey) };
-	      },
-	          configured = function configured(d, ds) {
-	        return { key: d, label: _this.labels[ds] };
-	      },
-	          dateStamp = stamp(dateKey),
-	          considered = this.allDates().map(function (d) {
-	        return d.valueOf();
-	      });
-	      if (this.labels.hasOwnProperty(dateStamp)) {
-	        return configured(dateKey, dateStamp);
-	      }
-	      if (considered.indexOf(dateValue) !== -1) {
-	        return generated(dateKey);
-	      }
-	      return { key: dateKey, label: '' };
-	    }
-	  }, {
-	    key: 'series',
-	    get: function get() {
-	      return this[dataSym];
-	    },
-	    set: function set(s) {
-	      var _this2 = this;
-	
-	      this[dataSym] = s.map(function (serum) {
-	        return new TimeDataSeries(serum, _this2);
-	      });
-	      this[dataSym].map(function (series, index) {
-	        series.position = index;
-	      }, this);
-	    }
-	  }, {
-	    key: 'domain',
-	    get: function get() {
-	      var _this3 = this;
-	
-	      var domainGetter = function domainGetter(s) {
-	        return _this3.auto_crop ? s.croppedDomain : s.domain;
-	      },
-	          seriesDomains,
-	          explicitStart = this.start,
-	          explicitEnd = this.end,
-	          timeStep = INTERVALS[this.frequency][0],
-	          interval = INTERVALS[this.frequency][1],
-	          quarterly = interval === 'month' && timeStep === 3,
-	          intervalName = quarterly ? 'quarter' : interval,
-	          ceiling = function ceiling(d) {
-	        return moment.utc(d).endOf(intervalName).toDate();
-	      },
-	          floor = function floor(d) {
-	        return moment.utc(d).startOf(intervalName).toDate();
-	      };
-	      if (explicitStart && explicitEnd) {
-	        return [d3.time.day.floor(explicitStart), d3.time.day.ceil(explicitEnd)];
-	      }
-	      seriesDomains = this.series.map(domainGetter);
-	      // normalizing (floor/ceil) getters: start, end; favor explicit to computed
-	      function getStart() {
-	        return d3.time.day.utc.floor(explicitStart || moment.min.apply(moment, _toConsumableArray(seriesDomains.map(function (_ref4) {
-	          var _ref42 = _slicedToArray(_ref4, 2);
-	
-	          var min = _ref42[0];
-	          var max = _ref42[1];
-	          return moment.utc(min);
-	        }))).toDate());
-	      }
-	      function getEnd() {
-	        return ceiling(explicitEnd ? moment.utc(explicitEnd).endOf('day').toDate() : null || moment.max.apply(moment, _toConsumableArray(seriesDomains.map(function (_ref5) {
-	          var _ref52 = _slicedToArray(_ref5, 2);
-	
-	          var min = _ref52[0];
-	          var max = _ref52[1];
-	          return moment.utc(max);
-	        }))).toDate());
-	      }
-	      return [getStart(), getEnd()];
-	    }
-	  }]);
-	
-	  return TimeSeriesChart;
-	})(MultiSeriesChart);
-	
-	exports.TimeSeriesChart = TimeSeriesChart;
-	
-	function Chart(data) {
-	  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
-	}
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	exports.chartLoader = chartLoader;
-	exports.loadReport = loadReport;
-	exports.loadReports = loadReports;
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	var _timeSeriesPlot = __webpack_require__(13);
-	
-	var _utils = __webpack_require__(6);
-	
-	var _chartviz = __webpack_require__(7);
-	
-	var d3 = __webpack_require__(3);
-	
-	var INTERACT = true; // default
-	
-	function batchURLs(base, spec, total) {
-	  var cacheBust = 'cache_bust=' + Math.floor(Math.random() * Math.pow(10, 8)),
-	      _bSpec = function _bSpec(pair) {
-	    return 'b_size=' + pair[1] + '&b_start=' + pair[0];
-	  },
-	      _qs = function _qs(pair) {
-	    return _bSpec(pair) + '&' + cacheBust;
-	  },
-	      _url = function _url(pair) {
-	    return base + '?' + _qs(pair);
-	  };
-	  if (spec === 'geometric') {
-	    return (0, _utils.geometricBatch)(total).map(_url);
-	  }
-	  return [base + '?' + cacheBust]; // default is all reports in one url fetch
-	}
-	
-	function chartLoader(node, data, opts) {
-	  var interactive, plotter;
-	  opts = opts || {};
-	  // Factory function for chart loader, creates plotter adapter and
-	  // returns its bound update() method as callback for async/queued load
-	  if (opts.interactive === undefined) {
-	    opts.interactive = INTERACT;
-	  }
-	  // construct adapter
-	  plotter = new _timeSeriesPlot.TimeSeriesPlotter(node, data, opts);
-	  // return bound callback
-	  return plotter.update.bind(plotter);
-	}
-	
-	function loadReportBatched(container, url, opts, keyFn) {
-	  /** Given container, base URL to JSON, options, get size of total
-	    * for all plots in report, load batches on respective data receipt.
-	    */
-	
-	  function size() {
-	    if (typeof opts.size === 'number') {
-	      return opts.size;
-	    }
-	    return container.selectAll('div.plotdiv').size();
-	  }
-	
-	  function divFor(uid) {
-	    var _prefix = (opts.prefix || 'plot') + '-',
-	        divId = _prefix + uid,
-	        plotDiv = container.select('#' + divId);
-	    if (!plotDiv.size()) {
-	      plotDiv = container.append('div').classed('plotdiv', true).attr('id', divId);
-	    }
-	    return plotDiv;
-	  }
-	
-	  var chartIds = [],
-	      uniqueChart = function uniqueChart(c) {
-	    return chartIds.indexOf(c.uid) === -1;
-	  },
-	      processChart = function processChart(chart) {
-	    divFor(chart.uid).call(function (plotDiv) {
-	      return chartLoader(plotDiv, chart, opts)();
-	    });
-	  },
-	      plotCount = size();
-	
-	  window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotCount;
-	
-	  batchURLs(url, opts.batching, plotCount).forEach(function (url) {
-	    (0, _utils.forReportJSON)(url, function (charts) {
-	      // improbable chance of race condition across de-dupe next 2 lines
-	      // but likelihood and impact thereof not a practical issue:
-	      charts = charts.filter(uniqueChart).map(function (graph) {
-	        return new _chartviz.Chart(graph);
-	      });
-	      chartIds.push.apply(chartIds, _toConsumableArray(charts.map(function (c) {
-	        return c.uid;
-	      })));
-	      charts.forEach(processChart);
-	    });
-	  });
-	}
-	
-	function loadReport(container, url, opts) {
-	  opts = opts || {};
-	
-	  function divKey(d, i) {
-	    /** key function for d3 to use existing plot wrapper divs rendered into
-	      * HTML by external system (e.g. server-side template) in update selection.
-	      */
-	    var exists = this instanceof window.HTMLElement,
-	        _prefix = (opts.prefix || 'plot') + '-',
-	        uid = exists ? this.getAttribute('id').replace(_prefix, '') : null;
-	    return uid || (d ? d.uid : null);
-	  }
-	
-	  // If batched, as we cannot stream and do d3 data-join - process one-by-one:
-	  if (opts.batching === 'geometric') {
-	    loadReportBatched(container, url, opts, divKey);
-	    return;
-	  }
-	
-	  // non-batched, still use batchURLs just to get single cache-busting URL:
-	  url = batchURLs(url, 'all', opts)[0];
-	
-	  (0, _utils.forReportJSON)(url, function (charts) {
-	    var plotDivs;
-	    charts = charts.map(function (graph) {
-	      return new _chartviz.Chart(graph);
-	    });
-	    plotDivs = container.selectAll('div.plotdiv').data(charts, divKey);
-	    // Update selection for any (if applicable) existing plot DIVs,
-	    //  -- this favors order set in HTML source over JSON:
-	    plotDivs.each(function (d, i) {
-	      var plotDiv = d3.select(this);
-	      chartLoader(plotDiv, d, opts)();
-	    });
-	    window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotDivs.size();
-	    // Enter selection to add remaining plot DIVs as needed:
-	    plotDivs.enter().append('div').classed('plotdiv', true).attr({
-	      id: function id(chart) {
-	        return opts.prefix + '-' + chart.uid;
-	      }
-	    }).each(function (d, i) {
-	      var plotDiv = d3.select(this);
-	      chartLoader(plotDiv, d, opts)();
-	    });
-	  });
-	}
-	
-	function loadReports(opts) {
-	  var pageArgs = (0, _utils.urlArgs)(),
-	      safeInt = function safeInt(v) {
-	    v = parseInt(v, 10);
-	    return !isNaN(v) ? v : null;
-	  },
-	      hash = window.location.hash;
-	  // default options
-	  opts = opts || {};
-	  opts.interactive = opts.interactive || 'true';
-	  opts.prefix = opts.prefix || 'plot';
-	  // initial page layout may come from options, querystring, or hash
-	  opts.layout = opts.layout || pageArgs.layout || 'normal';
-	  if (hash) {
-	    opts.layout = hash === '#compact' ? 'compact' : opts.layout;
-	    opts.layout = hash === '#standard' ? 'normal' : opts.layout;
-	  }
-	  // column count only applicable to compact mode:
-	  opts.columns = opts.columns || pageArgs.columns || 4;
-	  // Let the HTML drive what gets loaded: any element that contains
-	  // class of 'report-core' and 'data-report-json' should get
-	  // loaded with the URL listed in data-report-json.
-	  d3.select('.report-core').each(function (d, i) {
-	    var container = d3.select(this),
-	        url = container.attr('data-report-json'),
-	        layout = container.attr('data-report-layout'),
-	        size = parseInt(container.attr('data-report-size'), 10),
-	        reportOptions = Object.create(opts);
-	    reportOptions.prefix = container.attr('data-report-prefix') || opts.prefix;
-	    reportOptions.layout = container.attr('data-report-layout') || opts.layout;
-	    reportOptions.columns = safeInt(container.attr('data-report-columns') || opts.columns);
-	    reportOptions.batching = container.attr('data-report-batch-step') || 'all';
-	    reportOptions.size = isNaN(size) ? null : size;
-	    loadReport(container, url, reportOptions);
-	  });
-	}
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var BaseRenderingPlugin = (function () {
-	  function BaseRenderingPlugin(plotter) {
-	    _classCallCheck(this, BaseRenderingPlugin);
-	
-	    this.plotter = plotter;
-	    this.data = plotter.data;
-	    this.plotDiv = plotter.plotDiv;
-	    this.plotCore = plotter.plotCore;
-	    // Note: plotter.svg, scales may be undefined on the plotter at the
-	    //        time of plugin construction; preRender() should re-bind always
-	    this.svg = plotter.svg;
-	    this.xScale = plotter.xScale;
-	    this.yScale = plotter.yScale;
-	    this.enabled = true; // default for all plugins
-	  }
-	
-	  _createClass(BaseRenderingPlugin, [{
-	    key: "preRender",
-	    value: function preRender() {
-	      /** hook to be called after plotter.preRender, for things like plot
-	        * plot size or margin adjustment
-	        */
-	      this.plotCore = this.plotter.plotCore;
-	      this.svg = this.plotter.svg;
-	      this.plotGroup = this.plotter.plotGroup;
-	      this.abovePlotGroup = this.plotter.abovePlotGroup;
-	      this.xScale = this.plotter.xScale;
-	      this.yScale = this.plotter.yScale;
-	      this.margins = this.plotter.margins;
-	    }
-	  }, {
-	    key: "clear",
-	    value: function clear() {}
-	  }, {
-	    key: "prepare",
-	    value: function prepare() {
-	      /** optionally called by render() of a plugin, for late-initialized
-	        * stuff that needs to be done before core rendering, but after the
-	        * core NVD3 chart is rendered (things that cannot be done in preRender).
-	        */
-	    }
-	  }, {
-	    key: "render",
-	    value: function render() {
-	      this.prepare();
-	    }
-	  }, {
-	    key: "loadInteractiveFeatures",
-	    value: function loadInteractiveFeatures() {
-	      /** to be called only when relevant, called after rendering is complete;
-	        * plugins must unwind any event handling in their clear() method if
-	        * they create interactive features.  This will not be called when 
-	        * core plotter is not in an interactive mode.
-	        */
-	    }
-	  }, {
-	    key: "postRender",
-	    value: function postRender() {
-	      /** post-render hook for after-rendering adjustments */
-	    }
-	  }, {
-	    key: "onComplete",
-	    value: function onComplete() {
-	      /** hook for after completion, should be used sparingly for idemopotent
-	        * actions/notification: ideally should not modify state of plot.
-	        */
-	    }
-	  }, {
-	    key: "update",
-	    value: function update() {
-	      this.clear();
-	      this.render();
-	    }
-	  }]);
-	
-	  return BaseRenderingPlugin;
-	})();
-	
-	exports.BaseRenderingPlugin = BaseRenderingPlugin;
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require */
-	
-	'use strict'; /*jshint -W097 */
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	exports.schematize = schematize;
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var moment = __webpack_require__(4);
-	
-	var Schema = function Schema() {
-	  _classCallCheck(this, Schema);
-	};
-	
-	exports.Schema = Schema;
-	
-	function schematize(fields, schema) {
-	  var fieldset = [];
-	  Object.getOwnPropertyNames(fields).forEach(function (field) {
-	    fieldset.push(new Field(field, this[field]));
-	  }, fields);
-	  fieldset.forEach(function (field) {
-	    Object.defineProperty(schema, field.name, {
-	      enumerable: true,
-	      configurable: true,
-	      value: field
-	    });
-	  });
-	  return schema;
-	}
-	
-	var Field = (function () {
-	  function Field(name, descriptor) {
-	    _classCallCheck(this, Field);
-	
-	    if (name == null) throw new Error('Field must be named');
-	    descriptor = descriptor || {};
-	    // field name, REQUIRED:
-	    this.name = name;
-	    // label for the field:
-	    this.title = descriptor.title;
-	    // field description / doc (may be used in form-hints):
-	    this.description = descriptor.description;
-	    // constrain to specific type, either a class or type (string):
-	    this.type = descriptor.type;
-	    // constrain field to specific set of values:
-	    this.vocabulary = descriptor.vocabulary;
-	    // constraint is callback function which validates, normalizes; the field
-	    // is bound such that 'this' inside the constraint callback is the field:
-	    this.constraint = descriptor.constraint;
-	    // is field required? true/false:
-	    this.required = descriptor.required || false;
-	    // default value for getter:
-	    this.defaultValue = descriptor.defaultValue;
-	  }
-	
-	  _createClass(Field, [{
-	    key: 'validate',
-	    value: function validate(value, obj) {
-	      var normalized = value,
-	          constraint = this.constraint;
-	      obj = obj || {};
-	
-	      if (value != null) {
-	        normalized = value;
-	        if (constraint) {
-	          normalized = constraint.call(this, value, obj) || value;
-	        }
-	      }
-	
-	      if (this.type && normalized != null) {
-	        if (typeof this.type === 'string') {
-	          if (typeof normalized !== this.type) {
-	            throw new ValidationTypeError(this, typeof normalized, 'Expected type: [' + this.type + ']');
-	          }
-	        } else if (typeof this.type === 'function') {
-	          if (!(normalized instanceof this.type)) {
-	            throw new ValidationTypeError(this, typeof normalized, 'Expected type: [' + this.type + ']');
-	          }
-	        }
-	      }
-	
-	      if (this.required && normalized == null) {
-	        if (this.defaultValue != null) {
-	          normalized = this.defaultValue;
-	        } else {
-	          throw new ValidationError(this, normalized, 'Required fields cannot be null');
-	        }
-	      }
-	
-	      if (this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
-	        if (this.required || normalized !== null) {
-	          throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
-	        }
-	      }
-	
-	      return normalized;
-	    }
-	  }]);
-	
-	  return Field;
-	})();
-	
-	exports.Field = Field;
-	
-	var ValidationError = (function (_Error) {
-	  _inherits(ValidationError, _Error);
-	
-	  function ValidationError(field, value, msg) {
-	    _classCallCheck(this, ValidationError);
-	
-	    _get(Object.getPrototypeOf(ValidationError.prototype), 'constructor', this).call(this);
-	    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
-	    this.name = 'ValidationError';
-	  }
-	
-	  return ValidationError;
-	})(Error);
-	
-	exports.ValidationError = ValidationError;
-	
-	var ValidationTypeError = (function (_TypeError) {
-	  _inherits(ValidationTypeError, _TypeError);
-	
-	  function ValidationTypeError(field, type, msg) {
-	    _classCallCheck(this, ValidationTypeError);
-	
-	    _get(Object.getPrototypeOf(ValidationTypeError.prototype), 'constructor', this).call(this);
-	    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
-	    this.name = 'ValidationTypeError';
-	  }
-	
-	  return ValidationTypeError;
-	})(TypeError);
-	
-	exports.ValidationTypeError = ValidationTypeError;
-	
-	var Klass = function Klass(obj, localprops) {
-	  _classCallCheck(this, Klass);
-	
-	  obj = obj || {};
-	  var schema = obj.schema || schematize(obj, {});
-	  this.schema = schema;
-	  function descriptor(field, o) {
-	    var value;
-	    return {
-	      enumerable: true,
-	      configurable: true,
-	      get: function get() {
-	        if (field.required && value == null) {
-	          return field.defaultValue; // stored value is null or undef
-	        }
-	        return value;
-	      },
-	      set: function set(v) {
-	        value = field.validate(v, o);
-	      }
-	    };
-	  }
-	  Object.keys(schema).forEach(function (field) {
-	    var fieldname = schema[field].name;
-	    if ((localprops || []).indexOf(fieldname) !== -1) {
-	      return; // do not use schema property descriptor for this field
-	    }
-	    Object.defineProperty(this, fieldname, descriptor(schema[field], this));
-	  }, this);
-	
-	  Object.keys(schema).forEach(function (k) {
-	    this[k] = obj[k];
-	  }, this);
-	};
-	
-	exports.Klass = Klass;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _classvizEs6Js = __webpack_require__(11);
-	
-	var _utilsEs6Js = __webpack_require__(6);
-	
-	function dateTypeConstraint(value) {
-	  var m = (0, _utilsEs6Js.parseDate)(value, true);
-	  if (!m.isValid()) return null;
-	  return m.toDate();
-	}
-	
-	var DataPointSchema = (function (_Schema) {
-	  _inherits(DataPointSchema, _Schema);
-	
-	  function DataPointSchema() {
-	    _classCallCheck(this, DataPointSchema);
-	
-	    _get(Object.getPrototypeOf(DataPointSchema.prototype), 'constructor', this).call(this);
-	    (0, _classvizEs6Js.schematize)({
-	      key: {
-	        title: 'Data point key',
-	        type: 'string',
-	        required: true
-	      },
-	      value: {
-	        title: 'Data point value',
-	        type: 'number',
-	        required: false // null value means explicitly N/A for key
-	      },
-	      title: {
-	        title: 'Descriptive label (for key)',
-	        type: 'string',
-	        required: false
-	      },
-	      valueLabel: {
-	        title: 'Value label',
-	        description: 'May be used for N= labels for denominator value',
-	        type: 'string',
-	        required: false
-	      },
-	      note: {
-	        title: 'Data point note',
-	        description: 'Descriptive note, used in interactive features',
-	        type: 'string',
-	        defaultValue: ''
-	      },
-	      uri: {
-	        title: 'Data point URI',
-	        description: 'Link to data source for point',
-	        type: 'string',
-	        required: false
-	      }
-	    }, this);
-	  }
-	
-	  return DataPointSchema;
-	})(_classvizEs6Js.Schema);
-	
-	exports.DataPointSchema = DataPointSchema;
-	var dataPointSchema = new DataPointSchema();
-	
-	exports.dataPointSchema = dataPointSchema;
-	
-	var TimeDataPointSchema = (function (_DataPointSchema) {
-	  _inherits(TimeDataPointSchema, _DataPointSchema);
-	
-	  function TimeDataPointSchema() {
-	    _classCallCheck(this, TimeDataPointSchema);
-	
-	    _get(Object.getPrototypeOf(TimeDataPointSchema.prototype), 'constructor', this).call(this);
-	    (0, _classvizEs6Js.schematize)({
-	      key: {
-	        title: 'Date key',
-	        description: 'Time series data point key (Date value); ' + 'should be naive dates stored as localtime.',
-	        type: Date,
-	        required: true,
-	        constraint: dateTypeConstraint
-	      }
-	    }, this);
-	  }
-	
-	  return TimeDataPointSchema;
-	})(DataPointSchema);
-	
-	exports.TimeDataPointSchema = TimeDataPointSchema;
-	var timeDataPointSchema = new TimeDataPointSchema();
-	
-	exports.timeDataPointSchema = timeDataPointSchema;
-	
-	var DataSeriesSchema = (function (_Schema2) {
-	  _inherits(DataSeriesSchema, _Schema2);
-	
-	  function DataSeriesSchema() {
-	    _classCallCheck(this, DataSeriesSchema);
-	
-	    _get(Object.getPrototypeOf(DataSeriesSchema.prototype), 'constructor', this).call(this);
-	    (0, _classvizEs6Js.schematize)({
-	      title: {
-	        title: 'Series title',
-	        description: 'Series/line name or title',
-	        type: 'string',
-	        required: false
-	      },
-	      description: {
-	        title: 'Series description',
-	        description: 'Descriptive text metadata about series, often' + 'is empty or unused',
-	        type: 'string',
-	        required: false
-	      },
-	      line_width: {
-	        title: 'Line width',
-	        description: 'Line width (in relative px units) Considered ' + 'in line plots only, ignored otherwise.',
-	        type: 'number',
-	        required: false,
-	        defaultValue: 2.0
-	      },
-	      color: {
-	        title: 'Line/bar color',
-	        description: 'Primary series color name or HTML color code; ' + 'if unspecified ("Auto" default), defer to ' + 'automatic default color palette choices.',
-	        type: 'string',
-	        defaultValue: 'auto',
-	        required: false
-	      },
-	      marker_color: {
-	        title: 'Point marker fill color',
-	        description: 'Data point marker color name or code; ' + 'if unspecified ("Auto" default), defer to ' + 'match the line/bar color.',
-	        type: 'string',
-	        defaultValue: "Auto",
-	        required: false
-	      },
-	      marker_size: {
-	        title: 'Marker size',
-	        description: 'Marker size (in relative px units) Considered ' + 'in line plots only, ignored otherwise.',
-	        type: 'number',
-	        required: false,
-	        defaultValue: 9.0
-	      },
-	      marker_width: {
-	        title: 'Marker stroke width',
-	        description: 'Marker stroke width (in relative px units) ' + 'Considered in line plots only, ignored ' + 'otherwise.  Currently only used for marker ' + 'style/shape that is not filled.',
-	        type: 'number',
-	        required: false,
-	        defaultValue: 2.0
-	      },
-	      marker_style: {
-	        title: 'Marker shape style',
-	        description: 'Marker shape, selected from enumerated ' + 'vocabulary of allowable choices.',
-	        type: 'string',
-	        constraint: function constraint(value, obj) {
-	          if (value === 'filledCircle') {
-	            obj.filled = true;
-	            return 'circle';
-	          }
-	          if (value === 'filledSquare') {
-	            obj.filled = true;
-	            return 'square';
-	          }
-	          if (value === 'filledDiamond') {
-	            obj.filled = true;
-	            return 'diamond';
-	          }
-	        },
-	        vocabulary: ['x', 'diamond', 'circle', 'square', 'cross', 'plus', 'dash', 'triangle-up', 'triangle-down'],
-	        required: false,
-	        defaultValue: 'square'
-	      },
-	      show_trend: {
-	        title: 'Show trend line?',
-	        type: 'boolean',
-	        defaultValue: false
-	      },
-	      trend_width: {
-	        title: 'Trend line width, if applicable',
-	        type: 'number',
-	        defaultValue: 2.0
-	      },
-	      trend_color: {
-	        title: 'Trend line color, if applicable',
-	        description: 'Trend line color name or code; ' + 'if unspecified ("Auto" default), defer to ' + 'match the line/bar color.',
-	        type: 'string',
-	        defaultValue: "Auto"
-	      },
-	      point_labels: {
-	        title: 'Show point labels?',
-	        description: 'Show labels above each marker for data value? ' + 'The default value of defer obeys plot-wide ' + 'setting, where show/omit explicitly do as ' + 'described.',
-	        type: 'string',
-	        vocabulary: ['defer', 'omit', 'show'],
-	        defaultValue: 'defer'
-	      },
-	      display_format: {
-	        title: 'Display format for y values',
-	        description: 'Standard formatting string',
-	        type: 'string',
-	        defaultValue: '%%.%if'
-	      }
-	    }, this);
-	  }
-	
-	  return DataSeriesSchema;
-	})(_classvizEs6Js.Schema);
-	
-	exports.DataSeriesSchema = DataSeriesSchema;
-	var dataSeriesSchema = new DataSeriesSchema();
-	
-	exports.dataSeriesSchema = dataSeriesSchema;
-	
-	var TimeDataSeriesSchema = (function (_DataSeriesSchema) {
-	  _inherits(TimeDataSeriesSchema, _DataSeriesSchema);
-	
-	  function TimeDataSeriesSchema() {
-	    _classCallCheck(this, TimeDataSeriesSchema);
-	
-	    _get(Object.getPrototypeOf(TimeDataSeriesSchema.prototype), 'constructor', this).call(this);
-	    (0, _classvizEs6Js.schematize)({
-	      break_lines: {
-	        title: 'Break lines?',
-	        description: 'When a value is missing for name or date on the ' + 'X axis, should the line be broken/discontinuous ' + 'such that no line runs through the empty/null ' + 'value?  This defaults to true, which means that ' + 'no line will run from adjacent values through the ' + 'missing value.  For purposes of tabular legend, ' + 'any value without a data-source should render "--" ' + 'and any null value (specifying N/A or NaN value) ' + 'should display as N/A.  At future date, we may ' + 'wish to add other options for this case, such as ' + 'drawing a dotted-line through the N/A period that ' + 'breaks continuity of contiguous points.  Ideally, ' + 'any such rendering behavior avoids depending on a ' + 'fixed frequency for a time-series plot.',
-	        type: 'string',
-	        constraint: function constraint(value) {
-	          if (typeof value === 'boolean') return value ? 'dashed' : 'solid';
-	        },
-	        vocabulary: ['hidden', 'solid', 'dashed'],
-	        defaultValue: 'dashed'
-	      }
-	    }, this);
-	  }
-	
-	  return TimeDataSeriesSchema;
-	})(DataSeriesSchema);
-	
-	exports.TimeDataSeriesSchema = TimeDataSeriesSchema;
-	var timeDataSeriesSchema = new TimeDataSeriesSchema();
-	
-	exports.timeDataSeriesSchema = timeDataSeriesSchema;
-	
-	var MultiSeriesChartSchema = (function (_Schema3) {
-	  _inherits(MultiSeriesChartSchema, _Schema3);
-	
-	  function MultiSeriesChartSchema() {
-	    _classCallCheck(this, MultiSeriesChartSchema);
-	
-	    _get(Object.getPrototypeOf(MultiSeriesChartSchema.prototype), 'constructor', this).call(this);
-	    (0, _classvizEs6Js.schematize)({
-	      // Identifiction: shortname and uid
-	      name: {
-	        title: 'Short name',
-	        description: 'Short name of plot, unique only to report it ' + 'is contained within, usually descriptive, ' + 'like a filename; often transformed from ' + 'title.  May be present in JSON, but usually ' + 'is not preferred for identification or ' + 'data binding vs. UID; may be used in URL ' + 'construction, but in itself does not contain ' + 'full context or URI.',
-	        type: 'string',
-	        required: false
-	      },
-	      uid: {
-	        title: 'UID',
-	        description: 'UUID (hexidecimal representation) of chart, ' + 'based on UUID of chart content in Teamspace ' + 'CMS system.  May or may not be in canonical ' + 'RFC 4122 format (with dashes) or unfieled ' + 'hexidecimal format (usually, no dashes).',
-	        type: 'string',
-	        required: false
-	      },
-	      url: {
-	        title: 'Chart URL',
-	        description: 'Base URL to chart content',
-	        type: 'string',
-	        required: false
-	      },
-	      // Basic metadata -- may be rendered in template in HTML source
-	      //                   rendered by server, if it is included in
-	      //                   DOM this way, plotting application may
-	      //                   choose to re-plot it, if necessary?
-	      //                   Current (Sept. 2014) implementation is
-	      //                   *ignoring* title, description even though
-	      //                   they are provided in JSON.
-	      title: {
-	        title: 'Title',
-	        description: 'Data collection name or title; may be ' + 'displayed in legend.',
-	        type: 'string',
-	        required: false
-	      },
-	      description: {
-	        title: 'Description',
-	        description: 'Textual description of the data collection.',
-	        type: 'string',
-	        required: false
-	      },
-	      info: {
-	        title: 'Informative notes / caption',
-	        description: 'This allows any rich text and may contain ' + 'free-form notes about this chart; displayed ' + 'in report output.  NOTE: this is NOT included ' + 'in JSON as of September 2014, and is instead ' + 'rendered server-side in template -- it may be ' + 'included in future JSON feeds.',
-	        type: 'string',
-	        required: false
-	      },
-	      // Type of plot:
-	      chart_type: {
-	        title: 'Chart type',
-	        description: 'Type of chart to display (line or bar).',
-	        type: 'string',
-	        vocabulary: ['line', 'bar'],
-	        defaultValue: 'line',
-	        required: true
-	      },
-	      // Plot sizing: favor aspect_ratio over height, if provided
-	      width: {
-	        title: 'Width',
-	        description: 'Display width of chart, including Y-axis ' + 'labels, grid, and legend (if applicable) in ' + 'units configured.',
-	        type: 'number',
-	        defaultValue: '100',
-	        required: true
-	      },
-	      width_units: {
-	        title: 'Units of width',
-	        description: '',
-	        type: 'string',
-	        defaultValue: '%',
-	        required: true
-	      },
-	      height: {
-	        title: 'Height',
-	        description: 'Display height of chart in units configured ' + '(either as percentage of width, or in pixels) ' + ' -- used when aspect_ratio not specified.',
-	        type: 'number',
-	        defaultValue: '50',
-	        required: true
-	      },
-	      height_units: {
-	        title: 'Units of height',
-	        description: 'Ignore unless aspect ratio not provided or ' + 'value of height_units is % or px.',
-	        type: 'string',
-	        defaultValue: '2:1', // prefer aspect_ratio field to this
-	        required: true
-	      },
-	      aspect_ratio: {
-	        title: 'Aspect ratio',
-	        description: 'Preferred ratio of width to height, should ' + 'control height of containing div, if present.',
-	        type: Array,
-	        required: false,
-	        constraint: function constraint(value) {
-	          // validate that value is indeed a two-item Array of num.
-	          if (value.length !== 2) throw new _classvizEs6Js.ValidationError(this, value, 'Aspect ratio must be a two element Array');
-	          if (typeof value[0] !== 'number' || typeof value[1] !== 'number') throw new _classvizEs6Js.ValidationTypeError(this, typeof value[0] + ' ' + typeof value[1], 'Both elements of aspect ratio must be numbers');
-	        }
-	      },
-	      range_min: {
-	        title: 'Range minimum',
-	        description: 'Minimum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
-	        type: 'number',
-	        required: false
-	      },
-	      range_max: {
-	        title: 'Range maximum',
-	        description: 'Maximum anticipated value of any data point ' + '(optional; if not specified, calculate from ' + 'available data on all contained series).',
-	        type: 'number',
-	        required: false
-	      },
-	      units: {
-	        title: 'Units',
-	        description: 'Common set of units of measure for the data ' + 'series in this collection.  If the units for ' + 'series are not shared, then define respective ' + 'units on the series themselves. May be ' + 'displayed as part of Y-axis label using a ' + 'parenthetical notation of both units and ' + 'y_label are provided.',
-	        type: 'string',
-	        required: false
-	      },
-	      y_label: {
-	        title: 'Y axis label',
-	        description: 'Primary Y-Axis label/title (descriptive); ' + 'this is often omitted since axis is often ' + 'self-describing (especially when units are ' + 'percentages).  If omitted, do not allocate ' + 'space in plot for label. If included, ' + 'render text at 90-degree rotation ' + '(counter-clockwise, with text bottom-to-top).',
-	        type: 'string',
-	        defaultValue: '',
-	        required: false
-	      },
-	      // Goal line: value (if defined), color:
-	      goal: {
-	        title: 'Goal',
-	        description: 'Common goal value as decimal number.  If each ' + 'series has different respective goals, edit ' + 'those goals on each series.  If goal is ' + 'undefined or null, omit display of goal line.',
-	        type: 'number',
-	        required: false
-	      },
-	      goal_color: {
-	        title: 'Goal-line color',
-	        description: 'If omitted, color will be selected from ' + 'defaults.',
-	        type: 'string',
-	        defaultValue: "Auto",
-	        required: false
-	      },
-	      // Legend configuration:
-	      legend_placement: {
-	        title: 'Legend placement',
-	        description: 'Where to place legend in relationship to the ' + 'grid. Note: the legend is disabled for less ' + 'than two series/line unless the tabular ' + 'legend is selected.',
-	        type: 'string',
-	        vocabulary: ['tabular', // (def) aligned value table below grid
-	        'outside', // outside grid, next most common
-	        'inside' // inside grid, rarely used
-	        ],
-	        defaultValue: 'outside',
-	        required: false
-	      },
-	      legend_location: {
-	        title: 'Legend location',
-	        description: 'Select a directional position for legend. ' + 'This setting is ignored if either the tabular ' + 'legend placement is selected or if the legend ' + 'is hidden (for less than two series). ' + 'Available choices are cardinal directions, ' + 'which is a hold-over from how jqPlot idioms.',
-	        type: 'string',
-	        vocabulary: ['n', // top
-	        'e', // right of grid, vertical align at middle
-	        'w', // left of grid, vertical align at middle //DEPRECATED
-	        's', // bottom, below plot //DEPRECATED
-	        'nw', // left of grid, top-aligned //DEPRECATED
-	        'ne', // right of grid, top-aligned
-	        'sw', // left of grid, bottom-aligned //DEPRECATED
-	        'se' // right of grid, bottom-aligned
-	        ],
-	        defaultValue: 'e',
-	        required: false
-	      },
-	      // X-axis (title label):
-	      x_label: {
-	        title: 'X axis label',
-	        description: 'Label for X-axis, optional.',
-	        type: 'string',
-	        defaultValue: '',
-	        required: false
-	      },
-	      // misc:
-	      css: {
-	        title: 'Chart styles',
-	        description: 'CSS stylesheet rules for chart (optional).',
-	        type: 'string',
-	        required: false
-	      },
-	      point_labels: {
-	        title: 'Show point labels?',
-	        description: 'Show labels above data-point markers?  This ' + 'may be overridden on individual lines/series. ' + 'If omitted, the usual assumption is that ' + 'a viewer in a browser must hover over a ' + 'point to see its value, and click for detail. ' + 'The primary usability question with this is ' + 'what to do with overlapping values from two ' + 'lines, which is why we omit usually (or have ' + 'an idiom of displaying just labels for the ' + 'first/primary line on the plot, not plot-wide.',
-	        type: 'string',
-	        vocabulary: ['show', 'omit'],
-	        defaultValue: 'omit',
-	        required: true
-	      }
-	    }, this);
-	  }
-	
-	  return MultiSeriesChartSchema;
-	})(_classvizEs6Js.Schema);
-	
-	exports.MultiSeriesChartSchema = MultiSeriesChartSchema;
-	var multiSeriesChartSchema = new MultiSeriesChartSchema();
-	
-	exports.multiSeriesChartSchema = multiSeriesChartSchema;
-	
-	var TimeSeriesChartSchema = (function (_MultiSeriesChartSchema) {
-	  _inherits(TimeSeriesChartSchema, _MultiSeriesChartSchema);
-	
-	  function TimeSeriesChartSchema() {
-	    _classCallCheck(this, TimeSeriesChartSchema);
-	
-	    _get(Object.getPrototypeOf(TimeSeriesChartSchema.prototype), 'constructor', this).call(this);
-	    (0, _classvizEs6Js.schematize)({
-	      frequency: {
-	        title: 'Frequency',
-	        description: 'Frequncy between periods of reporting that ' + 'the plot visualizes.  May be used as cue for ' + 'handling the default date-label choices, ' + 'where month names are often stand-ins for ' + 'an exemplar date value for the month, e.g. ' + '2014-06-01 may be represented as "Jun 2014". ',
-	        type: 'string',
-	        vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly', 'daily'],
-	        defaultValue: 'monthly',
-	        required: false
-	      },
-	      start: {
-	        title: 'Start date',
-	        description: 'Explicit start date; optional.  If an ' + 'explicit start date is not provided, one ' + 'should be computed from earliest value in ' + 'provided data.',
-	        type: Date,
-	        constraint: function constraint(value, obj) {
-	          value = dateTypeConstraint(value);
-	          return value;
-	        },
-	        required: false
-	      },
-	      end: {
-	        title: 'End date',
-	        description: 'Explicit end date; optional.  If an ' + 'explicit end date is not provided, one ' + 'should be computed from latest value in ' + 'provided data.',
-	        type: Date,
-	        constraint: function constraint(value, obj) {
-	          value = dateTypeConstraint(value);
-	          return value;
-	        },
-	        required: false
-	      },
-	      labels: {
-	        title: 'Date labels',
-	        description: 'Date label overrides, used for X-axis labels. ' + 'if ommitted in whole or in part, use a ' + 'default MM/DD/YYYY format for dates. Is an ' + 'untyped object value used as key/vaule pair; ' + 'keys are ISO 8601 date stamps, values labels; ' + 'example: http://snag.gy/D1zjx.jpg',
-	        type: Object,
-	        constraint: function constraint(value) {
-	          // validate the object key/value pairs:
-	          Object.keys(value).forEach(function (k) {
-	            var v = value[k];
-	            if (!(0, _utilsEs6Js.parseDate)(k, true).isValid()) throw new _classvizEs6Js.ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
-	            if (typeof v !== 'string') throw new _classvizEs6Js.ValidationTypeError(this, typeof v, 'Labels must be strings');
-	          }, this);
-	        },
-	        required: false
-	      },
-	      auto_crop: {
-	        title: 'Auto-crop data?',
-	        description: 'If data contains sequential null values (incomplete ' + 'or no data calculable) on the right-hand of a ' + 'time-series plot, should that right-hand side ' + 'be cropped to only show the latest meaningful ' + 'data?  The default is to crop automatically.',
-	        type: 'boolean',
-	        defaultValue: true,
-	        required: false
-	      }
-	    }, this);
-	  }
-	
-	  return TimeSeriesChartSchema;
-	})(MultiSeriesChartSchema);
-	
-	exports.TimeSeriesChartSchema = TimeSeriesChartSchema;
-	var timeSeriesChartSchema = new TimeSeriesChartSchema();
-	exports.timeSeriesChartSchema = timeSeriesChartSchema;
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _utils = __webpack_require__(6);
-	
-	var _vendorDebounce = __webpack_require__(14);
-	
-	var _tabularLegendRenderer = __webpack_require__(15);
-	
-	var _pointLabelsRenderer = __webpack_require__(16);
-	
-	var _trendLineRenderer = __webpack_require__(17);
-	
-	var _goalLineRenderer = __webpack_require__(18);
-	
-	var _breakLines = __webpack_require__(19);
-	
-	var _axisTitles = __webpack_require__(20);
-	
-	var _xTickLabels = __webpack_require__(21);
-	
-	var _basicLegend = __webpack_require__(22);
-	
-	var _hover = __webpack_require__(23);
-	
-	var _click = __webpack_require__(24);
-	
-	var _compact = __webpack_require__(25);
-	
-	// Set up namespace:
-	var moment = __webpack_require__(4);
-	var d3 = __webpack_require__(3);
-	var nv = __webpack_require__(5);
-	window.plotqi = window.plotqi || {};
-	
-	// Global list of plotters, may be used by plugins or external:
-	window.plotqi.plotters = [];
-	
-	// Integration plugins, may be appended to core/stock plugins (late-binding):
-	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
-	
-	// Core plugins:
-	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
-	
-	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
-	var INTERVALS = {
-	  daily: [1, 'day'],
-	  weekly: [1, 'week'],
-	  monthly: [1, 'month'],
-	  yearly: [1, 'year'],
-	  quarterly: [3, 'month']
-	};
-	
-	// Class names:
-	var SVG_CLASSNAME = 'upiq-chart chart-svg';
-	
-	// Line chart selectors:
-	var SEL_LINECHART = '.nv-wrap.nv-lineChart';
-	var SEL_LINESWRAP = ' .nv-linesWrap';
-	var LINESWRAP_CLASSNAME = 'nv-linesWrap';
-	var SEL_SCATTERWRAP = '.nv-wrap.nv-line .nv-scatterWrap';
-	var SEL_LINEGROUPS = SEL_SCATTERWRAP + ' .nv-wrap.nv-scatter .nv-groups';
-	var SEL_LINEGROUP = SEL_LINEGROUPS + ' .nv-group';
-	var SEL_MARKER = SEL_LINEGROUPS + ' path.nv-point';
-	// Bar chart selectors:
-	var SEL_BARCHART = '.nv-wrap.nv-multiBarWithLegend';
-	var SEL_BARWRAP = ' .nv-barsWrap';
-	var BARWRAP_CLASSNAME = 'nv-barsWrap';
-	var SEL_BAR = SEL_BARWRAP + ' .nv-wrap.nv-multibar .nv-groups rect.nv-bar';
-	// Generic selectors:
-	var SEL_CHARTSVG = '.chart-svg';
-	
-	// registration of custom marker symbols for NVD3 1.7.x+
-	nv.utils.symbolMap.set('x', function (specifiedSize) {
-	  var size = Math.sqrt(specifiedSize) * 1.8;
-	  return 'M' + -size / 2 + ',' + -size / 2 + 'l' + size + ',' + size + 'm0,' + -size + 'l' + -size + ',' + size;
-	});
-	
-	nv.utils.symbolMap.set('plus', function (specifiedSize) {
-	  var size = Math.sqrt(specifiedSize) * 1.8;
-	  return 'M0,0' + 'l0,' + size + 'm' + -size / 2 + ',' + -(size / 2) + 'l' + size + ',0';
-	});
-	
-	var TimeSeriesPlotter = (function () {
-	  // multi-adapter of D3-wrapped dom element (chart div) context and plot data
-	
-	  function TimeSeriesPlotter(plotDiv, data, opts) {
-	    _classCallCheck(this, TimeSeriesPlotter);
-	
-	    this.options = this.getOptions(opts);
-	    this.plotDiv = plotDiv; // DOM (d3) node (outer plot div)
-	    this.data = data; // TimeSeriesChart object
-	    this._loadConfig();
-	    // State to be created or re-created later, by this.render():
-	    this.chart = null; // will be NVD3 chart obj
-	    this.plotCore = null; // will be plot core inner div
-	    this.svg = null; // will be svg inside the plot core div
-	    // Interactive mode?
-	    this._initPlugins();
-	    // Completion flag may be used by onComplete() of plugins or external:
-	    this.complete = false;
-	    // make global reference available in plotqi namespace for plotter(s):
-	    window.plotqi.plotters.push(this);
-	  }
-	
-	  _createClass(TimeSeriesPlotter, [{
-	    key: 'getOptions',
-	    value: function getOptions(o) {
-	      /** get options and/or load initial defaults */
-	      o = Object.create(o) || {};
-	      // interactive mode:
-	      o.interactive = o.interactive === undefined ? true : o.interactive;
-	      // Check for whether plot will be contained inside a compact layout:
-	      o.compact = o.layout === 'compact';
-	      // tiny mode (may be overridden by sizePlot during preRender (<165px),
-	      // may be true/false, undefined, or 'disabled':
-	      o.tiny = o.tiny === undefined ? false : o.tiny;
-	      // small mode usually auto-configured in preRender (<400px):
-	      o.small = o.small === undefined ? false : o.small;
-	      // prefix:
-	      o.prefix = o.prefix || 'plot';
-	      return o;
-	    }
-	  }, {
-	    key: '_loadConfig',
-	    value: function _loadConfig() {
-	      var _this = this;
-	
-	      var interval = INTERVALS[this.data.frequency || 'monthly'],
-	          domain = this.data.domain,
-	          dValue = function dValue(x) {
-	        return x.valueOf();
-	      },
-	          type = this.data.chart_type || 'line',
-	          isLine = type === 'line',
-	
-	      // right-side padding typically zero because last datapoint is
-	      // beginning of period, and domain bounds are to end of period;
-	      // in such case zero padded intervals is still effectively one.
-	      rightSidePadding = 0,
-	          leftSidePadding = isLine ? -1 : 0;
-	      // initial values:
-	      this.baseFontSize = 14; // px
-	      // chart type:
-	      this.type = type;
-	      // whether plot is relative (not fixed-px) width:
-	      this.relativeWidth = this.data.width_units == '%';
-	      // intverval bits:
-	      this.timeStep = interval[0];
-	      this.interval = interval[1];
-	      this.d3Interval = d3.time[this.interval].utc;
-	      // pad left/right with 0-1 periods of space:
-	      domain = [this.timeOffset(domain[0], leftSidePadding), this.timeOffset(domain[1], rightSidePadding)];
-	      this.domain = domain;
-	      // time range function:
-	      this.timeRange = function (start, end) {
-	        return _this.d3Interval.range(start, end, _this.timeStep);
-	      };
-	      // tick values:
-	      this.tickVals = this.timeRange(domain[0], this.timeOffset(domain[1], +1)).map(dValue);
-	      // plot domain for bar chart is continouous, but not for bar chart, which
-	      // is merely sorted/discrete; therefore bar chart xDomain needs to
-	      // include all values:
-	      this.xDomain = isLine ? domain.map(dValue) : this.tickVals;
-	      // NVD3 selectors contingent on plot type:
-	      this.nvType = isLine ? SEL_LINECHART : SEL_BARCHART;
-	      this.wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
-	    }
-	  }, {
-	    key: '_allPlugins',
-	    value: function _allPlugins() {
-	      var core = window.plotqi.RENDERING_PLUGINS,
-	          additional = window.plotqi.ADDITIONAL_PLUGINS;
-	      return core.concat(additional);
-	    }
-	  }, {
-	    key: '_initPlugins',
-	    value: function _initPlugins() {
-	      // init plugins for later use by respective hookable methods
-	      this.plugins = [];
-	      this._allPlugins().forEach(function (klass) {
-	        var adapter = new klass(this); // plugin adapts this plotter core
-	        this.plugins.push(adapter);
-	      }, this);
-	    }
-	  }, {
-	    key: 'pluginName',
-	    value: function pluginName(p) {
-	      /** plugin name: __name__ string stable post-minification, constructor name
-	        * not guranteed safe, so only used as fallback.
-	        */
-	      return p.__name__ || p.constructor.name;
-	    }
-	  }, {
-	    key: 'pluginEnabled',
-	    value: function pluginEnabled(name) {
-	      var _this2 = this;
-	
-	      /** return true if plugin singleton instance by name is enabled */
-	      var plugin = this.plugins.filter(function (p) {
-	        return _this2.pluginName(p) === name;
-	      })[0];
-	      return plugin && plugin.enabled;
-	    }
-	  }, {
-	    key: 'getPlugin',
-	    value: function getPlugin(name) {
-	      var _this3 = this;
-	
-	      /** get plugin by name */
-	      var plugin = this.plugins.filter(function (p) {
-	        return _this3.pluginName(p) === name;
-	      })[0];
-	      return plugin;
-	    }
-	  }, {
-	    key: 'computedInterval',
-	    value: function computedInterval(value) {
-	      /** Given maximum possible value, infer a display maximum, interval.
-	        * Returns two-value array of max, interval.
-	        */
-	      var n,
-	          n_max = 0,
-	          interval,
-	          m = Math;
-	      // boundary check:
-	      if (value <= 0 || value === Infinity) return [100, 20]; // safety
-	      // normal inference:
-	      for (n = 1; n_max < value; n++) {
-	        n_max = 10 * m.max(1, m.pow(10, m.floor((n - 1) / 5))) * (n % 5 || 5);
-	        interval = [0, 1].indexOf(n % 5) !== -1 ? n_max / 5 : n_max / (n % 5);
-	      }
-	      return [n_max, interval];
-	    }
-	  }, {
-	    key: '_configAxes',
-	    value: function _configAxes() {
-	      var _this4 = this;
-	
-	      var range = this.data.range,
-	          chart = this.chart,
-	          labelFn = function labelFn(d) {
-	        return _this4.data.axisLabel(d).label;
-	      },
-	          tabular = this.data.legend_placement === 'tabular',
-	          dFormat = function dFormat(d) {
-	        return moment.utc(d).format('YYYY-MM-DD');
-	      },
-	          yTickVals = function yTickVals(n) {
-	        var out = [],
-	            interval = (range[1] - range[0]) / n,
-	            inferred,
-	            i;
-	        if (range[0] === range[1] && range[1] <= 100) {
-	          // e.g. range of [0,0] causes problem interval, infinite loop
-	          range = [0, 100];
-	          interval = 20;
-	        }
-	        if (range[1] > 100 && !_this4.data.range_max) {
-	          inferred = _this4.computedInterval(range[1]);
-	          range = [0, inferred[0]];
-	          interval = inferred[1];
-	        }
-	        for (i = range[0]; i <= range[1]; i += interval) {
-	          out.push(i);
-	        }
-	        return out;
-	      };
-	      // x-axis tick lines should be rendered, even if default CSS makes them
-	      // invisible, but labels should not be rendered by nvd3, so we have
-	      // function yeilding empty string always.
-	      chart.xAxis.tickFormat(function () {
-	        return '';
-	      });
-	      chart.xAxis.tickValues(this.tickVals);
-	      // y-axis:
-	      chart.yAxis.tickFormat(d3.format(',.0f')).tickValues(yTickVals(5)).showMaxMin(false).tickPadding(6);
-	      chart.xDomain(this.xDomain).yDomain(range);
-	    }
-	  }, {
-	    key: 'timeOffset',
-	    value: function timeOffset(date, n) {
-	      /** n can be +/- integer for direction, number of intervals to offset */
-	      return moment.utc(date).add(n * this.timeStep, this.interval).toDate();
-	    }
-	  }, {
-	    key: '_margins',
-	    value: function _margins() {
-	      /** make default margins for plot */
-	      return { top: 10, bottom: 5, left: 40, right: 10 };
-	    }
-	  }, {
-	    key: 'nvChartFactory',
-	    value: function nvChartFactory() {
-	      var _this5 = this;
-	
-	      // factory for appropriate chart function to be used by
-	      // d3 selection.call() or transition.call()
-	      var m = nv.models,
-	          type = this.data.chart_type || 'line',
-	          factory = type === 'line' ? m.lineChart : m.multiBarChart,
-	          chart = factory(),
-	          markerSize = function markerSize(d) {
-	        return (d.size || 8) * Math.pow(_this5.plotWidth / 320, 2);
-	      };
-	      chart.id(this.data.uid).showLegend(false) // do not use nvd3 for legends
-	      .tooltips(false);
-	      if (type === 'line') {
-	        chart.useInteractiveGuideline(false).pointSize(markerSize).interactive(false);
-	      }
-	      if (type === 'bar') {
-	        chart.showControls(false).groupSpacing(0.3).reduceXTicks(false);
-	      }
-	      return chart;
-	    }
-	  }, {
-	    key: 'yformat',
-	    value: function yformat(y) {
-	      return typeof y === 'number' ? d3.format(',.1f')(y) : 'N/A';
-	    }
-	  }, {
-	    key: 'allSeries',
-	    value: function allSeries() {
-	      var input = this.data,
-	          keys = this.timeRange(input.domain[0], this.timeOffset(input.domain[1], +2)),
-	
-	      // transform fn for series model to plot semantics:
-	      _transform = function _transform(series, index) {
-	        var plotType = this.type,
-	            obj = {
-	          key: series.position,
-	          color: series.color,
-	          values: [],
-	          format: d3.format(series.display_format)
-	        };
-	        if (plotType === 'line') {
-	          obj.incomplete = series.break_lines;
-	          obj.thickness = series.line_width || 2.0;
-	          obj.markerThickness = series.marker_width || 2.0;
-	        }
-	        keys.map(function (k) {
-	          return k.valueOf();
-	        }).forEach(function (key) {
-	          var datapoint = series.data.get(key),
-	              value,
-	              info;
-	          if (series.data.has(key)) {
-	            value = datapoint.value;
-	            info = {
-	              x: moment.utc(datapoint.key).valueOf(),
-	              y: !!value || value === 0 ? value : NaN,
-	              note: datapoint.note,
-	              title: datapoint.title,
-	              uri: datapoint.uri,
-	              seriesIndex: index
-	            };
-	            if (plotType === 'line') {
-	              info.size = series.marker_size;
-	              info.shape = series.marker_style;
-	            }
-	            obj.values.push(info);
-	          } else if (plotType === 'line') {
-	            obj.values.push({
-	              x: moment.utc(key).valueOf()
-	            });
-	          }
-	        });
-	        return obj;
-	      };
-	      return input.series.map(_transform, this);
-	    }
-	  }, {
-	    key: '_updateLineDetail',
-	    value: function _updateLineDetail() {
-	      var lineGroups = this.svg.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group'),
-	          relStrokeWidthFactor = 0.25 + this.gridWidth() / 600;
-	      lineGroups.style('stroke-dasharray', function (d) {
-	        return d.dashed ? '5 5' : 'none';
-	      }).style('stroke-width', function (d) {
-	        return (d.thickness || 2) * relStrokeWidthFactor;
-	      });
-	    }
-	  }, {
-	    key: '_updateMarkerDetail',
-	    value: function _updateMarkerDetail() {
-	      /** resize markers: d3 pointSize will draw paths of appropriate size,
-	        *      but will not scale stroke accordingly, we do this after
-	        *      initial rendering.
-	        */
-	      var relStrokeWidthFactor = 1 + this.plotWidth / 640,
-	          thickness = function thickness(d) {
-	        return (d.markerThickness || 2) * relStrokeWidthFactor;
-	      };
-	      this.svg.selectAll('.nv-point').style({
-	        'stroke-width': function strokeWidth(d) {
-	          return '' + thickness(d) + 'px';
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'sizePlot',
-	    value: function sizePlot() {
-	      var data = this.data,
-	          width = +data.width || 100,
-	          units = data.width_units || '%',
-	          aspect = data.aspect_ratio,
-	          // [w,h]
-	      hasRatio = aspect && aspect.length === 2,
-	          ratio = hasRatio ? aspect[1] / aspect[0] : undefined,
-	          // h / w
-	      relHeight = !hasRatio && data.height_units === '%',
-	          widthSpec = '' + width + units,
-	          clientWidth,
-	          minHeight = 160,
-	          minFontSize = 9,
-	          // px
-	      computedHeight;
-	      // plot core div is 100% width of outer:
-	      this.plotCore.style('width', '100%');
-	      // and outer is as wide as specified:
-	      this.plotDiv.style('width', widthSpec);
-	      if (!data.series.length) {
-	        // minimal height, placeholder text:
-	        this.plotCore.style('height', '15px');
-	        this.plotCore.html('<em>No series data yet provided for plot.</em>');
-	        return;
-	      }
-	      clientWidth = this.plotCore[0][0].clientWidth;
-	      if (!hasRatio && data.height_units === 'px') {
-	        // fixed pixel (absolute) height is specified:
-	        computedHeight = data.height;
-	      } else {
-	        if (relHeight && data.height) {
-	          // height relative to width, but no specified aspect ratio
-	          ratio = data.height / 100.0; // pct to ratio
-	        }
-	        // use explicitly provided or just-computed aspect ratio:
-	        computedHeight = Math.round(ratio * clientWidth);
-	      }
-	      // check computed vs. min:
-	      computedHeight = Math.max(minHeight, computedHeight);
-	      this.plotCore.style('height', '' + computedHeight + 'px');
-	      // save width, height of plotCore for reference by rendering:
-	      this.plotWidth = clientWidth;
-	      this.plotHeight = computedHeight;
-	      // set base font size on svg element:
-	      this.baseFontSize = Math.max(minFontSize, Math.floor(clientWidth / 45 * 2) / 2.0 // rounded to 0.5px
-	      );
-	      // plot width flags: if sufficiently small, auto-set the 'tiny' flag:
-	      if (this.options.tiny !== 'disabled' && this.plotWidth < 165) {
-	        this.options.tiny = true;
-	      } else if (this.plotWidth >= 165) {
-	        this.options.tiny = false;
-	      }
-	      // plot width flags: if sufficiently small, auto-set the 'small' flag:
-	      this.options.small = this.plotWidth < 400;
-	    }
-	  }, {
-	    key: 'clear',
-	    value: function clear() {
-	      /** stable clear: respect existing non-plotCore content */
-	      if (this.plotCore && this.plotCore.size()) {
-	        this.plotCore.remove();
-	      }
-	    }
-	  }, {
-	    key: 'displayMetadata',
-	    value: function displayMetadata() {
-	      var plotTitle = this.plotDiv.selectAll('.plot-title').data([null]),
-	          plotDesc = this.plotDiv.selectAll('.plot-description').data([null]),
-	          plotInfo = this.plotDiv.selectAll('.plot-info').data([null]);
-	      plotTitle.enter().append('h3').classed('plot-title', true);
-	      plotTitle.text(this.data.title || '');
-	      plotDesc.enter().append('p').classed('plot-description', true);
-	      plotDesc.text(this.data.description || '');
-	      plotInfo.enter().append('div').classed('plot-info', true);
-	    }
-	  }, {
-	    key: 'preRender',
-	    value: function preRender() {
-	      /** prepare the chart div context for rendering */
-	      var chart;
-	      // - Set margins:
-	      this.margins = this._margins();
-	      // - Set metadata:
-	      this.displayMetadata();
-	      // - Clear existing (core plot) content:
-	      this.clear();
-	      // - Create inner (core) div, insert before any end-matter/plot-info:
-	      this.plotCore = this.plotDiv.insert('div', '.plot-info').classed('chart-div', true).style({
-	        'postion': 'relative'
-	      });
-	      // - Size div elements according to specifications:
-	      this.sizePlot();
-	      // - Add empty svg
-	      this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
-	      this.svg.outerNode = this.plotDiv;
-	      // - set core groups in this.svg:
-	      this.abovePlotGroup = this.svg.append('g').classed('upiq-above-plot', true);
-	      this.plotGroup = this.svg.append('g').classed('upiq-plot', true);
-	      // - set initial base styles on plotCore element that will be inherited:
-	      this.plotCore.style({
-	        'font-size': '' + this.baseFontSize + 'px'
-	      });
-	      // - Add singleton 'defs' to svg:
-	      this.svg.append('defs');
-	      // - create an NVD3 chart object that will be returned:
-	      this.chart = this.nvChartFactory();
-	      // - get scales from chart, set for use by plotter, plugins:
-	      // -- xScale may be oridinal or linear:
-	      this.xScale = this.chart.xScale();
-	      // -- yScale:
-	      this.yScale = this.chart.yScale();
-	      // - Bind plugin svg, scales for plugins, call any plugins pre-render
-	      this.plugins.forEach(function (plugin) {
-	        if (typeof plugin.preRender === 'function') {
-	          plugin.preRender();
-	        }
-	      }, this);
-	      // - Set chart positioning: width, height, margins:
-	      this.chart.width(this.plotWidth); // width before margins
-	      this.chart.height(this.plotHeight); // height before margins
-	      this.chart.margin(this.margins); // margins around exterior of grid
-	    }
-	  }, {
-	    key: '_grid',
-	    value: function _grid() {
-	      var barSel = '.nv-multiBarWithLegend .nv-x',
-	          lineSel = '.nv-lineChart g rect',
-	          sGrid = this.type === 'bar' ? barSel : lineSel;
-	      return this.svg.select(sGrid).node();
-	    }
-	  }, {
-	    key: 'gridWidth',
-	    value: function gridWidth() {
-	      var grid = this._grid();
-	      return !!grid ? grid.getBoundingClientRect().width : 0;
-	    }
-	  }, {
-	    key: 'gridHeight',
-	    value: function gridHeight() {
-	      var grid = this._grid();
-	      return !!grid ? grid.getBoundingClientRect().height : 0;
-	    }
-	  }, {
-	    key: 'updateRenderingPlugins',
-	    value: function updateRenderingPlugins() {
-	      /** update rendering plugins, in order */
-	      this.plugins.forEach(function (plugin) {
-	        plugin.update();
-	      }, this);
-	    }
-	  }, {
-	    key: 'setTimeScale',
-	    value: function setTimeScale() {
-	      var sDomain = this.xScale.domain();
-	      var sRange = this.xScale.range();
-	
-	      sRange = [sRange[0], sRange.slice(-1)[0]];
-	      sDomain = [sDomain[0], sDomain.slice(-1)[0]];
-	      // get an initial scale for proportions
-	      this.timeScale = d3.time.scale().domain(sDomain).range(sRange);
-	      // if plot type is bar, we need to extend the scale domain/range so that
-	      // we accommodate about 1 total period of left/right padding used by nvd3:
-	      if (this.type === 'bar') {
-	        sDomain[1] = this.timeOffset(sDomain[1], +1);
-	        sRange[1] = this.timeScale(sDomain[1]);
-	      }
-	      // use adjusted domain, range
-	      this.timeScale.domain(sDomain).range(sRange);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var data = this.allSeries(),
-	          sDomain,
-	          sRange;
-	      this.preRender();
-	      // now that we have chart, configure axes:
-	      this._configAxes();
-	      // Bind data to selection, call this.chart function in context
-	      // data-aware selection:
-	      this.plotGroup.datum(data).call(this.chart);
-	      // after this binding, we have x scales with concrete domain/range, but
-	      // for bar charts, we may need carefully constructed time-scale:
-	      this.setTimeScale();
-	      if (this.type === 'line') {
-	        // update line detail (e.g. dashes, thickness):
-	        this._updateLineDetail();
-	        this._updateMarkerDetail();
-	      }
-	      // Rendering plugins, in order:
-	      this.updateRenderingPlugins();
-	      return this.chart;
-	    }
-	  }, {
-	    key: 'loadInteractiveFeatures',
-	    value: function loadInteractiveFeatures() {
-	      /** load interactive features from plugins, as applicable, if this
-	        * is enabled (this.options.interactive === true).
-	        */
-	      if (!this.options.interactive) return;
-	      this.plugins.forEach(function (plugin) {
-	        plugin.loadInteractiveFeatures();
-	      }, this);
-	    }
-	  }, {
-	    key: 'highlightX',
-	    value: function highlightX(key) {
-	      /** given date key, highlight any tick line associated with that key */
-	      var value = key ? key.valueOf() : null,
-	          tickLines = this.svg.select('g.nv-x').selectAll('g.tick'),
-	          tick = tickLines[0].filter(function (l) {
-	        return d3.select(l).data() == value;
-	      });
-	      d3.select(tick[0]).classed('selected', true);
-	    }
-	  }, {
-	    key: 'clearHighlights',
-	    value: function clearHighlights() {
-	      var tickLines = this.svg.select('g.nv-x').selectAll('g.tick');
-	      tickLines.classed('selected', false);
-	    }
-	  }, {
-	    key: 'reorderSeries',
-	    value: function reorderSeries() {
-	      /** DOM order is stacking/painting order; reversing puts the top-most
-	        * and front-most line in all series at the top of the drawing, with
-	        * subsequent (and assumed of lesser importance) lines are painted 
-	        * underneath.
-	        */
-	      var indexes = (0, _utils.range)(this.data.series.length);
-	      indexes.reverse();
-	      indexes.forEach(function (i) {
-	        var selector = '.nv-series-' + i,
-	            selection = this.plotGroup.selectAll(selector);
-	        selection[0].forEach(function (el) {
-	          el.parentNode.appendChild(el);
-	        });
-	      }, this);
-	    }
-	  }, {
-	    key: 'postRender',
-	    value: function postRender() {
-	      var abovePlot = this.abovePlotGroup,
-	          _size = function _size(el) {
-	        return el.getBoundingClientRect().height;
-	      },
-	          sizers,
-	          adjustHeight;
-	      // - Re-order series that NVD3 draws, if line chart:
-	      if (this.type === 'line') {
-	        this.reorderSeries();
-	      }
-	      // - per-plugin adjustments
-	      this.plugins.forEach(function (plugin) {
-	        plugin.postRender();
-	      }, this);
-	      // - general adjustments
-	      // -- positioning adjustment to accommodate height of this.abovePlotGroup
-	      //    which may be adjusted by plugins (e.g. a top legend); note this
-	      //    adjusts the total plotCore height irrespective of aspect-ratio set
-	      //    in this.sizePlot() -- note: plugins must have a rect.sizing element,
-	      //    within their output, as introspection of box model for group
-	      //    elements is unreliable.
-	      sizers = abovePlot.selectAll('.sizing');
-	      if (sizers.size()) {
-	        adjustHeight = sizers[0].map(_size).reduce(function (a, b) {
-	          return a + b;
-	        }, 0);
-	      }
-	      if (adjustHeight) {
-	        this.plotGroup.attr({
-	          transform: 'translate(0, ' + adjustHeight + ')'
-	        });
-	        this.plotHeight += adjustHeight;
-	        this.plotCore.style({
-	          height: this.plotHeight + 'px'
-	        });
-	      }
-	      // - Mark as complete:
-	      this.complete = true;
-	      // - per-plugin on-complete notifiers:
-	      this.plugins.forEach(function (plugin) {
-	        plugin.onComplete();
-	      }, this);
-	    }
-	  }, {
-	    key: 'refresh',
-	    value: function refresh() {
-	      this.render();
-	      this.loadInteractiveFeatures();
-	      this.postRender();
-	    }
-	  }, {
-	    key: 'update',
-	    value: function update() {
-	      // rendering stuff:
-	      this.refresh();
-	      if (this.relativeWidth) {
-	        window.addEventListener('resize', (0, _vendorDebounce.debounce)(this.refresh.bind(this), 500, false));
-	      }
-	    }
-	  }]);
-	
-	  return TimeSeriesPlotter;
-	})();
-	
-	exports.TimeSeriesPlotter = TimeSeriesPlotter;
-	
-	// if xScale is ordinal, we need a (continuous) time-scale equivalent for
-	// use by plugins:
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	//Taken from Underscore, licensed under the MIT license
-	//Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	//Full MIT copyright notice can be found in the project root
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.debounce = debounce;
-	
-	function debounce(func, wait, immediate) {
-	  var timeout;
-	  return function () {
-	    var context = this,
-	        args = arguments;
-	    var later = function later() {
-	      timeout = null;
-	      if (!immediate) func.apply(context, args);
-	    };
-	    var callNow = immediate && !timeout;
-	    window.clearTimeout(timeout);
-	    timeout = window.setTimeout(later, wait);
-	    if (callNow) func.apply(context, args);
-	  };
-	}
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _utils = __webpack_require__(6);
-	
-	var _plugin = __webpack_require__(9);
-	
-	var d3 = __webpack_require__(3);
-	var moment = __webpack_require__(4);
-	
-	var LEGEND_CLASS = 'upiq-legend';
-	var SEL_LEGEND = 'g.' + LEGEND_CLASS;
-	
-	var TabularLegendRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(TabularLegendRenderer, _BaseRenderingPlugin);
-	
-	  function TabularLegendRenderer(plotter) {
-	    _classCallCheck(this, TabularLegendRenderer);
-	
-	    _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), 'constructor', this).call(this, plotter);
-	    this.__name__ = 'TabularLegendRenderer';
-	    this.legendGroup = null; // will be set by this.makeLegendGroup
-	    this.leftPad = 5;
-	    this.legPad = 10;
-	    // cell padding (within cells === margin of text), all unitx px
-	    this.cellPadding = { // all units px
-	      top: 1,
-	      bottom: 1,
-	      left: 1,
-	      right: 1
-	    };
-	    // row padding (around cells === margin of cells), all units px
-	    this.rowPadding = { // all units px
-	      top: 1,
-	      bottom: 1,
-	      left: 1,
-	      right: 1
-	    };
-	  }
-	
-	  _createClass(TabularLegendRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      var smallFormat;
-	      _get(Object.getPrototypeOf(TabularLegendRenderer.prototype), 'preRender', this).call(this);
-	      smallFormat = this.plotter.plotWidth < 320 || this.plotter.options.tiny;
-	      this.enabled = this.useTabularLegend() && !smallFormat;
-	      // If rel-width & tabular legend: dynamic size for left margin, min 80px
-	      if (this.enabled) {
-	        this.margins.bottom = 100; // default
-	        this.margins.left = Math.max(80, Math.floor(this.plotter.plotWidth * 0.2));
-	      }
-	    }
-	  }, {
-	    key: 'prepare',
-	    value: function prepare() {
-	      /** prepare must be called after nvd3 render because we create a 
-	        * time scale from scale domain/range, which are not set initially
-	        * during preRender.
-	        */
-	      var xScale = this.plotter.xScale,
-	
-	      /*
-	      timeScale = d3.time.scale()
-	        .domain(xScale.domain())
-	        .range(xScale.range()),
-	      */
-	      tickVals = this.plotter.tickVals;
-	      // force continuous scale in case of oridinal scale via bar chart:
-	      this.xScale = this.plotter.timeScale;
-	      this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
-	      // column width interval based on sample of first data column, scaled:
-	      this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
-	      this.yMin = this.plotter.yScale(this.data.range[0]);
-	    }
-	  }, {
-	    key: 'clear',
-	    value: function clear() {
-	      // since we cannot use selection.html('') in SVG DOM (no innerHTML), we
-	      // cannot empty, and must remove the legend group, which will be re-added
-	      // in this.render().
-	      this.unloadInteractiveFeatures();
-	      this.plotGroup.selectAll(SEL_LEGEND).remove();
-	    }
-	  }, {
-	    key: 'makeLegendGroup',
-	    value: function makeLegendGroup() {
-	      var legendGroup = this.plotGroup.selectAll(SEL_LEGEND).data([this.data.series]),
-	          legendEnterSelection = legendGroup.enter().append('g').classed(LEGEND_CLASS, true);
-	      this.legendGroup = this.plotGroup.select(SEL_LEGEND);
-	    }
-	  }, {
-	    key: 'setLegendMargins',
-	    value: function setLegendMargins() {
-	      var margins = this.margins,
-	          yTop = this.yMin + margins.top + this.legPad;
-	      this.legendGroup.attr({
-	        transform: 'translate(' + this.leftPad + ', ' + yTop + ')'
-	      });
-	    }
-	  }, {
-	    key: 'makeRow',
-	    value: function makeRow(rowStyle) {
-	      /** make row group and bagkground rect */
-	      var row = this.legendGroup.append('g').classed('upiq-legend-row', true),
-	          rowBgRect = row.selectAll('rect').data([null]).enter().append('rect').classed('upiq-legend-table-row-bg', true);
-	      if (rowStyle.className) {
-	        row.classed(rowStyle.className, true);
-	      }
-	      rowBgRect.attr({
-	        height: 15, // initial height
-	        width: this.xMax + (this.margins.left - this.leftPad),
-	        'fill-opacity': rowStyle['fill-opacity'] || '1.0',
-	        fill: rowStyle.fill || '#999'
-	      });
-	      return row;
-	    }
-	  }, {
-	    key: 'fitRow',
-	    value: function fitRow(row) {
-	      var textHeight = d3.max(row.selectAll('text.upiq-legend-cell-text')[0].map(function (element) {
-	        return element.getBoundingClientRect().height;
-	      })),
-	          cellPadding = this.cellPadding,
-	          rowPadding = this.rowPadding,
-	          cellHeight = textHeight + cellPadding.top + cellPadding.bottom,
-	          rowHeight = cellHeight + rowPadding.top + rowPadding.bottom,
-	          rowBgRect = row.select('rect.upiq-legend-table-row-bg');
-	      // TODO GET MAX HEIGHT
-	      rowBgRect.attr({
-	        height: rowHeight,
-	        width: this.xMax + (this.margins.left - this.leftPad)
-	      });
-	      return rowHeight;
-	    }
-	  }, {
-	    key: 'drawCells',
-	    value: function drawCells(row, cellData, cellStyle) {
-	      var xOffset = this.margins.left,
-	          cellGroupClass = 'upiq-legend-table-cell',
-	          selectCellGroup = 'g.' + cellGroupClass,
-	          rowHeight = 30,
-	          textHeight,
-	          cellHeight,
-	          cellPadding = this.cellPadding,
-	          cellID = function cellID(d) {
-	        return 'cell-' + (0, _utils.uuid4)();
-	      },
-	          minTextSize = 4,
-	          computedTextSize = this.plotter.baseFontSize * 0.65,
-	          defaultTextSize = Math.max(computedTextSize, minTextSize),
-	          // px
-	      textWeight = defaultTextSize > 8 ? 'bold' : 'normal';
-	
-	      // adjust text size for bold/non-bold:
-	      defaultTextSize *= textWeight === 'bold' ? 1.0 : 1.1;
-	
-	      row.selectAll(selectCellGroup).data(cellData).enter().append('g').classed(cellGroupClass, true).attr({
-	        'data-timestamp': function dataTimestamp(d) {
-	          return d.stamp;
-	        },
-	        transform: function transform(cellPosition) {
-	          return 'translate(' + cellPosition.x + ', ' + cellPosition.y + ')';
-	        }
-	      }).each(function (d, i) {
-	        var cellGroup = d3.select(this);
-	        if (d.className) {
-	          cellGroup.classed(d.className, true);
-	        }
-	      });
-	
-	      // make defs for group, then add a clip path with rect same as cell bg
-	      row.selectAll(selectCellGroup).append('defs').append('clipPath').classed('groupClip', true) // see note [1] below
-	      .attr({
-	        id: cellID
-	      }).append('rect').attr({
-	        x: 0,
-	        y: 0,
-	        width: function width(cellPosition) {
-	          return cellPosition.width + 2;
-	        },
-	        height: rowHeight });
-	
-	      /* NOTE [1]: webkit/blink selector bug makes it impossible to select
-	       *            clipPath element or any other camelCase element by tagName;
-	       *            thus we must use a class attribute.
-	       *
-	       *  Appears to be long-standing bug with no resolution for clients we
-	       *  must support, so this workaround is here for a good long while...
-	       *
-	       *  Ref: 
-	       *  https://code.google.com/p/chromium/issues/detail?id=237435
-	       *  https://bugs.webkit.org/show_bug.cgi?id=83438
-	       *
-	       */
-	
-	      // initial, will be sized to fit...
-	      row.selectAll(selectCellGroup).attr({
-	        'clip-path': function clipPath() {
-	          var cellGroup = d3.select(this),
-	              cPath = cellGroup.select('defs .groupClip');
-	          return 'url(#' + cPath.attr('id') + ')';
-	        }
-	      });
-	
-	      // make bg rects in each group, with width
-	      row.selectAll(selectCellGroup).append('rect').classed('upiq-legend-table-cell-bg', true).attr({
-	        x: 0,
-	        y: 0,
-	        width: function width(cellPosition) {
-	          return cellPosition.width;
-	        },
-	        height: rowHeight, // initial, will be sized to fit...
-	        fill: cellStyle.fill || '#d0e9d9',
-	        'fill-opacity': cellStyle['fill-opacity'] || '1.0',
-	        stroke: cellStyle.stroke
-	      });
-	
-	      // make text elements, centered:
-	      row.selectAll(selectCellGroup).each(function (data, i) {
-	        var group = d3.select(this);
-	        group.append('text').classed('upiq-legend-cell-text', true).classed('noValue', function (d) {
-	          return d.text === '--';
-	        }).classed('nullValue', function (d) {
-	          return d.text === 'N/A';
-	        }).text(function (d) {
-	          return d.text;
-	        }).call(_utils.d3textWrap, data.width, 0).attr({
-	          x: 0,
-	          y: cellPadding.top,
-	          lengthAdjust: 'spacingAndGlyphs',
-	          height: rowHeight
-	        }).style({
-	          'text-anchor': 'middle',
-	          'font-family': 'Arial',
-	          'font-weight': textWeight,
-	          'font-size': function fontSize(d) {
-	            var subtle = d.text === 'N/A' || d.text === '--',
-	                size = subtle ? defaultTextSize * 0.8 : defaultTextSize;
-	            return '' + size + 'px';
-	          },
-	          'fill': function fill(d) {
-	            return d.color || cellStyle.textColor || '#000';
-	          }
-	        }).selectAll('tspan').attr({
-	          x: data.width / 2.0,
-	          dy: '' + defaultTextSize + 'px',
-	          lengthAdjust: 'spacingAndGlyphs'
-	        });
-	      });
-	
-	      textHeight = d3.max(row.selectAll('text.upiq-legend-cell-text')[0].map(function (element) {
-	        return element.getBoundingClientRect().height;
-	      }));
-	
-	      cellHeight = textHeight + cellPadding.top + cellPadding.bottom;
-	
-	      // set height of cell bg rect and the clipping path rect
-	      // (must select by classname, due to blink/webkit bug, see note [1] above)
-	      row.selectAll('.upiq-legend-table-cell-bg, .groupClip rect').attr({
-	        height: cellHeight
-	      });
-	
-	      // dynamically size text length to fit cells, IFF too wide:
-	      row.selectAll('text, tspan')[0].forEach(function (element) {
-	        var selected = d3.select(element),
-	            desiredWidth = selected.datum().width * 1.05,
-	            bRect = element.getBoundingClientRect(),
-	            widthForgiveness = desiredWidth < 16 ? 1.6 : 1.25,
-	            textWidth = bRect.width;
-	        if (textWidth > desiredWidth * widthForgiveness) {
-	          selected.attr({
-	            textLength: desiredWidth
-	          });
-	        }
-	        if (element.tagName === 'text' && textHeight > bRect.height * 1.7) {
-	          // other cells are multi-line, and this is likely single-line:
-	          selected.attr({
-	            y: textHeight > bRect.height ? textHeight / 4.0 : 1
-	          });
-	        }
-	      }, this);
-	
-	      // transparent opacity for bg of legend label (first) cell:
-	      d3.select(row.selectAll('.upiq-legend-table-cell-bg')[0][0]).attr({
-	        'fill-opacity': 0.0
-	      });
-	
-	      d3.select(row.selectAll('.upiq-legend-cell-text')[0][0]).attr({
-	        textLength: null
-	      }).style({
-	        'font-size': '' + defaultTextSize * 0.9 + 'px'
-	      });
-	    }
-	  }, {
-	    key: 'renderLegendRow',
-	    value: function renderLegendRow(cellData, rowStyle, cellStyle) {
-	      var row = this.makeRow(rowStyle || {}),
-	          rowHeight;
-	      this.drawCells(row, cellData, cellStyle);
-	      rowHeight = this.fitRow(row);
-	      return [row, rowHeight];
-	    }
-	  }, {
-	    key: 'rowCellData',
-	    value: function rowCellData(textGetter) {
-	      /** return Array of cellInfo objects each containing content and computed
-	       *      scaled layout/position data for row cells; text content is
-	       *      obtained by calling textGetter with a key (usually date); this
-	       *      iterates through all periods in plot using specified frequency,
-	       *      thus creating cells for 
-	       *
-	       *      Constraint: textGetter function must return an empty string if
-	       *      there is no text for the period/key; textGetter may also return
-	       *      strings such as 'N/A' for sentinel values depending upon what is
-	       *      appropriate.
-	       *
-	       *      This function should be usable to obtain basic cell positioning
-	       *      and content for both header and content rows.
-	       */
-	      if (typeof textGetter !== 'function') {
-	        throw new Error('rowCellData not passed textGetter function');
-	      }
-	
-	      var _data$domain = _slicedToArray(this.data.domain, 2);
-	
-	      var start = _data$domain[0];
-	      var end = _data$domain[1];
-	      var timePeriods = this.plotter.timeRange(start, end);
-	      var timeStep = this.plotter.timeStep;
-	      var timeScale = this.xScale;
-	      var firstWidth = null; // set once in first run of closure below
-	      var scaleDomain = timeScale.domain();
-	      var barChart = this.plotter.type === 'bar';
-	      var leftPadBar = Math.floor(timeScale.range().slice(-1)[0] / 200.0);
-	      var groupSpacing = barChart ? this.plotter.chart.groupSpacing() : 0.0;
-	      var padDenominator = 2 + groupSpacing * 0.2;
-	      var additionalPad = this.plotter.type === 'line' ? 0 : (timeScale(this.plotter.timeOffset(scaleDomain[0], +1).valueOf()) - timeScale(scaleDomain[0])) / padDenominator;
-	      var xOffset = Math.round(this.margins.left + additionalPad);
-	      var dataStart = this.data.domain[0];
-	      var quarterly = this.plotter.interval === 'month' && timeStep === 3;
-	      var interval = quarterly ? 'quarter' : this.plotter.interval;
-	      var cellInfo = timePeriods.map(function (d) {
-	        var periodStart = d,
-	            periodEnd = moment.utc(d).endOf(interval).toDate(),
-	            startX = Math.round(timeScale(periodStart.valueOf())),
-	            endX = Math.round(timeScale(periodEnd.valueOf())),
-	            rectWidth = Math.round(endX - startX),
-	            groupLeft = Math.round(timeScale(d.valueOf()) - 5);
-	        firstWidth = firstWidth || rectWidth;
-	        groupLeft = Math.round(groupLeft - firstWidth / 2.0);
-	        groupLeft -= barChart ? leftPadBar : 0;
-	        return {
-	          key: d,
-	          width: rectWidth - 2,
-	          x: xOffset + groupLeft,
-	          y: 0,
-	          stamp: d.toISOString(),
-	          text: textGetter(d) || ''
-	        };
-	      }, this);
-	      return cellInfo;
-	    }
-	  }, {
-	    key: 'headerTableData',
-	    value: function headerTableData() {
-	      /** return Array of cellInfo objects each containing content and computed
-	       *      scaled layout/position data for column headings (axis labels).
-	       */
-	      var data = this.data,
-	          axisTitle = this.data.x_label,
-	          legendLabelCell = {
-	        x: 5,
-	        y: 0,
-	        width: this.plotter.margins.left - 10,
-	        color: '#aaa',
-	        className: 'upiq-legend-xaxis-title',
-	        text: axisTitle ? axisTitle + ' →' : ''
-	      },
-	          textGetter = function textGetter(d) {
-	        return data.axisLabel(d).label || '';
-	      };
-	      return [legendLabelCell].concat(this.rowCellData(textGetter));
-	    }
-	  }, {
-	    key: 'seriesRowData',
-	    value: function seriesRowData(series) {
-	      var baseData = series.data,
-	          // d3.map (pseudo-ES6-Map) of DataPoint
-	      infoMap = {},
-	          // ms (implicitly cast) key/name to datapoint
-	      noValue = '--',
-	          legendLabelCell = {
-	        x: 5,
-	        y: 0,
-	        width: this.plotter.margins.left - 10,
-	        className: 'upiq-legend-series-title',
-	        text: series.title
-	      },
-	          textGetter = function textGetter(d) {
-	        var ms = d.valueOf(),
-	            format = function format(v) {
-	          return v === null ? 'N/A' : d3.format(',.1f')(v);
-	        },
-	            text;
-	        if (Object.keys(infoMap).indexOf(ms.toString()) === -1) {
-	          return noValue;
-	        }
-	        return format(infoMap[ms].value);
-	      };
-	      baseData.forEach(function (key, point) {
-	        infoMap[key] = point;
-	      }, this);
-	      return [legendLabelCell].concat(this.rowCellData(textGetter));
-	    }
-	  }, {
-	    key: 'renderLegendRows',
-	    value: function renderLegendRows() {
-	      var headerData = this.headerTableData(),
-	          color = _utils.ColorTool,
-	          headerRowStyle = {
-	        fill: '#eee',
-	        'fill-opacity': '0.5',
-	        className: 'upiq-legend-header-row'
-	      },
-	          headerCellStyle = {
-	        fill: '#eee',
-	        'fill-opacity': '0',
-	        textColor: '#666'
-	      },
-	          baseRowStyle = {
-	        fill: '#cccccc'
-	      },
-	          baseCellStyle = {
-	        fill: '#ffffff',
-	        textColor: '#000'
-	      },
-	          top = 0,
-	          row,
-	          rowHeight;
-	
-	      var _renderLegendRow = this.renderLegendRow(headerData, headerRowStyle, headerCellStyle);
-	
-	      var _renderLegendRow2 = _slicedToArray(_renderLegendRow, 2);
-	
-	      row = _renderLegendRow2[0];
-	      rowHeight = _renderLegendRow2[1];
-	
-	      row.attr({
-	        transform: 'translate(0,' + top + ')'
-	      });
-	      top += rowHeight;
-	      this.data.series.forEach(function (series) {
-	        var rowData = this.seriesRowData(series),
-	            cellBgColor = color.lighten(series.color, 0.2),
-	            firstCellColor = series.color,
-	            textColor = color.isDark(cellBgColor) ? '#fff' : '#000',
-	            rowStyle = Object.create(baseRowStyle),
-	            cellStyle = Object.create(baseCellStyle),
-	            row,
-	            rowHeight;
-	        rowStyle.fill = series.color;
-	        cellStyle.fill = cellBgColor;
-	        cellStyle.textColor = textColor;
-	        cellStyle.first = Object.create(cellStyle); // clone base, 1st col
-	        cellStyle.first.fill = firstCellColor; // ...override bgcolor
-	
-	        var _renderLegendRow3 = this.renderLegendRow(rowData, rowStyle, cellStyle);
-	
-	        var _renderLegendRow32 = _slicedToArray(_renderLegendRow3, 2);
-	
-	        row = _renderLegendRow32[0];
-	        rowHeight = _renderLegendRow32[1];
-	
-	        row.attr({
-	          transform: 'translate(0,' + top + ')'
-	        });
-	        top += rowHeight;
-	      }, this);
-	    }
-	  }, {
-	    key: 'unloadInteractiveFeatures',
-	    value: function unloadInteractiveFeatures() {
-	      /** called by this.clear(), should clear event handling before re-render */
-	    }
-	  }, {
-	    key: 'columnCells',
-	    value: function columnCells(key) {
-	      var rows = this.legendGroup.selectAll('g.upiq-legend-row'),
-	          columnCells = [];
-	      rows.each(function (d, i) {
-	        var row = d3.select(this),
-	            cells = row.selectAll('.upiq-legend-table-cell'),
-	            result = cells[0].filter(function (cell) {
-	          var data = d3.select(cell).data()[0];
-	          return data && data.key && data.key.valueOf() == key.valueOf();
-	        });
-	        columnCells.push(result[0]);
-	      });
-	      return columnCells;
-	    }
-	  }, {
-	    key: 'highlightColumn',
-	    value: function highlightColumn(key) {
-	      var cells = d3.selectAll(this.columnCells(key));
-	      cells.classed('col-highlighted', true);
-	    }
-	  }, {
-	    key: 'clearHighlights',
-	    value: function clearHighlights() {
-	      var cells = this.legendGroup.selectAll('.upiq-legend-table-cell');
-	      cells.classed('col-highlighted', false);
-	    }
-	  }, {
-	    key: 'coordinateEvent',
-	    value: function coordinateEvent(cell, plugin) {
-	      /* coordinate with hover or click plugins, such that hovering or clicking
-	       * in tabular legend has effect on data-point hover/click.
-	       */
-	      var data = cell.data()[0],
-	          key = data ? data.key : null,
-	          tableRow,
-	          seriesIndex,
-	          series;
-	      if (key) {
-	        tableRow = cell[0][0].parentNode;
-	        seriesIndex = this.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
-	        series = this.data.series[seriesIndex];
-	        if (series) {
-	          data = series.data.get(key.valueOf());
-	          if (data) {
-	            data.x = data.key.valueOf();
-	            data.y = data.value;
-	            if (data.y !== null) {
-	              plugin.showOverlay(null, data, series);
-	            }
-	          }
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'loadInteractiveFeatures',
-	    value: function loadInteractiveFeatures() {
-	      var self = this,
-	          click = this.plotter.getPlugin('PointClickPlugin'),
-	          hover = self.plotter.getPlugin('PointHoverPlugin'),
-	          table = this.svg.select('g.upiq-legend'),
-	          sCell = 'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text',
-	          cells = this.svg.selectAll(sCell),
-	          cellKey = function cellKey(cell) {
-	        return (cell.data()[0] || {}).key || null;
-	      },
-	          getCell = function getCell(_x4) {
-	        var _again2 = true;
-	
-	        _function2: while (_again2) {
-	          var target = _x4;
-	          parent = pClass = isCell = undefined;
-	          _again2 = false;
-	
-	          var parent = target.parentNode,
-	              pClass = parent.getAttribute('class') || '',
-	              isCell = pClass.indexOf('upiq-legend-table-cell') !== -1;
-	          if (isCell) {
-	            return parent;
-	          }
-	          if (parent.tagName === 'svg') {
-	            return null; // prevent inf recurse
-	          }
-	          _x4 = parent;
-	          _again2 = true;
-	          continue _function2;
-	        }
-	      };
-	      if (!this.enabled) return;
-	      // hover behavior:
-	      table.on('mouseover', function (d, i) {
-	        var rawTarget = d3.event.target,
-	            targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
-	            key;
-	        if (targetCell) {
-	          key = cellKey(targetCell);
-	          if (key) {
-	            if (hover) {
-	              hover.clearOverlays();
-	              self.coordinateEvent(targetCell, hover);
-	            }
-	            self.highlightColumn(key);
-	            self.plotter.highlightX(key); // highlight X tick
-	          }
-	        }
-	      }).on('mouseout', function (d, i) {
-	        if (hover) {
-	          hover.clearOverlays();
-	        }
-	        self.clearHighlights();
-	        self.plotter.clearHighlights();
-	      });
-	      // click behavior:
-	      if (click) {
-	        table.on('click', function (d, i) {
-	          var rawTarget = d3.event.target,
-	              targetCell = rawTarget ? d3.select(getCell(rawTarget)) : null,
-	              key;
-	          if (targetCell) {
-	            key = cellKey(targetCell);
-	            if (key) {
-	              self.coordinateEvent(targetCell, click);
-	            }
-	          }
-	        });
-	      }
-	    }
-	  }, {
-	    key: '_postRender',
-	    value: function _postRender() {
-	      // adjustments as needed after rendering other bits
-	      var table = this.plotGroup.select(SEL_LEGEND),
-	          rows = this.plotGroup.selectAll('upiq-legend-table-row'),
-	          tableHeight = table[0][0].getBoundingClientRect().height,
-	          gridHeight = this.plotter.gridHeight(),
-	          intermediarySpacing = (this.margins.top || 10) + 10,
-	          tableOrigin = gridHeight + intermediarySpacing,
-	          plotHeight = tableHeight + gridHeight + intermediarySpacing,
-	          plotBottomMargin = 15;
-	      // size plotCore div with enough space for legend:
-	      this.plotCore.style({
-	        height: '' + plotHeight + 'px'
-	      });
-	      table.attr({
-	        transform: 'translate(5, ' + tableOrigin + ')'
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      this.prepare();
-	      this.makeLegendGroup();
-	      this.renderLegendRows();
-	    }
-	  }, {
-	    key: 'postRender',
-	    value: function postRender() {
-	      if (this.enabled) {
-	        // post-render adjustments (e.g. position fully rendered table)
-	        this._postRender();
-	      }
-	    }
-	  }, {
-	    key: 'useTabularLegend',
-	    value: function useTabularLegend() {
-	      return this.data.legend_placement === 'tabular';
-	    }
-	  }, {
-	    key: 'update',
-	    value: function update() {
-	      if (!this.enabled) {
-	        return; // plugin not applicable to plot
-	      }
-	      this.clear();
-	      this.render();
-	    }
-	  }]);
-	
-	  return TabularLegendRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.TabularLegendRenderer = TabularLegendRenderer;
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _utils = __webpack_require__(6);
-	
-	var _plugin = __webpack_require__(9);
-	
-	var d3 = __webpack_require__(3);
-	var moment = __webpack_require__(4);
-	
-	var PointLabelsRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(PointLabelsRenderer, _BaseRenderingPlugin);
-	
-	  function PointLabelsRenderer(plotter) {
-	    _classCallCheck(this, PointLabelsRenderer);
-	
-	    _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), 'constructor', this).call(this, plotter);
-	  }
-	
-	  _createClass(PointLabelsRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(PointLabelsRenderer.prototype), 'preRender', this).call(this);
-	      /** after div is sized, we need to possibly adjust for label headroom */
-	      if (this._needsLabelHeadroom()) {
-	        this.margins.top = 5 + Math.floor(this.plotter.plotHeight / 15);
-	      }
-	    }
-	  }, {
-	    key: '_needsLabelHeadroom',
-	    value: function _needsLabelHeadroom() {
-	      var data = this.data,
-	          considered = data.series.filter(data.showLabels, data),
-	          highValued = function highValued(series) {
-	        var values = [];
-	        series.data.forEach(function (k, point) {
-	          values.push(point.value || 0);
-	        });
-	        return Math.max.apply(null, values) > 90;
-	      };
-	      considered = considered.filter(highValued);
-	      return !!considered.length; // high-val labeled series gets room
-	    }
-	  }, {
-	    key: 'scalePoint',
-	    value: function scalePoint(info) {
-	      /** return scaled point (plain) object */
-	      var point = info[0],
-	          series = info[1],
-	          scaled = Object.create(point),
-	          // wrap with orig point as proto
-	      timeStep = this.plotter.timeStep,
-	          quarterly = this.plotter.interval === 'month' && timeStep === 3,
-	          interval = quarterly ? 'quarter' : this.plotter.interval,
-	          x = point.key.valueOf(),
-	          periodEnd = moment.utc(x).endOf(interval).toDate(),
-	          endX = Math.round(this.xScale(periodEnd.valueOf())),
-	          width = endX - Math.round(this.xScale(x)),
-	          barWidth = width / this.data.series.length,
-	          barOffset = series.position * barWidth * 0.65 + barWidth * 0.35,
-	          y = point.value;
-	      scaled.x = this.xScale(x);
-	      scaled.y = this.yScale(y);
-	      if (this.plotter.data.chart_type === 'bar') {
-	        scaled.x += barOffset;
-	      }
-	      // default x2, y2 as label coordinate (default is used by bar chart, and
-	      // is above the marker data x,y):
-	      scaled.x2 = scaled.x + 5;
-	      scaled.y2 = scaled.y - Math.floor(this.plotter.plotWidth / 90);
-	      return scaled;
-	    }
-	  }, {
-	    key: 'lineSlope',
-	    value: function lineSlope(pointA, pointB) {
-	      /** slope between pointA and pointB, where points have attrs x, y */
-	      var rise, run;
-	      if (pointA === null || pointB === null) {
-	        // constant slope: in effect means horizontal tangent line for any
-	        // point that has no previous, next points in series.
-	        return 0;
-	      }
-	      rise = (pointB.y - pointA.y) * -1; // *-1 compensates for svg origin@top
-	      run = pointB.x - pointA.x;
-	      return rise / run;
-	    }
-	  }, {
-	    key: 'pointAngles',
-	    value: function pointAngles(point, prev, next) {
-	      /** 
-	        * return array of: tangent line angle, perpendiculat angle, and
-	        * inflection angle
-	        */
-	      var slope = this.lineSlope,
-	          slopeA = prev === null ? slope(point, next) : slope(prev, point),
-	          slopeB = next === null ? slope(prev, point) : slope(point, next),
-	          avgSlope = (slopeA + slopeB) / 2.0,
-	          perpendicularSlope = -1 / avgSlope,
-	          tanLnAngle = Math.atan(avgSlope),
-	          positioningAngle = Math.atan(perpendicularSlope),
-	          inflectionAngle = Math.PI - Math.abs(Math.atan(slopeB)) - Math.abs(Math.atan(slopeA));
-	      return [tanLnAngle, positioningAngle, inflectionAngle];
-	    }
-	  }, {
-	    key: 'scaledPoints',
-	    value: function scaledPoints(series) {
-	      var points = [],
-	          scaledPoints = [],
-	          gridZero = this.plotter.gridHeight() + this.margins.top,
-	          textSize = this.plotter.baseFontSize * 0.75;
-	      series.data.forEach(function (k, point) {
-	        if (point.value !== null) {
-	          points.push([point, series]);
-	        }
-	      }); // map to Array of points, filtering out null-valued
-	      scaledPoints = points.map(this.scalePoint, this);
-	      if (this.plotter.type === 'line') {
-	        scaledPoints.forEach(function (point, idx, arr) {
-	          /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
-	            * line to point, which should look better than simply displaying
-	            * above a point marker (insofar as chances of text overlapping
-	            * line-drawing for same series are minimized).
-	            */
-	          var prev = idx === 0 ? null : arr[idx - 1];
-	
-	          // if tangent line has negative slope (going down left-to-right)
-	          // then we want to multiply a,b each by -1
-	          var next = idx === arr.length - 1 ? null : arr[idx + 1];
-	
-	          var _pointAngles = this.pointAngles(point, prev, next);
-	
-	          var _pointAngles2 = _slicedToArray(_pointAngles, 3);
-	
-	          var tanAngle = _pointAngles2[0];
-	          var posAngle = _pointAngles2[1];
-	
-	          var inflectionAngle = _pointAngles2[2];
-	          // angle multipler, *-1 if acute angle:
-	          var acute = inflectionAngle < Math.PI / 2;
-	          var downward = prev && next && prev.y < point.y && next.y < point.y;
-	          var mult = acute && downward ? -1 : 1;
-	          // text is wider than tall, so perceived hypotenuse difference
-	          // from marker to text should be shorter when tanLnSlope is
-	          // less than 1 (45°):
-	          var textAbove = !downward && Math.abs(tanAngle) < Math.PI / 4;
-	          var baseDistance = textAbove ? 60 : 52;
-	          var distanceDenominator = downward && acute ? 33 : baseDistance;
-	          // ideal hypotenuse distance:
-	          var c = Math.floor(this.plotter.plotWidth / distanceDenominator);
-	          // opposite leg, delta for Y
-	          var a = mult * c * Math.sin(posAngle);
-	          // adjacent leg, delta for X
-	          var b = mult * c * Math.cos(posAngle);if (tanAngle < 0) {
-	            b *= -1;
-	            a *= -1;
-	          }
-	          point.x2 = point.x - b;
-	          point.y2 = point.y + a;
-	          if (point.y2 > gridZero - textSize) {
-	            point.y2 = point.y - a;
-	          }
-	        }, this);
-	      }
-	      return scaledPoints;
-	    }
-	  }, {
-	    key: 'mkGroup',
-	    value: function mkGroup() {
-	      var group = this.plotGroup.selectAll('g.upiq-point-labels').data([null]),
-	          gridOffsetX = this.margins.left,
-	          gridOffsetY = this.margins.top;
-	      group.enter().append('g').classed('upiq-point-labels', true).attr({
-	        transform: 'translate(' + gridOffsetX + ', ' + gridOffsetY + ')'
-	      });
-	      return group;
-	    }
-	  }, {
-	    key: 'renderPoint',
-	    value: function renderPoint(point, seriesGroup, series) {
-	      var format = function format(v) {
-	        return v === null ? '' : d3.format(',.1f')(v);
-	      },
-	          seriesIdx = series.position,
-	          color = series.color,
-	          ct = _utils.ColorTool,
-	          yOffset = Math.floor(this.plotter.plotWidth / 60);
-	      // empty label? no element!
-	      if (point.value === null) {
-	        return;
-	      }
-	      // adjust color lighter or darker to contrast with line:
-	      color = ct.isDark(color) ? ct.lighten(color, 0.5) : ct.darken(color, 0.5);
-	      seriesGroup.append('text').classed('upiq-point-label point-label-' + seriesIdx, true).attr({
-	        'text-anchor': 'middle',
-	        x: point.x2,
-	        y: point.y2
-	      }).style({
-	        fill: color
-	      }).text(format(point.value));
-	    }
-	  }, {
-	    key: 'renderSeries',
-	    value: function renderSeries(series, group) {
-	      var _this = this;
-	
-	      var scaledPoints = this.scaledPoints(series),
-	          seriesGroup = group.append('g').classed('upiq-series-labels', true);
-	      seriesGroup.attr({
-	        fill: series.color,
-	        'font-family': 'Arial Narrow',
-	        'font-size': '75%' // % of this.plotter.baseFontSize implied
-	      }).style({
-	        fill: series.color
-	      });
-	      scaledPoints.forEach(function (p) {
-	        return _this.renderPoint(p, seriesGroup, series);
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-	
-	      var considered = this.data.series.filter(function (s) {
-	        return _this2.data.showLabels(s);
-	      }),
-	          group = this.mkGroup(),
-	          tickVals = this.plotter.tickVals;
-	      // force continuous scale in case of oridinal scale via bar chart:
-	      this.xScale = this.plotter.timeScale;
-	      this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
-	      // column width interval based on sample of first data column, scaled:
-	      this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
-	      if (this.plotter.options.tiny) return;
-	      considered.forEach(function (series) {
-	        this.renderSeries(series, group);
-	      }, this);
-	    }
-	  }]);
-	
-	  return PointLabelsRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.PointLabelsRenderer = PointLabelsRenderer;
-	//tanLnSlope = this.tangentLineSlope(point, prev, next),
-	//perpendicularSlope = -1 / tanLnSlope,
-	//positioningAngle = Math.atan(perpendicularSlope),
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var d3 = __webpack_require__(3);
-	var moment = __webpack_require__(4);
-	
-	var TrendLineRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(TrendLineRenderer, _BaseRenderingPlugin);
-	
-	  function TrendLineRenderer(plotter) {
-	    _classCallCheck(this, TrendLineRenderer);
-	
-	    _get(Object.getPrototypeOf(TrendLineRenderer.prototype), 'constructor', this).call(this, plotter);
-	    // blacklist trident from mid-markers, due to bug:
-	    //  http://stackoverflow.com/a/21727740/835961
-	    this.showMarkers = window.navigator.userAgent.indexOf('Trident') === -1;
-	  }
-	
-	  _createClass(TrendLineRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(TrendLineRenderer.prototype), 'preRender', this).call(this);
-	      this.plotWidth = this.plotter.plotWidth;
-	    }
-	  }, {
-	    key: 'scaleTrendLine',
-	    value: function scaleTrendLine(line) {
-	      /** given line coodinates in unscaled x1,y1,x2,y2 (object), return
-	        * object with scaled respective coordinate values.
-	        */
-	      var r = {
-	        x1: this.plotter.timeScale(line.x1),
-	        y1: this.yScale(line.y1),
-	        x2: this.plotter.timeScale(line.x2),
-	        y2: this.yScale(line.y2),
-	        trend_color: line.trend_color,
-	        trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
-	      },
-	          decline = r.y1 > r.y2;
-	      // slope on normal axis, not top-down SVG coordinate system:
-	      r.slope = -1 * (r.y2 - r.y1) / (r.x2 - r.x1);
-	      r.slope = decline ? -1 * r.slope : r.slope;
-	      return r;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this = this;
-	
-	      var considered = this.data.series.filter(function (s) {
-	        return !!s.show_trend;
-	      }),
-	          lines = considered.map(function (s) {
-	        return _this.data.fittedTrendline(s);
-	      }, this),
-	          scaledLines = lines.map(this.scaleTrendLine, this),
-	          firstLine = scaledLines.length ? scaledLines[0] : null,
-	          slope = firstLine ? firstLine.slope : 0,
-	          markerRotation = -1 * Math.atan(slope) * (180 / Math.PI),
-	          gridOffsetX = this.margins.left,
-	          gridOffsetY = this.margins.top,
-	          lineFn = d3.svg.line().x(function (d) {
-	        return d.x;
-	      }).y(function (d) {
-	        return d.y;
-	      }).interpolate('linear'),
-	          midMarkers = this.showMarkers,
-	          group;
-	      if (!considered) {
-	        return; // no trendlines!
-	      }
-	
-	      group = this.plotGroup.append('g').classed('upiq-trendlines', true).attr({
-	        transform: 'translate(' + gridOffsetX + ', ' + gridOffsetY + ')',
-	        opacity: '0.5'
-	      });
-	
-	      scaledLines.forEach(function (line, idx) {
-	        var markerCount = Math.floor((line.point_count || 12) / 2),
-	            data = [],
-	            x1 = line.x1,
-	            y1 = line.y1,
-	            x2 = line.x2,
-	            y2 = line.y2,
-	            rise = y2 - y1,
-	            run = x2 - x1,
-	            slope = rise / run,
-	            markerRotation = Math.atan(slope) * (180 / Math.PI);
-	
-	        this.plotGroup.select('defs').append('marker').attr({
-	          id: 'trendmarker-' + idx,
-	          viewBox: '0 0 10 10',
-	          markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
-	          markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
-	          orient: markerRotation,
-	          refX: 0,
-	          refY: 5
-	        }).append('path').attr({
-	          d: 'M 0 0 L 10 5 L 0 10 L 0 0 Z',
-	          fill: line.trend_color,
-	          opacity: 0.5
-	        });
-	
-	        data.push({ x: x1, y: y1 });
-	        d3.range(1, markerCount + 1).forEach(function (i) {
-	          data.push({
-	            x: x2 - run * i / markerCount,
-	            y: y2 - rise * i / markerCount
-	          });
-	        });
-	        data.push({ x: x2, y: y2 });
-	        group.append('path').attr({
-	          d: lineFn(data),
-	          stroke: line.trend_color,
-	          'stroke-width': line.trend_width,
-	          'marker-mid': midMarkers ? 'url(#trendmarker-' + idx + ')' : undefined,
-	          fill: 'none'
-	        });
-	      }, this);
-	    }
-	  }]);
-	
-	  return TrendLineRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.TrendLineRenderer = TrendLineRenderer;
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _utils = __webpack_require__(6);
-	
-	var _plugin = __webpack_require__(9);
-	
-	// classname and selector globals:
-	var d3 = __webpack_require__(3);
-	var moment = __webpack_require__(4);
-	
-	var LINESWRAP_CLASSNAME = 'nv-linesWrap',
-	    BARWRAP_CLASSNAME = 'nv-barsWrap';
-	
-	var GoalLineRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(GoalLineRenderer, _BaseRenderingPlugin);
-	
-	  function GoalLineRenderer(plotter) {
-	    _classCallCheck(this, GoalLineRenderer);
-	
-	    _get(Object.getPrototypeOf(GoalLineRenderer.prototype), 'constructor', this).call(this, plotter);
-	    this.group = null;
-	  }
-	
-	  _createClass(GoalLineRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(GoalLineRenderer.prototype), 'preRender', this).call(this);
-	    }
-	  }, {
-	    key: 'mkGroup',
-	    value: function mkGroup() {
-	      var baseGroup = this.svg.select(this.plotter.nvType + ' > g'),
-	          group = baseGroup.select('g.nvd3.nv-distribution'),
-	          type = this.data.chart_type || 'line',
-	          isLine = type === 'line',
-	          wrapType = isLine ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
-	      if (group.empty()) {
-	        group = baseGroup.insert('g', '.' + wrapType).classed('nvd3 nv-distribution', true);
-	      }
-	      this.group = group;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var goalValue = this.data.goal,
-	          hasGoal = !!goalValue,
-	          goalColor = this.data.goal_color || '#ff0000',
-	          timeScale = this.plotter.timeScale,
-	          xMax = timeScale(timeScale.domain()[1].valueOf()),
-	          yPos = Math.floor(this.yScale(goalValue)),
-	          goal,
-	          line,
-	          text;
-	      if (!hasGoal) return;
-	      this.mkGroup();
-	      // JOIN goal group (contains line, text) selection to singular null-data
-	      goal = this.group.selectAll('g.nv-dist.nv-goal').data([null]);
-	      // enter JOIN, set group to use goal color, add line, config coords:
-	      line = goal.enter().append('g').attr('class', 'nv-dist nv-goal').style('stroke', goalColor).append('line').classed('nv-goal-line', true).attr({
-	        x1: 0,
-	        y1: yPos,
-	        x2: xMax,
-	        y2: yPos
-	      });
-	      // add text with explicit coordinates
-	      text = goal.append('text').classed('nv-goal-lbl', true).text('Goal: ' + goalValue).style({
-	        fill: goalColor
-	      }).attr({
-	        'text-anchor': 'start',
-	        'fill-opacity': 0, // can be overridden in CSS
-	        'x': 3,
-	        'y': yPos - 3
-	      });
-	    }
-	  }, {
-	    key: 'clear',
-	    value: function clear() {
-	      if (this.group) {
-	        this.group.remove();
-	      }
-	    }
-	  }]);
-	
-	  return GoalLineRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.GoalLineRenderer = GoalLineRenderer;
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	// https://goo.gl/RAfPKC
-	
-	var _plugin = __webpack_require__(9);
-	
-	var _utils = __webpack_require__(6);
-	
-	var pathSegPolyfill = __webpack_require__(26);
-	var ContinuityLinesPlugin = (function (_BaseRenderingPlugin) {
-	  _inherits(ContinuityLinesPlugin, _BaseRenderingPlugin);
-	
-	  function ContinuityLinesPlugin() {
-	    _classCallCheck(this, ContinuityLinesPlugin);
-	
-	    _get(Object.getPrototypeOf(ContinuityLinesPlugin.prototype), 'constructor', this).apply(this, arguments);
-	  }
-	
-	  _createClass(ContinuityLinesPlugin, [{
-	    key: 'extractPathLineSegments',
-	    value: function extractPathLineSegments(data) {
-	      /** parse SVG path data stream into Array or segments */
-	      var moveToInstruction = /[Mm]/,
-	          lineToInstruction = /[Ll]/,
-	          splitLine = function splitLine(v) {
-	        return v.split(lineToInstruction);
-	      },
-	
-	      //isLine = v => (splitLine(v).length > 1),
-	      isLine = function isLine(v) {
-	        return v !== '';
-	      },
-	          commaSplit = function commaSplit(v) {
-	        return v.split(',');
-	      },
-	          mkPoint = function mkPoint(v) {
-	        var _commaSplit = commaSplit(v);
-	
-	        var _commaSplit2 = _slicedToArray(_commaSplit, 2);
-	
-	        var x = _commaSplit2[0];
-	        var y = _commaSplit2[1];
-	
-	        return {
-	          x: x,
-	          y: y
-	        };
-	      },
-	          toPoints = function toPoints(segment) {
-	        return splitLine(segment).map(mkPoint);
-	      },
-	          segments = data.split(moveToInstruction).filter(isLine).map(toPoints);
-	      return segments;
-	    }
-	  }, {
-	    key: 'missingLines',
-	    value: function missingLines(data) {
-	      /** given an Array of line segments in a path, return missing connector
-	        * lines as SVG path data, if and only if appropriate (otherwise, '').
-	        */
-	      var pathData = '';
-	      if (data.length < 2) return pathData; // no segments need connection
-	      data.forEach(function (segment, idx) {
-	        var next = data[idx + 1],
-	            pointA,
-	            pointB;
-	        if (next === undefined) return; // end of sequence
-	        pointA = segment.slice(-1).pop();
-	        pointB = next[0];
-	        pathData += 'M' + pointA.x + ',' + pointA.y + 'L' + pointB.x + ',' + pointB.y;
-	      }, this);
-	      return pathData;
-	    }
-	  }, {
-	    key: 'renderMissing',
-	    value: function renderMissing(group, missing, behavior, series) {
-	      var useDashes = behavior === 'dashed',
-	          path = group.append('path').attr({
-	        d: missing
-	      }).classed('nv-line upiq-continuation-line', true);
-	      if (useDashes) {
-	        path.style({
-	          'stroke-dasharray': '4 4',
-	          stroke: _utils.ColorTool.lighten(series.color, 0.33)
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'adjustLines',
-	    value: function adjustLines(series) {
-	      var idx = series.position,
-	          classname = 'nv-series-' + idx,
-	          baseSel = '.nv-linesWrap g.nv-line .nv-groups .nv-group.' + classname,
-	          baseGroup = this.svg.select(baseSel),
-	          path = baseGroup.select('path.nv-line'),
-	          segList = path[0][0].pathSegList,
-	          segLen = segList.numberOfItems,
-	          segments = [],
-	          data,
-	          missing,
-	          i,
-	          behavior = series.break_lines; // either 'solid' or 'dashed'
-	      for (i = 0; i < segLen; i++) {
-	        segments.push(segList.getItem(i));
-	      }
-	      data = this.extractPathLineSegments(segments.map(function (s) {
-	        return '' + s.pathSegTypeAsLetter + s.x + ',' + s.y;
-	      }, this).join(''));
-	      missing = this.missingLines(data);
-	      if (missing) {
-	        this.renderMissing(baseGroup, missing, behavior, series);
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this = this;
-	
-	      var considered = this.data.series.filter(function (s) {
-	        return s.break_lines !== 'hidden';
-	      });
-	      if (this.plotter.type !== 'line') return;
-	      considered.forEach(function (series) {
-	        return _this.adjustLines(series);
-	      });
-	    }
-	  }]);
-	
-	  return ContinuityLinesPlugin;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.ContinuityLinesPlugin = ContinuityLinesPlugin;
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var AxisTitleRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(AxisTitleRenderer, _BaseRenderingPlugin);
-	
-	  function AxisTitleRenderer() {
-	    _classCallCheck(this, AxisTitleRenderer);
-	
-	    _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), 'constructor', this).apply(this, arguments);
-	  }
-	
-	  _createClass(AxisTitleRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      var minMargin = Math.floor(this.plotter.baseFontSize * 4);
-	      _get(Object.getPrototypeOf(AxisTitleRenderer.prototype), 'preRender', this).call(this);
-	      this.titleX = this.data.x_label || '';
-	      this.titleY = this.data.y_label || '';
-	      this.hasLabels = !!this.titleX || !!this.titleY;
-	      this.superTiny = this.plotter.options.tiny;
-	      // adjust room for each (in margins):
-	      if (this.titleY && this.margins.left < minMargin && !this.superTiny) {
-	        this.margins.left = minMargin;
-	      }
-	      if (this.titleX && !this.superTiny) {
-	        this.margins.bottom += this.plotter.baseFontSize * 1.2;
-	      }
-	    }
-	  }, {
-	    key: 'mkGroup',
-	    value: function mkGroup() {
-	      var group = this.plotGroup.selectAll('g.upiq-axis-titles').data([null]);
-	      group.enter().append('g').classed('upiq-axis-titles', true);
-	      this.group = group;
-	    }
-	  }, {
-	    key: 'renderX',
-	    value: function renderX() {
-	      var tabularLegend = this.data.legend_placement === 'tabular',
-	          topMargin = this.margins.top,
-	          x = Math.floor(this.plotter.gridWidth() / 2.0) + this.margins.left + 5,
-	          y = this.plotter.plotHeight - 5,
-	          element;
-	      if (tabularLegend) {
-	        return;
-	      }
-	      element = this.group.append('text').classed('x-title', true).text(this.titleX).style({
-	        'font-family': 'Arial',
-	        'text-anchor': 'middle'
-	      }).attr({
-	        transform: 'translate(' + x + ',' + y + ')'
-	      });
-	    }
-	  }, {
-	    key: 'renderY',
-	    value: function renderY() {
-	      var element = this.group.append('text').classed('y-title', true),
-	          topMargin = this.margins.top,
-	          x = this.plotter.baseFontSize + 5,
-	          y = Math.floor(this.plotter.gridHeight() / 2.0) + topMargin;
-	      element.text(this.titleY).style({
-	        'font-family': 'Arial',
-	        'text-anchor': 'middle'
-	      }).attr({
-	        transform: 'translate(' + x + ',' + y + ') rotate(-90)'
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      if (!this.hasLabels) {
-	        return; // no labels to render
-	      }
-	      this.mkGroup();
-	      if (this.titleX) {
-	        this.renderX();
-	      }
-	      if (this.titleY && !this.superTiny) {
-	        this.renderY();
-	      }
-	    }
-	  }]);
-	
-	  return AxisTitleRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.AxisTitleRenderer = AxisTitleRenderer;
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var XTickLabelsRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(XTickLabelsRenderer, _BaseRenderingPlugin);
-	
-	  function XTickLabelsRenderer(plotter) {
-	    _classCallCheck(this, XTickLabelsRenderer);
-	
-	    _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'constructor', this).call(this, plotter);
-	    this.type = this.plotter.type;
-	  }
-	
-	  _createClass(XTickLabelsRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(XTickLabelsRenderer.prototype), 'preRender', this).call(this);
-	      this.tiny = this.plotter.options.tiny;
-	      this.enabled = this.data.legend_placement !== 'tabular' || this.tiny;
-	      if (!this.enabled) return;
-	      this.angle = this.type === 'bar' || this.plotter.plotWidth < 360 ? 90 : 45;
-	      this.angleRadians = Math.PI / 180 * this.angle;
-	      this.relSize = this.type === 'bar' ? 0.8 : 0.9;
-	      this.labels = this.data.axisLabels();
-	      this.height = this.labelHeight();
-	      this.margins.bottom += this.height;
-	    }
-	  }, {
-	    key: 'mkGroup',
-	    value: function mkGroup() {
-	      var group = this.plotGroup.selectAll('g.upiq-x-tick-labels').data([null]),
-	          isBar = this.type === 'bar',
-	          linePlotFontSize = this.plotter.plotWidth < 200 ? '75%' : '90%',
-	          tickVals = this.plotter.tickVals,
-	          columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
-	          padLeft = this.type === 'bar' ? Math.floor(columnWidth / 2) + 1 : 5,
-	          groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
-	      group.enter().append('g').classed('upiq-x-tick-labels', true).style({
-	        'font-size': this.type === 'bar' ? '80%' : linePlotFontSize
-	      }).attr({
-	        transform: 'translate(' + padLeft + ', ' + groupTop + ')'
-	      });
-	      this.group = group;
-	    }
-	  }, {
-	    key: 'labelHeight',
-	    value: function labelHeight() {
-	      /* y-height of largest-length label */
-	      var maxLabel = Math.max.apply(null, this.labels.map(function (v) {
-	        return v.label.length;
-	      })),
-	          fontSize = this.plotter.baseFontSize * this.relSize,
-	          multiplier = 0.5875,
-	          estimatedPx = fontSize * (maxLabel + 2) * multiplier,
-	          heightNeeded = Math.floor(estimatedPx * Math.sin(this.angleRadians));
-	      return heightNeeded;
-	    }
-	  }, {
-	    key: 'drawLabel',
-	    value: function drawLabel(info) {
-	      var x = Math.floor(this.scale(info.key) + this.margins.left),
-	          y = 5,
-	          angle = -1 * this.angle;
-	      this.group.append('text').text(info.label).style({
-	        'text-anchor': 'end'
-	      }).attr({
-	        x: x,
-	        y: y,
-	        transform: 'rotate(' + angle + ' ' + x + ' ' + y + ')'
-	      });
-	    }
-	  }, {
-	    key: 'drawLabels',
-	    value: function drawLabels() {
-	      var _this = this;
-	
-	      /** draw labels */
-	      this.labels.forEach(function (info) {
-	        return _this.drawLabel(info);
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      if (!this.enabled) {
-	        return;
-	      }
-	      this.scale = this.plotter.timeScale;
-	      this.mkGroup();
-	      this.drawLabels();
-	    }
-	  }]);
-	
-	  return XTickLabelsRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.XTickLabelsRenderer = XTickLabelsRenderer;
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var _utils = __webpack_require__(6);
-	
-	var d3 = __webpack_require__(3);
-	
-	var BasicLegendRenderer = (function (_BaseRenderingPlugin) {
-	  _inherits(BasicLegendRenderer, _BaseRenderingPlugin);
-	
-	  function BasicLegendRenderer(plotter) {
-	    _classCallCheck(this, BasicLegendRenderer);
-	
-	    _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'constructor', this).call(this, plotter);
-	    this.all_locations = ['e', 'n']; // 'east' is really northeast...
-	  }
-	
-	  _createClass(BasicLegendRenderer, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(BasicLegendRenderer.prototype), 'preRender', this).call(this);
-	      this.placement = this.data.legend_placement;
-	      this.smallPlot = this.plotter.options.small;
-	      this.tiny = this.plotter.options.tiny;
-	      this.loc = this._location();
-	      this.enabled = this._enabled();
-	      if (this.enabled) {
-	        this.initialPositioning();
-	      }
-	      this.rowMax = this.tiny ? 1 : this.smallPlot ? 2 : 4;
-	      this.textSize = this.plotter.baseFontSize * (this.tiny ? 0.9 : 0.8);
-	      if (this.data.series.length > 4 && !this.smallPlot && !this.tiny) {
-	        this.textSize *= 0.8;
-	      }
-	    }
-	  }, {
-	    key: 'initialPositioning',
-	    value: function initialPositioning() {
-	      /** set width, height;
-	        * adjust margins and if needed positioning of plot relative to legend
-	        */
-	      var loc = this.loc,
-	          isTop = this.loc === 'n',
-	          tiny = this.tiny,
-	          plotWidth = this.plotter.plotWidth,
-	          legendHeight = isTop ? 30 : this.plotter.plotHeight,
-	          gridLeft = this.plotter.margins.left,
-	          topWidth = plotWidth - (tiny ? 10 : gridLeft) - this.margins.right,
-	          legendWidth = isTop ? topWidth : Math.floor(plotWidth * 0.2),
-	          legendMargin = Math.floor(0.01 * plotWidth),
-	          gridRight = plotWidth - legendWidth - legendMargin;
-	      this.width = legendWidth - 1;
-	      this.left = isTop ? gridLeft : gridRight + legendMargin;
-	      this.top = isTop ? 1 : this.plotter.margins.top - 1;
-	      this.height = legendHeight - this.top - 1;
-	      if (!isTop) {
-	        this.margins.right = this.width + legendMargin + 2;
-	      }
-	    }
-	  }, {
-	    key: '_enabled',
-	    value: function _enabled() {
-	      var nonTabularPlacement = this.placement && this.placement !== 'tabular',
-	          multiSeries = this.data.series.length > 1;
-	      if (this.plotter.options.tiny || this.plotter.plotWidth < 320) {
-	        nonTabularPlacement = true;
-	      }
-	      return nonTabularPlacement && this.loc !== null && multiSeries;
-	    }
-	  }, {
-	    key: '_location',
-	    value: function _location() {
-	      var specifiedLocation = this.data.legend_location,
-	          unsupported = this.all_locations.indexOf(specifiedLocation) === -1,
-	          plotWidth = this.plotter.plotWidth,
-	          loc = unsupported ? 'e' : specifiedLocation;
-	      if (!specifiedLocation) return null; // no legend
-	      return this.smallPlot ? 'n' : loc;
-	    }
-	  }, {
-	    key: '_legendOrigin',
-	    value: function _legendOrigin() {
-	      var left = this.plotter.options.tiny ? 10 : this.left;
-	      return [left, this.top]; // x,y
-	    }
-	  }, {
-	    key: 'container',
-	    value: function container() {
-	      /** outermost container for the legend */
-	      return this.loc === 'n' ? this.abovePlotGroup : this.plotGroup;
-	    }
-	  }, {
-	    key: 'mkGroup',
-	    value: function mkGroup() {
-	      var group = this.container().selectAll('g.upiq-basic-legend').data([null]);
-	
-	      var _legendOrigin2 = this._legendOrigin();
-	
-	      var _legendOrigin22 = _slicedToArray(_legendOrigin2, 2);
-	
-	      var x = _legendOrigin22[0];
-	      var y = _legendOrigin22[1];
-	
-	      group.enter().append('g').classed('upiq-basic-legend', true).attr({
-	        transform: 'translate(' + x + ', ' + y + ')'
-	      });
-	      this.group = group;
-	    }
-	  }, {
-	    key: 'drawBgRect',
-	    value: function drawBgRect() {
-	      this.group.append('rect').classed('legend-bg', true).attr({
-	        height: this.height,
-	        width: Math.floor(this.width),
-	        'fill': '#fff',
-	        'fill-opacity': 0,
-	        'stroke-opacity': 0
-	      }).style({
-	        'stroke-width': '0.175%',
-	        'stroke': '#999'
-	      });
-	    }
-	  }, {
-	    key: 'mkElementGroup',
-	    value: function mkElementGroup(idx, padding) {
-	      var isTop = this.loc === 'n',
-	          rowIdx = isTop ? Math.floor(idx / this.rowMax) : idx,
-	          leftPadding = isTop ? 0 : padding,
-	          rowPos = isTop ? idx % this.rowMax : idx,
-	          left = (isTop ? rowPos * this.itemWidth : 0) + leftPadding,
-	          rowTop = rowIdx * 30,
-	          group = this.group.append('g').classed('upiq-legend-series', true).attr({
-	        transform: 'translate(' + left + ', ' + rowTop + ')'
-	      });
-	      return group;
-	    }
-	  }, {
-	    key: 'drawElement',
-	    value: function drawElement(series) {
-	      var color = series.color,
-	          label = series.title,
-	          tiny = this.tiny,
-	          padding = Math.floor(this.plotter.plotWidth * (tiny ? 0.1 : 0.01)),
-	          innerPadding = Math.floor(padding / 2),
-	          idx = series.position,
-	          group = this.mkElementGroup(idx, padding),
-	          groupY = 0 + (this.loc === 'n' ? 1 : idx) * this.textSize,
-	          colorBoxSize = Math.floor(this.plotter.plotWidth / (tiny ? 20 : 45)),
-	          textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
-	          text;
-	      // draw background rectangle (transparent by default, used for sizing)
-	      group.append('rect').classed('legend-series-bg', true).attr({
-	        x: 0,
-	        y: 0,
-	        width: this.itemWidth,
-	        height: 30
-	      }).style({
-	        stroke: '#aaa',
-	        'stroke-width': '0.2%',
-	        'fill': '#fff',
-	        'fill-opacity': 0,
-	        'stroke-opacity': 0
-	      });
-	      // draw color swatch for series:
-	      group.append('rect').classed('legend-series-color', true).attr({
-	        x: innerPadding,
-	        y: groupY,
-	        width: colorBoxSize,
-	        height: colorBoxSize * (tiny ? 2 : 1)
-	      }).style({
-	        fill: color
-	      });
-	      // draw label for series
-	      group.append('g').attr({
-	        transform: 'translate(' + (colorBoxSize + innerPadding * 2) + ' ' + groupY + ')'
-	      }).append('text').attr({
-	        x: 0,
-	        y: 0,
-	        'font-size': this.textSize + 'px'
-	      }).style({
-	        'dominant-baseline': 'middle'
-	      }).text(label).call(_utils.d3textWrap, textWidth, 0);
-	    }
-	  }, {
-	    key: 'drawElements',
-	    value: function drawElements() {
-	      var isTop = this.loc === 'n',
-	          itemCount = this.data.series.length,
-	          n = isTop ? this.rowMax : itemCount;
-	      this.itemWidth = Math.floor(isTop ? this.width / n : this.width * 0.9);
-	      this.data.series.forEach(function (series) {
-	        this.drawElement(series);
-	      }, this);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      if (!this.enabled) {
-	        return;
-	      }
-	      this.mkGroup();
-	      this.drawBgRect();
-	      this.drawElements();
-	    }
-	  }, {
-	    key: '_postRender',
-	    value: function _postRender() {
-	      var seriesGroups = this.group.selectAll('g.upiq-legend-series'),
-	          selParent = this.group[0][0],
-	          rowMax = this.rowMax,
-	          groupSelections = seriesGroups[0].map(function (group, idx) {
-	        return d3.select(group).call(function (g) {
-	          return g[0].parentNode = selParent;
-	        });
-	      }, this),
-	          numSeries = groupSelections.length,
-	          selHeight = function selHeight(e) {
-	        return e[0][0].getBoundingClientRect().height;
-	      },
-	          _height = function _height(g) {
-	        return Math.ceil(selHeight(g.select('text')) * 1.35);
-	      },
-	          _height2 = Math.max.apply(null, groupSelections.map(_height)),
-	          isTop = this.loc === 'n',
-	          margin = Math.floor(this.plotter.plotWidth / 120);
-	      // align elements within each series group:
-	      groupSelections.forEach(function (group, index) {
-	        var middle = Math.round(_height2 / 2.0);
-	        group.select('rect.legend-series-color').call(function (rect) {
-	          var rectHeight = rect[0][0].getBoundingClientRect().height,
-	              rectTop = middle - Math.floor(rectHeight / 2);
-	          rect.attr({
-	            y: rectTop
-	          });
-	        });
-	        group.select('g').call(function (textGroup) {
-	          var _d3$transform$translate = _slicedToArray(d3.transform(textGroup.attr('transform')).translate, 2);
-	
-	          var x = _d3$transform$translate[0];
-	          var y = _d3$transform$translate[1];
-	          var text = textGroup.select('text');
-	          var tHeight = text[0][0].getBoundingClientRect().height;
-	          var numSpans = text.selectAll('tspan').size();
-	          var multi = numSpans > 1;
-	          var lineHeight = Math.round(tHeight / numSpans);
-	          var multiLineOffset = middle - Math.floor((tHeight - lineHeight) / 2);
-	          var textMiddle = multi ? multiLineOffset : middle;
-	          textGroup.attr({
-	            transform: 'translate(' + x + ' ' + textMiddle + ')'
-	          });
-	        });
-	      }, this);
-	      // distribute series groups (evenly size, evenly spaced):
-	      groupSelections.forEach(function (group, index) {
-	        var rowIdx = Math.floor(index / rowMax),
-	            rowY = margin + rowIdx * _height2,
-	            yOffset = isTop ? rowY : index * _height2 + margin,
-	            xOffset = d3.transform(group.attr('transform')).translate[0],
-	            bgRect = group.select('rect.legend-series-bg');
-	        // space:
-	        group.attr({
-	          transform: 'translate(' + xOffset + ' ' + yOffset + ')'
-	        });
-	        // size: even height for background rectangles:
-	        bgRect.attr({
-	          height: _height2
-	        });
-	      }, this);
-	      // adjust height of bg rect to content
-	      this.group.select('rect.legend-bg').classed('sizing', true).attr({
-	        height: function height(d) {
-	          var numRows = Math.ceil(numSeries / rowMax);
-	          return Math.floor(_height2 * (isTop ? numRows : numSeries)) + margin * 2;
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'postRender',
-	    value: function postRender() {
-	      if (!this.enabled) {
-	        return;
-	      }
-	      this._postRender();
-	    }
-	  }]);
-	
-	  return BasicLegendRenderer;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.BasicLegendRenderer = BasicLegendRenderer;
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var _utils = __webpack_require__(6);
-	
-	var d3 = __webpack_require__(3);
-	
-	var PointHoverPlugin = (function (_BaseRenderingPlugin) {
-	  _inherits(PointHoverPlugin, _BaseRenderingPlugin);
-	
-	  function PointHoverPlugin(plotter) {
-	    _classCallCheck(this, PointHoverPlugin);
-	
-	    _get(Object.getPrototypeOf(PointHoverPlugin.prototype), 'constructor', this).call(this, plotter);
-	    this.__name__ = 'PointHoverPlugin';
-	  }
-	
-	  _createClass(PointHoverPlugin, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(PointHoverPlugin.prototype), 'preRender', this).call(this);
-	      this.overlay = null; // will be set in render(), used in interactive...
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      this.xScale = this.plotter.timeScale;
-	      this.yScale = this.plotter.yScale;
-	    }
-	  }, {
-	    key: 'scaledCoordinates',
-	    value: function scaledCoordinates(point) {
-	      /** get stable x,y from scale+data as event clientX, etc unreliable */
-	      var x = Math.floor(this.xScale(point.x) + this.margins.left),
-	          y = Math.floor(this.yScale(point.y) + this.margins.top);
-	      return [x, y];
-	    }
-	  }, {
-	    key: 'glowMarker',
-	    value: function glowMarker(marker) {
-	      marker.classed('highlighted', true);
-	    }
-	  }, {
-	    key: 'clearGlow',
-	    value: function clearGlow() {
-	      this.svg.selectAll('path.nv-point.highlighted').classed('highlighted', false);
-	    }
-	  }, {
-	    key: 'showOverlay',
-	    value: function showOverlay(marker, dataPoint, series) {
-	      var color = _utils.ColorTool.lighten(series.color, 0.8);
-	
-	      // if marker is null, traverse to it:
-	      var borderColor = series.color;
-	
-	      var _scaledCoordinates = this.scaledCoordinates(dataPoint);
-	
-	      var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
-	
-	      var x = _scaledCoordinates2[0];
-	      var y = _scaledCoordinates2[1];
-	      var useLeft = x < this.plotter.plotWidth * 0.85;
-	      var fontSize = Math.max(10, this.plotter.baseFontSize * 0.7);
-	      var overlay;
-	      var pad;
-	      var w;if (marker === null) {
-	        // .nv-scatterWrap .nv-groups .nv-series-0 path
-	        marker = d3.select(this.svg.selectAll('.nv-scatterWrap .nv-groups .nv-series-' + series.position + ' path.nv-point')[0].filter(function (m) {
-	          return d3.select(m).data()[0].x === dataPoint.x;
-	        })[0]);
-	      }
-	      this.glowMarker(marker);
-	      // adjust border/text color if not dark enough:
-	      if (_utils.ColorTool.isLight(borderColor)) {
-	        borderColor = _utils.ColorTool.darken(borderColor, 0.4);
-	      }
-	      // pad x, y for use in overlay, so that overlay not on top of part of pt:
-	      w = this.plotter.plotWidth;
-	      pad = Math.max(5, w * 0.02) * (this.plotter.type === 'bar' ? 1.8 : 1);
-	      x = Math.floor(useLeft ? x + pad : x);
-	      // create on-hover overlay:
-	      overlay = this.plotCore.append('div').classed('point-hover-tip', true).style({
-	        border: '0.1em solid ' + borderColor,
-	        'background-color': color,
-	        position: 'absolute',
-	        left: useLeft ? x + 'px' : undefined,
-	        right: !useLeft ? this.plotter.plotWidth - x + 'px' : undefined,
-	        top: y + 'px',
-	        'font-size': fontSize + 'px'
-	      });
-	      overlay.append('p').classed('value-info', true).style('color', borderColor).append('span').text(this.plotter.yformat(dataPoint.y));
-	      overlay.append('p').classed('click-hint', true).text('Click datapoint for details.');
-	      this.plotter.highlightX(dataPoint.x);
-	      if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
-	        this.plotter.getPlugin('TabularLegendRenderer').highlightColumn(dataPoint.x);
-	      }
-	    }
-	  }, {
-	    key: 'clearOverlays',
-	    value: function clearOverlays() {
-	      this.plotCore.selectAll('.point-hover-tip').transition(3000).style('opacity', 0).remove();
-	      this.plotter.clearHighlights();
-	      this.clearGlow();
-	      if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
-	        this.plotter.getPlugin('TabularLegendRenderer').clearHighlights();
-	      }
-	    }
-	  }, {
-	    key: 'loadInteractiveFeatures',
-	    value: function loadInteractiveFeatures() {
-	      var self = this,
-	          markers = this.svg.selectAll('.nv-point, .nv-bar'),
-	          data = markers.data(),
-	          onHover = function onHover(d, i) {
-	        var marker = d3.select(this),
-	            dataPoint = marker.data()[0],
-	            series = self.data.series[dataPoint.seriesIndex];
-	        self.showOverlay(marker, dataPoint, series);
-	      },
-	          onMouseOut = function onMouseOut(d, i) {
-	        self.clearOverlays();
-	      };
-	      markers.on('mouseover', onHover).on('mouseout', onMouseOut);
-	    }
-	  }]);
-	
-	  return PointHoverPlugin;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.PointHoverPlugin = PointHoverPlugin;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var _utils = __webpack_require__(6);
-	
-	var _tinyOverlay = __webpack_require__(27);
-	
-	var d3 = __webpack_require__(3);
-	
-	var document = window.document;
-	
-	function mkHTML(series, point, color) {
-	  var wrap = d3.select(document.createElement('div')),
-	      seriesLabel = series.title,
-	      title = wrap.append('h5').text(series.title).style({
-	    'background-color': color,
-	    color: _utils.ColorTool.isLight(color) ? '#000' : '#fff'
-	  }),
-	      detail = wrap.append('dl'),
-	      fmt = d3.format(series.display_format.replace('%', ',') || ',.1f'),
-	      displayValue = fmt(point.y);
-	  // Period title (series title):
-	  detail.append('dt').classed('name', true).append('span').classed('point-title', true).text(point.title);
-	  // Display value (final computed value, formatted):
-	  detail.append('dd').classed('value', true).text(true ? displayValue : 'n/a (null)');
-	  // Note:
-	  detail.append('p').classed('note', true).text(point.note);
-	  if (point.uri) {
-	    detail.append('a').attr({
-	      href: point.uri,
-	      target: '_blank'
-	    }).text('View data source');
-	  }
-	  return wrap;
-	}
-	
-	var PointClickPlugin = (function (_BaseRenderingPlugin) {
-	  _inherits(PointClickPlugin, _BaseRenderingPlugin);
-	
-	  function PointClickPlugin(plotter) {
-	    _classCallCheck(this, PointClickPlugin);
-	
-	    _get(Object.getPrototypeOf(PointClickPlugin.prototype), 'constructor', this).call(this, plotter);
-	    this.__name__ = 'PointClickPlugin';
-	  }
-	
-	  _createClass(PointClickPlugin, [{
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(PointClickPlugin.prototype), 'preRender', this).call(this);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      this.xScale = this.plotter.timeScale;
-	      this.yScale = this.plotter.yScale;
-	    }
-	  }, {
-	    key: 'scaledCoordinates',
-	    value: function scaledCoordinates(point) {
-	      /** get stable x,y from scale+data as event clientX, etc unreliable */
-	      var x = Math.floor(this.xScale(point.x) + this.margins.left),
-	          y = Math.floor(this.yScale(point.y) + this.margins.top);
-	      return [x, y];
-	    }
-	  }, {
-	    key: 'showOverlay',
-	    value: function showOverlay(marker, dataPoint, series) {
-	      var color = series.color;
-	      var ct = _utils.ColorTool;
-	      var titleColor = ct.isLight(color) ? ct.darken(color) : color;
-	
-	      var _scaledCoordinates = this.scaledCoordinates(dataPoint);
-	
-	      var _scaledCoordinates2 = _slicedToArray(_scaledCoordinates, 2);
-	
-	      var x = _scaledCoordinates2[0];
-	      var y = _scaledCoordinates2[1];
-	      var useLeft = x < this.plotter.plotWidth * 0.5;
-	      var fontSize = Math.max(13, this.plotter.baseFontSize * 0.7);
-	      var html = mkHTML(series, dataPoint, titleColor).html();
-	      var overlay = new _tinyOverlay.Overlay(html, {
-	        container: this.plotCore[0][0],
-	        classname: useLeft ? 'left' : undefined,
-	        style: {
-	          left: useLeft ? x + 'px' : undefined,
-	          right: !useLeft ? this.plotter.plotWidth - x + 'px' : undefined,
-	          top: y + 'px',
-	          width: '45%',
-	          'min-width': '150px',
-	          'max-width': '300px',
-	          'font-size': fontSize + 'px',
-	          'z-index': 10000
-	        }
-	      });
-	      var pad;
-	      var w;
-	      overlay.open();
-	    }
-	  }, {
-	    key: 'loadInteractiveFeatures',
-	    value: function loadInteractiveFeatures() {
-	      var self = this,
-	          markers = this.svg.selectAll('.nv-point, .nv-bar'),
-	          data = markers.data(),
-	          onClick = function onClick(d, i) {
-	        var marker = d3.select(this),
-	            dataPoint = marker.data()[0],
-	            series = self.data.series[dataPoint.seriesIndex];
-	        self.showOverlay(marker, dataPoint, series);
-	      };
-	      markers.on('click', onClick);
-	    }
-	  }]);
-	
-	  return PointClickPlugin;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.PointClickPlugin = PointClickPlugin;
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-	
-	var _plugin = __webpack_require__(9);
-	
-	var d3 = __webpack_require__(3);
-	
-	var CompactLayoutPlugin = (function (_BaseRenderingPlugin) {
-	  _inherits(CompactLayoutPlugin, _BaseRenderingPlugin);
-	
-	  function CompactLayoutPlugin(plotter) {
-	    _classCallCheck(this, CompactLayoutPlugin);
-	
-	    _get(Object.getPrototypeOf(CompactLayoutPlugin.prototype), 'constructor', this).call(this, plotter);
-	    this.colCount = this.plotter.options.columns || 4;
-	    this.container = d3.select(this.plotter.plotDiv[0][0].parentNode);
-	  }
-	
-	  _createClass(CompactLayoutPlugin, [{
-	    key: 'isEnabled',
-	    value: function isEnabled() {
-	      return this.plotter.options.layout === 'compact';
-	    }
-	  }, {
-	    key: 'sizeColumns',
-	    value: function sizeColumns() {
-	      var padding_mult = 0.89,
-	          pct = Math.floor(100 / this.colCount * padding_mult),
-	          spec = '' + pct + '%',
-	          clientWidth;
-	      this.plotDiv.style({
-	        width: spec,
-	        float: 'left'
-	      });
-	      clientWidth = this.plotDiv[0][0].getBoundingClientRect().width;
-	      this.plotter.plotWidth = clientWidth;
-	      this.plotter.plotHeight = Math.floor(clientWidth * 0.85);
-	      this.chart.width(this.plotter.plotWidth); // width before margins
-	      this.chart.height(this.plotter.plotHeight); // height before margins
-	      this.plotter.baseFontSize = Math.max(11, Math.floor(clientWidth / 45 * 2) / 2.0);
-	      this.plotter.plotCore.style({
-	        'font-size': '' + this.plotter.baseFontSize + 'px',
-	        height: '' + this.plotter.plotHeight + 'px'
-	      });
-	    }
-	  }, {
-	    key: 'markerSize',
-	    value: function markerSize(d) {
-	      return (d.size || 8) * Math.pow(this.plotter.plotWidth / 220, 2);
-	    }
-	  }, {
-	    key: 'layoutAdjustments',
-	    value: function layoutAdjustments() {
-	      // toggle small plot:
-	      this.plotter.options.small = true;
-	      this.plotter.relativeWidth = true;
-	      this.plotter.options.tiny = true;
-	    }
-	  }, {
-	    key: 'expandAll',
-	    value: function expandAll() {
-	      window.plotqi.plotters.forEach(function (plotter) {
-	        plotter.options.layout = 'normal';
-	        plotter.options.interactive = true;
-	        plotter.refresh();
-	      });
-	    }
-	  }, {
-	    key: 'contractAll',
-	    value: function contractAll() {
-	      // first, mark state on all plotters as incomplete (needed for onComplete)
-	      window.plotqi.plotters.forEach(function (plotter) {
-	        plotter.complete = false;
-	      });
-	      // then re-render:
-	      window.plotqi.plotters.forEach(function (plotter) {
-	        plotter.options.layout = 'compact';
-	        plotter.refresh();
-	      });
-	    }
-	  }, {
-	    key: 'hookupToggle',
-	    value: function hookupToggle() {
-	      var control = d3.select('.upiq-report-control'),
-	          hasControl = !!control.size(),
-	          hookedUp = hasControl && window.plotqi.compactControlReady,
-	          alreadyCompact = this.enabled,
-	          labelStandard = 'Standard',
-	          labelCompact = 'Compact',
-	          linkText = alreadyCompact ? labelStandard : labelCompact,
-	          otherText = !alreadyCompact ? labelStandard : labelCompact,
-	          href = alreadyCompact ? '#standard' : '#compact',
-	          toggleState = alreadyCompact,
-	          self = this,
-	          link;
-	      if (hasControl && !hookedUp) {
-	        control.html('').append('span').classed('control-subtle', true).text('Layout: ');
-	        control.append('span').classed('control-current-layout', true).text(otherText);
-	        control.append('span').classed('divider', true).text(' | ');
-	        link = control.append('a').classed('upiq-compact-toggle', true).attr({
-	          href: href
-	        }).text(linkText);
-	        link.on('click', function (d, i) {
-	          var newState = !toggleState,
-	              href = newState ? '#compact' : '#standard',
-	              linkText = newState ? labelStandard : labelCompact,
-	              otherText = toggleState ? labelStandard : labelCompact,
-	              action = newState ? self.contractAll : self.expandAll;
-	          link.attr({
-	            href: href
-	          }).text(linkText);
-	          control.select('span.control-current-layout').text(otherText);
-	          toggleState = newState; // flip
-	          action();
-	        });
-	        // finally set state to avoid duplication:
-	        window.plotqi.compactControlReady = true;
-	      }
-	    }
-	  }, {
-	    key: 'preRender',
-	    value: function preRender() {
-	      _get(Object.getPrototypeOf(CompactLayoutPlugin.prototype), 'preRender', this).call(this);
-	      this.enabled = this.isEnabled();
-	      this.hookupToggle(); // hookup regardless of initial state, if div
-	      if (this.enabled) {
-	        this.chart = this.plotter.chart;
-	        // ensure container marked as compact:
-	        this.container.classed('compact', true);
-	        // Disable interactive features:
-	        this.originally_interactive = this.plotter.options.interactive || false;
-	        this.plotter.options.interactive = false;
-	        // get column css spec from count:
-	        this.sizeColumns();
-	        // other various layout adjustments:
-	        this.layoutAdjustments();
-	        // use slightly larger point markers on line than usual vs. width
-	        if (this.data.chart_type === 'line') {
-	          this.plotter.chart.pointSize(this.markerSize.bind(this));
-	        }
-	      } else {
-	        this.container.classed('compact', false);
-	      }
-	    }
-	  }, {
-	    key: 'plotClicked',
-	    value: function plotClicked() {
-	      var url = this.plotter.data.url || null;
-	      if (url) {
-	        // just open plot url in a new window
-	        window.open(url, '_blank');
-	      }
-	    }
-	  }, {
-	    key: 'postRender',
-	    value: function postRender() {
-	      var self = this;
-	      if (this.enabled && this.originally_interactive) {
-	        this.svg.on('click', function (d, i) {
-	          self.plotClicked();
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'rowPlotters',
-	    value: function rowPlotters(plotter) {
-	      var plotters = window.plotqi.plotters,
-	          plotIdx = plotters.indexOf(plotter),
-	          colCount = this.colCount,
-	          plotRow = Math.floor(plotIdx / colCount);
-	      return plotters.filter(function (p) {
-	        var idx = plotters.indexOf(p),
-	            sameRow = Math.floor(idx / colCount) === plotRow;
-	        return sameRow;
-	      });
-	    }
-	  }, {
-	    key: 'rowHeight',
-	    value: function rowHeight(plotter) {
-	      var rowPlotters = this.rowPlotters(plotter);
-	      return Math.ceil(Math.max.apply(null, rowPlotters.map(function (p) {
-	        return p.plotHeight;
-	      })));
-	    }
-	  }, {
-	    key: 'adjustHeight',
-	    value: function adjustHeight(plotter) {
-	      var title = plotter.plotDiv.select('.plot-title'),
-	          titleHeight = title[0][0].getBoundingClientRect().height,
-	          titleDifferential = this.tallestTitle - titleHeight,
-	          topLine = this.topLine;
-	      plotter.plotCore.style({
-	        'margin-top': Math.ceil(titleDifferential) + 'px'
-	      });
-	      plotter.plotHeight = this.rowHeight(plotter); //this.maxHeight;
-	      plotter.plotCore.style({
-	        height: '' + plotter.plotHeight + 'px'
-	      });
-	      plotter.svg.select('.upiq-plot').attr({
-	        transform: 'translate(0 ' + topLine + ')'
-	      });
-	    }
-	  }, {
-	    key: 'swapLegends',
-	    value: function swapLegends(plotter) {
-	      var plotHeight = plotter.plotGroup[0][0].getBoundingClientRect().height;
-	      plotter.abovePlotGroup.attr({
-	        transform: 'translate(0 ' + plotHeight + ')'
-	      });
-	      plotter.plotGroup.attr({
-	        transform: 'translate(0 0)'
-	      });
-	    }
-	  }, {
-	    key: 'allDone',
-	    value: function allDone() {
-	      var _this = this;
-	
-	      var colCount = this.colCount,
-	          container = this.container,
-	          firstOfRow = this.container.selectAll('.plotdiv').filter(function (d, i) {
-	        return i % colCount === 0 && i !== 0 ? _this : null;
-	      }),
-	          plotters = window.plotqi.plotters,
-	          maxHeight = Math.ceil(Math.max.apply(null, plotters.map(function (p) {
-	        return p.plotHeight;
-	      })));
-	      // Insert line-break div between "rows"
-	      firstOfRow.each(function (d, i) {
-	        var _this2 = this;
-	
-	        container.insert('div', function (d) {
-	          return _this2;
-	        }).classed('rowbreak', true);
-	      });
-	      // Adjust uniform height, and set main plot group to uniform position
-	      this.maxHeight = maxHeight;
-	      this.tallestTitle = Math.max.apply(null, plotters.map(function (plotter) {
-	        var title = plotter.plotDiv.select('.plot-title');
-	        return title[0][0].getBoundingClientRect().height;
-	      }));
-	      this.topLine = Math.max.apply(null, plotters.map(function (plotter) {
-	        return plotter.abovePlotGroup[0][0].getBoundingClientRect().height;
-	      }));
-	      plotters.forEach(this.adjustHeight, this);
-	      plotters.forEach(this.swapLegends, this);
-	    }
-	  }, {
-	    key: 'isDone',
-	    value: function isDone() {
-	      var plotters = window.plotqi.plotters,
-	          expected = window.plotqi.plotCount,
-	          completed = plotters.filter(function (p) {
-	        return p.complete;
-	      });
-	      return completed.length === expected;
-	    }
-	  }, {
-	    key: 'onComplete',
-	    value: function onComplete() {
-	      if (this.enabled) {
-	        if (this.isDone()) {
-	          this.allDone();
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'update',
-	    value: function update() {
-	      if (this.enabled) {
-	        this.clear();
-	        this.render();
-	      }
-	    }
-	  }]);
-	
-	  return CompactLayoutPlugin;
-	})(_plugin.BaseRenderingPlugin);
-	
-	exports.CompactLayoutPlugin = CompactLayoutPlugin;
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// SVGPathSeg API polyfill
-	// https://github.com/progers/pathseg
-	//
-	// This is a drop-in replacement for the SVGPathSeg and SVGPathSegList APIs that were removed from
-	// SVG2 (https://lists.w3.org/Archives/Public/www-svg/2015Jun/0044.html), including the latest spec
-	// changes which were implemented in Firefox 43 and Chrome 46.
-	
-	(function() { "use strict";
-	    if (!("SVGPathSeg" in window)) {
-	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGPathSeg
-	        window.SVGPathSeg = function(type, typeAsLetter, owningPathSegList) {
-	            this.pathSegType = type;
-	            this.pathSegTypeAsLetter = typeAsLetter;
-	            this._owningPathSegList = owningPathSegList;
-	        }
-	
-	        SVGPathSeg.prototype.classname = "SVGPathSeg";
-	
-	        SVGPathSeg.PATHSEG_UNKNOWN = 0;
-	        SVGPathSeg.PATHSEG_CLOSEPATH = 1;
-	        SVGPathSeg.PATHSEG_MOVETO_ABS = 2;
-	        SVGPathSeg.PATHSEG_MOVETO_REL = 3;
-	        SVGPathSeg.PATHSEG_LINETO_ABS = 4;
-	        SVGPathSeg.PATHSEG_LINETO_REL = 5;
-	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS = 6;
-	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL = 7;
-	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS = 8;
-	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL = 9;
-	        SVGPathSeg.PATHSEG_ARC_ABS = 10;
-	        SVGPathSeg.PATHSEG_ARC_REL = 11;
-	        SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS = 12;
-	        SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL = 13;
-	        SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS = 14;
-	        SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL = 15;
-	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS = 16;
-	        SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL = 17;
-	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS = 18;
-	        SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL = 19;
-	
-	        // Notify owning PathSegList on any changes so they can be synchronized back to the path element.
-	        SVGPathSeg.prototype._segmentChanged = function() {
-	            if (this._owningPathSegList)
-	                this._owningPathSegList.segmentChanged(this);
-	        }
-	
-	        window.SVGPathSegClosePath = function(owningPathSegList) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CLOSEPATH, "z", owningPathSegList);
-	        }
-	        SVGPathSegClosePath.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegClosePath.prototype.toString = function() { return "[object SVGPathSegClosePath]"; }
-	        SVGPathSegClosePath.prototype._asPathString = function() { return this.pathSegTypeAsLetter; }
-	        SVGPathSegClosePath.prototype.clone = function() { return new SVGPathSegClosePath(undefined); }
-	
-	        window.SVGPathSegMovetoAbs = function(owningPathSegList, x, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_MOVETO_ABS, "M", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	        }
-	        SVGPathSegMovetoAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegMovetoAbs.prototype.toString = function() { return "[object SVGPathSegMovetoAbs]"; }
-	        SVGPathSegMovetoAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
-	        SVGPathSegMovetoAbs.prototype.clone = function() { return new SVGPathSegMovetoAbs(undefined, this._x, this._y); }
-	        Object.defineProperty(SVGPathSegMovetoAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegMovetoAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegMovetoRel = function(owningPathSegList, x, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_MOVETO_REL, "m", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	        }
-	        SVGPathSegMovetoRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegMovetoRel.prototype.toString = function() { return "[object SVGPathSegMovetoRel]"; }
-	        SVGPathSegMovetoRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
-	        SVGPathSegMovetoRel.prototype.clone = function() { return new SVGPathSegMovetoRel(undefined, this._x, this._y); }
-	        Object.defineProperty(SVGPathSegMovetoRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegMovetoRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegLinetoAbs = function(owningPathSegList, x, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_ABS, "L", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	        }
-	        SVGPathSegLinetoAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegLinetoAbs.prototype.toString = function() { return "[object SVGPathSegLinetoAbs]"; }
-	        SVGPathSegLinetoAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
-	        SVGPathSegLinetoAbs.prototype.clone = function() { return new SVGPathSegLinetoAbs(undefined, this._x, this._y); }
-	        Object.defineProperty(SVGPathSegLinetoAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegLinetoAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegLinetoRel = function(owningPathSegList, x, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_REL, "l", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	        }
-	        SVGPathSegLinetoRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegLinetoRel.prototype.toString = function() { return "[object SVGPathSegLinetoRel]"; }
-	        SVGPathSegLinetoRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
-	        SVGPathSegLinetoRel.prototype.clone = function() { return new SVGPathSegLinetoRel(undefined, this._x, this._y); }
-	        Object.defineProperty(SVGPathSegLinetoRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegLinetoRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoCubicAbs = function(owningPathSegList, x, y, x1, y1, x2, y2) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS, "C", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._x1 = x1;
-	            this._y1 = y1;
-	            this._x2 = x2;
-	            this._y2 = y2;
-	        }
-	        SVGPathSegCurvetoCubicAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoCubicAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicAbs]"; }
-	        SVGPathSegCurvetoCubicAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoCubicAbs.prototype.clone = function() { return new SVGPathSegCurvetoCubicAbs(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2); }
-	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicAbs.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoCubicRel = function(owningPathSegList, x, y, x1, y1, x2, y2) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL, "c", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._x1 = x1;
-	            this._y1 = y1;
-	            this._x2 = x2;
-	            this._y2 = y2;
-	        }
-	        SVGPathSegCurvetoCubicRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoCubicRel.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicRel]"; }
-	        SVGPathSegCurvetoCubicRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoCubicRel.prototype.clone = function() { return new SVGPathSegCurvetoCubicRel(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2); }
-	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicRel.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoQuadraticAbs = function(owningPathSegList, x, y, x1, y1) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS, "Q", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._x1 = x1;
-	            this._y1 = y1;
-	        }
-	        SVGPathSegCurvetoQuadraticAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoQuadraticAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticAbs]"; }
-	        SVGPathSegCurvetoQuadraticAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoQuadraticAbs.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticAbs(undefined, this._x, this._y, this._x1, this._y1); }
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticAbs.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoQuadraticRel = function(owningPathSegList, x, y, x1, y1) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL, "q", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._x1 = x1;
-	            this._y1 = y1;
-	        }
-	        SVGPathSegCurvetoQuadraticRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoQuadraticRel.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticRel]"; }
-	        SVGPathSegCurvetoQuadraticRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoQuadraticRel.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticRel(undefined, this._x, this._y, this._x1, this._y1); }
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "x1", { get: function() { return this._x1; }, set: function(x1) { this._x1 = x1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticRel.prototype, "y1", { get: function() { return this._y1; }, set: function(y1) { this._y1 = y1; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegArcAbs = function(owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_ARC_ABS, "A", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._r1 = r1;
-	            this._r2 = r2;
-	            this._angle = angle;
-	            this._largeArcFlag = largeArcFlag;
-	            this._sweepFlag = sweepFlag;
-	        }
-	        SVGPathSegArcAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegArcAbs.prototype.toString = function() { return "[object SVGPathSegArcAbs]"; }
-	        SVGPathSegArcAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y; }
-	        SVGPathSegArcAbs.prototype.clone = function() { return new SVGPathSegArcAbs(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag); }
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "r1", { get: function() { return this._r1; }, set: function(r1) { this._r1 = r1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "r2", { get: function() { return this._r2; }, set: function(r2) { this._r2 = r2; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "angle", { get: function() { return this._angle; }, set: function(angle) { this._angle = angle; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "largeArcFlag", { get: function() { return this._largeArcFlag; }, set: function(largeArcFlag) { this._largeArcFlag = largeArcFlag; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcAbs.prototype, "sweepFlag", { get: function() { return this._sweepFlag; }, set: function(sweepFlag) { this._sweepFlag = sweepFlag; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegArcRel = function(owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_ARC_REL, "a", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._r1 = r1;
-	            this._r2 = r2;
-	            this._angle = angle;
-	            this._largeArcFlag = largeArcFlag;
-	            this._sweepFlag = sweepFlag;
-	        }
-	        SVGPathSegArcRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegArcRel.prototype.toString = function() { return "[object SVGPathSegArcRel]"; }
-	        SVGPathSegArcRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y; }
-	        SVGPathSegArcRel.prototype.clone = function() { return new SVGPathSegArcRel(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag); }
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "r1", { get: function() { return this._r1; }, set: function(r1) { this._r1 = r1; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "r2", { get: function() { return this._r2; }, set: function(r2) { this._r2 = r2; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "angle", { get: function() { return this._angle; }, set: function(angle) { this._angle = angle; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "largeArcFlag", { get: function() { return this._largeArcFlag; }, set: function(largeArcFlag) { this._largeArcFlag = largeArcFlag; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegArcRel.prototype, "sweepFlag", { get: function() { return this._sweepFlag; }, set: function(sweepFlag) { this._sweepFlag = sweepFlag; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegLinetoHorizontalAbs = function(owningPathSegList, x) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS, "H", owningPathSegList);
-	            this._x = x;
-	        }
-	        SVGPathSegLinetoHorizontalAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegLinetoHorizontalAbs.prototype.toString = function() { return "[object SVGPathSegLinetoHorizontalAbs]"; }
-	        SVGPathSegLinetoHorizontalAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x; }
-	        SVGPathSegLinetoHorizontalAbs.prototype.clone = function() { return new SVGPathSegLinetoHorizontalAbs(undefined, this._x); }
-	        Object.defineProperty(SVGPathSegLinetoHorizontalAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegLinetoHorizontalRel = function(owningPathSegList, x) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL, "h", owningPathSegList);
-	            this._x = x;
-	        }
-	        SVGPathSegLinetoHorizontalRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegLinetoHorizontalRel.prototype.toString = function() { return "[object SVGPathSegLinetoHorizontalRel]"; }
-	        SVGPathSegLinetoHorizontalRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x; }
-	        SVGPathSegLinetoHorizontalRel.prototype.clone = function() { return new SVGPathSegLinetoHorizontalRel(undefined, this._x); }
-	        Object.defineProperty(SVGPathSegLinetoHorizontalRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegLinetoVerticalAbs = function(owningPathSegList, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS, "V", owningPathSegList);
-	            this._y = y;
-	        }
-	        SVGPathSegLinetoVerticalAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegLinetoVerticalAbs.prototype.toString = function() { return "[object SVGPathSegLinetoVerticalAbs]"; }
-	        SVGPathSegLinetoVerticalAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._y; }
-	        SVGPathSegLinetoVerticalAbs.prototype.clone = function() { return new SVGPathSegLinetoVerticalAbs(undefined, this._y); }
-	        Object.defineProperty(SVGPathSegLinetoVerticalAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegLinetoVerticalRel = function(owningPathSegList, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL, "v", owningPathSegList);
-	            this._y = y;
-	        }
-	        SVGPathSegLinetoVerticalRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegLinetoVerticalRel.prototype.toString = function() { return "[object SVGPathSegLinetoVerticalRel]"; }
-	        SVGPathSegLinetoVerticalRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._y; }
-	        SVGPathSegLinetoVerticalRel.prototype.clone = function() { return new SVGPathSegLinetoVerticalRel(undefined, this._y); }
-	        Object.defineProperty(SVGPathSegLinetoVerticalRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoCubicSmoothAbs = function(owningPathSegList, x, y, x2, y2) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS, "S", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._x2 = x2;
-	            this._y2 = y2;
-	        }
-	        SVGPathSegCurvetoCubicSmoothAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoCubicSmoothAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicSmoothAbs]"; }
-	        SVGPathSegCurvetoCubicSmoothAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoCubicSmoothAbs.prototype.clone = function() { return new SVGPathSegCurvetoCubicSmoothAbs(undefined, this._x, this._y, this._x2, this._y2); }
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothAbs.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoCubicSmoothRel = function(owningPathSegList, x, y, x2, y2) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL, "s", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	            this._x2 = x2;
-	            this._y2 = y2;
-	        }
-	        SVGPathSegCurvetoCubicSmoothRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoCubicSmoothRel.prototype.toString = function() { return "[object SVGPathSegCurvetoCubicSmoothRel]"; }
-	        SVGPathSegCurvetoCubicSmoothRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoCubicSmoothRel.prototype.clone = function() { return new SVGPathSegCurvetoCubicSmoothRel(undefined, this._x, this._y, this._x2, this._y2); }
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "x2", { get: function() { return this._x2; }, set: function(x2) { this._x2 = x2; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoCubicSmoothRel.prototype, "y2", { get: function() { return this._y2; }, set: function(y2) { this._y2 = y2; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoQuadraticSmoothAbs = function(owningPathSegList, x, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS, "T", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	        }
-	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticSmoothAbs]"; }
-	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoQuadraticSmoothAbs.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticSmoothAbs(undefined, this._x, this._y); }
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        window.SVGPathSegCurvetoQuadraticSmoothRel = function(owningPathSegList, x, y) {
-	            SVGPathSeg.call(this, SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL, "t", owningPathSegList);
-	            this._x = x;
-	            this._y = y;
-	        }
-	        SVGPathSegCurvetoQuadraticSmoothRel.prototype = Object.create(SVGPathSeg.prototype);
-	        SVGPathSegCurvetoQuadraticSmoothRel.prototype.toString = function() { return "[object SVGPathSegCurvetoQuadraticSmoothRel]"; }
-	        SVGPathSegCurvetoQuadraticSmoothRel.prototype._asPathString = function() { return this.pathSegTypeAsLetter + " " + this._x + " " + this._y; }
-	        SVGPathSegCurvetoQuadraticSmoothRel.prototype.clone = function() { return new SVGPathSegCurvetoQuadraticSmoothRel(undefined, this._x, this._y); }
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothRel.prototype, "x", { get: function() { return this._x; }, set: function(x) { this._x = x; this._segmentChanged(); }, enumerable: true });
-	        Object.defineProperty(SVGPathSegCurvetoQuadraticSmoothRel.prototype, "y", { get: function() { return this._y; }, set: function(y) { this._y = y; this._segmentChanged(); }, enumerable: true });
-	
-	        // Add createSVGPathSeg* functions to SVGPathElement.
-	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGPathElement.
-	        SVGPathElement.prototype.createSVGPathSegClosePath = function() { return new SVGPathSegClosePath(undefined); }
-	        SVGPathElement.prototype.createSVGPathSegMovetoAbs = function(x, y) { return new SVGPathSegMovetoAbs(undefined, x, y); }
-	        SVGPathElement.prototype.createSVGPathSegMovetoRel = function(x, y) { return new SVGPathSegMovetoRel(undefined, x, y); }
-	        SVGPathElement.prototype.createSVGPathSegLinetoAbs = function(x, y) { return new SVGPathSegLinetoAbs(undefined, x, y); }
-	        SVGPathElement.prototype.createSVGPathSegLinetoRel = function(x, y) { return new SVGPathSegLinetoRel(undefined, x, y); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicAbs = function(x, y, x1, y1, x2, y2) { return new SVGPathSegCurvetoCubicAbs(undefined, x, y, x1, y1, x2, y2); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicRel = function(x, y, x1, y1, x2, y2) { return new SVGPathSegCurvetoCubicRel(undefined, x, y, x1, y1, x2, y2); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticAbs = function(x, y, x1, y1) { return new SVGPathSegCurvetoQuadraticAbs(undefined, x, y, x1, y1); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticRel = function(x, y, x1, y1) { return new SVGPathSegCurvetoQuadraticRel(undefined, x, y, x1, y1); }
-	        SVGPathElement.prototype.createSVGPathSegArcAbs = function(x, y, r1, r2, angle, largeArcFlag, sweepFlag) { return new SVGPathSegArcAbs(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag); }
-	        SVGPathElement.prototype.createSVGPathSegArcRel = function(x, y, r1, r2, angle, largeArcFlag, sweepFlag) { return new SVGPathSegArcRel(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag); }
-	        SVGPathElement.prototype.createSVGPathSegLinetoHorizontalAbs = function(x) { return new SVGPathSegLinetoHorizontalAbs(undefined, x); }
-	        SVGPathElement.prototype.createSVGPathSegLinetoHorizontalRel = function(x) { return new SVGPathSegLinetoHorizontalRel(undefined, x); }
-	        SVGPathElement.prototype.createSVGPathSegLinetoVerticalAbs = function(y) { return new SVGPathSegLinetoVerticalAbs(undefined, y); }
-	        SVGPathElement.prototype.createSVGPathSegLinetoVerticalRel = function(y) { return new SVGPathSegLinetoVerticalRel(undefined, y); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothAbs = function(x, y, x2, y2) { return new SVGPathSegCurvetoCubicSmoothAbs(undefined, x, y, x2, y2); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothRel = function(x, y, x2, y2) { return new SVGPathSegCurvetoCubicSmoothRel(undefined, x, y, x2, y2); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothAbs = function(x, y) { return new SVGPathSegCurvetoQuadraticSmoothAbs(undefined, x, y); }
-	        SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothRel = function(x, y) { return new SVGPathSegCurvetoQuadraticSmoothRel(undefined, x, y); }
-	    }
-	
-	    if (!("SVGPathSegList" in window)) {
-	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGPathSegList
-	        window.SVGPathSegList = function(pathElement) {
-	            this._pathElement = pathElement;
-	            this._list = this._parsePath(this._pathElement.getAttribute("d"));
-	
-	            // Use a MutationObserver to catch changes to the path's "d" attribute.
-	            this._mutationObserverConfig = { "attributes": true, "attributeFilter": ["d"] };
-	            this._pathElementMutationObserver = new MutationObserver(this._updateListFromPathMutations.bind(this));
-	            this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
-	        }
-	
-	        SVGPathSegList.prototype.classname = "SVGPathSegList";
-	
-	        Object.defineProperty(SVGPathSegList.prototype, "numberOfItems", {
-	            get: function() {
-	                this._checkPathSynchronizedToList();
-	                return this._list.length;
-	            },
-	            enumerable: true
-	        });
-	
-	        // Add the pathSegList accessors to SVGPathElement.
-	        // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-InterfaceSVGAnimatedPathData
-	        Object.defineProperty(SVGPathElement.prototype, "pathSegList", {
-	            get: function() {
-	                if (!this._pathSegList)
-	                    this._pathSegList = new SVGPathSegList(this);
-	                return this._pathSegList;
-	            },
-	            enumerable: true
-	        });
-	        // FIXME: The following are not implemented and simply return SVGPathElement.pathSegList.
-	        Object.defineProperty(SVGPathElement.prototype, "normalizedPathSegList", { get: function() { return this.pathSegList; }, enumerable: true });
-	        Object.defineProperty(SVGPathElement.prototype, "animatedPathSegList", { get: function() { return this.pathSegList; }, enumerable: true });
-	        Object.defineProperty(SVGPathElement.prototype, "animatedNormalizedPathSegList", { get: function() { return this.pathSegList; }, enumerable: true });
-	
-	        // Process any pending mutations to the path element and update the list as needed.
-	        // This should be the first call of all public functions and is needed because
-	        // MutationObservers are not synchronous so we can have pending asynchronous mutations.
-	        SVGPathSegList.prototype._checkPathSynchronizedToList = function() {
-	            this._updateListFromPathMutations(this._pathElementMutationObserver.takeRecords());
-	        }
-	
-	        SVGPathSegList.prototype._updateListFromPathMutations = function(mutationRecords) {
-	            if (!this._pathElement)
-	                return;
-	            var hasPathMutations = false;
-	            mutationRecords.forEach(function(record) {
-	                if (record.attributeName == "d")
-	                    hasPathMutations = true;
-	            });
-	            if (hasPathMutations)
-	                this._list = this._parsePath(this._pathElement.getAttribute("d"));
-	        }
-	
-	        // Serialize the list and update the path's 'd' attribute.
-	        SVGPathSegList.prototype._writeListToPath = function() {
-	            this._pathElementMutationObserver.disconnect();
-	            this._pathElement.setAttribute("d", SVGPathSegList._pathSegArrayAsString(this._list));
-	            this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
-	        }
-	
-	        // When a path segment changes the list needs to be synchronized back to the path element.
-	        SVGPathSegList.prototype.segmentChanged = function(pathSeg) {
-	            this._writeListToPath();
-	        }
-	
-	        SVGPathSegList.prototype.clear = function() {
-	            this._checkPathSynchronizedToList();
-	
-	            this._list.forEach(function(pathSeg) {
-	                pathSeg._owningPathSegList = null;
-	            });
-	            this._list = [];
-	            this._writeListToPath();
-	        }
-	
-	        SVGPathSegList.prototype.initialize = function(newItem) {
-	            this._checkPathSynchronizedToList();
-	
-	            this._list = [newItem];
-	            newItem._owningPathSegList = this;
-	            this._writeListToPath();
-	            return newItem;
-	        }
-	
-	        SVGPathSegList.prototype._checkValidIndex = function(index) {
-	            if (isNaN(index) || index < 0 || index >= this.numberOfItems)
-	                throw "INDEX_SIZE_ERR";
-	        }
-	
-	        SVGPathSegList.prototype.getItem = function(index) {
-	            this._checkPathSynchronizedToList();
-	
-	            this._checkValidIndex(index);
-	            return this._list[index];
-	        }
-	
-	        SVGPathSegList.prototype.insertItemBefore = function(newItem, index) {
-	            this._checkPathSynchronizedToList();
-	
-	            // Spec: If the index is greater than or equal to numberOfItems, then the new item is appended to the end of the list.
-	            if (index > this.numberOfItems)
-	                index = this.numberOfItems;
-	            if (newItem._owningPathSegList) {
-	                // SVG2 spec says to make a copy.
-	                newItem = newItem.clone();
-	            }
-	            this._list.splice(index, 0, newItem);
-	            newItem._owningPathSegList = this;
-	            this._writeListToPath();
-	            return newItem;
-	        }
-	
-	        SVGPathSegList.prototype.replaceItem = function(newItem, index) {
-	            this._checkPathSynchronizedToList();
-	
-	            if (newItem._owningPathSegList) {
-	                // SVG2 spec says to make a copy.
-	                newItem = newItem.clone();
-	            }
-	            this._checkValidIndex(index);
-	            this._list[index] = newItem;
-	            newItem._owningPathSegList = this;
-	            this._writeListToPath();
-	            return newItem;
-	        }
-	
-	        SVGPathSegList.prototype.removeItem = function(index) {
-	            this._checkPathSynchronizedToList();
-	
-	            this._checkValidIndex(index);
-	            var item = this._list[index];
-	            this._list.splice(index, 1);
-	            this._writeListToPath();
-	            return item;
-	        }
-	
-	        SVGPathSegList.prototype.appendItem = function(newItem) {
-	            this._checkPathSynchronizedToList();
-	
-	            if (newItem._owningPathSegList) {
-	                // SVG2 spec says to make a copy.
-	                newItem = newItem.clone();
-	            }
-	            this._list.push(newItem);
-	            newItem._owningPathSegList = this;
-	            // TODO: Optimize this to just append to the existing attribute.
-	            this._writeListToPath();
-	            return newItem;
-	        }
-	
-	        SVGPathSegList._pathSegArrayAsString = function(pathSegArray) {
-	            var string = "";
-	            var first = true;
-	            pathSegArray.forEach(function(pathSeg) {
-	                if (first) {
-	                    first = false;
-	                    string += pathSeg._asPathString();
-	                } else {
-	                    string += " " + pathSeg._asPathString();
-	                }
-	            });
-	            return string;
-	        }
-	
-	        // This closely follows SVGPathParser::parsePath from Source/core/svg/SVGPathParser.cpp.
-	        SVGPathSegList.prototype._parsePath = function(string) {
-	            if (!string || string.length == 0)
-	                return [];
-	
-	            var owningPathSegList = this;
-	
-	            var Builder = function() {
-	                this.pathSegList = [];
-	            }
-	
-	            Builder.prototype.appendSegment = function(pathSeg) {
-	                this.pathSegList.push(pathSeg);
-	            }
-	
-	            var Source = function(string) {
-	                this._string = string;
-	                this._currentIndex = 0;
-	                this._endIndex = this._string.length;
-	                this._previousCommand = SVGPathSeg.PATHSEG_UNKNOWN;
-	
-	                this._skipOptionalSpaces();
-	            }
-	
-	            Source.prototype._isCurrentSpace = function() {
-	                var character = this._string[this._currentIndex];
-	                return character <= " " && (character == " " || character == "\n" || character == "\t" || character == "\r" || character == "\f");
-	            }
-	
-	            Source.prototype._skipOptionalSpaces = function() {
-	                while (this._currentIndex < this._endIndex && this._isCurrentSpace())
-	                    this._currentIndex++;
-	                return this._currentIndex < this._endIndex;
-	            }
-	
-	            Source.prototype._skipOptionalSpacesOrDelimiter = function() {
-	                if (this._currentIndex < this._endIndex && !this._isCurrentSpace() && this._string.charAt(this._currentIndex) != ",")
-	                    return false;
-	                if (this._skipOptionalSpaces()) {
-	                    if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ",") {
-	                        this._currentIndex++;
-	                        this._skipOptionalSpaces();
-	                    }
-	                }
-	                return this._currentIndex < this._endIndex;
-	            }
-	
-	            Source.prototype.hasMoreData = function() {
-	                return this._currentIndex < this._endIndex;
-	            }
-	
-	            Source.prototype.peekSegmentType = function() {
-	                var lookahead = this._string[this._currentIndex];
-	                return this._pathSegTypeFromChar(lookahead);
-	            }
-	
-	            Source.prototype._pathSegTypeFromChar = function(lookahead) {
-	                switch (lookahead) {
-	                case "Z":
-	                case "z":
-	                    return SVGPathSeg.PATHSEG_CLOSEPATH;
-	                case "M":
-	                    return SVGPathSeg.PATHSEG_MOVETO_ABS;
-	                case "m":
-	                    return SVGPathSeg.PATHSEG_MOVETO_REL;
-	                case "L":
-	                    return SVGPathSeg.PATHSEG_LINETO_ABS;
-	                case "l":
-	                    return SVGPathSeg.PATHSEG_LINETO_REL;
-	                case "C":
-	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS;
-	                case "c":
-	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL;
-	                case "Q":
-	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS;
-	                case "q":
-	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL;
-	                case "A":
-	                    return SVGPathSeg.PATHSEG_ARC_ABS;
-	                case "a":
-	                    return SVGPathSeg.PATHSEG_ARC_REL;
-	                case "H":
-	                    return SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS;
-	                case "h":
-	                    return SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL;
-	                case "V":
-	                    return SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS;
-	                case "v":
-	                    return SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL;
-	                case "S":
-	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS;
-	                case "s":
-	                    return SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL;
-	                case "T":
-	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS;
-	                case "t":
-	                    return SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL;
-	                default:
-	                    return SVGPathSeg.PATHSEG_UNKNOWN;
-	                }
-	            }
-	
-	            Source.prototype._nextCommandHelper = function(lookahead, previousCommand) {
-	                // Check for remaining coordinates in the current command.
-	                if ((lookahead == "+" || lookahead == "-" || lookahead == "." || (lookahead >= "0" && lookahead <= "9")) && previousCommand != SVGPathSeg.PATHSEG_CLOSEPATH) {
-	                    if (previousCommand == SVGPathSeg.PATHSEG_MOVETO_ABS)
-	                        return SVGPathSeg.PATHSEG_LINETO_ABS;
-	                    if (previousCommand == SVGPathSeg.PATHSEG_MOVETO_REL)
-	                        return SVGPathSeg.PATHSEG_LINETO_REL;
-	                    return previousCommand;
-	                }
-	                return SVGPathSeg.PATHSEG_UNKNOWN;
-	            }
-	
-	            Source.prototype.initialCommandIsMoveTo = function() {
-	                // If the path is empty it is still valid, so return true.
-	                if (!this.hasMoreData())
-	                    return true;
-	                var command = this.peekSegmentType();
-	                // Path must start with moveTo.
-	                return command == SVGPathSeg.PATHSEG_MOVETO_ABS || command == SVGPathSeg.PATHSEG_MOVETO_REL;
-	            }
-	
-	            // Parse a number from an SVG path. This very closely follows genericParseNumber(...) from Source/core/svg/SVGParserUtilities.cpp.
-	            // Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-PathDataBNF
-	            Source.prototype._parseNumber = function() {
-	                var exponent = 0;
-	                var integer = 0;
-	                var frac = 1;
-	                var decimal = 0;
-	                var sign = 1;
-	                var expsign = 1;
-	
-	                var startIndex = this._currentIndex;
-	
-	                this._skipOptionalSpaces();
-	
-	                // Read the sign.
-	                if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "+")
-	                    this._currentIndex++;
-	                else if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "-") {
-	                    this._currentIndex++;
-	                    sign = -1;
-	                }
-	
-	                if (this._currentIndex == this._endIndex || ((this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") && this._string.charAt(this._currentIndex) != "."))
-	                    // The first character of a number must be one of [0-9+-.].
-	                    return undefined;
-	
-	                // Read the integer part, build right-to-left.
-	                var startIntPartIndex = this._currentIndex;
-	                while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9")
-	                    this._currentIndex++; // Advance to first non-digit.
-	
-	                if (this._currentIndex != startIntPartIndex) {
-	                    var scanIntPartIndex = this._currentIndex - 1;
-	                    var multiplier = 1;
-	                    while (scanIntPartIndex >= startIntPartIndex) {
-	                        integer += multiplier * (this._string.charAt(scanIntPartIndex--) - "0");
-	                        multiplier *= 10;
-	                    }
-	                }
-	
-	                // Read the decimals.
-	                if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ".") {
-	                    this._currentIndex++;
-	
-	                    // There must be a least one digit following the .
-	                    if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9")
-	                        return undefined;
-	                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9")
-	                        decimal += (this._string.charAt(this._currentIndex++) - "0") * (frac *= 0.1);
-	                }
-	
-	                // Read the exponent part.
-	                if (this._currentIndex != startIndex && this._currentIndex + 1 < this._endIndex && (this._string.charAt(this._currentIndex) == "e" || this._string.charAt(this._currentIndex) == "E") && (this._string.charAt(this._currentIndex + 1) != "x" && this._string.charAt(this._currentIndex + 1) != "m")) {
-	                    this._currentIndex++;
-	
-	                    // Read the sign of the exponent.
-	                    if (this._string.charAt(this._currentIndex) == "+") {
-	                        this._currentIndex++;
-	                    } else if (this._string.charAt(this._currentIndex) == "-") {
-	                        this._currentIndex++;
-	                        expsign = -1;
-	                    }
-	
-	                    // There must be an exponent.
-	                    if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9")
-	                        return undefined;
-	
-	                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
-	                        exponent *= 10;
-	                        exponent += (this._string.charAt(this._currentIndex) - "0");
-	                        this._currentIndex++;
-	                    }
-	                }
-	
-	                var number = integer + decimal;
-	                number *= sign;
-	
-	                if (exponent)
-	                    number *= Math.pow(10, expsign * exponent);
-	
-	                if (startIndex == this._currentIndex)
-	                    return undefined;
-	
-	                this._skipOptionalSpacesOrDelimiter();
-	
-	                return number;
-	            }
-	
-	            Source.prototype._parseArcFlag = function() {
-	                if (this._currentIndex >= this._endIndex)
-	                    return undefined;
-	                var flag = false;
-	                var flagChar = this._string.charAt(this._currentIndex++);
-	                if (flagChar == "0")
-	                    flag = false;
-	                else if (flagChar == "1")
-	                    flag = true;
-	                else
-	                    return undefined;
-	
-	                this._skipOptionalSpacesOrDelimiter();
-	                return flag;
-	            }
-	
-	            Source.prototype.parseSegment = function() {
-	                var lookahead = this._string[this._currentIndex];
-	                var command = this._pathSegTypeFromChar(lookahead);
-	                if (command == SVGPathSeg.PATHSEG_UNKNOWN) {
-	                    // Possibly an implicit command. Not allowed if this is the first command.
-	                    if (this._previousCommand == SVGPathSeg.PATHSEG_UNKNOWN)
-	                        return null;
-	                    command = this._nextCommandHelper(lookahead, this._previousCommand);
-	                    if (command == SVGPathSeg.PATHSEG_UNKNOWN)
-	                        return null;
-	                } else {
-	                    this._currentIndex++;
-	                }
-	
-	                this._previousCommand = command;
-	
-	                switch (command) {
-	                case SVGPathSeg.PATHSEG_MOVETO_REL:
-	                    return new SVGPathSegMovetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
-	                case SVGPathSeg.PATHSEG_MOVETO_ABS:
-	                    return new SVGPathSegMovetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
-	                case SVGPathSeg.PATHSEG_LINETO_REL:
-	                    return new SVGPathSegLinetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
-	                case SVGPathSeg.PATHSEG_LINETO_ABS:
-	                    return new SVGPathSegLinetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
-	                case SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL:
-	                    return new SVGPathSegLinetoHorizontalRel(owningPathSegList, this._parseNumber());
-	                case SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS:
-	                    return new SVGPathSegLinetoHorizontalAbs(owningPathSegList, this._parseNumber());
-	                case SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL:
-	                    return new SVGPathSegLinetoVerticalRel(owningPathSegList, this._parseNumber());
-	                case SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS:
-	                    return new SVGPathSegLinetoVerticalAbs(owningPathSegList, this._parseNumber());
-	                case SVGPathSeg.PATHSEG_CLOSEPATH:
-	                    this._skipOptionalSpaces();
-	                    return new SVGPathSegClosePath(owningPathSegList);
-	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL:
-	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegCurvetoCubicRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
-	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS:
-	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegCurvetoCubicAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
-	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL:
-	                    var points = {x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegCurvetoCubicSmoothRel(owningPathSegList, points.x, points.y, points.x2, points.y2);
-	                case SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS:
-	                    var points = {x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegCurvetoCubicSmoothAbs(owningPathSegList, points.x, points.y, points.x2, points.y2);
-	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL:
-	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegCurvetoQuadraticRel(owningPathSegList, points.x, points.y, points.x1, points.y1);
-	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS:
-	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegCurvetoQuadraticAbs(owningPathSegList, points.x, points.y, points.x1, points.y1);
-	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL:
-	                    return new SVGPathSegCurvetoQuadraticSmoothRel(owningPathSegList, this._parseNumber(), this._parseNumber());
-	                case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS:
-	                    return new SVGPathSegCurvetoQuadraticSmoothAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
-	                case SVGPathSeg.PATHSEG_ARC_REL:
-	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegArcRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
-	                case SVGPathSeg.PATHSEG_ARC_ABS:
-	                    var points = {x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber()};
-	                    return new SVGPathSegArcAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
-	                default:
-	                    throw "Unknown path seg type."
-	                }
-	            }
-	
-	            var builder = new Builder();
-	            var source = new Source(string);
-	
-	            if (!source.initialCommandIsMoveTo())
-	                return [];
-	            while (source.hasMoreData()) {
-	                var pathSeg = source.parseSegment();
-	                if (!pathSeg)
-	                    return [];
-	                builder.appendSegment(pathSeg);
-	            }
-	
-	            return builder.pathSegList;
-	        }
-	    }
-	}());
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// tinyOverlay.es6.js -- a minimal JavaScript (ES6) overlay library
-	// Author: Sean Upton <sean.upton@hsc.utah.edu>
-	// (c) 2013, 2015 University of Utah / MIT-licensed, text at:
-	//          https://teamspace.upiq.org/trac/wiki/Copyright
-	
-	/*jshint esnext:true, eqnull:true, undef:true */
-	/*globals require, window */
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _utils = __webpack_require__(6);
-	
-	var document = window.document;
-	
-	function toArray(v) {
-	  if (v instanceof Array) return v;
-	  if (v instanceof window.HTMLCollection || v instanceof window.NodeList) {
-	    return Array.prototype.slice.call(v, 0);
-	  }
-	  return [v];
-	}
-	
-	function attr(target, name, value) {
-	  // multi-attr
-	  if (typeof name !== 'string') {
-	    Object.keys(name).forEach(function (k) {
-	      return attr(target, k, name[k]);
-	    });
-	    return;
-	  }
-	  if (!value) return target.getAttribute(name);
-	  target.setAttribute(name, value);
-	}
-	
-	function style(target, spec, value) {
-	  var name;
-	  if (!value && spec instanceof Object) {
-	    Object.keys(spec).forEach(function (k) {
-	      return style(target, k, spec[k]);
-	    });
-	    return;
-	  }
-	  target.style.removeProperty(spec);
-	  if (value === undefined) return;
-	  target.style.setProperty(spec, value);
-	}
-	
-	function create(tagname, classname, html) {
-	  var el, id;
-	  if (tagname.indexOf('.') !== -1) {
-	    var _tagname$split = tagname.split('.');
-	
-	    var _tagname$split2 = _slicedToArray(_tagname$split, 2);
-	
-	    tagname = _tagname$split2[0];
-	    classname = _tagname$split2[1];
-	  }
-	  if (tagname.indexOf('#') !== -1) {
-	    var _tagname$split3 = tagname.split('#');
-	
-	    var _tagname$split32 = _slicedToArray(_tagname$split3, 2);
-	
-	    tagname = _tagname$split32[0];
-	    id = _tagname$split32[1];
-	  }
-	  el = document.createElement(tagname);
-	  attr(el, {
-	    id: id,
-	    'class': classname
-	  });
-	  if (html) {
-	    el.innerHTML = html;
-	  }
-	  return el;
-	}
-	
-	function toDOM(html, wrapperTag, wrapperClass) {
-	  /** make DOM object(s) from HTML snippets */
-	  var wrapper = create(wrapperTag || 'div', wrapperClass, html),
-	      children = wrapper.childNodes;
-	  if (children.length === 1) {
-	    return children[0];
-	  }
-	  return wrapper; // fallback
-	}
-	
-	var snippets = {
-	  CONTROL: String() + '<div class="olControl">' + '  <span class="olControlBtn">' + '   <a class="close" title="close">&times;</a>' + '  </span>' + '</div>'
-	};
-	
-	var Overlay = (function () {
-	  /** Overlay objects are rendered on construction, but only shown and
-	    * attached on open(), destroyed on close().
-	    */
-	
-	  function Overlay(html, options, onclose) {
-	    _classCallCheck(this, Overlay);
-	
-	    var id = (options || {}).id || (0, _utils.uuid4)(),
-	        body = document.getElementsByTagName('body')[0],
-	        inner = create('div#' + id + '.overlayInner', null, html),
-	        userClass = (options || {}).classname,
-	        classname = 'tinyOverlay' + (userClass ? ' ' + userClass : ''),
-	        overlayDiv = create('div.' + classname),
-	        control = toDOM(snippets.CONTROL);
-	    // setup instance attrs:
-	    this.id = id;
-	    this.options = options;
-	    this.container = this.options.container || document.querySelector('body');
-	    // detached overlay div element; latern will be attached/shown:
-	    this.target = overlayDiv;
-	    this.options = options || {};
-	    this.options.style = this.options.style || { width: '120px' };
-	    // Set passed styles for overlay div:
-	    style(this.target, this.options.style);
-	    // append content to outermost overlay DIV:
-	    overlayDiv.appendChild(control);
-	    overlayDiv.appendChild(inner);
-	    // Array of onclose callbacks, if provided:
-	    onclose = onclose === undefined ? [] : onclose;
-	    this.onclose = onclose instanceof Array ? onclose : [onclose];
-	  }
-	
-	  _createClass(Overlay, [{
-	    key: 'open',
-	    value: function open() {
-	      var self = this,
-	          container = this.container,
-	          otherOverlays = toArray(container.querySelectorAll('div.tinyOverlay')),
-	          closeBtn = this.target.querySelector('span.olControlBtn a.close');
-	      // destroy any other overlays on page:
-	      otherOverlays.forEach(function (n) {
-	        return n.parentNode.removeChild(n);
-	      });
-	      // append detached div to overlay:
-	      this.container.appendChild(this.target);
-	      // hookup action for close button:
-	      closeBtn.addEventListener('click', function (event) {
-	        self.close();
-	      });
-	    }
-	  }, {
-	    key: 'close',
-	    value: function close() {
-	      var _this = this;
-	
-	      this.target.parentNode.removeChild(this.target);
-	      this.onclose.forEach(function (callback) {
-	        return callback.call(_this);
-	      });
-	    }
-	  }]);
-	
-	  return Overlay;
-	})();
-	
-	exports.Overlay = Overlay;
-
 /***/ }
-/******/ ])
+/******/ ]);
 //# sourceMappingURL=plotqi.js.map
