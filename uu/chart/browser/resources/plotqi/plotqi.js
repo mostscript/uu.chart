@@ -18160,7 +18160,7 @@
 	      if (useDashes) {
 	        path.style({
 	          'stroke-dasharray': '4 4',
-	          stroke: _utils.ColorTool.lighten(series.color, 0.33)
+	          stroke: _utils.ColorTool.lighten(series.color, 0.2)
 	        });
 	      }
 	    }
@@ -18182,7 +18182,9 @@
 	      for (i = 0; i < segLen; i++) {
 	        segments.push(segList.getItem(i));
 	      }
-	      data = this.extractPathLineSegments(segments.map(function (s) {
+	      data = this.extractPathLineSegments(segments.filter(function (s) {
+	        return s.pathSegTypeAsLetter !== 'z';
+	      }).map(function (s) {
 	        return '' + s.pathSegTypeAsLetter + s.x + ',' + s.y;
 	      }, this).join(''));
 	      missing = this.missingLines(data);

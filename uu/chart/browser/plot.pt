@@ -9,10 +9,10 @@
 <metal:block fill-slot="javascript_head_slot">
 
 <tal:block condition="python:request.get('devmode', None) is None">
-  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.min.js?api=20161027"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.min.js?api=20161103"></script>
 </tal:block>
 <tal:block condition="python:request.get('devmode', None) is not None">
-  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.js?api=20160520"></script>
+  <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/plotqi.js?api=20161103"></script>
 </tal:block>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/datefix.js"></script>
   <script type="text/javascript" src="" tal:attributes="src string:${context/@@plone_portal_state/navigation_root_url}/++resource++uu.chart.plotqi/integration.js?api=2015-07-27"></script>
