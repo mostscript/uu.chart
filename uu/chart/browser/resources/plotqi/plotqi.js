@@ -13948,7 +13948,7 @@
 	
 	var d3 = __webpack_require__(2);
 	
-	var nv = __webpack_require__(27);
+	var nv = __webpack_require__(28);
 	
 	function readySetGo(callback) {
 	  document.addEventListener('DOMContentLoaded', callback);
@@ -14141,7 +14141,7 @@
 	  var arrLineCreatedCount = [];
 	  text.each(function () {
 	    var text = d3.select(this),
-	        words = text.text().split(' ').reverse(),
+	        words = text.text().split(/[ ,]+/).reverse(),
 	        word,
 	        line = [],
 	        lineNumber = 0,
@@ -15983,10 +15983,12 @@
 	
 	var _compact = __webpack_require__(26);
 	
+	var _interval = __webpack_require__(27);
+	
 	// Set up namespace:
 	var moment = __webpack_require__(3);
 	var d3 = __webpack_require__(2);
-	var nv = __webpack_require__(27);
+	var nv = __webpack_require__(28);
 	window.plotqi = window.plotqi || {};
 	
 	// Global list of plotters, may be used by plugins or external:
@@ -15996,21 +15998,9 @@
 	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
 	
 	// Core plugins:
-	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
-	
-	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
-	var INTERVALS = {
-	  daily: [1, 'day'],
-	  weekly: [1, 'monday'],
-	  monthly: [1, 'month'],
-	  yearly: [1, 'year'],
-	  quarterly: [3, 'month']
-	};
-	
-	// Weekdays, needed vocab for d3 intervals:
-	var WEEKDAYS = moment.weekdays().map(function (v) {
-	  return v.toLowerCase();
-	});
+	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
+	//AutoIntervalPlugin,
+	_compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
 	
 	// Class names:
 	var SVG_CLASSNAME = 'upiq-chart chart-svg';
@@ -16086,7 +16076,7 @@
 	    key: '_intervalConfig',
 	    value: function _intervalConfig() {
 	      var freq = this.data.frequency,
-	          base = INTERVALS[freq || 'monthly'],
+	          base = _interval.INTERVALS[freq || 'monthly'],
 	          weekly = freq === 'weekly',
 	          interval = base,
 	          firstDate;
@@ -16101,10 +16091,10 @@
 	    }
 	  }, {
 	    key: '_loadConfig',
-	    value: function _loadConfig() {
+	    value: function _loadConfig(intval) {
 	      var _this = this;
 	
-	      var interval = this._intervalConfig(),
+	      var interval = intval || this._intervalConfig(),
 	          domain = this.data.domain,
 	          dValue = function dValue(x) {
 	        return x.valueOf();
@@ -16124,7 +16114,7 @@
 	      // whether plot is relative (not fixed-px) width:
 	      this.relativeWidth = this.data.width_units == '%';
 	      // Weekdays, used only for weekly freq/interval:
-	      this.weekdays = WEEKDAYS;
+	      this.weekdays = _interval.WEEKDAYS;
 	      // intverval bits:
 	      this.timeStep = interval[0];
 	      this.interval = interval[1];
@@ -20341,6 +20331,336 @@
 
 /***/ },
 /* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*jshint esnext:true, eqnull:true, undef:true */
+	/*globals require, window */
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _plugin = __webpack_require__(14);
+	
+	var moment = __webpack_require__(3);
+	var d3 = __webpack_require__(2);
+	
+	var DAY_MS = 24 * 60 * 60 * 1000;
+	
+	// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
+	var INTERVALS = {
+	  daily: [1, 'day'],
+	  weekly: [1, 'monday'],
+	  biweekly: [2, 'week'],
+	  semimonthly: [0.5, 'month'],
+	  monthly: [1, 'month'],
+	  bimonthly: [2, 'month'],
+	  quarterly: [3, 'month'],
+	  semiannual: [2, 'year'],
+	  yearly: [1, 'year']
+	};
+	
+	exports.INTERVALS = INTERVALS;
+	// d3 intervals for weeks need consistent day of week:
+	var WEEKDAYS = moment.weekdays().map(function (v) {
+	  return v.toLowerCase();
+	});
+	
+	exports.WEEKDAYS = WEEKDAYS;
+	
+	var AutoIntervalPlugin = (function (_BaseRenderingPlugin) {
+	  _inherits(AutoIntervalPlugin, _BaseRenderingPlugin);
+	
+	  function AutoIntervalPlugin(plotter) {
+	    _classCallCheck(this, AutoIntervalPlugin);
+	
+	    _get(Object.getPrototypeOf(AutoIntervalPlugin.prototype), 'constructor', this).call(this, plotter);
+	    this.autodetect();
+	  }
+	
+	  _createClass(AutoIntervalPlugin, [{
+	    key: 'attemptAutoInterval',
+	    value: function attemptAutoInterval() {
+	      /** Returns true if data eligible for auto-interval */
+	      var monthlyDefault = this.plotter._intervalConfig() == INTERVALS.monthly,
+	          multiPoint = this.series.size() > 1;
+	      return monthlyDefault && multiPoint;
+	    }
+	  }, {
+	    key: 'setInterval',
+	    value: function setInterval(v) {
+	      // TODO, needs more testing
+	      //this.plotter._loadConfig(v);
+	    }
+	  }, {
+	    key: 'isSubMonthly',
+	    value: function isSubMonthly() {
+	      var known = [],
+	          duplicate = [],
+	          firstDay = true;
+	      this.points.forEach(function (point) {
+	        var key, monthStart;
+	        key = moment.utc(point.key);
+	        if (!key.isValid()) return;
+	        monthStart = key.startOf('month').valueOf();
+	        if (key.date() !== 1) {
+	          firstDay = false;
+	        }
+	        if (duplicate.length || known.indexOf(monthStart) !== -1) {
+	          duplicate.push(monthStart);
+	          return;
+	        }
+	        known.push(monthStart);
+	      });
+	      return duplicate.length > 0 || this.points.length === 2 && !firstDay;
+	    }
+	
+	    // helper functions for data points:
+	
+	  }, {
+	    key: 'dayOfWeeks',
+	    value: function dayOfWeeks(points) {
+	      /** detect day of week for an array of points, if same; otherwise null */
+	      var sameday = function sameday(names) {
+	        return names.reduce(function (a, b) {
+	          return a === b ? a : null;
+	        }, names[0] || null);
+	      },
+	          dayOf = function dayOf(d) {
+	        return moment.utc(d).locale('en-us').format('dddd').toLowerCase();
+	      },
+	          days = this.points.map(dayOf);
+	      return sameday(days);
+	    }
+	  }, {
+	    key: 'dayOfMonths',
+	    value: function dayOfMonths(points) {
+	      /** detect day of month for an array of points, if same; otherwise null */
+	      var dayOf = function dayOf(p) {
+	        return moment.utc(p.key).date();
+	      },
+	          days = points.map(dayOf),
+	          sameday = days.reduce(function (a, b) {
+	        return a === b ? a : null;
+	      }, days[0] || null);
+	      return sameday;
+	    }
+	  }, {
+	    key: '_adjacencyList',
+	    value: function _adjacencyList(points) {
+	      /** adjacency list, vertices between array of points;
+	       *  returns array of segment pairs */
+	      var vertices = [],
+	          i;
+	      for (i = 0; i <= points.length - 2; i++) {
+	        vertices.push([points[i], points[i + 1]]);
+	      }
+	      return vertices;
+	    }
+	  }, {
+	    key: 'distanceDays',
+	    value: function distanceDays(points) {
+	      /** return array of min, max spread of days between adjacent points */
+	      var segments = this._adjacencyList(points),
+	          daySpread = function daySpread(pair) {
+	        var _pair = _slicedToArray(pair, 2);
+	
+	        var a = _pair[0];
+	        var b = _pair[1];
+	
+	        return (moment.utc(a.key) - moment.utc(b.key)) / DAY_MS;
+	      },
+	          spreads = segments.map(daySpread),
+	          abs = Math.abs,
+	          min = abs(Math.min.apply(null, spreads)),
+	          max = abs(Math.max.apply(null, spreads));
+	      return [min, max];
+	    }
+	
+	    // subMonthly detection methods:
+	
+	  }, {
+	    key: 'detectBiWeekly',
+	    value: function detectBiWeekly() {
+	      var dayOfWeek = this.dayOfWeeks(this.points);
+	
+	      var _distanceDays = this.distanceDays(this.points);
+	
+	      var _distanceDays2 = _slicedToArray(_distanceDays, 2);
+	
+	      var min = _distanceDays2[0];
+	      var max = _distanceDays2[1];
+	
+	      return min === max && min === 14 && dayOfWeek !== null;
+	    }
+	  }, {
+	    key: 'detectSemiMonthly',
+	    value: function detectSemiMonthly() {
+	      var _distanceDays3 = this.distanceDays(this.points);
+	
+	      var _distanceDays32 = _slicedToArray(_distanceDays3, 2);
+	
+	      var min = _distanceDays32[0];
+	      var max = _distanceDays32[1];
+	
+	      return max < 20 && min > 10;
+	    }
+	  }, {
+	    key: 'detectWeekly',
+	    value: function detectWeekly() {
+	      var dayOfWeek = this.dayOfWeeks(this.points),
+	          max = function max(s) {
+	        return Math.max.apply(null, s);
+	      },
+	          monthPoints = d3.map();
+	      if (!dayOfWeek) {
+	        return false;
+	      }
+	      this.points.forEach(function (p) {
+	        var d = moment.utc(p.key),
+	            month = '' + d.month();
+	        if (monthPoints.keys().indexOf(month) === -1) {
+	          monthPoints.set(month, 0);
+	        }
+	        monthPoints.set(month, monthPoints.get(month) + 1);
+	      });
+	      return max(monthPoints.values()) <= 5;
+	    }
+	
+	    // multi-monthly detection methods:
+	
+	  }, {
+	    key: 'detectAnnual',
+	    value: function detectAnnual(split) {
+	      var max = function max(s) {
+	        return Math.max.apply(null, s);
+	      },
+	          yearPoints = d3.map(),
+	          firstDay = this.dayOfMonths(this.points) === 1;
+	      this.points.forEach(function (p) {
+	        var d = moment.utc(p.key),
+	            year = '' + d.year();
+	        if (yearPoints.keys().indexOf(year) === -1) {
+	          yearPoints.set(year, 0);
+	        }
+	        yearPoints.set(year, yearPoints.get(year) + 1);
+	      });
+	      return firstDay && max(yearPoints.values()) <= 1 * (split || 1);
+	    }
+	  }, {
+	    key: 'detectSemiAnnual',
+	    value: function detectSemiAnnual() {
+	      var twoPerYearOrLess = this.detectAnnual(2);
+	
+	      var _distanceDays4 = this.distanceDays(this.points);
+	
+	      var _distanceDays42 = _slicedToArray(_distanceDays4, 2);
+	
+	      var min = _distanceDays42[0];
+	      var max = _distanceDays42[1];
+	      var firstDay = this.dayOfMonths(this.points) === 1;
+	      return firstDay && min > 180 && twoPerYearOrLess;
+	    }
+	  }, {
+	    key: 'detectQuarterly',
+	    value: function detectQuarterly() {
+	      var fourPerYearOrLess = this.detectAnnual(4);
+	
+	      var _distanceDays5 = this.distanceDays(this.points);
+	
+	      var _distanceDays52 = _slicedToArray(_distanceDays5, 2);
+	
+	      var min = _distanceDays52[0];
+	      var max = _distanceDays52[1];
+	      var firstDay = this.dayOfMonths(this.points) === 1;
+	      return firstDay && min > 63 && fourPerYearOrLess;
+	    }
+	  }, {
+	    key: 'detectBiMonthly',
+	    value: function detectBiMonthly() {
+	      var _distanceDays6 = this.distanceDays(this.points);
+	
+	      var _distanceDays62 = _slicedToArray(_distanceDays6, 2);
+	
+	      var min = _distanceDays62[0];
+	      var max = _distanceDays62[1];
+	      var firstDay = this.dayOfMonths(this.points) === 1;
+	      return firstDay && min <= 63;
+	    }
+	  }, {
+	    key: 'inferInterval',
+	    value: function inferInterval() {
+	      var subMonthly = this.isSubMonthly();
+	      if (subMonthly) {
+	        // interval smaller than monthly
+	        if (this.detectBiWeekly()) {
+	          return INTERVALS.biweekly;
+	        }
+	        if (this.detectSemiMonthly()) {
+	          return INTERVALS.semimonthly;
+	        }
+	        if (this.detectWeekly()) {
+	          return INTERVALS.weekly;
+	        }
+	        return INTERVALS.daily;
+	      } else {
+	        // month or multi-month:
+	        if (this.detectAnnual()) {
+	          return INTERVALS.yearly;
+	        }
+	        if (this.detectSemiAnnual()) {
+	          return INTERVALS.semiannual;
+	        }
+	        if (this.detectQuarterly()) {
+	          return INTERVALS.quarterly;
+	        }
+	        if (this.detectBiMonthly()) {
+	          return INTERVALS.bimonthly;
+	        }
+	        return [1, 'month'];
+	      }
+	    }
+	  }, {
+	    key: 'largestSeries',
+	    value: function largestSeries() {
+	      var result = d3.map();
+	      this.plotter.data.series.forEach(function (s) {
+	        if (s.data.size() > result.size()) {
+	          result = s.data;
+	        }
+	      });
+	      return result;
+	    }
+	  }, {
+	    key: 'autodetect',
+	    value: function autodetect() {
+	      this.series = this.largestSeries();
+	      this.points = this.series.values();
+	      if (this.attemptAutoInterval()) {
+	        this.setInterval(this.inferInterval());
+	      }
+	    }
+	  }]);
+	
+	  return AutoIntervalPlugin;
+	})(_plugin.BaseRenderingPlugin);
+
+	exports.AutoIntervalPlugin = AutoIntervalPlugin;
+
+/***/ },
+/* 28 */
 /***/ function(module, exports) {
 
 	/* nvd3 version 1.7.1(https://github.com/novus/nvd3) 2015-02-08 */
