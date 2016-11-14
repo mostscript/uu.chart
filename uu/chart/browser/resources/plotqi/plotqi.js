@@ -14874,6 +14874,7 @@
 	    obj.schema = obj.schema || _schemavizEs6Js.timeSeriesChartSchema;
 	    _get(Object.getPrototypeOf(TimeSeriesChart.prototype), 'constructor', this).call(this, obj);
 	    this.series = obj.series || [];
+	    this.forceGenerated = [];
 	  }
 	
 	  _createClass(TimeSeriesChart, [{
@@ -14924,7 +14925,8 @@
 	  }, {
 	    key: 'dateFormat',
 	    value: function dateFormat(key) {
-	      var interval = INTERVALS[this.frequency][1],
+	      var force = this.forceGenerated,
+	          interval = force ? force[1] : INTERVALS[this.frequency][1],
 	          defaultFn = function defaultFn(d) {
 	        return (0, _utilsEs6Js.parseDate)(d, true).format('M/D/YYYY');
 	      },
@@ -14953,13 +14955,14 @@
 	        return { key: d, label: _this.labels[ds] };
 	      },
 	          dateStamp = stamp(dateKey),
+	          forceGenerated = this.forceGenerated.length,
 	          considered = this.allDates().map(function (d) {
 	        return d.valueOf();
 	      });
-	      if (this.labels.hasOwnProperty(dateStamp)) {
+	      if (!forceGenerated && this.labels.hasOwnProperty(dateStamp)) {
 	        return configured(dateKey, dateStamp);
 	      }
-	      if (considered.indexOf(dateValue) !== -1) {
+	      if (forceGenerated && considered.indexOf(dateValue) !== -1) {
 	        return generated(dateKey);
 	      }
 	      return { key: dateKey, label: '' };
@@ -15998,9 +16001,7 @@
 	window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
 	
 	// Core plugins:
-	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
-	//AutoIntervalPlugin,
-	_compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
+	window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [_interval.AutoIntervalPlugin, _compact.CompactLayoutPlugin, _breakLines.ContinuityLinesPlugin, _goalLineRenderer.GoalLineRenderer, _xTickLabels.XTickLabelsRenderer, _axisTitles.AxisTitleRenderer, _tabularLegendRenderer.TabularLegendRenderer, _trendLineRenderer.TrendLineRenderer, _pointLabelsRenderer.PointLabelsRenderer, _basicLegend.BasicLegendRenderer, _hover.PointHoverPlugin, _click.PointClickPlugin];
 	
 	// Class names:
 	var SVG_CLASSNAME = 'upiq-chart chart-svg';
@@ -16115,10 +16116,15 @@
 	      this.relativeWidth = this.data.width_units == '%';
 	      // Weekdays, used only for weekly freq/interval:
 	      this.weekdays = _interval.WEEKDAYS;
-	      // intverval bits:
+	      // interval bits:
 	      this.timeStep = interval[0];
 	      this.interval = interval[1];
 	      this.d3Interval = d3.time[this.interval].utc;
+	      // was interval overridden from auto-detection
+	      if (intval && intval.length === 2 && (0, _interval.submonthly)(intval)) {
+	        // submonthly auto-interval override:
+	        this.data.forceGenerated = interval;
+	      }
 	      // pad left/right with 0-1 periods of space:
 	      domain = [this.timeOffset(domain[0], leftSidePadding), this.timeOffset(domain[1], rightSidePadding)];
 	      this.domain = domain;
@@ -20373,6 +20379,13 @@
 	};
 	
 	exports.INTERVALS = INTERVALS;
+	var submonthly = function submonthly(v) {
+	  var consider = v && v.length === 2,
+	      unitsNotMonths = consider ? v[1] !== 'month' && v[1] !== 'year' : false;
+	  return v[0] === 0.5 || unitsNotMonths;
+	};
+	
+	exports.submonthly = submonthly;
 	// d3 intervals for weeks need consistent day of week:
 	var WEEKDAYS = moment.weekdays().map(function (v) {
 	  return v.toLowerCase();
@@ -20401,8 +20414,7 @@
 	  }, {
 	    key: 'setInterval',
 	    value: function setInterval(v) {
-	      // TODO, needs more testing
-	      //this.plotter._loadConfig(v);
+	      this.plotter._loadConfig(v);
 	    }
 	  }, {
 	    key: 'isSubMonthly',
@@ -20475,17 +20487,18 @@
 	      /** return array of min, max spread of days between adjacent points */
 	      var segments = this._adjacencyList(points),
 	          daySpread = function daySpread(pair) {
+	        var abs = Math.abs;
+	
 	        var _pair = _slicedToArray(pair, 2);
 	
 	        var a = _pair[0];
 	        var b = _pair[1];
 	
-	        return (moment.utc(a.key) - moment.utc(b.key)) / DAY_MS;
+	        return abs((moment.utc(a.key) - moment.utc(b.key)) / DAY_MS);
 	      },
 	          spreads = segments.map(daySpread),
-	          abs = Math.abs,
-	          min = abs(Math.min.apply(null, spreads)),
-	          max = abs(Math.max.apply(null, spreads));
+	          min = Math.min.apply(null, spreads),
+	          max = Math.max.apply(null, spreads);
 	      return [min, max];
 	    }
 	
@@ -20585,7 +20598,7 @@
 	      var min = _distanceDays52[0];
 	      var max = _distanceDays52[1];
 	      var firstDay = this.dayOfMonths(this.points) === 1;
-	      return firstDay && min > 63 && fourPerYearOrLess;
+	      return firstDay && max <= 180 && min > 63 && fourPerYearOrLess;
 	    }
 	  }, {
 	    key: 'detectBiMonthly',
@@ -20597,7 +20610,7 @@
 	      var min = _distanceDays62[0];
 	      var max = _distanceDays62[1];
 	      var firstDay = this.dayOfMonths(this.points) === 1;
-	      return firstDay && min <= 63;
+	      return firstDay && max <= 63 && min >= 32;
 	    }
 	  }, {
 	    key: 'inferInterval',
