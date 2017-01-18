@@ -17764,7 +17764,7 @@
 	          }
 	          point.x2 = point.x - b;
 	          point.y2 = point.y + a;
-	          if (point.y2 > gridZero || point.y2 < 0) {
+	          if (point.y2 > gridZero || point.y2 < -1 * (this.margins.top || 0)) {
 	            point.hidden = true;
 	          } else if (point.y2 > gridZero - textSize * 2) {
 	            point.y2 = point.y - a;
