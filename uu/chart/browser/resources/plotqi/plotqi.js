@@ -14716,8 +14716,11 @@
 	    },
 	    set: function set(d) {
 	      var data = d3.map(),
+	          isArray = function isArray(v) {
+	        return v instanceof Array;
+	      },
 	          isMap = function isMap(v) {
-	        return v instanceof Object && typeof v.values === 'function';
+	        return !isArray(v) && v instanceof Object && typeof v.values === 'function';
 	      },
 	          _key = function _key(point) {
 	        return point.key.valueOf();
