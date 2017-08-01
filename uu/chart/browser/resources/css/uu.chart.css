@@ -1,3 +1,62 @@
+/* Content type icon styles */
+
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-report::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-report::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.timeseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.timeseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.namedseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.namedseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.measureseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.measureseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-stylebook::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-stylebook::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-linestyle::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-linestyle::before,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-timeseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-timeseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-namedseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-namedseries::after {
+  background-image: url(../../++resource++uu.chart/icons/report.png);
+  background-repeat: no-repeat !important;
+  width:20px !important;
+  content:' ' !important;
+  margin-left: 0.2em !important;
+}
+
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-namedseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-namedseries::after {
+  background-image: url(../../++resource++uu.chart/icons/namedseries.png);
+}
+
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-timeseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-timeseries::after {
+  background-image: url(../../++resource++uu.chart/icons/timeseries.png);
+}
+
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.namedseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.namedseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.measureseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.measureseries::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.timeseries::after,
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.timeseries::before {
+  background-image: url(../../++resource++uu.chart.icons/table.gif);
+}
+
+body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-stylebook::before,
+body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-stylebook::after {
+  background-image: url(../../++resource++uu.chart/icons/theme-icon.png);
+}
+
+/* misc styles */
+
+div.printlink {
+    float:right;
+    margin-top:-1em;
+    margin-right:0.8em;
+}
+
+/* legacy jqplot styles: */
+
 .jqplot-highlighter-tooltip {
     background-color:rgba(192,192,192,0.8) !important;
     text-align:center;
@@ -13,12 +72,6 @@
     font-style:italic;
     color:#999;
     font-size:90%;
-}
-
-div.printlink {
-    float:right;
-    margin-top:-1em;
-    margin-right:0.8em;
 }
 
 td.jqplot-table-legend {
