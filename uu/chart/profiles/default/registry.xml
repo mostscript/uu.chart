@@ -1,0 +1,29 @@
+<registry>
+  <!-- js/css bundle, package main -->
+  <records prefix="plone.bundles/uu-chart"
+           interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+    <value key="enabled">True</value>
+    <value key="jscompilation">++resource++uu.chart.js/chart.js</value>
+    <value key="csscompilation">++resource++uu.chart.css/uu.chart.css</value>
+    <value key="last_compilation">2017-08-01 15:00:00</value>
+    <value key="compile">False</value>
+    <value key="depends">plone</value>
+  </records>
+  <!-- js/css bundle, dataset lister -->
+  <records prefix="plone.bundles/uu-chart-lister"
+           interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+    <value key="enabled">True</value>
+    <value key="jscompilation">++resource++uu.chart.js/dataset-lister.js</value>
+    <value key="last_compilation">2017-08-01 15:00:00</value>
+    <value key="compile">False</value>
+    <value key="depends">plone</value>
+  </records>
+  <!-- include report, charts in nav-displayed types -->
+  <record name="plone.displayed_types" interface="Products.CMFPlone.interfaces.controlpanel.INavigationSchema" field="displayed_types">
+    <value purge="False">
+      <element>uu.chart.report</element>
+      <element>uu.chart.namedseries</element>
+      <element>uu.chart.timeseries</element>
+    </value>
+  </record>
+</registry>
