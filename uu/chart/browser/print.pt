@@ -27,7 +27,8 @@
 
 <body>
 <div id="uu-chart-report"
-     tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')">
+     tal:define="iinfo context/@@plone_interface_info;
+                 is_report python: iinfo.provides('uu.chart.interfaces.IDataReport')">
   <div class="report-core enumeration"
        data-report-prefix="plot"
        data-report-batch-step="geometric"

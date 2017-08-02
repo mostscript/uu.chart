@@ -16,7 +16,7 @@ body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-timese
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-timeseries::after,
 body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-namedseries::before,
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-namedseries::after {
-  background-image: url(../../++resource++uu.chart/icons/report.png);
+  background-image: url(../++resource++uu.chart.icons/report.png);
   background-repeat: no-repeat !important;
   width:20px !important;
   content:' ' !important;
@@ -25,12 +25,12 @@ body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-namedserie
 
 body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-namedseries::before,
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-namedseries::after {
-  background-image: url(../../++resource++uu.chart/icons/namedseries.png);
+  background-image: url(../++resource++uu.chart.icons/namedseries.png);
 }
 
 body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-timeseries::before,
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-timeseries::after {
-  background-image: url(../../++resource++uu.chart/icons/timeseries.png);
+  background-image: url(../++resource++uu.chart.icons/timeseries.png);
 }
 
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.namedseries::after,
@@ -39,12 +39,12 @@ body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.measu
 body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.measureseries::before,
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-data.timeseries::after,
 body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-data.timeseries::before {
-  background-image: url(../../++resource++uu.chart.icons/table.gif);
+  background-image: url(../++resource++uu.chart.icons/table.gif);
 }
 
 body#visual-portal-wrapper.pat-plone .outer-wrapper .contenttype-uu-chart-stylebook::before,
 body#visual-portal-wrapper.pat-plone #edit-zone .contenttype-uu-chart-stylebook::after {
-  background-image: url(../../++resource++uu.chart/icons/theme-icon.png);
+  background-image: url(../++resource++uu.chart.icons/theme-icon.png);
 }
 
 /* misc styles */

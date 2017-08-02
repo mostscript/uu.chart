@@ -84,36 +84,38 @@
 <body>
 <div metal:fill-slot="content-core"
      id="report-core"
-     tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')"
+     tal:define="iinfo context/@@plone_interface_info;
+                 is_report python: iinfo.provides('uu.chart.interfaces.IDataReport')"
      tal:attributes="data-report-json python:'%s/@@report_json' % context.absolute_url() if is_report else '';">
  <div tal:condition="python:not request.form.get('goprint')" class="printlink"><a href="" target="_blank" tal:attributes="href string:${context/absolute_url}?ajax_load=1&ajax_include_head=1&goprint=1">&#x2399; Print report</a></div>
  <tal:block repeat="element view/chart_elements">
-  <tal:block define="ischart python:context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
+  <tal:block define="el_iinfo element/@@plone_interface_info;
+                     ischart python: el_iinfo.provides('uu.chart.interfaces.IBaseChart')">
    <div style="width:99%;"
         tal:define="uid python:view.UID(element);
                     json python:view.json_url(element);
                     chart_width python:getattr(element, 'width', None) or 600;
                     dofloat python:(chart_width <= 260) and 'dofloat:left' or 'clear:both'">
-   <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${dofloat}" tal:condition="ischart">
-    <hr />
-    <tal:block condition="python: element.getId() != context.getId()">
-      <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href element/absolute_url" tal:condition="python: is_report and view.can_manage()" target="_blank">&#x2794</a>
-      </h3>
-      <p tal:condition="element/Description">
-        <span class="description" tal:content="element/Description">
-        </span>
-      </p>
-    </tal:block>
-    <div class="chartdiv" id="" style="" tal:attributes="id string:chartdiv-${uid}; style python:view.divstyle(element)">
-      <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
+    <div class="chartwrap" style="" tal:attributes="style string:width:100%;;${dofloat}" tal:condition="ischart">
+      <hr />
+      <tal:block condition="python: element.getId() != context.getId()">
+        <h3><span tal:content="element/Title" style="width:90%">Chart title</span> <a href="" tal:attributes="href element/absolute_url" tal:condition="python: is_report and view.can_manage()" target="_blank">&#x2794</a>
+        </h3>
+        <p tal:condition="element/Description">
+          <span class="description" tal:content="element/Description">
+          </span>
+        </p>
+      </tal:block>
+      <div class="chartdiv" id="" style="" tal:attributes="id string:chartdiv-${uid}; style python:view.divstyle(element)">
+        <a style="display:none;" rel="api" type="application/json" href="" tal:attributes="href json">Data</a>
+      </div>
+      <tal:block condition="python:hasattr(element.info, 'output')">
+        <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
+      </tal:block>
     </div>
-    <tal:block condition="python:hasattr(element.info, 'output')">
-      <div class="chartinfo" tal:content="structure element/info/output">CAPTION</div>
-    </tal:block>
-   </div>
-   <div class="richelement" style="clear:both" tal:condition="python:not context.portal_interface.objectImplements(element, 'uu.chart.interfaces.IBaseChart')">
-    <div tal:replace="structure element/CookedBody"></div>
-   </div>
+    <div class="richelement" style="clear:both" tal:condition="python:not el_iinfo.provides('uu.chart.interfaces.IBaseChart')">
+      <div tal:replace="structure element/CookedBody"></div>
+    </div>
   </div>
   </tal:block>
  </tal:block>
