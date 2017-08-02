@@ -93,8 +93,8 @@ import operator
 
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 from plone.app.textfield import RichText
-from plone.directives import form
 from plone.autoform import directives
+from plone.supermodel import model
 from plone.uuid.interfaces import IAttributeUUID
 from z3c.form.browser.textarea import TextAreaFieldWidget
 from zope.interface import Interface, Invalid, invariant, implements
@@ -125,7 +125,8 @@ MEASURESERIES_DATA = 'uu.chart.data.measureseries'
 STYLEBOOK_TYPE = 'uu.chart.stylebook'
 LINESTYLE_TYPE = 'uu.chart.linestyle'
 
-## globals for vocabulary and summarization/aggregate functions
+
+# globals for vocabulary and summarization/aggregate functions
 
 F_MEAN = lambda l: float(sum(l)) / len(l) if len(l) > 0 else float('nan')
 
@@ -238,19 +239,19 @@ class MeasureGroupParentBinder(MeasureGroupContentSourceBinder):
         measure = provider_measure(context)
         if measure is None:
             return PermissiveVocabulary([])  # likely on add-form
-        ## get a context (indirection) of measure bound, use that to get
-        ## group and contained content in superclass implementation:
+        # get a context (indirection) of measure bound, use that to get
+        # group and contained content in superclass implementation:
         return super(MeasureGroupParentBinder, self).__call__(measure)
 
 
-## constants for use in package:
+# constants for use in package:
 
 TIME_DATA_TYPE = 'uu.chart.data.timeseries'     # portal types should
 NAMED_DATA_TYPE = 'uu.chart.data.namedseries'   # match FTIs
 MEASURE_DATA_TYPE = 'uu.chart.data.measureseries'
 
 
-## sorting data-point identities need collation/comparator function
+# sorting data-point identities need collation/comparator function
 def cmp_point_identities(a, b):
     """
     Given point identities a, b (may be string, number, date, etc),
@@ -336,10 +337,10 @@ class ITimeSeriesDataPoint(IDateBase, IDataPoint):
     """Data point with a distinct date"""
 
 
-#--- series and collection interfaces:
+# series and collection interfaces:
 
 
-class IDataSeries(form.Schema):
+class IDataSeries(model.Schema):
     """Iterable of IDataPoint objects"""
 
     title = schema.TextLine(
@@ -463,7 +464,7 @@ class ITimeSeriesCollection(IDataCollection):
 
 # -- presentation and content interfaces:
 
-class IChartDisplay(form.Schema):
+class IChartDisplay(model.Schema):
     """
     Display configuration for chart settings (as a whole).
     """
@@ -501,7 +502,7 @@ class IChartDisplay(form.Schema):
         default=False,
         )
 
-    form.widget(goal_color=NativeColorFieldWidget)
+    directives.widget(goal_color=NativeColorFieldWidget)
     goal_color = schema.TextLine(
         title=_(u'Goal-line color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -509,7 +510,7 @@ class IChartDisplay(form.Schema):
         default=u'Auto',
         )
 
-    form.order_after(chart_type='description')
+    directives.order_after(chart_type='description')
     chart_type = schema.Choice(
         title=_(u'Chart type'),
         description=_(u'Type of chart to display.'),
@@ -526,7 +527,10 @@ class IChartDisplay(form.Schema):
             ),
         vocabulary=SimpleVocabulary((
             SimpleTerm(value=None, token=str(None), title=u'Legend disabled'),
-            SimpleTerm(value='outside', title=_(u'Basic legend, outside grid')),
+            SimpleTerm(
+                value='outside',
+                title=_(u'Basic legend, outside grid')
+            ),
             SimpleTerm(value='tabular', title=_(
                 u'Tabular legend with data, below plot')),
             )),
@@ -560,7 +564,7 @@ class IChartDisplay(form.Schema):
         required=False,
         )
 
-    form.widget(chart_styles=TextAreaFieldWidget)
+    directives.widget(chart_styles=TextAreaFieldWidget)
     chart_styles = schema.Bytes(
         title=_(u'Chart styles'),
         description=_(u'CSS stylesheet rules for chart (optional).'),
@@ -579,13 +583,13 @@ class IChartDisplay(form.Schema):
         )
 
 
-class ISeriesDisplay(form.Schema):
+class ISeriesDisplay(model.Schema):
     """
     Common display settings for visualizing a series as either a bar
     or line chart.
     """
 
-    form.widget(color=NativeColorFieldWidget)
+    directives.widget(color=NativeColorFieldWidget)
     color = schema.TextLine(
         title=_(u'Series color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -606,7 +610,7 @@ class ISeriesDisplay(form.Schema):
         default=2,
         )
 
-    form.widget(trend_color=NativeColorFieldWidget)
+    directives.widget(trend_color=NativeColorFieldWidget)
     trend_color = schema.TextLine(
         title=_(u'Trend-line color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -634,7 +638,7 @@ class ISeriesDisplay(form.Schema):
         )
 
 
-class ILineDisplayCore(form.Schema, ISeriesDisplay):
+class ILineDisplayCore(model.Schema, ISeriesDisplay):
     """
     Mixin interface for display-line configuration metadata for series line.
     """
@@ -677,7 +681,7 @@ class ILineDisplayCore(form.Schema, ISeriesDisplay):
         default=2,
         )
 
-    form.widget(marker_color=NativeColorFieldWidget)
+    directives.widget(marker_color=NativeColorFieldWidget)
     marker_color = schema.TextLine(
         title=_(u'Marker color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -700,7 +704,7 @@ class ILineDisplayCore(form.Schema, ISeriesDisplay):
 class ILineDisplay(ILineDisplayCore):
     """Use of Line Display in chart settings"""
 
-    form.fieldset(
+    model.fieldset(
         'display',
         label=u"Display settings",
         fields=[
@@ -718,21 +722,21 @@ class ILineDisplay(ILineDisplayCore):
             'display_precision',
             ],
         )
-    
+
 
 # --- content type interfaces: ---
 
 class IBaseChart(
-        form.Schema,
+        model.Schema,
         ILocation,
         IAttributeUUID,
         IDataCollection,
         IChartDisplay):
     """Base chart (content item) interface"""
 
-    form.omitted('__name__')
+    directives.omitted('__name__')
 
-    form.fieldset(
+    model.fieldset(
         'goal',
         label=u'Goal',
         fields=[
@@ -742,7 +746,7 @@ class IBaseChart(
             ]
         )
 
-    form.fieldset(
+    model.fieldset(
         'legend',
         label=u'Axes & Legend',
         fields=[
@@ -754,7 +758,7 @@ class IBaseChart(
             ]
         )
 
-    form.fieldset(
+    model.fieldset(
         'display',
         label=u"Display",
         fields=[
@@ -767,7 +771,7 @@ class IBaseChart(
             ]
         )
 
-    form.fieldset(
+    model.fieldset(
         'about',
         label=u"About",
         fields=['info'],
@@ -808,7 +812,7 @@ class IBaseChart(
 class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
     """Chart content item; container for sequences"""
 
-    form.order_after(auto_crop='frequency')
+    directives.order_after(auto_crop='frequency')
     auto_crop = schema.Bool(
         title=u'Auto-crop to completed data?',
         description=u'If data contains sequential null values (incomplete '
@@ -819,7 +823,7 @@ class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
         default=True,
         )
 
-    form.order_after(force_crop='auto_crop')
+    directives.order_after(force_crop='auto_crop')
     force_crop = schema.Bool(
         title=u'Forced crop of data?',
         description=u'If data points are available before a specified '
@@ -828,7 +832,7 @@ class ITimeSeriesChart(IBaseChart, ITimeSeriesCollection):
         default=False,
         )
 
-    form.omitted('label_overrides')
+    directives.omitted('label_overrides')
     label_overrides = schema.Dict(
         key_type=schema.Date(),
         value_type=schema.BytesLine(),
@@ -856,7 +860,7 @@ DATE_AXIS_LABEL_CHOICES = SimpleVocabulary(
 )
 
 
-class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
+class ITimeDataSequence(model.Schema, IDataSeries, ILineDisplay):
     """Content item interface for a data series stored as content"""
 
     input = schema.Text(
@@ -876,7 +880,7 @@ class ITimeDataSequence(form.Schema, IDataSeries, ILineDisplay):
         vocabulary=DATE_AXIS_LABEL_CHOICES,
         )
 
-    form.omitted('data')
+    directives.omitted('data')
     data = schema.List(
         title=_(u'Data'),
         description=_(u'Data points for time series: date, value; values are '
@@ -914,10 +918,10 @@ class INamedSeriesChart(IBaseChart, IDataCollection, IChartDisplay):
         """
 
 
-class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
+class INamedDataSequence(model.Schema, IDataSeries, ISeriesDisplay):
     """Named category seqeuence with embedded data stored as content"""
 
-    form.fieldset(
+    model.fieldset(
         'display',
         label=u"Display settings",
         fields=[
@@ -940,7 +944,7 @@ class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
         )
 
     # data field to store CSV source:
-    form.omitted('data')
+    directives.omitted('data')
     data = schema.List(
         title=_(u'Data'),
         description=_(u'Data points for series: name, value; values are '
@@ -954,7 +958,7 @@ class INamedDataSequence(form.Schema, IDataSeries, ISeriesDisplay):
 
 # report container/folder interfaces:
 
-class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
+class IDataReport(model.Schema, IOrderedContainer, IAttributeUUID):
     """
     Ordered container/folder of contained charts providing ITimeSeriesChart.
     """
@@ -978,7 +982,7 @@ class IDataReport(form.Schema, IOrderedContainer, IAttributeUUID):
         )
 
 
-class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
+class IMeasureSeriesProvider(model.Schema, IDataSeries, ILineDisplay):
 
     directives.widget(
         'measure',
@@ -1028,7 +1032,7 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
         default='AVG',
         )
 
-    form.omitted('data')
+    directives.omitted('data')
     data = schema.List(
         title=_(u'Data'),
         description=_(u'Data points computed from bound dataset, measure '
@@ -1044,13 +1048,12 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
         )
 
 
-## style book content interfaces:
+# style book content interfaces:
 
-
-class ISeriesQuickStyles(form.Schema):
+class ISeriesQuickStyles(model.Schema):
     """Interface for quick line styles (commonly used) for style book"""
-    
-    form.widget(color=NativeColorFieldWidget)
+
+    directives.widget(color=NativeColorFieldWidget)
     color = schema.TextLine(
         title=_(u'Series color'),
         description=_(u'If omitted, color will be selected from defaults.'),
@@ -1081,15 +1084,15 @@ class IChartStyleBook(IChartDisplay):
     in an ordered manner.
     """
 
-    form.widget(quick_styles=DataGridFieldFactory)
+    directives.widget(quick_styles=DataGridFieldFactory)
     quick_styles = schema.List(
         title=u'Quick series styles',
         value_type=DictRow(schema=ISeriesQuickStyles),
         )
 
     # hide fields that are per-chart-specific
-    form.omitted('x_label')
-    form.omitted('y_label')
+    directives.omitted('x_label')
+    directives.omitted('y_label')
 
 
 class ILineStyle(ILineDisplayCore):
