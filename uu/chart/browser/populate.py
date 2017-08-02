@@ -116,7 +116,6 @@ class ReportPopulateView(object):
             'goal_color': '#ff0000',
             'legend_placement': 'tabular',
             'point_labels': 'omit',
-            'chart_type': _value('onechart-title'),
             'end': self._workspace_end() if extend else None,
             'chart_type': 'bar' if chart_type.endswith('bar') else 'line',
             })
@@ -271,7 +270,7 @@ class ReportPopulateView(object):
                 charts = self.populate(measures, datasets)
                 self.apply_theme(charts)
             req.response.redirect(self.context.absolute_url())
-    
+
     def __call__(self, *args, **kwargs):
         self.update(*args, **kwargs)
         return self.index(*args, **kwargs)  # provided by template/framework

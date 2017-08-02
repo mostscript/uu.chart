@@ -22,7 +22,7 @@ class ProductLayer(PloneSandboxLayer):
         self.loadZCML(package=collective.z3cform.datagridfield)
         import uu.chart
         self.loadZCML(package=uu.chart)
-    
+
     def setUpPloneSite(self, portal):
         """Install named setup profile for class to portal"""
         self.applyProfile(portal, self.PROFILE)
@@ -30,7 +30,7 @@ class ProductLayer(PloneSandboxLayer):
 
 class DefaultProfileTestLayer(ProductLayer):
     """Layer for testing the default setup profile of the product"""
-    
+
     PROFILE = 'uu.chart:default'
 
 

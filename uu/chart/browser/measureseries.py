@@ -16,30 +16,30 @@ class DatasetListerView(object):
     a request containing the UID or path of a measure.  Returns JSON
     array-of-arrays, where each item tuple is a UID, Title pair.
     Datasets returned are always in same group as the measure.
-    
+
     The purpose of this is to enable the add/edit forms for a Measure
     Data Sequence to look up data-sets contingent on measure choice,
     without additional form visit/load.  Javascript should GET or POST
     to this view with the UID (string) of the measure listed
     """
-    
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
         self.portal = getSite()
-    
+
     def _datasets(self, group):
         return filter(
             lambda o: o.portal_type == DATASET_TYPE,
             group.objectValues(),
             )
-    
+
     def ispath(self, id):
         return (
             id.startswith('/') and
             self.portal.getId() in id.split('/')
             )
-    
+
     def __call__(self, *args, **kwargs):
         req = self.request
         req.response.setHeader('Content-type', 'application/json')

@@ -140,13 +140,12 @@ class ChartJSON(object):
         self.context = context
         self.state = wfinfo(context)[0]
         self.show_uris = self.show_notes = self.state != 'published'
-   
+
     def _series_list(self):
         """Get all series represented as dict"""
         r = []
         if not hasattr(self, '_data'):
             self._data = [(s, s.data) for s in self.context.series()]
-        #for seq in self.context.series():
         for seq, data in self._data:
             series = {}
             # series data is mapping of keys to point objects
@@ -258,7 +257,7 @@ class ChartJSON(object):
             del(r['goal_color'])  # superfluous if show_goal is false
         self._set_aspect_ratio(context, r)
         return r
-    
+
     def _set_aspect_ratio(self, context, r):
         height_units = getattr(context, 'height_units', '2:1')
         if height_units == 'px':
@@ -272,7 +271,7 @@ class ChartJSON(object):
             # aproximate a fraction precision about +/- 0.5%
             f = Fraction(1.0 / (height / 100.0)).limit_denominator(20)
             r['aspect_ratio'] = [f.numerator, f.denominator]
-    
+
     def render(self):
         return json.dumps(self._chart(), indent=2)
 
@@ -310,11 +309,11 @@ class ReportJSON(object):
 
 class ChartJSONView(object):
     """Browser view for JSON representation of chart context"""
-    
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
-   
+
     def __call__(self, *args, **kwargs):
         self.request.response.setHeader('Content-type', 'application/json')
         return ChartJSON(self.context).render()

@@ -9,7 +9,7 @@ from zope.interface import implementsOnly
 
 class INativeColorInput(IWidget):
     """Marker interface for native color input"""
-    
+
 
 class NativeColorInput(text.TextWidget):
     """Native HTML5 input type color"""
