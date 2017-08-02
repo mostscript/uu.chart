@@ -5,7 +5,7 @@ from StringIO import StringIO
 
 from Acquisition import aq_base, aq_inner, aq_parent
 from ComputedAttribute import ComputedAttribute
-from persistent.dict import PersistentDict
+from persistent.mapping import PersistentMapping
 from plone.dexterity.content import Item, Container
 from zope.interface import implements
 from plone.uuid.interfaces import IAttributeUUID
@@ -46,10 +46,10 @@ def filter_data(context, points):
 
 
 class BaseDataSequence(Item):
-   
+
     POINTCLS = None
     KEYTYPE = unicode
-     
+
     def __init__(self, id=None, *args, **kwargs):
         super(BaseDataSequence, self).__init__(id, *args, **kwargs)
 
@@ -117,19 +117,19 @@ class BaseDataSequence(Item):
 
 class TimeDataSequence(BaseDataSequence):
     implements(ITimeDataSequence)
-    
+
     POINTCLS = TimeSeriesDataPoint
     KEYTYPE = date
-    
+
     def __init__(self, id=None, *args, **kwargs):
         super(TimeDataSequence, self).__init__(id, *args, **kwargs)
         self.label_default = 'locale'
-        self.label_overrides = PersistentDict()
+        self.label_overrides = PersistentMapping()
 
 
 class TimeSeriesChart(Container):
     implements(ITimeSeriesChart, IAttributeUUID)
-    
+
     def series(self):
         """
         Return iterable of series/sequence streams providing
@@ -152,11 +152,11 @@ class NamedDataSequence(BaseDataSequence):
 
 class NamedSeriesChart(Container):
     implements(INamedSeriesChart, IAttributeUUID)
-    
+
     def __init__(self, id=None, *args, **kwargs):
         super(NamedSeriesChart, self).__init__(id, *args, **kwargs)
         self.chart_type = u'bar'
-     
+
     def series(self):
         """
         Return iterable of series/sequence streams providing
