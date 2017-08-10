@@ -83,7 +83,7 @@ class BaseDataSequence(Item):
             result = [p for p in result if p not in included]
         return result
 
-    @computed_attribute(level=1)
+    @computed_attribute(level=0)
     def data(self):
         """Parse self.input, return list of point objects"""
         if not hasattr(self, '_v_data'):
