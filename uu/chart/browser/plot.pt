@@ -129,6 +129,9 @@
      <li class="manage" tal:condition="view/can_manage">
       <a href="folder_contents">Re-order, remove, or rename report elements</a>
      </li>
+     <li class="manage" tal:condition="view/can_manage">
+      <a href="@@styles">Manage report themes</a>
+     </li>
     </ul>
    </div>
 

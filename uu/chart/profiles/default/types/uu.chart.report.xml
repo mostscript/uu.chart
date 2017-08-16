@@ -61,9 +61,5 @@
           url_expr="string:${object_url}/@@populate" visible="True">
     <permission value="Modify portal content"/>
   </action>
-  <action title="Themes" action_id="styles" category="object" condition_expr=""
-          url_expr="string:${object_url}/@@styles" visible="True">
-    <permission value="Modify portal content"/>
-  </action>
 
 </object>
