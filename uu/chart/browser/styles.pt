@@ -141,6 +141,10 @@ p.stylebook-desc {
 <body>
 <div metal:fill-slot="main">
 
+<div class="navmisc">
+  <a href="../view">Back to report ↵</a>
+</div>
+
  <div class="stylebook-listing">
   <h2>Themes for: <em tal:content="context/Title">REPORT TITLE</em></h2>
   <tal:block condition="view/stylebooks">

@@ -362,6 +362,11 @@ form.reorder div.button-reorder a {
     from measures and data-sets that have been defined within measure
     groups.  <em>This tool may be run more than once, should you need it.</em>
   </p>
+
+<div class="navmisc">
+  <a href="../view">Cancel and go back to report ↵</a>
+</div>
+
   <hr />
 
   <form id="group-selector">
