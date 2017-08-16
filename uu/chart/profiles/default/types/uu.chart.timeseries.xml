@@ -54,9 +54,5 @@
           url_expr="string:${object_url}/edit" visible="True">
     <permission value="Modify portal content"/>
   </action>
-  <action title="Labels" action_id="labels" category="object" condition_expr=""
-          url_expr="string:${object_url}/@@manage_labels" visible="True">
-    <permission value="Modify portal content"/>
-  </action>
 
 </object>

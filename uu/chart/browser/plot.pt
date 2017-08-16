@@ -149,6 +149,9 @@
      <li class="manage" tal:condition="view/can_manage">
       <a href="folder_contents">Re-order, remove, or rename data series</a>
      </li>
+     <li class="manage" tal:condition="view/can_manage">
+      <a href="@@manage_labels">Edit X-axis label settings</a>
+     </li>
     </ul>
    </div>
 
