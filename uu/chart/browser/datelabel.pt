@@ -37,6 +37,11 @@
 <div metal:fill-slot="main">
 
 <h2>Manage X-axis tick labels for dates</h2>
+
+<div class="navmisc">
+  <a href="../view">Cancel and go back to plot ↵</a>
+</div>
+
 <p class="help">
 You may wish to display an alternate tick label on the X-Axis for a
 time-series plot instead of displaying a specific date.  For example,
