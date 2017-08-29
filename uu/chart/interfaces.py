@@ -91,8 +91,10 @@ uu.chart.interfaces -- narrative summary of components:
 from datetime import date, datetime
 import operator
 
+from Acquisition import aq_base
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 from plone.app.textfield import RichText
+from plone.app.uuid.utils import uuidToObject
 from plone.autoform import directives
 from plone.supermodel import model
 from plone.uuid.interfaces import IAttributeUUID
@@ -107,9 +109,12 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from uu.formlibrary.interfaces import is_content_uuid
 from uu.formlibrary.browser.widget import CustomRootRelatedWidget
-from uu.formlibrary.measure.interfaces import MEASURE_DEFINITION_TYPE
+from uu.formlibrary.browser.widget_overrides import TypeADateFieldWidget
+from uu.formlibrary.measure.interfaces import all_measures_in_navroot
+from uu.formlibrary.measure.interfaces import all_datasets_in_navroot
 from uu.formlibrary.measure.interfaces import MeasureGroupContentSourceBinder
 from uu.formlibrary.measure.interfaces import PermissiveVocabulary
+
 
 from uu.chart import _  # MessageFactory for package
 from uu.chart.browser.color import NativeColorFieldWidget
@@ -434,11 +439,14 @@ class IDataCollection(Interface):
         """
 
 
-class ITimeSeriesCollection(IDataCollection):
+class ITimeSeriesCollection(model.Schema, IDataCollection):
     """
     Time series interface for configured range of time for all data
     series contained.  Adds date range configuration to collection.
     """
+
+    directives.widget(start=TypeADateFieldWidget)
+    directives.widget(end=TypeADateFieldWidget)
 
     start = schema.Date(
         title=_(u'Start date'),
@@ -984,26 +992,13 @@ class IDataReport(model.Schema, IOrderedContainer, IAttributeUUID):
 
 class IMeasureSeriesProvider(model.Schema, IDataSeries, ILineDisplay):
 
-    directives.widget(
-        'measure',
-        CustomRootRelatedWidget,
-        custom_root_query={'portal_type': 'uu.formlibrary.measurelibrary'},
-        pattern_options={
-            'selectableTypes': [MEASURE_DEFINITION_TYPE],
-            'maximumSelectionSize': 1,
-            'baseCriteria': [{
-                'i': 'portal_type',
-                'o': 'plone.app.querystring.operation.string.is',
-                'v': MEASURE_DEFINITION_TYPE,
-                }]
-            }
-        )
-    measure = schema.BytesLine(
+    measure = schema.Choice(
         title=u'Bound measure',
         description=u'Measure definition that defines a function to apply '
                     u'to a dataset of forms to obtain a computed value for '
                     u'each as a data-point.',
-        constraint=is_content_uuid,
+        source=all_measures_in_navroot,
+        required=True,
         )
 
     dataset = schema.Choice(
@@ -1013,10 +1008,8 @@ class IMeasureSeriesProvider(model.Schema, IDataSeries, ILineDisplay):
                     u'You must select a dataset within the same measure '
                     u'group in which the bound measure definition is '
                     u'contained.',
-        source=MeasureGroupParentBinder(
-            portal_type='uu.formlibrary.setspecifier',
-            ),
-        required=False,
+        source=all_datasets_in_navroot,
+        required=True,
         )
 
     summarization_strategy = schema.Choice(
@@ -1046,6 +1039,17 @@ class IMeasureSeriesProvider(model.Schema, IDataSeries, ILineDisplay):
             ),
         readonly=True,
         )
+
+    @invariant
+    def validateGroupAffinity(data):
+        """
+        Ensure that measure and dataset selected are in same
+        measure group.
+        """
+        measure = uuidToObject(data.measure)
+        dataset = uuidToObject(data.dataset)
+        if aq_base(measure.__parent__) is not aq_base(dataset.__parent__):
+            raise Invalid(u'Measure, data set must have common measure group')
 
 
 # style book content interfaces:
