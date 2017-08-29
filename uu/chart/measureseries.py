@@ -19,7 +19,7 @@ class MeasureSeriesProvider(BaseDataSequence):
 
     implements(IMeasureSeriesProvider)
 
-    @computed_attribute(level=1)
+    @computed_attribute(level=0)
     def pointcls(self):
         """
         Get point class / factory based on type of parent chart.
@@ -114,7 +114,7 @@ class MeasureSeriesProvider(BaseDataSequence):
             all_points = [p for p in all_points if p not in included]
         return self.summarize(all_points)
 
-    @computed_attribute(level=1)
+    @computed_attribute(level=0)
     def data(self):
         return self._data(filtered=True)
 
