@@ -105,7 +105,7 @@ uu.chart.populate = (function ($, ns) {
       label = $('<label />').attr('for', uid).text(title),
       li = $('<li />');
     if (path) {
-      $('<span class="context">').text(' in ' + path).appendTo(label);
+      $('<span class="formHelp">').text(' in ' + path).appendTo(label);
     }
     input.appendTo(li);
     label.appendTo(li);
