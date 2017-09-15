@@ -115,22 +115,40 @@
    <div class="report-actions" tal:condition="is_report">
     <ul>
      <li class="create populate" tal:condition="view/can_add">
-      <a href="./@@populate">Add measure-based charts to report using population tool</a>
+      <a 
+        href="./@@populate"
+        tal:attributes="href string:${context/absolute_url}/@@populate">
+        Add measure-based charts to report using population tool</a>
      </li>
      <li class="create" tal:condition="view/can_add">
-      <a href="++add++uu.chart.timeseries">&thinsp;&#43;&nbsp; Add time series chart to this report</a>
+      <a href="++add++uu.chart.timeseries"
+         tal:attributes="href string:${context/absolute_url}/++add++uu.chart.timeseries">
+        &thinsp;&#43;&nbsp; Add time series chart to this report
+      </a>
      </li>
      <li class="create" tal:condition="view/can_add">
-      <a href="++add++uu.chart.namedseries">&thinsp;&#43;&nbsp; Add named series chart to this report</a>
+      <a href="++add++uu.chart.namedseries"
+         tal:attributes="href string:${context/absolute_url}/++add++uu.chart.namedseries">
+        &thinsp;&#43;&nbsp; Add named series chart to this report
+      </a>
      </li>
      <li class="manage" tal:condition="view/can_manage">
-      <a href="edit">Edit report title or description</a>
+      <a href="edit"
+         tal:attributes="href string:${context/absolute_url}/edit">
+        Edit report title or description
+      </a>
      </li>
      <li class="manage" tal:condition="view/can_manage">
-      <a href="folder_contents">Re-order, remove, or rename report elements</a>
+      <a href="folder_contents"
+         tal:attributes="href string:${context/absolute_url}/folder_contents">
+        Re-order, remove, or rename report elements
+      </a>
      </li>
      <li class="manage" tal:condition="view/can_manage">
-      <a href="@@styles">Manage report themes</a>
+      <a href="@@styles"
+         tal:attributes="href string:${context/absolute_url}/@@styles">
+        Manage report themes
+      </a>
      </li>
     </ul>
    </div>
