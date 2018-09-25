@@ -16,6 +16,8 @@ class BaseDataPoint(object):
         self.value = value
         self.note = note
         self.uri = uri
+        if sample_size is not None:
+            sample_size = int(sample_size)
         self.sample_size = sample_size
         self.distribution = distribution
 

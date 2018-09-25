@@ -15,6 +15,18 @@ from uu.chart.interfaces import AGGREGATE_FUNCTIONS, AGGREGATE_LABELS
 DATASET_TYPE = 'uu.formlibrary.setspecifier'
 
 
+def weighted_mean(points, default_sample_size=1):
+    """
+    Weight mean by sample size, use default size if data points do not
+    provide.
+    """
+    _sample_size = lambda p: getattr(p, 'sample_size', default_sample_size)
+    pairs = [(point.value, _sample_size(point)) for point in points]
+    total_samples = sum(zip(*pairs)[1])
+    sum_weighted_values = sum([pair[0] * pair[1] for pair in pairs])
+    return sum_weighted_values / float(total_samples)
+
+
 class MeasureSeriesProvider(BaseDataSequence):
 
     implements(IMeasureSeriesProvider)
@@ -31,14 +43,124 @@ class MeasureSeriesProvider(BaseDataSequence):
                 self._v_pointcls = NamedDataPoint
         return self._v_pointcls
 
-    def summarize(self, points):
+    def weighted_mean_summarization(self, points):
         items = [(point.identity(), point) for point in points]
         if not items:
             return []
         keys = zip(*items)[0]
         if len(keys) == len(set(keys)):
             return points  # no duplicate points for each key
+        sorted_uniq_keys = []
+        keymap = {}
+        for key, point in items:
+            if key not in keymap:
+                sorted_uniq_keys.append(key)    # only once
+                keymap[key] = []
+        label = 'Weighted mean'
+        result = []
+        for key in sorted_uniq_keys:
+            vcount = len(keymap[key])
+            if vcount == 0:
+                # special case, only NaN values must have been found,
+                # so we will append a constructed NaN point:
+                point = self.pointcls(
+                    date=key,
+                    value=float('NaN'),
+                    note='All respective forms have N/A values for point',
+                    )
+                result.append(point)
+            if vcount == 1:
+                result.append(keymap[key])  # original point preserved
+            elif vcount > 1:
+                keypoints = keymap[key]
+                value = weighted_mean(keypoints)
+                distribution = [
+                    {
+                        'value': p.value,
+                        'sample_size': p.sample_size
+                    }
+                    for p in keypoints
+                    ]
+                combined_sample_size = sum([p.sample_size for p in keypoints])
+                note = u'%s of %s sources (N=%s).' % (
+                    label,
+                    len(keypoints),
+                    combined_sample_size
+                    )
+                aggregate_point = self.pointcls(
+                    key,
+                    value,
+                    note=note,
+                    sample_size=combined_sample_size,
+                    distribution=distribution
+                    )
+                result.append(aggregate_point)
+        return result
+
+    def aggregate_function_summarization(self, points, strategy='AVG'):
+        items = [(point.identity(), point) for point in points]
+        if not items:
+            return []
+        sorted_uniq_keys = []
+        fn = AGGREGATE_FUNCTIONS.get(strategy)
+        keymap = {}
+        pointmap = {}  # original points
+        for k, v in items:
+            if k not in keymap:
+                sorted_uniq_keys.append(k)  # only once
+                keymap[k] = []
+            if math.isnan(v.value):
+                continue  # ignore NaN values in keymap
+            keymap[k].append(v.value)  # sequence of 1..* values per key
+            pointmap[k] = v  # last point seen for key
+        label = dict(AGGREGATE_LABELS).get(strategy)
+        result = []
+        for k in sorted_uniq_keys:
+            vcount = len(keymap[k])
+            if vcount == 0:
+                # special case, only NaN values must have been found,
+                # so we will append a constructed NaN point:
+                point = self.pointcls(
+                    date=k,
+                    value=float('NaN'),
+                    note='All respective forms have N/A values for point',
+                    )
+                result.append(point)
+            if vcount == 1:
+                result.append(pointmap[k])  # original point preserved
+            elif vcount > 1:
+                note = u'%s of %s values found.' % (label, vcount)
+                keypoints = keymap[k]
+                value = fn(keymap[k])
+                distribution = [
+                    {
+                        'value': p.value,
+                        'sample_size': p.sample_size
+                    }
+                    for p in keypoints
+                    ]
+                combined_sample_size = sum([p.sample_size for p in keypoints])
+                aggregate_point = self.pointcls(
+                    k,
+                    value,
+                    note=note,
+                    sample_size=combined_sample_size,
+                    distribution=distribution
+                    )
+                result.append(aggregate_point)
+
+    def summarize(self, points):
         strategy = getattr(self, 'summarization_strategy', 'AVG')
+        if strategy in AGGREGATE_FUNCTIONS:
+            return self.aggregate_function_summarization(points, strategy)
+        if strategy == 'WEIGHTED_MEAN':
+            return self.weighted_mean_summariziation(points)
+        items = [(point.identity(), point) for point in points]
+        if not items:
+            return []
+        keys = zip(*items)[0]
+        if len(keys) == len(set(keys)):
+            return points  # no duplicate points for each key
         if strategy == 'LAST':
             return dict(items).values()  # dict() picks last on collision
         if strategy == 'FIRST':
@@ -46,38 +168,6 @@ class MeasureSeriesProvider(BaseDataSequence):
         if strategy == 'IGNORE':
             # return only points without duplicated keys
             return [v for k, v in items if keys.count(k) == 1]
-        if strategy in AGGREGATE_FUNCTIONS:
-            sorted_uniq_keys = []
-            fn = AGGREGATE_FUNCTIONS.get(strategy)
-            keymap = {}
-            pointmap = {}  # original points
-            for k, v in items:
-                if k not in keymap:
-                    sorted_uniq_keys.append(k)  # only once
-                    keymap[k] = []
-                if math.isnan(v.value):
-                    continue  # ignore NaN values in keymap
-                keymap[k].append(v.value)  # sequence of 1..* values per key
-                pointmap[k] = v  # last point seen for key
-            label = dict(AGGREGATE_LABELS).get(strategy)
-            result = []
-            for k in sorted_uniq_keys:
-                vcount = len(keymap[k])
-                if vcount == 0:
-                    # special case, only NaN values must have been found,
-                    # so we will append a constructed NaN point:
-                    point = self.pointcls(
-                        date=k,
-                        value=float('NaN'),
-                        note='All respective forms have N/A values for point',
-                        )
-                    result.append(point)
-                if vcount == 1:
-                    result.append(pointmap[k])  # original point preserved
-                elif vcount > 1:
-                    note = u'%s of %s values found.' % (label, vcount)
-                    result.append(self.pointcls(k, fn(keymap[k]), note=note))
-            return result
         return points  # fallback
 
     def filter_data(self, points):
@@ -105,6 +195,7 @@ class MeasureSeriesProvider(BaseDataSequence):
             info.get('value'),
             note=measure.value_note(info),
             uri=info.get('url', None),
+            sample_size=info.get('raw_denominator', None),
             )
         all_points = map(_point, infos)
         if filtered and not excluded:
