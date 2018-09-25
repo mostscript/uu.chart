@@ -125,7 +125,7 @@ MEASURESERIES_DATA = 'uu.chart.data.measureseries'
 STYLEBOOK_TYPE = 'uu.chart.stylebook'
 LINESTYLE_TYPE = 'uu.chart.linestyle'
 
-## globals for vocabulary and summarization/aggregate functions
+# globals for vocabulary and summarization/aggregate functions
 
 F_MEAN = lambda l: float(sum(l)) / len(l) if len(l) > 0 else float('nan')
 
@@ -238,19 +238,19 @@ class MeasureGroupParentBinder(MeasureGroupContentSourceBinder):
         measure = provider_measure(context)
         if measure is None:
             return PermissiveVocabulary([])  # likely on add-form
-        ## get a context (indirection) of measure bound, use that to get
-        ## group and contained content in superclass implementation:
+        # get a context (indirection) of measure bound, use that to get
+        # group and contained content in superclass implementation:
         return super(MeasureGroupParentBinder, self).__call__(measure)
 
 
-## constants for use in package:
+# constants for use in package:
 
 TIME_DATA_TYPE = 'uu.chart.data.timeseries'     # portal types should
 NAMED_DATA_TYPE = 'uu.chart.data.namedseries'   # match FTIs
 MEASURE_DATA_TYPE = 'uu.chart.data.measureseries'
 
 
-## sorting data-point identities need collation/comparator function
+# sorting data-point identities need collation/comparator function
 def cmp_point_identities(a, b):
     """
     Given point identities a, b (may be string, number, date, etc),
@@ -336,7 +336,7 @@ class ITimeSeriesDataPoint(IDateBase, IDataPoint):
     """Data point with a distinct date"""
 
 
-#--- series and collection interfaces:
+# --- series and collection interfaces:
 
 
 class IDataSeries(form.Schema):
@@ -526,7 +526,10 @@ class IChartDisplay(form.Schema):
             ),
         vocabulary=SimpleVocabulary((
             SimpleTerm(value=None, token=str(None), title=u'Legend disabled'),
-            SimpleTerm(value='outside', title=_(u'Basic legend, outside grid')),
+            SimpleTerm(
+                value='outside',
+                title=_(u'Basic legend, outside grid')
+                ),
             SimpleTerm(value='tabular', title=_(
                 u'Tabular legend with data, below plot')),
             )),
@@ -718,7 +721,7 @@ class ILineDisplay(ILineDisplayCore):
             'display_precision',
             ],
         )
-    
+
 
 # --- content type interfaces: ---
 
@@ -1044,12 +1047,12 @@ class IMeasureSeriesProvider(form.Schema, IDataSeries, ILineDisplay):
         )
 
 
-## style book content interfaces:
+# style book content interfaces:
 
 
 class ISeriesQuickStyles(form.Schema):
     """Interface for quick line styles (commonly used) for style book"""
-    
+
     form.widget(color=NativeColorFieldWidget)
     color = schema.TextLine(
         title=_(u'Series color'),

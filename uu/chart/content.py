@@ -46,10 +46,10 @@ def filter_data(context, points):
 
 
 class BaseDataSequence(Item):
-   
+
     POINTCLS = None
     KEYTYPE = unicode
-     
+
     def __init__(self, id=None, *args, **kwargs):
         super(BaseDataSequence, self).__init__(id, *args, **kwargs)
 
@@ -117,10 +117,10 @@ class BaseDataSequence(Item):
 
 class TimeDataSequence(BaseDataSequence):
     implements(ITimeDataSequence)
-    
+
     POINTCLS = TimeSeriesDataPoint
     KEYTYPE = date
-    
+
     def __init__(self, id=None, *args, **kwargs):
         super(TimeDataSequence, self).__init__(id, *args, **kwargs)
         self.label_default = 'locale'
@@ -129,7 +129,7 @@ class TimeDataSequence(BaseDataSequence):
 
 class TimeSeriesChart(Container):
     implements(ITimeSeriesChart, IAttributeUUID)
-    
+
     def series(self):
         """
         Return iterable of series/sequence streams providing
@@ -152,11 +152,11 @@ class NamedDataSequence(BaseDataSequence):
 
 class NamedSeriesChart(Container):
     implements(INamedSeriesChart, IAttributeUUID)
-    
+
     def __init__(self, id=None, *args, **kwargs):
         super(NamedSeriesChart, self).__init__(id, *args, **kwargs)
         self.chart_type = u'bar'
-     
+
     def series(self):
         """
         Return iterable of series/sequence streams providing

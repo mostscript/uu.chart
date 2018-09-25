@@ -16,7 +16,7 @@ DATASET_TYPE = 'uu.formlibrary.setspecifier'
 
 
 class MeasureSeriesProvider(BaseDataSequence):
-    
+
     implements(IMeasureSeriesProvider)
 
     @computed_attribute(level=1)

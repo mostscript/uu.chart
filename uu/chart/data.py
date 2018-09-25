@@ -10,14 +10,14 @@ class BaseDataPoint(object):
         self.value = value
         self.note = note
         self.uri = uri
-    
+
     def identity(self):
         raise NotImplementedError('base class does not provide')
 
 
 class NamedDataPoint(BaseDataPoint):
     implements(INamedDataPoint)
-    
+
     def __init__(self, name, value, note=None, uri=None):
         self.name = name
         super(NamedDataPoint, self).__init__(value, note, uri)
@@ -28,7 +28,7 @@ class NamedDataPoint(BaseDataPoint):
 
 class TimeSeriesDataPoint(BaseDataPoint):
     implements(ITimeSeriesDataPoint)
-    
+
     def __init__(self, date, value, note=None, uri=None):
         if isinstance(date, datetime.datetime):
             date = date.date()
