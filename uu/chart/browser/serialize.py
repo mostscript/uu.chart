@@ -74,7 +74,8 @@ Note: properties marked with multiplicity [0..1] either have a typed
 | value : Number             |   Number or {} null object as sentinel for NaN
 | title : String       [0..1]|   Label for key, may be same as key.
 | note : String        [0..1]|
-| uri : String         [0..1]|   1         0..*  _____________________
+| uri : String         [0..1]|
+| sample_size          [0..1]|   1         0..*  _____________________
 | distribution: array  [0..1]|< >---------------| Distribution        |
 '----------------------------'     distribution +---------------------+
                                                 | value: Number       |
@@ -203,7 +204,9 @@ class ChartJSON(object):
             r['note'] = point.note
         if point.uri is not None and self.show_uris:
             r['uri'] = point.uri
-        if point.distribution is not None:
+        if point.sample_size is not None:
+            r['sample_size'] = point.sample_size
+        if point.sample_size is not None:
             r['distribution'] = point.distribution
         return r
 

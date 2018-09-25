@@ -6,10 +6,17 @@ from uu.chart.interfaces import INamedDataPoint, ITimeSeriesDataPoint
 
 
 class BaseDataPoint(object):
-    def __init__(self, value, note=None, uri=None, distribution=None):
+    def __init__(
+            self,
+            value,
+            note=None,
+            uri=None,
+            sample_size=None,
+            distribution=None):
         self.value = value
         self.note = note
         self.uri = uri
+        self.sample_size = sample_size
         self.distribution = distribution
 
     def identity(self):
@@ -19,7 +26,14 @@ class BaseDataPoint(object):
 class NamedDataPoint(BaseDataPoint):
     implements(INamedDataPoint)
 
-    def __init__(self, name, value, note=None, uri=None, distribution=None):
+    def __init__(
+            self,
+            name,
+            value,
+            note=None,
+            uri=None,
+            sample_size=None,
+            distribution=None):
         self.name = name
         super(NamedDataPoint, self).__init__(value, note, uri, distribution)
 
@@ -30,7 +44,14 @@ class NamedDataPoint(BaseDataPoint):
 class TimeSeriesDataPoint(BaseDataPoint):
     implements(ITimeSeriesDataPoint)
 
-    def __init__(self, date, value, note=None, uri=None, distribution=None):
+    def __init__(
+            self,
+            date,
+            value,
+            note=None,
+            uri=None,
+            sample_size=None,
+            distribution=None):
         if isinstance(date, datetime.datetime):
             date = date.date()
         if not isinstance(date, datetime.date):

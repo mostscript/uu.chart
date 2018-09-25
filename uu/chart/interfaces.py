@@ -164,6 +164,7 @@ AGGREGATE_LABELS = [
 ]
 
 SUMMARIZATION_STRATEGIES = AGGREGATE_LABELS + [
+    ('WEIGHTED_MEAN', u'Weighted mean'),
     ('FIRST', u'Pick first found value'),
     ('LAST', u'Pick last found value'),
     ('IGNORE', u'Ignore more than one value, omit on encountered duplication'),
@@ -328,6 +329,13 @@ class IDataPoint(IAggregateDescription):
     uri = schema.BytesLine(
         title=_(u'URI'),
         description=_(u'URI/URL or identifier to source of data'),
+        required=False,
+        )
+
+    sample_size = schema.Int(
+        title=_(u'Sample size (N)'),
+        description=u'Sample size, may be computed denominator of a '
+                    u'population or subpopulation sampled.',
         required=False,
         )
 
