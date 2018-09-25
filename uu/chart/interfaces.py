@@ -275,7 +275,42 @@ class IChartProductLayer(Interface):
     """Marker interface for product layer"""
 
 
-class IDataPoint(Interface):
+class IAggregateDescription(Interface):
+    """
+    Mixin of fields related to aggregating multiple data points into
+    a single descriptive aggretate point.  All fields optional, and
+    only considered relevant to aggregation of data from multiple
+    sources or samples.
+
+    'distribution' attribute would have values that look like:
+    [{ "value": 75.0, "sample_size": 8 }, { "value": 80, "sample_size": 10}]
+
+    This data is sufficient to compute:
+
+        - The sum of sample sizes.
+        - The weighted mean.
+        - The original numerator values as value/100.0 * sample_size
+          - Presuming the value looks like a percentage.
+        - The arithmetic mean.
+        - Distribution plot.
+        - Median, quartile boundary, and therefore box plot.
+    """
+
+    distribution = schema.List(
+        title=_(u'Distribution data'),
+        description=_(u'List of dict containing value, sample size for each '
+                      u'sample in aggregation.'),
+        required=False,
+        value_type=schema.Dict(
+            key_type=schema.BytesLine(),
+            value_type=schema.Object(
+                description=u'Value, may be int or float'
+                )
+            )
+        )
+
+
+class IDataPoint(IAggregateDescription):
     """Data point contains single value and optional note and URI"""
 
     value = schema.Float(

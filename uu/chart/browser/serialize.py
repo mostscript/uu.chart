@@ -67,15 +67,22 @@ Note: properties marked with multiplicity [0..1] either have a typed
           Y
           |
     0..*  | data                    Array of two-item key-value pairs (arrays)
- _________!_____________            of name or date keys and point objects.
-| Data point Object     |
-+-----------------------+
-| key : String          |       (key is either name or Date representation)
-| value : Number        |       Number or {} null object as sentinel for NaN
-| title : String  [0..1]|       Label for key, may be same as key.
-| note : String   [0..1]|
-| uri : String    [0..1]|
-'-----------------------'
+ _________!__________________       of name or date keys and point objects.
+| Data point Object          |
++----------------------------+
+| key : String               |   (key is either name or Date representation)
+| value : Number             |   Number or {} null object as sentinel for NaN
+| title : String       [0..1]|   Label for key, may be same as key.
+| note : String        [0..1]|
+| uri : String         [0..1]|   1         0..*  _____________________
+| distribution: array  [0..1]|< >---------------| Distribution        |
+'----------------------------'     distribution +---------------------+
+                                                | value: Number       |
+                                                | sample_size: Number |
+                                                 ---------------------
+                                    distribution may be null, empty array,
+                                    or populated array of distribution
+                                    objects.
 
 Notes, enumerated choices:
 
@@ -197,6 +204,8 @@ class ChartJSON(object):
             r['note'] = point.note
         if point.uri is not None and self.show_uris:
             r['uri'] = point.uri
+        if point.distribution is not None:
+            r['distribution'] = point.distribution
         return r
 
     def _chart(self):
