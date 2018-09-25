@@ -305,6 +305,7 @@ class IAggregateDescription(Interface):
         value_type=schema.Dict(
             key_type=schema.BytesLine(),
             value_type=schema.Object(
+                schema=Interface,
                 description=u'Value, may be int or float'
                 )
             )
