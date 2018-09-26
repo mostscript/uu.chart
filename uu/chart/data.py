@@ -37,7 +37,13 @@ class NamedDataPoint(BaseDataPoint):
             sample_size=None,
             distribution=None):
         self.name = name
-        super(NamedDataPoint, self).__init__(value, note, uri, distribution)
+        super(NamedDataPoint, self).__init__(
+            value,
+            note,
+            uri,
+            sample_size,
+            distribution
+            )
 
     def identity(self):
         return self.name
@@ -63,6 +69,7 @@ class TimeSeriesDataPoint(BaseDataPoint):
             value,
             note,
             uri,
+            sample_size,
             distribution
             )
 

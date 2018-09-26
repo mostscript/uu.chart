@@ -56,10 +56,12 @@ class MeasureSeriesProvider(BaseDataSequence):
             if key not in keymap:
                 sorted_uniq_keys.append(key)    # only once
                 keymap[key] = []
+            keymap[key].append(point)
         label = 'Weighted mean'
         result = []
         for key in sorted_uniq_keys:
-            vcount = len(keymap[key])
+            keypoints = keymap[key]
+            vcount = len([p for p in keypoints if not math.isnan(p.value)])
             if vcount == 0:
                 # special case, only NaN values must have been found,
                 # so we will append a constructed NaN point:
@@ -72,8 +74,9 @@ class MeasureSeriesProvider(BaseDataSequence):
             if vcount == 1:
                 result.append(keymap[key])  # original point preserved
             elif vcount > 1:
-                keypoints = keymap[key]
-                value = weighted_mean(keypoints)
+                value = weighted_mean(
+                    [p for p in keypoints if not math.isnan(p.value)]
+                    )
                 distribution = [
                     {
                         'value': p.value,
@@ -111,7 +114,7 @@ class MeasureSeriesProvider(BaseDataSequence):
                 keymap[k] = []
             if math.isnan(v.value):
                 continue  # ignore NaN values in keymap
-            keymap[k].append(v.value)  # sequence of 1..* values per key
+            keymap[k].append(v)  # sequence of 1..* values per key
             pointmap[k] = v  # last point seen for key
         label = dict(AGGREGATE_LABELS).get(strategy)
         result = []
@@ -131,7 +134,7 @@ class MeasureSeriesProvider(BaseDataSequence):
             elif vcount > 1:
                 note = u'%s of %s values found.' % (label, vcount)
                 keypoints = keymap[k]
-                value = fn(keymap[k])
+                value = fn([p.value for p in keymap[k]])
                 distribution = [
                     {
                         'value': p.value,
@@ -139,7 +142,10 @@ class MeasureSeriesProvider(BaseDataSequence):
                     }
                     for p in keypoints
                     ]
-                combined_sample_size = sum([p.sample_size for p in keypoints])
+                combined_sample_size = sum(
+                    [p.sample_size for p in self.filter_data(keypoints)
+                     if p.sample_size is not None]
+                    )
                 aggregate_point = self.pointcls(
                     k,
                     value,
@@ -148,13 +154,14 @@ class MeasureSeriesProvider(BaseDataSequence):
                     distribution=distribution
                     )
                 result.append(aggregate_point)
+        return result
 
     def summarize(self, points):
         strategy = getattr(self, 'summarization_strategy', 'AVG')
         if strategy in AGGREGATE_FUNCTIONS:
             return self.aggregate_function_summarization(points, strategy)
         if strategy == 'WEIGHTED_MEAN':
-            return self.weighted_mean_summariziation(points)
+            return self.weighted_mean_summarization(points)
         items = [(point.identity(), point) for point in points]
         if not items:
             return []
