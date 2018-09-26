@@ -195,7 +195,10 @@ class ChartJSON(object):
     def _distribution(self, point):
         _value = lambda v: None if math.isnan(v) else v
         return [
-            {'value': _value(v.value), 'sample_size': v.sample_size}
+            {
+                'value': _value(v.get('value')),
+                'sample_size': v.get('sample_size')
+            }
             for v in point.distribution
             ]
 
