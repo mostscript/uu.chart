@@ -192,6 +192,13 @@ class ChartJSON(object):
             r.append(series)
         return r
 
+    def _distribution(self, point):
+        _value = lambda v: None if math.isnan(v) else v
+        return [
+            {'value': _value(v.value), 'sample_size': v.sample_size}
+            for v in point.distribution
+            ]
+
     def _datapoint(self, point):
         r = {}
         r['key'] = key = point.identity()
@@ -207,7 +214,7 @@ class ChartJSON(object):
         if point.sample_size is not None:
             r['sample_size'] = point.sample_size
         if point.sample_size is not None:
-            r['distribution'] = point.distribution
+            r['distribution'] = self._distribution(point)
         return r
 
     def _chart(self):
