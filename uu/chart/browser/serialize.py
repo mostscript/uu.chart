@@ -67,15 +67,23 @@ Note: properties marked with multiplicity [0..1] either have a typed
           Y
           |
     0..*  | data                    Array of two-item key-value pairs (arrays)
- _________!_____________            of name or date keys and point objects.
-| Data point Object     |
-+-----------------------+
-| key : String          |       (key is either name or Date representation)
-| value : Number        |       Number or {} null object as sentinel for NaN
-| title : String  [0..1]|       Label for key, may be same as key.
-| note : String   [0..1]|
-| uri : String    [0..1]|
-'-----------------------'
+ _________!__________________       of name or date keys and point objects.
+| Data point Object          |
++----------------------------+
+| key : String               |   (key is either name or Date representation)
+| value : Number             |   Number or {} null object as sentinel for NaN
+| title : String       [0..1]|   Label for key, may be same as key.
+| note : String        [0..1]|
+| uri : String         [0..1]|
+| sample_size          [0..1]|   1         0..*  _____________________
+| distribution: array  [0..1]|< >---------------| Distribution        |
+'----------------------------'     distribution +---------------------+
+                                                | value: Number       |
+                                                | sample_size: Number |
+                                                 ---------------------
+                                    distribution may be null, empty array,
+                                    or populated array of distribution
+                                    objects.
 
 Notes, enumerated choices:
 
@@ -184,6 +192,16 @@ class ChartJSON(object):
             r.append(series)
         return r
 
+    def _distribution(self, point):
+        _value = lambda v: None if math.isnan(v) else v
+        return [
+            {
+                'value': _value(v.get('value')),
+                'sample_size': v.get('sample_size')
+            }
+            for v in point.distribution or []
+            ]
+
     def _datapoint(self, point):
         r = {}
         r['key'] = key = point.identity()
@@ -196,6 +214,10 @@ class ChartJSON(object):
             r['note'] = point.note
         if point.uri is not None and self.show_uris:
             r['uri'] = point.uri
+        if point.sample_size is not None:
+            r['sample_size'] = point.sample_size
+        if point.sample_size is not None:
+            r['distribution'] = self._distribution(point)
         return r
 
     def _chart(self):

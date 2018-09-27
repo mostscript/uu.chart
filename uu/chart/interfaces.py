@@ -130,7 +130,6 @@ MEASURESERIES_DATA = 'uu.chart.data.measureseries'
 STYLEBOOK_TYPE = 'uu.chart.stylebook'
 LINESTYLE_TYPE = 'uu.chart.linestyle'
 
-
 # globals for vocabulary and summarization/aggregate functions
 
 F_MEAN = lambda l: float(sum(l)) / len(l) if len(l) > 0 else float('nan')
@@ -170,6 +169,7 @@ AGGREGATE_LABELS = [
 ]
 
 SUMMARIZATION_STRATEGIES = AGGREGATE_LABELS + [
+    ('WEIGHTED_MEAN', u'Weighted mean'),
     ('FIRST', u'Pick first found value'),
     ('LAST', u'Pick last found value'),
     ('IGNORE', u'Ignore more than one value, omit on encountered duplication'),
@@ -281,7 +281,43 @@ class IChartProductLayer(Interface):
     """Marker interface for product layer"""
 
 
-class IDataPoint(Interface):
+class IAggregateDescription(Interface):
+    """
+    Mixin of fields related to aggregating multiple data points into
+    a single descriptive aggretate point.  All fields optional, and
+    only considered relevant to aggregation of data from multiple
+    sources or samples.
+
+    'distribution' attribute would have values that look like:
+    [{ "value": 75.0, "sample_size": 8 }, { "value": 80, "sample_size": 10}]
+
+    This data is sufficient to compute:
+
+        - The sum of sample sizes.
+        - The weighted mean.
+        - The original numerator values as value/100.0 * sample_size
+          - Presuming the value looks like a percentage.
+        - The arithmetic mean.
+        - Distribution plot.
+        - Median, quartile boundary, and therefore box plot.
+    """
+
+    distribution = schema.List(
+        title=_(u'Distribution data'),
+        description=_(u'List of dict containing value, sample size for each '
+                      u'sample in aggregation.'),
+        required=False,
+        value_type=schema.Dict(
+            key_type=schema.BytesLine(),
+            value_type=schema.Object(
+                schema=Interface,
+                description=u'Value, may be int or float'
+                )
+            )
+        )
+
+
+class IDataPoint(IAggregateDescription):
     """Data point contains single value and optional note and URI"""
 
     value = schema.Float(
@@ -299,6 +335,13 @@ class IDataPoint(Interface):
     uri = schema.BytesLine(
         title=_(u'URI'),
         description=_(u'URI/URL or identifier to source of data'),
+        required=False,
+        )
+
+    sample_size = schema.Int(
+        title=_(u'Sample size (N)'),
+        description=u'Sample size, may be computed denominator of a '
+                    u'population or subpopulation sampled.',
         required=False,
         )
 
@@ -342,7 +385,7 @@ class ITimeSeriesDataPoint(IDateBase, IDataPoint):
     """Data point with a distinct date"""
 
 
-# series and collection interfaces:
+# --- series and collection interfaces:
 
 
 class IDataSeries(model.Schema):

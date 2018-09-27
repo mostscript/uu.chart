@@ -61,7 +61,7 @@ class BaseDataSequence(Item):
         reader = csv.reader(StringIO(getattr(self, 'input', u'')))
         rows = list(reader)  # iterate over CSV
         for row in rows:
-            note = uri = None  # default empty optional values
+            note = uri = sample_size = None  # default empty optional values
             if len(row) < 2:
                 continue  # silently ignore
             try:
@@ -75,7 +75,9 @@ class BaseDataSequence(Item):
                 note = row[2]
             if len(row) >= 4:
                 uri = row[3]
-            result.append(self.POINTCLS(key, value, note, uri))
+            if len(row) >= 5:
+                sample_size = int(row[4])
+            result.append(self.POINTCLS(key, value, note, uri, sample_size))
         if filtered and not excluded:
             result = filter_data(self, result)
         if excluded:
