@@ -1,4 +1,5 @@
 import datetime
+import math
 
 from zope.interface import implements
 
@@ -16,6 +17,8 @@ class BaseDataPoint(object):
         self.value = value
         self.note = note
         self.uri = uri
+        if math.isnan(sample_size):
+            sample_size = None
         if sample_size is not None:
             sample_size = int(sample_size)
         self.sample_size = sample_size
