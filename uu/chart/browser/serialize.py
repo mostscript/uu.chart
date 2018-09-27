@@ -199,7 +199,7 @@ class ChartJSON(object):
                 'value': _value(v.get('value')),
                 'sample_size': v.get('sample_size')
             }
-            for v in point.distribution
+            for v in point.distribution or []
             ]
 
     def _datapoint(self, point):
