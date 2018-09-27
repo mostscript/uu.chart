@@ -61,7 +61,7 @@ class BaseDataSequence(Item):
         reader = csv.reader(StringIO(getattr(self, 'input', u'')))
         rows = list(reader)  # iterate over CSV
         for row in rows:
-            note = uri = None  # default empty optional values
+            note = uri = sample_size = None  # default empty optional values
             if len(row) < 2:
                 continue  # silently ignore
             try:
