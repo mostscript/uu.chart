@@ -108,12 +108,12 @@ Notes, enumerated choices:
 from datetime import date, datetime
 from fractions import Fraction
 import json
-import math
 import re
 
 from plone.uuid.interfaces import IUUID
 
 from uu.chart.interfaces import ITimeSeriesChart
+from uu.chart.data import non_numeric
 from uu.chart.handlers import wfinfo
 
 from datelabel import DateLabelView
@@ -193,7 +193,7 @@ class ChartJSON(object):
         return r
 
     def _distribution(self, point):
-        _value = lambda v: None if math.isnan(v) else v
+        _value = lambda v: None if non_numeric(v) else v
         return [
             {
                 'value': _value(v.get('value')),
@@ -208,7 +208,7 @@ class ChartJSON(object):
         if isinstance(key, date) or isinstance(key, datetime):
             r['key'] = key = isodate(key)
         r['title'] = unicode(point.identity()).title()
-        value = None if math.isnan(point.value) else point.value
+        value = None if non_numeric(point.value) else point.value
         r['value'] = value
         if point.note is not None and self.show_notes:
             r['note'] = point.note
@@ -365,4 +365,3 @@ class SingleChartReportJSONView(ChartJSONView):
         self.request.response.setHeader('Content-type', 'application/json')
         self.request.response.setHeader('Content-length', str(len(data)))
         return data
-
