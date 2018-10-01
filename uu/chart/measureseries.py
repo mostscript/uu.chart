@@ -1,11 +1,10 @@
-import math
-
 from Acquisition import aq_parent, aq_inner
 from plone.indexer.decorator import indexer
 from zope.interface import implements
 
 from uu.chart.content import BaseDataSequence, filter_data, computed_attribute
 from uu.chart.data import NamedDataPoint, TimeSeriesDataPoint
+from uu.chart.data import non_numeric
 from uu.chart.interfaces import IMeasureSeriesProvider
 from uu.chart.interfaces import INamedSeriesChart
 from uu.chart.interfaces import provider_measure, resolve_uid
@@ -61,7 +60,7 @@ class MeasureSeriesProvider(BaseDataSequence):
         result = []
         for key in sorted_uniq_keys:
             keypoints = keymap[key]
-            vcount = len([p for p in keypoints if not math.isnan(p.value)])
+            vcount = len([p for p in keypoints if not non_numeric(p.value)])
             if vcount == 0:
                 # special case, only NaN values must have been found,
                 # so we will append a constructed NaN point:
@@ -75,7 +74,7 @@ class MeasureSeriesProvider(BaseDataSequence):
                 result.append(keymap[key])  # original point preserved
             elif vcount > 1:
                 value = weighted_mean(
-                    [p for p in keypoints if not math.isnan(p.value)]
+                    [p for p in keypoints if not non_numeric(p.value)]
                     )
                 distribution = [
                     {
@@ -112,7 +111,7 @@ class MeasureSeriesProvider(BaseDataSequence):
             if k not in keymap:
                 sorted_uniq_keys.append(k)  # only once
                 keymap[k] = []
-            if math.isnan(v.value):
+            if non_numeric(v.value):
                 continue  # ignore NaN values in keymap
             keymap[k].append(v)  # sequence of 1..* values per key
             pointmap[k] = v  # last point seen for key
@@ -220,4 +219,3 @@ class MeasureSeriesProvider(BaseDataSequence):
 @indexer(IMeasureSeriesProvider)
 def measure_series_references(context):
     return [context.dataset, context.measure]
-

@@ -6,6 +6,10 @@ from zope.interface import implements
 from uu.chart.interfaces import INamedDataPoint, ITimeSeriesDataPoint
 
 
+def non_numeric(value):
+    return value is None or math.isnan(value)
+
+
 class BaseDataPoint(object):
     def __init__(
             self,
@@ -17,7 +21,7 @@ class BaseDataPoint(object):
         self.value = value
         self.note = note
         self.uri = uri
-        if math.isnan(sample_size):
+        if non_numeric(sample_size):
             sample_size = None
         if sample_size is not None:
             sample_size = int(sample_size)
