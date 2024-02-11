@@ -30,7 +30,7 @@
      tal:define="is_report python: context.portal_interface.objectImplements(context, 'uu.chart.interfaces.IDataReport')">
   <div class="report-core enumeration"
        data-report-prefix="plot"
-       data-report-batch-step="geometric"
+       data-report-batch-step="all"
        tal:attributes="data-report-json string:${context/absolute_url}/@@report_json;
                        data-report-size view/size;">
 
